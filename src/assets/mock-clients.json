@@ -1,0 +1,217 @@
+[
+	{
+		"id": 0,
+		"clientId": "login-id",
+		"grantTypeEnums": [
+			"refresh_token",
+			"password"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_FRONTEND"
+			},
+			{
+				"grantedAuthority": "ROLE_TRUST"
+			}
+		],
+		"scopeEnums": [
+			"trust",
+			"read",
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"refreshTokenValiditySeconds": 3600,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": false,
+		"hasSecret": false
+	},
+	{
+		"id": 1,
+		"clientId": "oauth2-id",
+		"grantTypeEnums": [
+			"client_credentials"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_BACKEND"
+			},
+			{
+				"grantedAuthority": "ROLE_TRUST"
+			},
+			{
+				"grantedAuthority": "ROLE_BACKEND"
+			}
+		],
+		"scopeEnums": [
+			"trust",
+			"read",
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"refreshTokenValiditySeconds": 1800,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": true,
+		"hasSecret": true
+	},
+	{
+		"id": 2,
+		"clientId": "register-id",
+		"grantTypeEnums": [
+			"client_credentials"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_FRONTEND"
+			},
+			{
+				"grantedAuthority": "ROLE_FIRST_PARTY"
+			}
+		],
+		"scopeEnums": [
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"refreshTokenValiditySeconds": 1800,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": false,
+		"hasSecret": false
+	},
+	{
+		"id": 3,
+		"clientId": "mgfb-id",
+		"grantTypeEnums": [
+			"authorization_code"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_FRONTEND"
+			},
+			{
+				"grantedAuthority": "ROLE_THIRD_PARTY"
+			}
+		],
+		"scopeEnums": [
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"registeredRedirectUri": [
+			"http://localhost:4200"
+		],
+		"refreshTokenValiditySeconds": 1800,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": false,
+		"hasSecret": false
+	},
+	{
+		"id": 4,
+		"clientId": "test-id",
+		"grantTypeEnums": [
+			"password"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_FRONTEND"
+			},
+			{
+				"grantedAuthority": "ROLE_TRUST"
+			}
+		],
+		"scopeEnums": [
+			"trust",
+			"read",
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"refreshTokenValiditySeconds": 3600,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": false,
+		"hasSecret": false
+	},
+	{
+		"id": 5,
+		"clientId": "rightRoleNotSufficientResourceId",
+		"grantTypeEnums": [
+			"client_credentials"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_FRONTEND"
+			}
+		],
+		"scopeEnums": [
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"refreshTokenValiditySeconds": 1800,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": false,
+		"hasSecret": false
+	},
+	{
+		"id": 6,
+		"clientId": "resource-id",
+		"grantTypeEnums": [
+			"password"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_BACKEND"
+			},
+			{
+				"grantedAuthority": "ROLE_FIRST_PARTY"
+			}
+		],
+		"scopeEnums": [
+			"trust",
+			"read",
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"refreshTokenValiditySeconds": 3600,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": true,
+		"hasSecret": false
+	},
+	{
+		"id": 7,
+		"clientId": "mgfb-id-backend",
+		"grantTypeEnums": [
+			"authorization_code"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_FRONTEND"
+			},
+			{
+				"grantedAuthority": "ROLE_THIRD_PARTY"
+			}
+		],
+		"scopeEnums": [
+			"write"
+		],
+		"accessTokenValiditySeconds": 1800,
+		"registeredRedirectUri": [
+			"http://localhost:4200"
+		],
+		"refreshTokenValiditySeconds": 1800,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": false,
+		"hasSecret": false
+	}
+]

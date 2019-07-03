@@ -1,0 +1,36 @@
+<form class="example-container" [formGroup]="loginOrRegForm">
+    <mat-toolbar color="primary" class="example-toolbar" style="justify-content: space-between;">
+        <button mat-raised-button color="accent" (click)="toGitHub()">
+                <span>GitHub</span>
+        </button>
+        <mat-slide-toggle class="example-margin" [color]="'accent'" [checked]="'false'" formControlName="state">
+            Register
+        </mat-slide-toggle>
+    </mat-toolbar>
+    <div class="example-container2 mobileView">
+        <mat-form-field>
+            <input matInput placeholder="Enter your email" formControlName="email">
+            <mat-error *ngIf="loginOrRegForm.get('email').invalid">{{getErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'" formControlName="pwd"
+                [autocomplete]="false">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+        </mat-form-field>
+        <mat-form-field *ngIf="loginOrRegForm.get('state').value">
+            <input matInput placeholder="Confirm your password" [type]="hide2 ? 'password' : 'text'"
+                formControlName="confirmPwd" [autocomplete]="false">
+            <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide2">
+                <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+        </mat-form-field>
+        <button mat-raised-button *ngIf="!loginOrRegForm.get('state').value" (click)="login()"
+            color="primary">Login</button>
+        <button mat-raised-button *ngIf="loginOrRegForm.get('state').value" (click)="register()"
+            color="primary">Register</button>
+    </div>
+</form>

@@ -1,0 +1,114 @@
+<div class="example-container" [formGroup]="clientForm">
+    <button [routerLink]="'/dashboard/clients'" [queryParams]="{state: 'none'}" mat-button
+        style="text-align: left;padding-left: 0px;margin-bottom: 10px;">
+        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
+    </button>
+    <mat-accordion style="margin-top: 16px;margin-bottom: 16px; ">
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Rules
+                </mat-panel-title>
+                <mat-panel-description>
+                    Make sure you comply with all rules
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-list role="list">
+                <mat-list-item role="listitem">1. Root client can not be deleted</mat-list-item>
+                <mat-list-item role="listitem">2. A resource client requires backend and first party role</mat-list-item>
+                <mat-list-item role="listitem">3. Authentication server must be included in resource ids</mat-list-item>
+            </mat-list>
+        </mat-expansion-panel>
+    </mat-accordion>
+    <mat-form-field>
+        <input matInput placeholder="Enter client id" formControlName="clientId">
+    </mat-form-field>
+    <mat-checkbox class="example-margin" formControlName="hasSecret">Has secret</mat-checkbox>
+    <mat-form-field *ngIf="clientForm.get('hasSecret').value">
+        <input matInput placeholder="Enter client secret" [type]="hide ? 'password' : 'text'"
+            formControlName="clientSecret">
+        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Select a grant type</mat-label>
+        <mat-select formControlName="grantType">
+            <mat-option value="client_credentials">Client Credentials</mat-option>
+            <mat-option value="password">Password</mat-option>
+            <mat-option value="authorization_code">Authorization Code</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="clientForm.get('grantType').value==='authorization_code'">
+        <input matInput placeholder="Enter redirect uri" formControlName="registeredRedirectUri">
+    </mat-form-field>
+    <mat-checkbox *ngIf="clientForm.get('grantType').value==='password'" class="example-margin"
+        formControlName="grantTypeOptional">Add Refresh Token</mat-checkbox>
+    <mat-checkbox class="example-margin" formControlName="resourceIndicator">Set As Resource</mat-checkbox>
+    <section name="authority">
+        <mat-label>Please select authority(s)</mat-label>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="authorityFront">Frontend
+            </mat-checkbox>
+        </div>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="authorityBack">Backend
+            </mat-checkbox>
+        </div>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="authorityFirst">First party
+            </mat-checkbox>
+        </div>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="authorityThird">Third party
+            </mat-checkbox>
+        </div>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="authorityTrust">Trust
+            </mat-checkbox>
+        </div>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="authorityRoot">Root
+            </mat-checkbox>
+        </div>
+    </section>
+    <section name="scope">
+        <mat-label>Please select scope(s)</mat-label>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="scopeRead">Read
+            </mat-checkbox>
+        </div>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="scopeWrite">Write
+            </mat-checkbox>
+        </div>
+        <div>
+            <mat-checkbox class="example-margin" formControlName="scopeTrust">Trust
+            </mat-checkbox>
+        </div>
+    </section>
+    <section name="resource-id">
+        <mat-label>Please select resouce id(s)</mat-label>
+        <div *ngFor="let resource of resources">
+            <mat-checkbox class="example-margin" [formControlName]="resource.clientId">{{resource.clientId}}
+            </mat-checkbox>
+        </div>
+    </section>
+    <mat-form-field>
+        <input matInput placeholder="Access Token validity seconds" type="number" class="example-right-align"
+            formControlName="accessTokenValiditySeconds">
+    </mat-form-field>
+    <mat-form-field *ngIf="clientForm.get('grantType').value==='password'">
+        <input matInput placeholder="Refresh Token validity seconds" type="number" class="example-right-align"
+            formControlName="refreshTokenValiditySeconds">
+    </mat-form-field>
+    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
+        (click)="clientService.updateClient(convertToClient(clientForm))" *ngIf="state=='update'">Update</button>
+    <button mat-raised-button color="warn" style="margin-bottom: 20px;"
+        (click)="clientService.deleteClient(convertToClient(clientForm))"
+        *ngIf="state=='update' && !clientForm.get('authorityRoot').value">Delete</button>
+    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
+        (click)="clientService.createClient(convertToClient(clientForm))" *ngIf="state=='create'">Create</button>
+</div>
