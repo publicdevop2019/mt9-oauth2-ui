@@ -7,9 +7,10 @@ export const environment = {
   mode: 'online' as 'online' | 'offline',
   home: 'https://github.com/publicdevop2019/oauth2service',
   serverUri: 'http://localhost',
-  serverPort: ':8080',
+  serverPort: ':8111',
+  // serverPort: ':8080',
   apiVersion: '/api/v1',
-  tokenUrl: 'http://localhost:8080/oauth/token',
+  tokenUrl: 'http://localhost:8111/oauth/token',
   loginClientId: 'login-id',
   registerClientId: 'register-id',
   clientSecret: ''

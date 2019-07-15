@@ -40,6 +40,8 @@ export class ClientComponent implements OnInit {
           if (client === null || client === undefined)
             throw new Error('unable to find target client');//replace with error handler
           /** prefill required client fileds */
+          /** clear previous values */
+          this.clientForm.reset();
           const grantType: string = client.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
           this.clientForm.patchValue({
             id: client.id,
@@ -157,6 +159,8 @@ export class ClientComponent implements OnInit {
       authority.push({ grantedAuthority: "ROLE_THIRD_PARTY" } as IAuthority)
     if (formGroup.get('authorityTrust').value)
       authority.push({ grantedAuthority: "ROLE_TRUST" } as IAuthority)
+    if (formGroup.get('authorityRoot').value)
+      authority.push({ grantedAuthority: "ROLE_ROOT" } as IAuthority)
     if (formGroup.get('scopeRead').value)
       scopes.push(scopeEnums.read)
     if (formGroup.get('scopeWrite').value)
@@ -168,15 +172,16 @@ export class ClientComponent implements OnInit {
       id: formGroup.get('id').value,
       clientId: formGroup.get('clientId').value,
       hasSecret: formGroup.get('clientSecret').value ? true : false,
-      clientSecret: formGroup.get('clientSecret').value,
+      clientSecret: formGroup.get('clientSecret').value == '*****' ? '' : formGroup.get('clientSecret').value,
       grantTypeEnums: grants,
       scopeEnums: scopes,
       grantedAuthorities: authority,
       accessTokenValiditySeconds: formGroup.get('accessTokenValiditySeconds').value as number,
-      refreshTokenValiditySeconds: formGroup.get('clientSecret').value as boolean ? formGroup.get('accessTokenValiditySeconds').value as number : undefined,
+      refreshTokenValiditySeconds: formGroup.get('refreshTokenValiditySeconds').value !== undefined && formGroup.get('refreshTokenValiditySeconds').value !== null && formGroup.get('refreshTokenValiditySeconds').value as number > 0
+        ? formGroup.get('refreshTokenValiditySeconds').value as number : null,
       resourceIndicator: formGroup.get('resourceIndicator').value,
       resourceIds: this.resources.filter(e => this.clientForm.get(e.clientId).value).map(e => e.clientId),
-      registeredRedirectUri: [formGroup.get('registeredRedirectUri').value]
+      registeredRedirectUri: formGroup.get('registeredRedirectUri').value ? [formGroup.get('registeredRedirectUri').value] : null
     }
   }
 }
