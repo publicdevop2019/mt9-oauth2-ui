@@ -20,6 +20,8 @@ export interface INetworkService {
     updateResourceOwnerPwd: (resourceOwner: IResourceOwner) => Observable<boolean>;
     deleteResourceOwner: (resourceOwner: IResourceOwner) => Observable<boolean>;
     authorize: (authorizeParty: IAuthorizeParty) => Observable<IAuthorizeCode>;
+    revokeClientToken: (clientId: string) => Observable<boolean>;
+    revokeResourceOwnerToken: (resourceOwnerName: string) => Observable<boolean>;
 }
 export interface ITokenResponse {
     access_token: string;

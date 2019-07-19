@@ -9,6 +9,12 @@ import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-
 import { HttpClient } from '@angular/common/http';
 
 export class SandboxImpl implements INetworkService {
+    revokeClientToken(clientId: string):Observable<boolean>{
+        return of(true).pipe(delay(this.defaultDelay))
+    }
+    revokeResourceOwnerToken (resourceOwnerName: string): Observable<boolean>{
+        return of(true).pipe(delay(this.defaultDelay))
+    }
     authorizeParty: IAuthorizeParty;
     authenticatedEmail: string;;
     private defaultDelay: number = 0;

@@ -15,6 +15,11 @@ import { Router } from '@angular/router';
 export class ResourceOwnerService {
   cachedResourceOwners: IResourceOwner[];
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router) { }
+  revokeResourceOwnerToken(resourceOwnerName: string): void {
+    this.httpProxy.netImpl.revokeResourceOwnerToken(resourceOwnerName).subscribe(result => {
+      this.notifyTokenRevocation(result);
+    })
+  }
   getResourceOwners(): Observable<IResourceOwner[]> {
     return this.httpProxy.netImpl.getResourceOwners();
   }
@@ -52,5 +57,8 @@ export class ResourceOwnerService {
       width: '250px',
       data: msg
     });
+  }
+  notifyTokenRevocation(result: boolean) {
+    result ? this.openDialog('operation success, old token has been revoked') : this.openDialog('operation failed');
   }
 }

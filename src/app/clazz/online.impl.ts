@@ -12,6 +12,24 @@ import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 
 export class OnlineImpl implements INetworkService {
+    revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
+        const formData = new FormData();
+        formData.append('name', resourceOwnerName);
+        return new Observable<boolean>(e => {
+            this._httpClient.post<any>(environment.serverUri + environment.serverPort + '/proxy/blacklist/resourceOwner', formData).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    revokeClientToken(clientId: string): Observable<boolean> {
+        // const formData = new FormData();
+        // formData.append('name', clientId);
+        return new Observable<boolean>(e => {
+            this._httpClient.post<any>(environment.serverUri + environment.serverPort + '/proxy/blacklist/client', { "name": clientId }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
     authorizeParty: IAuthorizeParty;
     authenticatedEmail: string;
     authorize(authorizeParty: IAuthorizeParty): Observable<IAuthorizeCode> {

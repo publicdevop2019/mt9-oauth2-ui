@@ -16,6 +16,11 @@ export class ClientService {
   /** @todo set expire time for cached data */
   cachedClients: IClient[];
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog) { }
+  revokeClientToken(clientId: string): void {
+    this.httpProxy.netImpl.revokeClientToken(clientId).subscribe(result => {
+      this.notifyTokenRevocation(result);
+    })
+  }
   getClients(): Observable<IClient[]> {
     return this.httpProxy.netImpl.getClients()
   }
@@ -27,7 +32,7 @@ export class ClientService {
   }
   updateClient(client: IClient): void {
     this.httpProxy.netImpl.updateClient(client).subscribe(result => {
-      this.notify(result)
+      this.notifyTokenRevocation(result)
     })
   }
   deleteClient(client: IClient): void {
@@ -49,5 +54,8 @@ export class ClientService {
   }
   notify(result: boolean) {
     result ? this.openDialog('operation success') : this.openDialog('operation failed');
+  }
+  notifyTokenRevocation(result: boolean) {
+    result ? this.openDialog('operation success, old token has been revoked') : this.openDialog('operation failed');
   }
 }

@@ -15,7 +15,7 @@ export interface IResourceOwner {
   styleUrls: ['./summary-resource-owner.component.css']
 })
 export class SummaryResourceOwnerComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'email', 'locked', 'star'];
+  displayedColumns: string[] = ['id', 'email', 'locked', 'star', 'token'];
   dataSource: MatTableDataSource<IResourceOwner>;
   /** @todo add access control based on role */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -37,5 +37,8 @@ export class SummaryResourceOwnerComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+  revokeResourceOwnerToken(resourceOwnersName: string) {
+    this.resourceOwnerService.revokeResourceOwnerToken(resourceOwnersName);
   }
 }

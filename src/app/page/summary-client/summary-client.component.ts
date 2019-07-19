@@ -26,8 +26,8 @@ export interface IClient {
   refreshTokenValiditySeconds: number;
   resourceIds: string[]
   hasSecret: boolean;
-  resourceIndicator:boolean;
-  registeredRedirectUri:string[]
+  resourceIndicator: boolean;
+  registeredRedirectUri: string[]
 }
 
 @Component({
@@ -36,7 +36,7 @@ export interface IClient {
   styleUrls: ['./summary-client.component.css']
 })
 export class SummaryClientComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'clientId', 'hasSecret', 'star'];
+  displayedColumns: string[] = ['id', 'clientId', 'star', 'token'];
   dataSource: MatTableDataSource<IClient>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -59,6 +59,9 @@ export class SummaryClientComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+  revokeClientToken(clientId: string) {
+    this.clientService.revokeClientToken(clientId);
   }
 
 }
