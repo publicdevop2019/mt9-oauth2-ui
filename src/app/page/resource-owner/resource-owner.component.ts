@@ -16,7 +16,6 @@ export class ResourceOwnerComponent implements OnInit {
   state: string;
   resourceOwner: IResourceOwner;
   resourceOwner$: Observable<IResourceOwner>;
-  email = new FormControl('', [Validators.required, Validators.email]);
   hide = true;
   hide2 = true;
   resourceOwnerForm = new FormGroup({
@@ -77,8 +76,8 @@ export class ResourceOwnerComponent implements OnInit {
   }
 
   getErrorMessage() {
-    return this.email.hasError('required') ? 'You must enter a value' :
-      this.email.hasError('email') ? 'Not a valid email' :
+    return this.resourceOwnerForm.get('email').hasError('required') ? 'You must enter a value' :
+      this.resourceOwnerForm.get('email').hasError('email') ? 'Not a valid email' :
         '';
   }
   convertToResourceOwner(formGroup: FormGroup): IResourceOwner {

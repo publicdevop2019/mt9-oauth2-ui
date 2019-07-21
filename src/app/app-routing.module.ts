@@ -9,13 +9,15 @@ import { SummaryResourceOwnerComponent } from './page/summary-resource-owner/sum
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { AuthService } from './service/auth.service';
 import { AuthorizeComponent } from './page/authorize/authorize.component';
+import { SummarySecurityProfileComponent } from './page/summary-security-profile/summary-security-profile.component';
+import { SecurityProfileComponent } from './page/security-profile/security-profile.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'error', component: ErrorComponent },
-  { path: 'authorize', component: AuthorizeComponent,canActivate: [AuthService]},
+  { path: 'authorize', component: AuthorizeComponent, canActivate: [AuthService] },
   {
-    path: 'dashboard', component: NavBarComponent,canActivateChild: [AuthService],
+    path: 'dashboard', component: NavBarComponent, canActivateChild: [AuthService],
     children: [
       { path: '', redirectTo: 'clients', pathMatch: 'full' },
       { path: 'client/:id', component: ClientComponent },
@@ -23,7 +25,10 @@ const routes: Routes = [
       { path: 'clients', component: SummaryClientComponent },
       { path: 'resource-owner', component: ResourceOwnerComponent },
       { path: 'resource-owner/:id', component: ResourceOwnerComponent },
-      { path: 'resource-owners', component: SummaryResourceOwnerComponent},
+      { path: 'resource-owners', component: SummaryResourceOwnerComponent },
+      { path: 'security-profiles', component: SummarySecurityProfileComponent },
+      { path: 'security-profile', component: SecurityProfileComponent },
+      { path: 'security-profile/:id', component: SecurityProfileComponent },
       { path: '**', component: SummaryClientComponent }
     ]
   },

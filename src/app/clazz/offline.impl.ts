@@ -7,12 +7,25 @@ import { FormGroup } from '@angular/forms';
 import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { HttpClient } from '@angular/common/http';
+import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 
 export class SandboxImpl implements INetworkService {
-    revokeClientToken(clientId: string):Observable<boolean>{
+    createSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+        return of(true).pipe(delay(this.defaultDelay))
+    };
+    updateSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+        return of(true).pipe(delay(this.defaultDelay))
+    };
+    deleteSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+        return of(true).pipe(delay(this.defaultDelay))
+    };
+    getSecurityProfiles(): Observable<ISecurityProfile[]> {
+        return this.http.get<ISecurityProfile[]>('./assets/mock-security-profile.json').pipe(delay(this.defaultDelay))
+    }
+    revokeClientToken(clientId: string): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     }
-    revokeResourceOwnerToken (resourceOwnerName: string): Observable<boolean>{
+    revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     }
     authorizeParty: IAuthorizeParty;

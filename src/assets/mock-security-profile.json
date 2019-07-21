@@ -1,0 +1,65 @@
+[
+	{
+	   "expression": "hasRole('ROLE_ROOT') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/clients",
+	   "method": "GET",
+	   "id": 0
+	},
+	{
+	   "expression": "hasRole('ROLE_ROOT') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/client",
+	   "method": "POST",
+	   "id": 1
+	},
+	{
+	   "expression": "hasRole('ROLE_ROOT') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/client/**",
+	   "method": "PUT",
+	   "id": 2
+	},
+	{
+	   "expression": "hasRole('ROLE_ROOT') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/client/**",
+	   "method": "DELETE",
+	   "id": 3
+	},
+	{
+	   "expression": "hasRole('ROLE_FRONTEND') and hasRole('ROLE_FIRST_PARTY') and #oauth2.hasScope('write') and #oauth2.isClient()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/resourceOwner",
+	   "method": "POST",
+	   "id": 4
+	},
+	{
+	   "expression": "hasRole('ROLE_ADMIN') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/resourceOwners",
+	   "method": "GET",
+	   "id": 5
+	},
+	{
+	   "expression": "hasRole('ROLE_ADMIN') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/resourceOwner/**",
+	   "method": "PUT",
+	   "id": 6
+	},
+	{
+	   "expression": "hasRole('ROLE_ROOT') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/resourceOwner/**",
+	   "method": "DELETE",
+	   "id": 7
+	},
+	{
+	   "expression": "hasRole('ROLE_USER') and #oauth2.hasScope('trust') and #oauth2.isUser()",
+	   "resourceID": "oauth2-id",
+	   "endpoint": "/api/v1/resourceOwner/pwd",
+	   "method": "PATCH",
+	   "id": 8
+	}
+ ]

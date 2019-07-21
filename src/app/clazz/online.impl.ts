@@ -10,13 +10,46 @@ import { FormGroup } from '@angular/forms';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 
 export class OnlineImpl implements INetworkService {
-    revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
-        const formData = new FormData();
-        formData.append('name', resourceOwnerName);
+    authorizeParty: IAuthorizeParty;
+    authenticatedEmail: string;
+    currentUserAuthInfo: ITokenResponse;
+    private _httpClient: HttpClient;
+    // OAuth2 pwd flow
+    constructor(httpClient: HttpClient) {
+        this._httpClient = httpClient;
+    }
+    createSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + environment.serverPort + '/proxy/blacklist/resourceOwner', formData).subscribe(next => {
+            this._httpClient.post(environment.serverUri + environment.serverPort + '/proxy/security/profile', securitypProfile).subscribe(next => {
+                e.next(true)
+            });
+        });
+
+    };
+    updateSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.put(environment.serverUri + environment.serverPort + '/proxy/security/profile/' + securitypProfile.id, securitypProfile).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    deleteSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + environment.serverPort + '/proxy/security/profile/' + securitypProfile.id).subscribe(next => {
+                e.next(true)
+            });
+        });
+
+    };
+    getSecurityProfiles(): Observable<ISecurityProfile[]> {
+        return this._httpClient.get<ISecurityProfile[]>(environment.serverUri + environment.serverPort + '/proxy/security/profiles');
+    };
+    revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.post<any>(environment.serverUri + environment.serverPort + '/proxy/blacklist/resourceOwner', { "name": resourceOwnerName }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -30,8 +63,6 @@ export class OnlineImpl implements INetworkService {
             });
         });
     }
-    authorizeParty: IAuthorizeParty;
-    authenticatedEmail: string;
     authorize(authorizeParty: IAuthorizeParty): Observable<IAuthorizeCode> {
         const formData = new FormData();
         formData.append('response_type', authorizeParty.response_type);
@@ -105,13 +136,7 @@ export class OnlineImpl implements INetworkService {
         }
         );
     }
-    currentUserAuthInfo: ITokenResponse;
-    private _httpClient: HttpClient;
-    // OAuth2 pwd flow
-    constructor(httpClient: HttpClient) {
-        this._httpClient = httpClient;
-    }
-    public login(loginFG: FormGroup): Observable<boolean> {
+    login(loginFG: FormGroup): Observable<boolean> {
         const formData = new FormData();
         formData.append('grant_type', 'password');
         formData.append('username', loginFG.get('email').value);
@@ -131,7 +156,7 @@ export class OnlineImpl implements INetworkService {
         }
         );
     }
-    public register(registerFG: FormGroup): Observable<boolean> {
+    register(registerFG: FormGroup): Observable<boolean> {
         return new Observable<boolean>(e => {
             const formData = new FormData();
             formData.append('grant_type', 'client_credentials');

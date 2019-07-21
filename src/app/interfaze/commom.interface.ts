@@ -1,7 +1,8 @@
-import { FormGroup, AbstractControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 
 // regulate interface
 export interface INetworkService {
@@ -22,6 +23,10 @@ export interface INetworkService {
     authorize: (authorizeParty: IAuthorizeParty) => Observable<IAuthorizeCode>;
     revokeClientToken: (clientId: string) => Observable<boolean>;
     revokeResourceOwnerToken: (resourceOwnerName: string) => Observable<boolean>;
+    getSecurityProfiles: () => Observable<ISecurityProfile[]>;
+    createSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
+    updateSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
+    deleteSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
 }
 export interface ITokenResponse {
     access_token: string;

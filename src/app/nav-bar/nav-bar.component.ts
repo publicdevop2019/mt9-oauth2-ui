@@ -28,6 +28,12 @@ export class NavBarComponent implements OnInit {
     }
     ,
     {
+      link: 'security-profiles',
+      display: 'Security Profile dashboard',
+      state: 'none'
+    }
+    ,
+    {
       link: 'client',
       display: 'Create Client',
       state: 'create'
@@ -37,6 +43,11 @@ export class NavBarComponent implements OnInit {
       link: 'resource-owner',
       display: 'Update password',
       state: 'update:pwd'
+    },
+    {
+      link: 'security-profile',
+      display: 'Add Security Profile',
+      state: 'create'
     },
     {
       link: '/login',

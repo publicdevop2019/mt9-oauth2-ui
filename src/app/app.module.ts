@@ -23,6 +23,9 @@ import { MsgBoxComponent } from './msg-box/msg-box.component';
 import { ErrorInterceptor } from './service/error.interceptor';
 import { LoadingInterceptor } from './service/loading.interceptor';
 import { AuthorizeComponent } from './page/authorize/authorize.component';
+import { SummarySecurityProfileComponent } from './page/summary-security-profile/summary-security-profile.component';
+import { SecurityProfileComponent } from './page/security-profile/security-profile.component';
+import { SecurityProfileService } from './service/security-profile.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +38,9 @@ import { AuthorizeComponent } from './page/authorize/authorize.component';
     NavBarComponent,
     ProgressSpinnerComponent,
     MsgBoxComponent,
-    AuthorizeComponent
+    AuthorizeComponent,
+    SummarySecurityProfileComponent,
+    SecurityProfileComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -75,7 +80,7 @@ import { AuthorizeComponent } from './page/authorize/authorize.component';
       useClass: LoadingInterceptor,
       multi: true
     },
-    HttpProxyService, ClientService, ResourceOwnerService, AuthService],
+    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
