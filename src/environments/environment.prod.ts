@@ -2,10 +2,10 @@ export const environment = {
   production: true,
   mode: 'offline' as 'online' | 'offline',
   home: 'https://github.com/publicdevop2019/oauth2service',
-  serverUri: 'http://localhost',
-  serverPort: ':8080',
+  serverUri: 'http://ec2-18-216-158-121.us-east-2.compute.amazonaws.com',
+  serverPort: '',
   apiVersion: '/api/v1',
-  tokenUrl: 'http://localhost:8080/oauth/token',
+  tokenUrl: 'http://ec2-18-216-158-121.us-east-2.compute.amazonaws.com/oauth/token',
   loginClientId: 'login-id',
   registerClientId: 'register-id',
   clientSecret: ''
