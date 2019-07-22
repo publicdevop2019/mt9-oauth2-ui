@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  mode: 'offline' as 'online' | 'offline',
+  mode: 'online' as 'online' | 'offline',
   home: 'https://github.com/publicdevop2019/oauth2service',
   serverUri: 'http://ec2-18-216-158-121.us-east-2.compute.amazonaws.com',
   serverPort: '',
