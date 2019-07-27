@@ -23,7 +23,7 @@ export class OnlineImpl implements INetworkService {
     }
     createSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + environment.serverPort + '/proxy/security/profile', securitypProfile).subscribe(next => {
+            this._httpClient.post(environment.serverUri + '/proxy/security/profile', securitypProfile).subscribe(next => {
                 e.next(true)
             });
         });
@@ -31,25 +31,25 @@ export class OnlineImpl implements INetworkService {
     };
     updateSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + environment.serverPort + '/proxy/security/profile/' + securitypProfile.id, securitypProfile).subscribe(next => {
+            this._httpClient.put(environment.serverUri + '/proxy/security/profile/' + securitypProfile.id, securitypProfile).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + environment.serverPort + '/proxy/security/profile/' + securitypProfile.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + '/proxy/security/profile/' + securitypProfile.id).subscribe(next => {
                 e.next(true)
             });
         });
 
     };
     getSecurityProfiles(): Observable<ISecurityProfile[]> {
-        return this._httpClient.get<ISecurityProfile[]>(environment.serverUri + environment.serverPort + '/proxy/security/profiles');
+        return this._httpClient.get<ISecurityProfile[]>(environment.serverUri + '/proxy/security/profiles');
     };
     revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + environment.serverPort + '/proxy/blacklist/resourceOwner', { "name": resourceOwnerName }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/proxy/blacklist/resourceOwner', { "name": resourceOwnerName }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -58,7 +58,7 @@ export class OnlineImpl implements INetworkService {
         // const formData = new FormData();
         // formData.append('name', clientId);
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + environment.serverPort + '/proxy/blacklist/client', { "name": clientId }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/proxy/blacklist/client', { "name": clientId }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -69,18 +69,18 @@ export class OnlineImpl implements INetworkService {
         formData.append('client_id', authorizeParty.client_id);
         formData.append('state', authorizeParty.state);
         formData.append('redirect_uri', authorizeParty.redirect_uri);
-        return this._httpClient.post<IAuthorizeCode>(environment.serverUri + environment.serverPort + environment.apiVersion + '/authorize', formData);
+        return this._httpClient.post<IAuthorizeCode>(environment.serverUri + environment.apiVersion + '/authorize', formData);
     };
     updateResourceOwnerPwd(resourceOwner: IResourceOwner): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.patch<IResourceOwner>(environment.serverUri + environment.serverPort + environment.apiVersion + '/resourceOwner/pwd', resourceOwner).subscribe(next => {
+            this._httpClient.patch<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwner/pwd', resourceOwner).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put<IResourceOwner>(environment.serverUri + environment.serverPort + environment.apiVersion + '/resourceOwner/' + resourceOwner.id, resourceOwner).subscribe(next => {
+            this._httpClient.put<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwner/' + resourceOwner.id, resourceOwner).subscribe(next => {
                 e.next(true)
             });
         });
@@ -88,37 +88,37 @@ export class OnlineImpl implements INetworkService {
     };
     deleteResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete<IResourceOwner>(environment.serverUri + environment.serverPort + environment.apiVersion + '/resourceOwner/' + resourceOwner.id).subscribe(next => {
+            this._httpClient.delete<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwner/' + resourceOwner.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     createClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + environment.serverPort + environment.apiVersion + '/client', client).subscribe(next => {
+            this._httpClient.post(environment.serverUri + environment.apiVersion + '/client', client).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + environment.serverPort + environment.apiVersion + '/client/' + client.id, client).subscribe(next => {
+            this._httpClient.put(environment.serverUri + environment.apiVersion + '/client/' + client.id, client).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + environment.serverPort + environment.apiVersion + '/client/' + client.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + environment.apiVersion + '/client/' + client.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     getResourceOwners(): Observable<IResourceOwner[]> {
-        return this._httpClient.get<IResourceOwner[]>(environment.serverUri + environment.serverPort + environment.apiVersion + '/resourceOwners');
+        return this._httpClient.get<IResourceOwner[]>(environment.serverUri + environment.apiVersion + '/resourceOwners');
     };
     getClients(): Observable<IClient[]> {
-        return this._httpClient.get<IClient[]>(environment.serverUri + environment.serverPort + environment.apiVersion + '/clients');
+        return this._httpClient.get<IClient[]>(environment.serverUri + environment.apiVersion + '/clients');
     };
     refreshToken(): Observable<boolean> {
         const formData = new FormData();
@@ -198,7 +198,7 @@ export class OnlineImpl implements INetworkService {
     }
     private _createUser(token: string, registerFG: FormGroup): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + environment.serverPort + environment.apiVersion + '/resourceOwner',
+            this._httpClient.post(environment.serverUri + environment.apiVersion + '/resourceOwner',
                 this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) }).subscribe(next => {
                     e.next(true);
                 },

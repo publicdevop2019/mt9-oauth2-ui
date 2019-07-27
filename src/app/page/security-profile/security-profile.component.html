@@ -7,13 +7,16 @@
         <input matInput placeholder="Enter resource-id" formControlName="resourceID">
     </mat-form-field>
     <mat-form-field>
-        <input matInput placeholder="Enter endpoint" formControlName="endpoint">
+        <input matInput placeholder="Enter endpoint" formControlName="path">
     </mat-form-field>
     <mat-form-field>
         <input matInput placeholder="Enter method" formControlName="method">
     </mat-form-field>
     <mat-form-field>
         <input matInput placeholder="Enter expression" formControlName="expression">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Enter url" formControlName="url">
     </mat-form-field>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="securityProfileService.update(convertToSecurityProfile(securityProfileForm))">Update</button>

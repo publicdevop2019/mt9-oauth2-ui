@@ -4,10 +4,11 @@ import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 
 export interface ISecurityProfile {
   resourceID: string;
-  endpoint: string;
+  path: string;
   method: string;
   expression: string;
   id: number;
+  url?: string;
 }
 @Component({
   selector: 'app-summary-security-profile',
@@ -15,7 +16,7 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'resourceID', 'endpoint', 'method', 'star'];
+  displayedColumns: string[] = ['id', 'resourceID', 'path', 'method', 'star'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;

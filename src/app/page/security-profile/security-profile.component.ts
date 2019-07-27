@@ -22,7 +22,7 @@ export class SecurityProfileComponent implements OnInit {
     resourceID: new FormControl('', [
       Validators.required
     ]),
-    endpoint: new FormControl('', [
+    path: new FormControl('', [
       Validators.required
     ]),
     method: new FormControl('', [
@@ -31,6 +31,7 @@ export class SecurityProfileComponent implements OnInit {
     expression: new FormControl('', [
       Validators.required
     ]),
+    url: new FormControl(''),
   });
   constructor(
     private route: ActivatedRoute,
@@ -49,9 +50,11 @@ export class SecurityProfileComponent implements OnInit {
         this.securityProfile$.subscribe(securityProfile => {
           this.securityProfileForm.get('id').setValue(securityProfile.id)
           this.securityProfileForm.get('resourceID').setValue(securityProfile.resourceID)
-          this.securityProfileForm.get('endpoint').setValue(securityProfile.endpoint)
+          this.securityProfileForm.get('path').setValue(securityProfile.path)
           this.securityProfileForm.get('method').setValue(securityProfile.method)
           this.securityProfileForm.get('expression').setValue(securityProfile.expression)
+          if (securityProfile.url !== null || securityProfile.url !== undefined)
+            this.securityProfileForm.get('url').setValue(securityProfile.url)
         })
       } else if (queryMaps.get('state') === 'none') {
 
@@ -64,9 +67,10 @@ export class SecurityProfileComponent implements OnInit {
     return {
       id: formGroup.get('id').value,
       resourceID: formGroup.get('resourceID').value,
-      endpoint: formGroup.get('endpoint').value,
+      path: formGroup.get('path').value,
       method: formGroup.get('method').value,
-      expression: formGroup.get('expression').value
+      expression: formGroup.get('expression').value,
+      url: formGroup.get('url').value
     }
   }
 }

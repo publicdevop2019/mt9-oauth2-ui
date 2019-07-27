@@ -19,7 +19,7 @@ const routes: Routes = [
   {
     path: 'dashboard', component: NavBarComponent, canActivateChild: [AuthService],
     children: [
-      { path: '', redirectTo: 'clients', pathMatch: 'full' },
+      { path: '', redirectTo: 'security-profiles', pathMatch: 'full' },
       { path: 'client/:id', component: ClientComponent },
       { path: 'client', component: ClientComponent },
       { path: 'clients', component: SummaryClientComponent },
