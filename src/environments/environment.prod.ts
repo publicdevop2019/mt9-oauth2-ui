@@ -3,9 +3,8 @@ export const environment = {
   mode: 'online' as 'online' | 'offline',
   home: 'https://github.com/publicdevop2019/oauth2service',
   serverUri: 'https://www.ngform.com',
-  serverPort: '',
-  apiVersion: '/api/v1',
   tokenUrl: 'https://www.ngform.com/oauth/token',
+  apiVersion: '/api',
   loginClientId: 'login-id',
   registerClientId: 'register-id',
   clientSecret: ''
