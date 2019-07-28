@@ -51,6 +51,9 @@ export class ErrorInterceptor implements HttpInterceptor {
         } else if (httpError.status === 400) {
           this.openDialog('Invalid request');
           return throwError(error);
+        } else if (httpError.status === 0) {
+          this.openDialog('Network connection failed');
+          return throwError(error);
         } else {
           return throwError(error);
         }
