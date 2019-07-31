@@ -1,4 +1,4 @@
-import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode } from '../interfaze/commom.interface';
+import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode, IAutoApprove } from '../interfaze/commom.interface';
 
 import { Observable } from 'rxjs';
 
@@ -21,6 +21,15 @@ export class OnlineImpl implements INetworkService {
     constructor(httpClient: HttpClient) {
         this._httpClient = httpClient;
     }
+    autoApprove(clientId: string): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.get<IAutoApprove>(environment.serverUri + environment.apiVersion + '/client/autoApprove?clientId=' + clientId).subscribe(next => {
+                if (next.autoApprove)
+                    e.next(true)
+                e.next(false)
+            });
+        });
+    };
     createSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.post(environment.serverUri + '/proxy/security/profile', securitypProfile).subscribe(next => {

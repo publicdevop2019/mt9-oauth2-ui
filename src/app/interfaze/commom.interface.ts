@@ -27,6 +27,7 @@ export interface INetworkService {
     createSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
     updateSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
     deleteSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
+    autoApprove: (clientId: string) => Observable<boolean>;
 }
 export interface ITokenResponse {
     access_token: string;
@@ -43,4 +44,7 @@ export interface IAuthorizeParty {
 }
 export interface IAuthorizeCode {
     authorize_code: string;
+}
+export interface IAutoApprove {
+    autoApprove: boolean;
 }

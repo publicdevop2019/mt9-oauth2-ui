@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 
 export class SandboxImpl implements INetworkService {
+    autoApprove(clientId: string): Observable<boolean> {
+        return of(true).pipe(delay(this.defaultDelay))
+    };
     createSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };

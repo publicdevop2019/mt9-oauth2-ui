@@ -9,7 +9,13 @@ import { Router } from '@angular/router';
 })
 export class AuthorizeComponent implements OnInit {
 
-  constructor(public httpProxy: HttpProxyService, private router: Router) { }
+  constructor(public httpProxy: HttpProxyService, private router: Router) {
+    /** if client is eligible for auto approve */
+    this.httpProxy.netImpl.autoApprove(this.httpProxy.netImpl.authorizeParty.client_id).subscribe(next => {
+      if (next)
+        this.authorize();
+    })
+  }
 
   ngOnInit() {
   }

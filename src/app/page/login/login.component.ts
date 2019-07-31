@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
         this.httpProxy.netImpl.authorizeParty = {
           response_type: queryMaps.get('response_type'),
           client_id: queryMaps.get('client_id'),
-          state: queryMaps.get('state'),
+          state: queryMaps.getAll('state')[1],
           redirect_uri: queryMaps.get('redirect_uri'),
         }
       }
