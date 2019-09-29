@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 export class ClientService {
   /** @todo set expire time for cached data */
   cachedClients: IClient[];
+  currentPageIndex:number;
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog) { }
   revokeClientToken(clientId: string): void {
     this.httpProxy.netImpl.revokeClientToken(clientId).subscribe(result => {

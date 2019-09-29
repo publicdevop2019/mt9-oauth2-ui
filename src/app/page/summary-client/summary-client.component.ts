@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { ClientService } from 'src/app/service/client.service';
 export interface IAuthority {
   grantedAuthority: string;
@@ -41,7 +41,7 @@ export class SummaryClientComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(private clientService: ClientService) {
+  constructor(public clientService: ClientService) {
     this.clientService.getClients().subscribe(clients => {
       this.clientService.cachedClients = clients;
       this.dataSource = new MatTableDataSource(clients)
@@ -63,5 +63,7 @@ export class SummaryClientComponent implements OnInit {
   revokeClientToken(clientId: string) {
     this.clientService.revokeClientToken(clientId);
   }
-
+  pageHandler(e: PageEvent) {
+    this.clientService.currentPageIndex = e.pageIndex
+  }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { IAuthority } from '../summary-client/summary-client.component';
 import { ResourceOwnerService } from 'src/app/service/resource-owner.service';
 export interface IResourceOwner {
@@ -15,12 +15,12 @@ export interface IResourceOwner {
   styleUrls: ['./summary-resource-owner.component.css']
 })
 export class SummaryResourceOwnerComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'email', 'locked', 'star', 'token'];
+  displayedColumns: string[] = ['id', 'email', 'star', 'token'];
   dataSource: MatTableDataSource<IResourceOwner>;
   /** @todo add access control based on role */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(private resourceOwnerService: ResourceOwnerService) {
+  constructor(public resourceOwnerService: ResourceOwnerService) {
     this.resourceOwnerService.getResourceOwners().subscribe(resourceOwners => {
       this.resourceOwnerService.cachedResourceOwners = resourceOwners;
       this.dataSource = new MatTableDataSource(resourceOwners);
@@ -40,5 +40,8 @@ export class SummaryResourceOwnerComponent implements OnInit {
   }
   revokeResourceOwnerToken(resourceOwnersName: string) {
     this.resourceOwnerService.revokeResourceOwnerToken(resourceOwnersName);
+  }
+  pageHandler(e: PageEvent) {
+    this.resourceOwnerService.currentPageIndex = e.pageIndex
   }
 }

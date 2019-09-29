@@ -7,4 +7,9 @@ body {
 .basic-container {
     padding: 30px;
   }
-  
+.column-size{
+  max-width: 86px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

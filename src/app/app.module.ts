@@ -1,31 +1,32 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { LayoutModule } from '@angular/cdk/layout';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule } from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoginComponent } from './page/login/login.component';
+import { MsgBoxComponent } from './msg-box/msg-box.component';
+import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { AuthorizeComponent } from './page/authorize/authorize.component';
 import { ClientComponent } from './page/client/client.component';
-import { ResourceOwnerComponent } from './page/resource-owner/resource-owner.component';
 import { ErrorComponent } from './page/error/error.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, MatSelectModule, MatOptionModule, MatCheckboxModule, MatExpansionModule, MatCardModule, MatPaginatorModule, MatTableModule, MatToolbarModule, MatSidenavModule, MatNavList, MatListModule, MatProgressSpinnerModule, MatSlideToggleModule, MatDialogModule, MatChipsModule } from '@angular/material';
+import { LoginComponent } from './page/login/login.component';
+import { ResourceOwnerComponent } from './page/resource-owner/resource-owner.component';
+import { SecurityProfileComponent } from './page/security-profile/security-profile.component';
 import { SummaryClientComponent } from './page/summary-client/summary-client.component';
 import { SummaryResourceOwnerComponent } from './page/summary-resource-owner/summary-resource-owner.component';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
-import { HttpProxyService } from './service/http-proxy.service';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ResourceOwnerService } from './service/resource-owner.service';
-import { ClientService } from './service/client.service';
-import { AuthService } from './service/auth.service';
-import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
-import { MsgBoxComponent } from './msg-box/msg-box.component';
-import { ErrorInterceptor } from './service/error.interceptor';
-import { LoadingInterceptor } from './service/loading.interceptor';
-import { AuthorizeComponent } from './page/authorize/authorize.component';
 import { SummarySecurityProfileComponent } from './page/summary-security-profile/summary-security-profile.component';
-import { SecurityProfileComponent } from './page/security-profile/security-profile.component';
+import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
+import { AuthService } from './service/auth.service';
+import { ClientService } from './service/client.service';
+import { ErrorInterceptor } from './service/error.interceptor';
+import { HttpProxyService } from './service/http-proxy.service';
+import { LoadingInterceptor } from './service/loading.interceptor';
+import { ResourceOwnerService } from './service/resource-owner.service';
 import { SecurityProfileService } from './service/security-profile.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +67,7 @@ import { SecurityProfileService } from './service/security-profile.service';
     MatSlideToggleModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    MatChipsModule
+    LayoutModule,
   ],
   entryComponents: [MsgBoxComponent],
   providers: [

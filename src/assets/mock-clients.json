@@ -3,8 +3,8 @@
 		"id": 0,
 		"clientId": "login-id",
 		"grantTypeEnums": [
-			"refresh_token",
-			"password"
+			"password",
+			"refresh_token"
 		],
 		"grantedAuthorities": [
 			{
@@ -12,16 +12,20 @@
 			},
 			{
 				"grantedAuthority": "ROLE_TRUST"
+			},
+			{
+				"grantedAuthority": "ROLE_ROOT"
 			}
 		],
 		"scopeEnums": [
-			"trust",
 			"read",
-			"write"
+			"write",
+			"trust"
 		],
-		"accessTokenValiditySeconds": 1800,
-		"refreshTokenValiditySeconds": 3600,
+		"accessTokenValiditySeconds": 120,
+		"refreshTokenValiditySeconds": 1800,
 		"resourceIds": [
+			"edge-proxy",
 			"oauth2-id"
 		],
 		"resourceIndicator": false,
@@ -41,17 +45,20 @@
 				"grantedAuthority": "ROLE_TRUST"
 			},
 			{
-				"grantedAuthority": "ROLE_BACKEND"
+				"grantedAuthority": "ROLE_FIRST_PARTY"
+			},
+			{
+				"grantedAuthority": "ROLE_ROOT"
 			}
 		],
 		"scopeEnums": [
-			"trust",
 			"read",
-			"write"
+			"write",
+			"trust"
 		],
-		"accessTokenValiditySeconds": 1800,
-		"refreshTokenValiditySeconds": 1800,
+		"accessTokenValiditySeconds": 120,
 		"resourceIds": [
+			"edge-proxy",
 			"oauth2-id"
 		],
 		"resourceIndicator": true,
@@ -69,13 +76,15 @@
 			},
 			{
 				"grantedAuthority": "ROLE_FIRST_PARTY"
+			},
+			{
+				"grantedAuthority": "ROLE_ROOT"
 			}
 		],
 		"scopeEnums": [
 			"write"
 		],
-		"accessTokenValiditySeconds": 1800,
-		"refreshTokenValiditySeconds": 1800,
+		"accessTokenValiditySeconds": 120,
 		"resourceIds": [
 			"oauth2-id"
 		],
@@ -83,6 +92,8 @@
 		"hasSecret": false
 	},
 	{
+		"modifiedBy": "0",
+		"modifiedAt": "2019-09-28T15:47:42.167+0000",
 		"id": 3,
 		"clientId": "mgfb-id",
 		"grantTypeEnums": [
@@ -93,21 +104,23 @@
 				"grantedAuthority": "ROLE_FRONTEND"
 			},
 			{
-				"grantedAuthority": "ROLE_THIRD_PARTY"
+				"grantedAuthority": "ROLE_FIRST_PARTY"
 			}
 		],
 		"scopeEnums": [
-			"write"
+			"trust"
 		],
-		"accessTokenValiditySeconds": 1800,
+		"accessTokenValiditySeconds": 120,
 		"registeredRedirectUri": [
+			"https://magicform-a4cbe.firebaseapp.com",
 			"http://localhost:4200"
 		],
-		"refreshTokenValiditySeconds": 1800,
 		"resourceIds": [
-			"oauth2-id"
+			"oauth2-id",
+			"light-store"
 		],
 		"resourceIndicator": false,
+		"autoApprove": true,
 		"hasSecret": false
 	},
 	{
@@ -125,12 +138,11 @@
 			}
 		],
 		"scopeEnums": [
-			"trust",
 			"read",
-			"write"
+			"write",
+			"trust"
 		],
-		"accessTokenValiditySeconds": 1800,
-		"refreshTokenValiditySeconds": 3600,
+		"accessTokenValiditySeconds": 120,
 		"resourceIds": [
 			"oauth2-id"
 		],
@@ -151,8 +163,7 @@
 		"scopeEnums": [
 			"write"
 		],
-		"accessTokenValiditySeconds": 1800,
-		"refreshTokenValiditySeconds": 1800,
+		"accessTokenValiditySeconds": 120,
 		"resourceIds": [
 			"oauth2-id"
 		],
@@ -174,12 +185,11 @@
 			}
 		],
 		"scopeEnums": [
-			"trust",
 			"read",
-			"write"
+			"write",
+			"trust"
 		],
-		"accessTokenValiditySeconds": 1800,
-		"refreshTokenValiditySeconds": 3600,
+		"accessTokenValiditySeconds": 120,
 		"resourceIds": [
 			"oauth2-id"
 		],
@@ -203,15 +213,106 @@
 		"scopeEnums": [
 			"write"
 		],
-		"accessTokenValiditySeconds": 1800,
+		"accessTokenValiditySeconds": 120,
 		"registeredRedirectUri": [
 			"http://localhost:4200"
 		],
-		"refreshTokenValiditySeconds": 1800,
 		"resourceIds": [
 			"oauth2-id"
 		],
 		"resourceIndicator": false,
 		"hasSecret": false
+	},
+	{
+		"id": 8,
+		"clientId": "edge-proxy",
+		"grantTypeEnums": [
+			"client_credentials"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_BACKEND"
+			},
+			{
+				"grantedAuthority": "ROLE_TRUST"
+			},
+			{
+				"grantedAuthority": "ROLE_FIRST_PARTY"
+			},
+			{
+				"grantedAuthority": "ROLE_ROOT"
+			}
+		],
+		"scopeEnums": [
+			"trust"
+		],
+		"accessTokenValiditySeconds": 120,
+		"resourceIds": [
+			"oauth2-id"
+		],
+		"resourceIndicator": true,
+		"hasSecret": true
+	},
+	{
+		"id": 9,
+		"clientId": "block-id",
+		"grantTypeEnums": [
+			"client_credentials"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_BACKEND"
+			},
+			{
+				"grantedAuthority": "ROLE_TRUST"
+			},
+			{
+				"grantedAuthority": "ROLE_FIRST_PARTY"
+			},
+			{
+				"grantedAuthority": "ROLE_ROOT"
+			}
+		],
+		"scopeEnums": [
+			"read",
+			"write",
+			"trust"
+		],
+		"accessTokenValiditySeconds": 120,
+		"resourceIds": [
+			"edge-proxy",
+			"oauth2-id"
+		],
+		"resourceIndicator": true,
+		"hasSecret": true
+	},
+	{
+		"id": 10,
+		"clientId": "light-store",
+		"grantTypeEnums": [
+			"client_credentials"
+		],
+		"grantedAuthorities": [
+			{
+				"grantedAuthority": "ROLE_BACKEND"
+			},
+			{
+				"grantedAuthority": "ROLE_TRUST"
+			},
+			{
+				"grantedAuthority": "ROLE_FIRST_PARTY"
+			},
+			{
+				"grantedAuthority": "ROLE_ROOT"
+			}
+		],
+		"scopeEnums": [
+			"read",
+			"write",
+			"trust"
+		],
+		"accessTokenValiditySeconds": 120,
+		"resourceIndicator": true,
+		"hasSecret": true
 	}
 ]

@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 export interface INavElement {
   link: string;
   display: string;
-  state: string
+  params: any
 }
 
 @Component({
@@ -18,41 +18,58 @@ export class NavBarComponent implements OnInit {
     {
       link: 'clients',
       display: 'Client dashboard',
-      state: 'none'
+      params: {
+        state: 'none',
+        pageId: 0
+      },
     }
     ,
     {
       link: 'resource-owners',
       display: 'Resource owner dashboard',
-      state: 'none'
+      params: {
+        state: 'none',
+        pageId: 0
+      },
     }
     ,
     {
       link: 'security-profiles',
       display: 'Security Profile dashboard',
-      state: 'none'
+      params: {
+        state: 'none',
+        pageId: 0
+      },
     }
     ,
     {
       link: 'client',
       display: 'Create Client',
-      state: 'create'
+      params: {
+        state: 'create',
+      },
     }
     ,
     {
       link: 'resource-owner',
       display: 'Update password',
-      state: 'update:pwd'
+      params: {
+        state: 'update:pwd',
+      },
     },
     {
       link: 'security-profile',
       display: 'Add Security Profile',
-      state: 'create'
+      params: {
+        state: 'create',
+      },
     },
     {
       link: '/login',
       display: 'Logout',
-      state: 'none'
+      params: {
+        state: 'none',
+      },
     }
   ];
   private _mobileQueryListener: () => void;
@@ -68,7 +85,7 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit() {
   }
-  toGitHub(){
-    window.open(environment.home,'_blank')
+  toGitHub() {
+    window.open(environment.home, '_blank')
   }
 }

@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 })
 export class ResourceOwnerService {
   cachedResourceOwners: IResourceOwner[];
+  currentPageIndex:number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router) { }
   revokeResourceOwnerToken(resourceOwnerName: string): void {
     this.httpProxy.netImpl.revokeResourceOwnerToken(resourceOwnerName).subscribe(result => {

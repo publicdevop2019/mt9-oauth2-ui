@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  mode: 'online' as 'online' | 'offline',
+  mode: 'offline' as 'online' | 'offline',
   home: 'https://github.com/publicdevop2019/oauth2service',
   apiVersion: '/api',
   // serverUri: 'https://www.ngform.com',

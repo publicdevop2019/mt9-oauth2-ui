@@ -11,6 +11,7 @@ import { MsgBoxComponent } from '../msg-box/msg-box.component';
   providedIn: 'root'
 })
 export class SecurityProfileService {
+  currentPageIndex:number;
   cachedSecurityProfiles: ISecurityProfile[];
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router) { }
 
