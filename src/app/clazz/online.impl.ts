@@ -16,7 +16,14 @@ import { switchMap } from 'rxjs/operators';
 export class OnlineImpl implements INetworkService {
     authorizeParty: IAuthorizeParty;
     authenticatedEmail: string;
-    currentUserAuthInfo: ITokenResponse;
+    set currentUserAuthInfo(token: ITokenResponse) {
+        sessionStorage.setItem('jwt', JSON.stringify(token))
+    };
+    get currentUserAuthInfo(): ITokenResponse | undefined {
+        if (typeof sessionStorage.getItem('jwt') === 'string' && sessionStorage.getItem('jwt') === 'undefined')
+            return undefined;
+        return <ITokenResponse>JSON.parse(sessionStorage.getItem('jwt'))
+    }
     private _httpClient: HttpClient;
     // OAuth2 pwd flow
     constructor(httpClient: HttpClient) {
