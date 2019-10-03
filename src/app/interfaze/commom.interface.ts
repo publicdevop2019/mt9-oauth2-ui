@@ -9,9 +9,9 @@ export interface INetworkService {
     authenticatedEmail: string
     currentUserAuthInfo: ITokenResponse;
     authorizeParty: IAuthorizeParty;
-    login: (fg: FormGroup) => Observable<boolean>;
-    register: (fg: FormGroup) => Observable<boolean>;
-    refreshToken: () => Observable<boolean>;
+    login: (fg: FormGroup) => Observable<ITokenResponse>;
+    register: (fg: FormGroup) => Observable<any>;
+    refreshToken: () => Observable<ITokenResponse>;
     getClients: () => Observable<IClient[]>;
     updateClient: (client: IClient) => Observable<boolean>;
     deleteClient: (client: IClient) => Observable<boolean>;

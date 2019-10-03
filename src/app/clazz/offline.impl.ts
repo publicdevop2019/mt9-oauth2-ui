@@ -55,7 +55,6 @@ export class SandboxImpl implements INetworkService {
         return of(true).pipe(delay(this.defaultDelay))
     };
     updateClient(client: IClient): Observable<boolean> {
-        console.dir(client)
         return of(true).pipe(delay(this.defaultDelay))
     };
     deleteClient(client: IClient): Observable<boolean> {
@@ -67,23 +66,19 @@ export class SandboxImpl implements INetworkService {
     getResourceOwners(): Observable<IResourceOwner[]> {
         return this.http.get<IResourceOwner[]>('./assets/mock-resource-owners.json').pipe(delay(this.defaultDelay))
     }
-    refreshToken(): Observable<boolean> {
-        return of(true).pipe(delay(this.defaultDelay))
+    refreshToken(): Observable<ITokenResponse> {
+        const mockedToken = {
+            access_token: 'mockTokenString',
+            refresh_token: 'mockTokenString2'
+        };
+        return of(mockedToken).pipe(delay(this.defaultDelay))
     }
-    login(fg: FormGroup): Observable<boolean> {
-        if (fg.get('email').value
-            &&
-            fg.get('pwd').value
-        ) {
-            this.currentUserAuthInfo = {
-                access_token: 'mockTokenString',
-                refresh_token: 'mockTokenString2'
-            };
-            this.authenticatedEmail = 'mockUser';
-            return of(true).pipe(delay(this.defaultDelay));
-        } else {
-            return of(false).pipe(delay(this.defaultDelay));
-        }
+    login(fg: FormGroup): Observable<ITokenResponse> {
+        const mockedToken = {
+            access_token: 'mockTokenString',
+            refresh_token: 'mockTokenString2'
+        };
+        return of(mockedToken).pipe(delay(this.defaultDelay));
     }
     register(fg: FormGroup): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay));

@@ -11,6 +11,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
+import { switchMap } from 'rxjs/operators';
 
 export class OnlineImpl implements INetworkService {
     authorizeParty: IAuthorizeParty;
@@ -129,72 +130,23 @@ export class OnlineImpl implements INetworkService {
     getClients(): Observable<IClient[]> {
         return this._httpClient.get<IClient[]>(environment.serverUri + environment.apiVersion + '/clients');
     };
-    refreshToken(): Observable<boolean> {
+    refreshToken(): Observable<ITokenResponse> {
         const formData = new FormData();
         formData.append('grant_type', 'refresh_token');
         formData.append('refresh_token', this.currentUserAuthInfo.refresh_token);
-        return new Observable<boolean>(e => {
-            this._httpClient.post(environment.tokenUrl, formData, { headers: this._getAuthHeader(true) }).subscribe(next => {
-                this.currentUserAuthInfo = next as ITokenResponse;
-                e.next(true);
-            },
-                error => {
-                    e.next(false);
-                }
-            );
-        }
-        );
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(true) })
     }
-    login(loginFG: FormGroup): Observable<boolean> {
+    login(loginFG: FormGroup): Observable<ITokenResponse> {
         const formData = new FormData();
         formData.append('grant_type', 'password');
         formData.append('username', loginFG.get('email').value);
         formData.append('password', loginFG.get('pwd').value);
-        return new Observable<boolean>(e => {
-            this._httpClient.post(environment.tokenUrl, formData, { headers: this._getAuthHeader(true) }).subscribe(next => {
-                this.currentUserAuthInfo = next as ITokenResponse;
-                this.authenticatedEmail = loginFG.get('email').value;
-                e.next(true);
-            },
-                error => {
-                    e.next(false);
-                },
-                () => {
-                }
-            );
-        }
-        );
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(true) });
     }
-    register(registerFG: FormGroup): Observable<boolean> {
-        return new Observable<boolean>(e => {
-            const formData = new FormData();
-            formData.append('grant_type', 'client_credentials');
-            this._httpClient.post<ITokenResponse>(environment.tokenUrl,
-                formData, { headers: this._getAuthHeader(false) }).subscribe(tokenResp => {
-                    this._createUser(this._getToken(tokenResp), registerFG).subscribe(
-                        status => {
-                            if (status) {
-                                e.next(true);
-                            } else {
-                                e.next(false);
-                            }
-                        },
-                        error => {
-
-                        },
-                        () => {
-
-                        }
-                    );
-
-                },
-                    error => {
-
-                    },
-                    () => {
-
-                    });
-        });
+    register(registerFG: FormGroup): Observable<any> {
+        const formData = new FormData();
+        formData.append('grant_type', 'client_credentials');
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._createUser(this._getToken(token), registerFG)))
     }
     private _getAuthHeader(islogin: boolean, token?: string): HttpHeaders {
         return islogin ? new HttpHeaders().append('Authorization',
@@ -205,22 +157,8 @@ export class OnlineImpl implements INetworkService {
     private _getToken(res: ITokenResponse): string {
         return res.access_token;
     }
-    private _createUser(token: string, registerFG: FormGroup): Observable<boolean> {
-        return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + environment.apiVersion + '/resourceOwner',
-                this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) }).subscribe(next => {
-                    e.next(true);
-                },
-                    error => {
-                        // NOTE:take care account already exist
-                        // console.dir(error)
-                        e.next(false);
-                    },
-
-                    () => {
-
-                    });
-        });
+    private _createUser(token: string, registerFG: FormGroup): Observable<any> {
+        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwner', this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _getRegPayload(fg: FormGroup): IResourceOwner {
         return {

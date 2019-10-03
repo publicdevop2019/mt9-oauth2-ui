@@ -4,13 +4,13 @@
 
 export const environment = {
   production: false,
-  mode: 'offline' as 'online' | 'offline',
+  mode: 'online' as 'online' | 'offline',
   home: 'https://github.com/publicdevop2019/oauth2service',
   apiVersion: '/api',
-  // serverUri: 'https://www.ngform.com',
-  // tokenUrl: 'https://www.ngform.com/oauth/token',
-  serverUri: 'http://localhost:8111',
-  tokenUrl: 'http://localhost:8111/oauth/token',
+  serverUri: 'https://www.ngform.com',
+  tokenUrl: 'https://www.ngform.com/oauth/token',
+  // serverUri: 'http://localhost:8111',
+  // tokenUrl: 'http://localhost:8111/oauth/token',
   // serverUri: 'http://ec2-18-188-105-82.us-east-2.compute.amazonaws.com',
   // tokenUrl: 'http://ec2-18-188-105-82.us-east-2.compute.amazonaws.com/oauth/token',
   loginClientId: 'login-id',

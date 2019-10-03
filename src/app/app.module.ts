@@ -21,7 +21,7 @@ import { SummarySecurityProfileComponent } from './page/summary-security-profile
 import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
 import { AuthService } from './service/auth.service';
 import { ClientService } from './service/client.service';
-import { ErrorInterceptor } from './service/error.interceptor';
+import { ErrorInterceptor } from './service/http.interceptor';
 import { HttpProxyService } from './service/http-proxy.service';
 import { LoadingInterceptor } from './service/loading.interceptor';
 import { ResourceOwnerService } from './service/resource-owner.service';

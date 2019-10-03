@@ -55,20 +55,14 @@ export class LoginComponent implements OnInit {
         '';
   }
   login() {
-    this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(result => {
-      if (!result) {
-        this.openDialog('operation failed');
-        throw new Error('user not authenticated!')
-      }
+    this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(next => {
+      this.httpProxy.netImpl.authenticatedEmail = this.loginOrRegForm.get('email').value;
+      this.httpProxy.netImpl.currentUserAuthInfo = next;
       this.route.navigate([this.nextUrl]);
     })
   }
   register() {
-    this.httpProxy.netImpl.register(this.loginOrRegForm).subscribe(result => {
-      if (!result) {
-        this.openDialog('operation failed');
-        throw new Error('register failed!')
-      }
+    this.httpProxy.netImpl.register(this.loginOrRegForm).subscribe(next => {
       this.loginOrRegForm.get('state').setValue(false);
       this.openDialog('register success, please login');
     })
@@ -79,7 +73,7 @@ export class LoginComponent implements OnInit {
       data: msg
     });
   }
-  toGitHub(){
-    window.open(environment.home,'_blank')
+  toGitHub() {
+    window.open(environment.home, '_blank')
   }
 }

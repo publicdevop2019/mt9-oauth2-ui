@@ -25,19 +25,15 @@ export class ErrorInterceptor implements HttpInterceptor {
             && !this._httpProxy.expireRefresh) {
             this._httpProxy.expireRefresh = true;
             return this._httpProxy.netImpl.refreshToken().pipe(switchMap(result => {
+              this._httpProxy.netImpl.currentUserAuthInfo = result;
               this._httpProxy.expireRefresh = false;
-              if (result) {
-                req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.netImpl.currentUserAuthInfo.access_token}` } });
-                return next.handle(req)
-              } else {
-                this.openDialog('SESSION_EXPIRED');
-                this.router.navigate(['/login'])
-                return throwError(error);
-              }
+              req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.netImpl.currentUserAuthInfo.access_token}` } });
+              return next.handle(req)
             }
             ))
           } else {
-            /** throw error to trigger error call back in refresh token */
+            this.openDialog('SESSION_EXPIRED');
+            this.router.navigate(['/login'])
             return throwError(error);
           }
         } else if (this._errorStatus.indexOf(httpError.status) > -1) {
