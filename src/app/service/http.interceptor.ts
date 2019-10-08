@@ -34,6 +34,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           } else {
             this.openDialog('SESSION_EXPIRED');
             this.router.navigate(['/login'])
+            document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
             return throwError(error);
           }
         } else if (this._errorStatus.indexOf(httpError.status) > -1) {

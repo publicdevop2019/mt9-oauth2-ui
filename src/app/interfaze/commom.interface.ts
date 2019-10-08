@@ -8,7 +8,6 @@ import { ISecurityProfile } from '../page/summary-security-profile/summary-secur
 export interface INetworkService {
     authenticatedEmail: string
     currentUserAuthInfo: ITokenResponse;
-    authorizeParty: IAuthorizeParty;
     login: (fg: FormGroup) => Observable<ITokenResponse>;
     register: (fg: FormGroup) => Observable<any>;
     refreshToken: () => Observable<ITokenResponse>;

@@ -2,13 +2,13 @@
     <mat-card class="example-card">
         <mat-card-header>
             <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>{{httpProxy.netImpl.authorizeParty.client_id}}</mat-card-title>
-            <mat-card-subtitle>Response Type : {{httpProxy.netImpl.authorizeParty.response_type}}</mat-card-subtitle>
+            <mat-card-title>{{authorizeParty.client_id}}</mat-card-title>
+            <mat-card-subtitle>Response Type : {{authorizeParty.response_type}}</mat-card-subtitle>
         </mat-card-header>
         <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
         <mat-card-content>
             <p>
-                Do you authorize {{httpProxy.netImpl.authorizeParty.client_id}} to access your public profile ?
+                Do you authorize {{authorizeParty.client_id}} to access your public profile ?
             </p>
         </mat-card-content>
         <mat-card-actions class="example-card-action">

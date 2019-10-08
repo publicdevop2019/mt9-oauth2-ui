@@ -31,7 +31,6 @@ export class SandboxImpl implements INetworkService {
     revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     }
-    authorizeParty: IAuthorizeParty;
     authenticatedEmail: string;;
     private defaultDelay: number = 0;
     http: HttpClient;

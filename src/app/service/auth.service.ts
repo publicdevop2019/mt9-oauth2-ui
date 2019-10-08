@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivateChild, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, CanActivateChild, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Params } from '@angular/router';
 import { HttpProxyService } from './http-proxy.service';
 
 @Injectable({
@@ -8,18 +8,23 @@ import { HttpProxyService } from './http-proxy.service';
 export class AuthService implements CanActivateChild, CanActivate {
   constructor(private router: Router, private httpProxy: HttpProxyService) { }
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return this.defaultCanActivate()
+    return this.defaultCanActivate(route)
   }
-  canActivateChild(): boolean {
-    return this.defaultCanActivate()
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    return this.defaultCanActivate(route)
   }
-  private defaultCanActivate(): boolean {
+  private defaultCanActivate(route: ActivatedRouteSnapshot): boolean {
+
     if (this.httpProxy.netImpl.currentUserAuthInfo === undefined || this.httpProxy.netImpl.currentUserAuthInfo === null) {
-      sessionStorage.getItem('jwt')
-      console.dir(window.sessionStorage.getItem('jwt'));
-      console.dir(window.localStorage.getItem('jwt'));
       console.error('no authentication found! redirect to login page')
-      this.router.navigateByUrl('/login');
+      if (route.routeConfig.path === 'authorize' && Object.keys(route.queryParams).length != 0) {
+        this.router.navigate(['/login'], { queryParams: route.queryParams });
+      } else {
+        /**
+         * ignore all qury param if not authorization 
+         */
+        this.router.navigateByUrl('/login');
+      }
       return false;
     } else {
       return true;

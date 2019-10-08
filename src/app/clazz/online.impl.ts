@@ -12,17 +12,20 @@ import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { switchMap } from 'rxjs/operators';
+import { getCookie } from './utility';
 
 export class OnlineImpl implements INetworkService {
-    authorizeParty: IAuthorizeParty;
     authenticatedEmail: string;
     set currentUserAuthInfo(token: ITokenResponse) {
-        sessionStorage.setItem('jwt', JSON.stringify(token))
+        document.cookie = 'jwt=' + JSON.stringify(token);
     };
     get currentUserAuthInfo(): ITokenResponse | undefined {
-        if (typeof sessionStorage.getItem('jwt') === 'string' && sessionStorage.getItem('jwt') === 'undefined')
+        const jwtTokenStr: string = getCookie('jwt');
+        if (jwtTokenStr !== 'undefined' && jwtTokenStr !== undefined) {
+            return <ITokenResponse>JSON.parse(jwtTokenStr)
+        } else {
             return undefined;
-        return <ITokenResponse>JSON.parse(sessionStorage.getItem('jwt'))
+        }
     }
     private _httpClient: HttpClient;
     // OAuth2 pwd flow

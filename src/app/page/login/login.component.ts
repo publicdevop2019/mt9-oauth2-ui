@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup, Form } from '@angular/forms';
 import { HttpProxyService } from 'src/app/service/http-proxy.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { MatDialog } from '@angular/material';
 import { MsgBoxComponent } from 'src/app/msg-box/msg-box.component';
 import { environment } from 'src/environments/environment';
@@ -29,20 +29,13 @@ export class LoginComponent implements OnInit {
   });
   hide = true;
   hide2 = true;
-  constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute, ) {
+  constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute) {
     this.httpProxy.netImpl.authenticatedEmail = undefined;
     this.httpProxy.netImpl.currentUserAuthInfo = undefined;
-    this.httpProxy.netImpl.authorizeParty = undefined;
     this.router.queryParamMap.subscribe(queryMaps => {
-      if (queryMaps.get('state') === 'authorize:external') {
+      if (queryMaps.get('redirect_uri') !== null) {
         /** get  authorize party info */
         this.nextUrl = '/authorize';
-        this.httpProxy.netImpl.authorizeParty = {
-          response_type: queryMaps.get('response_type'),
-          client_id: queryMaps.get('client_id'),
-          state: queryMaps.getAll('state')[1],
-          redirect_uri: queryMaps.get('redirect_uri'),
-        }
       }
     })
   }
@@ -58,7 +51,7 @@ export class LoginComponent implements OnInit {
     this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(next => {
       this.httpProxy.netImpl.authenticatedEmail = this.loginOrRegForm.get('email').value;
       this.httpProxy.netImpl.currentUserAuthInfo = next;
-      this.route.navigate([this.nextUrl]);
+      this.route.navigate([this.nextUrl], { queryParams: this.router.snapshot.queryParams });
     })
   }
   register() {
