@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
-import { Observable, of } from 'rxjs';
-import { HttpProxyService } from './http-proxy.service';
-import { MsgBoxComponent } from '../msg-box/msg-box.component';
 import { MatDialog } from '@angular/material';
-import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { MsgBoxComponent } from '../msg-box/msg-box.component';
+import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { HttpProxyService } from './http-proxy.service';
+import { CustomHttpInterceptor } from './http.interceptor';
 /**
  * responsible for convert FormGroup to business model
  */
@@ -14,8 +14,8 @@ import { Router } from '@angular/router';
 })
 export class ResourceOwnerService {
   cachedResourceOwners: IResourceOwner[];
-  currentPageIndex:number;
-  constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router) { }
+  currentPageIndex: number;
+  constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeResourceOwnerToken(resourceOwnerName: string): void {
     this.httpProxy.netImpl.revokeResourceOwnerToken(resourceOwnerName).subscribe(result => {
       this.notifyTokenRevocation(result);
@@ -30,15 +30,15 @@ export class ResourceOwnerService {
   updateResourceOwner(resourceOwner: IResourceOwner): void {
     this.httpProxy.netImpl.updateResourceOwner(resourceOwner).subscribe(result => {
       if (!result)
-        this.openDialog('operation failed')
-      this.openDialog('operation success')
+        this._httpInterceptor.openSnackbar('operation failed')
+      this._httpInterceptor.openSnackbar('operation success')
     });
   }
   updateResourceOwnerPwd(resourceOwner: IResourceOwner): void {
     this.httpProxy.netImpl.updateResourceOwnerPwd(resourceOwner).subscribe(result => {
       if (!result)
-        this.openDialog('operation failed')
-      this.openDialog('operation success, please login again')
+        this._httpInterceptor.openSnackbar('operation failed')
+      this._httpInterceptor.openSnackbar('operation success, please login again')
       /** clear authentication info */
       this.httpProxy.netImpl.authenticatedEmail = undefined;
       this.httpProxy.netImpl.currentUserAuthInfo = undefined;
@@ -48,8 +48,8 @@ export class ResourceOwnerService {
   deleteResourceOwner(resourceOwner: IResourceOwner): void {
     this.httpProxy.netImpl.deleteResourceOwner(resourceOwner).subscribe(result => {
       if (!result)
-        this.openDialog('operation failed')
-      this.openDialog('operation success')
+        this._httpInterceptor.openSnackbar('operation failed')
+      this._httpInterceptor.openSnackbar('operation success')
       this.router.navigateByUrl('/dashboard/resource-owners');
     });
   }
@@ -60,6 +60,6 @@ export class ResourceOwnerService {
     });
   }
   notifyTokenRevocation(result: boolean) {
-    result ? this.openDialog('operation success, old token has been revoked') : this.openDialog('operation failed');
+    result ? this._httpInterceptor.openSnackbar('operation success, old token has been revoked') : this._httpInterceptor.openSnackbar('operation failed');
   }
 }

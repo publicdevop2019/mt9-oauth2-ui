@@ -2,7 +2,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule, MatSnackBarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -21,7 +21,7 @@ import { SummarySecurityProfileComponent } from './page/summary-security-profile
 import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
 import { AuthService } from './service/auth.service';
 import { ClientService } from './service/client.service';
-import { ErrorInterceptor } from './service/http.interceptor';
+import { CustomHttpInterceptor } from './service/http.interceptor';
 import { HttpProxyService } from './service/http-proxy.service';
 import { LoadingInterceptor } from './service/loading.interceptor';
 import { ResourceOwnerService } from './service/resource-owner.service';
@@ -67,13 +67,14 @@ import { SecurityProfileService } from './service/security-profile.service';
     MatSlideToggleModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatSnackBarModule,
     LayoutModule,
   ],
   entryComponents: [MsgBoxComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
+      useClass: CustomHttpInterceptor,
       multi: true
     },
     {
@@ -81,7 +82,7 @@ import { SecurityProfileService } from './service/security-profile.service';
       useClass: LoadingInterceptor,
       multi: true
     },
-    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService],
+    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService,CustomHttpInterceptor],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

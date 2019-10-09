@@ -24,16 +24,16 @@ export class ClientComponent implements OnInit {
     public clientService: ClientService,
     public dialog: MatDialog
   ) {
-    this.clientService.getResourceClient().subscribe(resources => {
-      this.resources = resources;
-      /** add new ctrl, ctrl name is default to client-id */
-      this.resources.forEach(e => this.clientForm.addControl(e.clientId, new FormControl('', [Validators.required])))
-    });
     this.client$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.clientService.getClient(+params.get('id')))
     );
-    this.route.queryParamMap.subscribe(queryMaps => {
+    this.clientService.getResourceClient().pipe(switchMap(resources => {
+      this.resources = resources;
+      /** add new ctrl, ctrl name is default to client-id */
+      this.resources.forEach(e => this.clientForm.addControl(e.clientId, new FormControl('', [Validators.required])))
+      return this.route.queryParamMap
+    })).subscribe(queryMaps => {
       this.state = queryMaps.get('state') as 'update' | 'create';
       if (queryMaps.get('state') === 'update') {
         this.client$.subscribe(client => {
@@ -67,9 +67,10 @@ export class ClientComponent implements OnInit {
             registeredRedirectUri: client.registeredRedirectUri ? client.registeredRedirectUri[0] : ''
           });
           /** prefill dynamic resource-id inputs */
-          this.resources.filter(e => client.resourceIds.indexOf(e.clientId) > -1).forEach(e => {
-            this.clientForm.get(e.clientId).setValue(true)
-          });
+          if (this.resources)
+            this.resources.filter(e => client.resourceIds.indexOf(e.clientId) > -1).forEach(e => {
+              this.clientForm.get(e.clientId).setValue(true)
+            });
         })
       } else if (queryMaps.get('state') === 'none') {
 

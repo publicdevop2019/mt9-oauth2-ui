@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { IClient } from '../page/summary-client/summary-client.component';
-import { Observable, of } from 'rxjs';
-import { HttpProxyService } from './http-proxy.service';
-import { MsgBoxComponent } from '../msg-box/msg-box.component';
 import { MatDialog } from '@angular/material';
-import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { IClient } from '../page/summary-client/summary-client.component';
+import { HttpProxyService } from './http-proxy.service';
+import { CustomHttpInterceptor } from './http.interceptor';
+import { switchMap } from 'rxjs/operators';
 /**
  * responsible for convert FormGroup to business model
  */
@@ -15,8 +15,8 @@ import { Router } from '@angular/router';
 export class ClientService {
   /** @todo set expire time for cached data */
   cachedClients: IClient[];
-  currentPageIndex:number;
-  constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog) { }
+  currentPageIndex: number;
+  constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeClientToken(clientId: string): void {
     this.httpProxy.netImpl.revokeClientToken(clientId).subscribe(result => {
       this.notifyTokenRevocation(result);
@@ -29,7 +29,9 @@ export class ClientService {
     return this.cachedClients ? of(this.cachedClients.find(e => e.id === id)) : of(undefined)
   }
   getResourceClient(): Observable<IClient[]> {
-    return this.cachedClients ? of(this.cachedClients.filter(e => e.resourceIndicator)) : of(undefined)
+    return this.getClients().pipe(switchMap(clients => {
+      return of(clients.filter(el => el.resourceIndicator))
+    }))
   }
   updateClient(client: IClient): void {
     this.httpProxy.netImpl.updateClient(client).subscribe(result => {
@@ -47,16 +49,10 @@ export class ClientService {
       this.notify(result)
     })
   }
-  openDialog(msg: string): void {
-    this.dialog.open(MsgBoxComponent, {
-      width: '250px',
-      data: msg
-    });
-  }
   notify(result: boolean) {
-    result ? this.openDialog('operation success') : this.openDialog('operation failed');
+    result ? this._httpInterceptor.openSnackbar('operation success') : this._httpInterceptor.openSnackbar('operation failed');
   }
   notifyTokenRevocation(result: boolean) {
-    result ? this.openDialog('operation success, old token has been revoked') : this.openDialog('operation failed');
+    result ? this._httpInterceptor.openSnackbar('operation success, old token has been revoked') : this._httpInterceptor.openSnackbar('operation failed');
   }
 }

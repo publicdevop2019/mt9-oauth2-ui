@@ -48,6 +48,8 @@ export class LoginComponent implements OnInit {
         '';
   }
   login() {
+    console.dir('pre login')
+    console.dir(this.httpProxy.netImpl.currentUserAuthInfo)
     this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(next => {
       this.httpProxy.netImpl.authenticatedEmail = this.loginOrRegForm.get('email').value;
       this.httpProxy.netImpl.currentUserAuthInfo = next;

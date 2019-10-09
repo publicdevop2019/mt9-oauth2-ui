@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
-import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
-import { Observable } from 'rxjs/internal/Observable';
 import { of } from 'rxjs';
-import { MsgBoxComponent } from '../msg-box/msg-box.component';
+import { Observable } from 'rxjs/internal/Observable';
+import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
+import { HttpProxyService } from './http-proxy.service';
+import { CustomHttpInterceptor } from './http.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,7 @@ import { MsgBoxComponent } from '../msg-box/msg-box.component';
 export class SecurityProfileService {
   currentPageIndex:number;
   cachedSecurityProfiles: ISecurityProfile[];
-  constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router) { }
+  constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
 
   readAll(): Observable<ISecurityProfile[]> {
     return this.httpProxy.netImpl.getSecurityProfiles();
@@ -38,12 +37,6 @@ export class SecurityProfileService {
     })
   }
   notify(result: boolean) {
-    result ? this.openDialog('operation success') : this.openDialog('operation failed');
-  }
-  openDialog(msg: string): void {
-    this.dialog.open(MsgBoxComponent, {
-      width: '250px',
-      data: msg
-    });
+    result ? this._httpInterceptor.openSnackbar('operation success') : this._httpInterceptor.openSnackbar('operation failed');
   }
 }

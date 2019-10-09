@@ -17,7 +17,7 @@ import { getCookie } from './utility';
 export class OnlineImpl implements INetworkService {
     authenticatedEmail: string;
     set currentUserAuthInfo(token: ITokenResponse) {
-        document.cookie = 'jwt=' + JSON.stringify(token);
+        document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token)+';path=/';
     };
     get currentUserAuthInfo(): ITokenResponse | undefined {
         const jwtTokenStr: string = getCookie('jwt');
@@ -27,10 +27,8 @@ export class OnlineImpl implements INetworkService {
             return undefined;
         }
     }
-    private _httpClient: HttpClient;
     // OAuth2 pwd flow
-    constructor(httpClient: HttpClient) {
-        this._httpClient = httpClient;
+    constructor(private _httpClient: HttpClient) {
     }
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
