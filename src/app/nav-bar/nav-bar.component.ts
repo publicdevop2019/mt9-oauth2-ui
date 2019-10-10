@@ -98,9 +98,4 @@ export class NavBarComponent implements OnInit {
   toGitHub() {
     window.open(environment.home, '_blank')
   }
-  getPageHeader() {
-    const url: string = this.router.routerState.snapshot.url;
-    const nav: INavElement = this.fillerNav.find(el => el.link === url.substring(url.lastIndexOf('/') + 1, url.indexOf('?') > -1 ? url.indexOf('?') : undefined));
-    return nav ? nav.display : undefined;
-  }
 }

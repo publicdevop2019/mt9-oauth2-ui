@@ -17,6 +17,7 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit {
+  header:string;
   displayedColumns: string[] = ['id', 'resourceID', 'path', 'method', 'star'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

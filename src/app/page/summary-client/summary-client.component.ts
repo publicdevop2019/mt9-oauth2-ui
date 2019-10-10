@@ -43,7 +43,6 @@ export class SummaryClientComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(public clientService: ClientService) {
     this.clientService.getClients().subscribe(clients => {
-      this.clientService.cachedClients = clients;
       this.dataSource = new MatTableDataSource(clients)
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;

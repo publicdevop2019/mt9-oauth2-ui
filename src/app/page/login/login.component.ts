@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
   constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute) {
     this.httpProxy.netImpl.authenticatedEmail = undefined;
     this.httpProxy.netImpl.currentUserAuthInfo = undefined;
+    this.httpProxy.expireRefresh = false;
     this.router.queryParamMap.subscribe(queryMaps => {
       if (queryMaps.get('redirect_uri') !== null) {
         /** get  authorize party info */
@@ -48,8 +49,6 @@ export class LoginComponent implements OnInit {
         '';
   }
   login() {
-    console.dir('pre login')
-    console.dir(this.httpProxy.netImpl.currentUserAuthInfo)
     this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(next => {
       this.httpProxy.netImpl.authenticatedEmail = this.loginOrRegForm.get('email').value;
       this.httpProxy.netImpl.currentUserAuthInfo = next;

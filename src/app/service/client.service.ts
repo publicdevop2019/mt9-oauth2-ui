@@ -14,7 +14,6 @@ import { switchMap } from 'rxjs/operators';
 })
 export class ClientService {
   /** @todo set expire time for cached data */
-  cachedClients: IClient[];
   currentPageIndex: number;
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeClientToken(clientId: string): void {
@@ -26,7 +25,9 @@ export class ClientService {
     return this.httpProxy.netImpl.getClients()
   }
   getClient(id: number): Observable<IClient> {
-    return this.cachedClients ? of(this.cachedClients.find(e => e.id === id)) : of(undefined)
+    return this.getClients().pipe(switchMap(clients => {
+      return of(clients.find(el => el.id === id))
+    }))
   }
   getResourceClient(): Observable<IClient[]> {
     return this.getClients().pipe(switchMap(clients => {

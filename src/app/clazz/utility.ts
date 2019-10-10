@@ -1,3 +1,4 @@
+
 export function getCookie(name: string): string {
     let value = "; " + document.cookie;
     let parts = value.split("; " + name + "=");

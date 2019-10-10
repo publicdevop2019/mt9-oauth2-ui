@@ -1,9 +1,8 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
     <mat-toolbar color="primary" class="example-toolbar" style="justify-content: space-between;">
-        <button mat-icon-button (click)="snav.toggle();menuOpen=!menuOpen">
-            <mat-icon>{{menuOpen?'menu_open':'menu'}}</mat-icon>
+        <button mat-icon-button (click)="snav.toggle();">
+            <mat-icon>{{snav.opened?'menu_open':'menu'}}</mat-icon>
         </button>
-        <div>{{getPageHeader()}}</div>
         <button mat-raised-button color="accent" (click)="toGitHub()">
             <span>GitHub</span>
         </button>
