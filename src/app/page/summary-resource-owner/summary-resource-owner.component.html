@@ -33,7 +33,7 @@
         <ng-container matColumnDef="token" stickyEnd>
             <th mat-header-cell *matHeaderCellDef>Revoke Token</th>
             <td mat-cell *matCellDef="let row">
-                <button mat-button (click)="revokeResourceOwnerToken(row.email)">
+                <button mat-button (click)="revokeResourceOwnerToken(row.id)">
                     <mat-icon>remove_circle</mat-icon>
                 </button>
             </td>
