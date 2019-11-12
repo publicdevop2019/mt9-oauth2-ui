@@ -19,9 +19,15 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       if (error instanceof HttpErrorResponse) {
         let httpError = error as HttpErrorResponse;
         if (httpError.status === 401) {
-          if (this._httpProxy.netImpl.currentUserAuthInfo.access_token
+          if(this._httpProxy.netImpl.currentUserAuthInfo === undefined || this._httpProxy.netImpl.currentUserAuthInfo === null ){
+            /** during log in call */
+            this.openSnackbar('Bad Username or password');
+            return throwError(error);
+          }
+          else if (this._httpProxy.netImpl.currentUserAuthInfo.access_token
             && this._httpProxy.netImpl.currentUserAuthInfo.refresh_token
             && !this._httpProxy.expireRefresh) {
+              /** user already logged in */
             this._httpProxy.expireRefresh = true;
             return this._httpProxy.netImpl.refreshToken().pipe(mergeMap(result => {
               /**

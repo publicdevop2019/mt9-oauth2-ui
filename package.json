@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "deploy": "ng build --prod && cp -a ./dist/oauth2-ui/. ./public/ && rm -r ./public/* && cp -a ./dist/oauth2-ui/. ./public/ && firebase deploy",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
