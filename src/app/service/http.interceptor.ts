@@ -42,7 +42,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
             ))
           } else {
             this.openSnackbar('SESSION_EXPIRED');
-            this.router.navigate(['/login'])
+            this.router.navigate(['/login'], { queryParams: this.router.routerState.snapshot.root.queryParams })
             document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
             return throwError(error);
           }
