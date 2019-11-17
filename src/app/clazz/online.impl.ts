@@ -32,7 +32,7 @@ export class OnlineImpl implements INetworkService {
     }
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.get<IAutoApprove>(environment.serverUri + environment.apiVersion + '/client/autoApprove?clientId=' + clientId).subscribe(next => {
+            this._httpClient.get<IAutoApprove>(environment.serverUri + environment.apiVersion + '/clients/autoApprove?clientId=' + clientId).subscribe(next => {
                 if (next.autoApprove)
                     e.next(true)
                 e.next(false)
@@ -98,7 +98,7 @@ export class OnlineImpl implements INetworkService {
     };
     updateResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwner/' + resourceOwner.id, resourceOwner).subscribe(next => {
+            this._httpClient.put<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwners/' + resourceOwner.id, resourceOwner).subscribe(next => {
                 e.next(true)
             });
         });
@@ -106,28 +106,28 @@ export class OnlineImpl implements INetworkService {
     };
     deleteResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwner/' + resourceOwner.id).subscribe(next => {
+            this._httpClient.delete<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwners/' + resourceOwner.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     createClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + environment.apiVersion + '/client', client).subscribe(next => {
+            this._httpClient.post(environment.serverUri + environment.apiVersion + '/clients', client).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + environment.apiVersion + '/client/' + client.id, client).subscribe(next => {
+            this._httpClient.put(environment.serverUri + environment.apiVersion + '/clients/' + client.id, client).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + environment.apiVersion + '/client/' + client.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + environment.apiVersion + '/clients/' + client.id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -166,7 +166,7 @@ export class OnlineImpl implements INetworkService {
         return res.access_token;
     }
     private _createUser(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwner', this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners', this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _getRegPayload(fg: FormGroup): IResourceOwner {
         return {
