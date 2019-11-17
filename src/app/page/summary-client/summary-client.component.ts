@@ -27,7 +27,8 @@ export interface IClient {
   resourceIds: string[]
   hasSecret: boolean;
   resourceIndicator: boolean;
-  registeredRedirectUri: string[]
+  registeredRedirectUri: string[];
+  autoApprove?:boolean;
 }
 
 @Component({

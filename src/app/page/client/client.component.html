@@ -17,7 +17,7 @@
             <mat-list role="list">
                 <mat-list-item role="listitem">1. Root client can not be deleted</mat-list-item>
                 <mat-list-item role="listitem">2. A resource client requires backend and first party role</mat-list-item>
-                <mat-list-item role="listitem">3. Authentication server must be included in resource ids</mat-list-item>
+                <mat-list-item role="listitem">3. Use comman seperated value for multiple redirect URL</mat-list-item>
             </mat-list>
         </mat-expansion-panel>
     </mat-accordion>
@@ -47,6 +47,7 @@
     <mat-checkbox *ngIf="clientForm.get('grantType').value==='password'" class="example-margin"
         formControlName="grantTypeOptional">Add Refresh Token</mat-checkbox>
     <mat-checkbox class="example-margin" formControlName="resourceIndicator">Set As Resource</mat-checkbox>
+    <mat-checkbox class="example-margin" *ngIf="clientForm.get('grantType').value==='authorization_code'" formControlName="autoApprove">Auto approve authorize request</mat-checkbox>
     <section name="authority">
         <mat-label>Please select authority(s)</mat-label>
         <div>

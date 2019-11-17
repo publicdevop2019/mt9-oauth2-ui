@@ -62,9 +62,9 @@ export class ClientComponent implements OnInit {
             accessTokenValiditySeconds: client.accessTokenValiditySeconds,
             refreshTokenValiditySeconds: client.refreshTokenValiditySeconds,
             resourceIndicator: client.resourceIndicator,
+            autoApprove: client.autoApprove,
             /**@todo support multiple redirect url */
-            /**oauth2-id is not required always added to use oauth2service */
-            registeredRedirectUri: client.registeredRedirectUri ? client.registeredRedirectUri[0] : ''
+            registeredRedirectUri: client.registeredRedirectUri ? client.registeredRedirectUri.join(',') : ''
           });
           /** prefill dynamic resource-id inputs */
           if (this.resources)
@@ -138,6 +138,9 @@ export class ClientComponent implements OnInit {
       Validators.required,
     ]),
     registeredRedirectUri: new FormControl('', [
+      Validators.required,
+    ]),
+    autoApprove: new FormControl('', [
       Validators.required,
     ]),
   });
