@@ -185,7 +185,8 @@ export class ClientComponent implements OnInit {
         ? formGroup.get('refreshTokenValiditySeconds').value as number : null,
       resourceIndicator: formGroup.get('resourceIndicator').value,
       resourceIds: this.resources.filter(e => this.clientForm.get(e.clientId).value).map(e => e.clientId),
-      registeredRedirectUri: formGroup.get('registeredRedirectUri').value ? [formGroup.get('registeredRedirectUri').value] : null
+      registeredRedirectUri: formGroup.get('registeredRedirectUri').value ? [formGroup.get('registeredRedirectUri').value] : null,
+      autoApprove:formGroup.get('grantType').value === grantTypeEnums.authorization_code? formGroup.get('autoApprove').value :null
     }
   }
 }
