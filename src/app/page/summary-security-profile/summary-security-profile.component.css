@@ -3,13 +3,14 @@ table {
   }
   
   .mat-form-field {
-    font-size: 14px;
     width: 100%;
   }
   
-  td, th {
-    width: 25%;
-  }
   a{
       color: none;
   }
+  .mat-cell, .mat-footer-cell {
+    /* fix checkbox not align issue */
+
+    font-size: 16px;
+}

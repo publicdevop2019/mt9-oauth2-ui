@@ -5,20 +5,20 @@ import { Observable } from 'rxjs/internal/Observable';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SecurityProfileService {
   currentPageIndex:number;
-  cachedSecurityProfiles: ISecurityProfile[];
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
 
   readAll(): Observable<ISecurityProfile[]> {
     return this.httpProxy.netImpl.getSecurityProfiles();
   }
   read(id: number): Observable<ISecurityProfile> {
-    return this.cachedSecurityProfiles ? of(this.cachedSecurityProfiles.find(e => e.id === id)) : of(undefined)
+    return this.httpProxy.netImpl.getSecurityProfiles().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
   }
   create(securityProfiel: ISecurityProfile) {
     this.httpProxy.netImpl.createSecurityProfile(securityProfiel).subscribe(result => {

@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SecurityProfileService } from 'src/app/service/security-profile.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle } from '@angular/material';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { SelectionModel } from '@angular/cdk/collections';
+import { FormGroup, FormControl } from '@angular/forms';
 
 export interface ISecurityProfile {
   resourceID: string;
@@ -17,14 +19,19 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit {
-  header:string;
+  header: string;
   displayedColumns: string[] = ['id', 'resourceID', 'path', 'method', 'star'];
   dataSource: MatTableDataSource<ISecurityProfile>;
+  batchUpdateForm = new FormGroup({
+    hostname: new FormControl('', []),
+  });
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
+  selection = new SelectionModel<ISecurityProfile>(true, []);
+
   constructor(public securityProfileSvc: SecurityProfileService, private breakpointObserver: BreakpointObserver) {
     this.securityProfileSvc.readAll().subscribe(profiles => {
-      this.securityProfileSvc.cachedSecurityProfiles = profiles;
       this.dataSource = new MatTableDataSource(profiles);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
@@ -37,7 +44,6 @@ export class SummarySecurityProfileComponent implements OnInit {
       Breakpoints.XLarge,
     ]).subscribe(next => {
       if (next.breakpoints[Breakpoints.XSmall]) {
-        console.dir('xsmall')
         this.displayedColumns = ['resourceID', 'path', 'method'];
       }
       else if (next.breakpoints[Breakpoints.Small]) {
@@ -45,23 +51,29 @@ export class SummarySecurityProfileComponent implements OnInit {
       }
       else if (next.breakpoints[Breakpoints.Medium]) {
         this.displayedColumns = ['id', 'resourceID', 'path', 'method', 'star'];
-        console.dir('medium')
       }
       else if (next.breakpoints[Breakpoints.Large]) {
         this.displayedColumns = ['id', 'resourceID', 'path', 'method', 'star'];
-        console.dir('large')
       }
       else if (next.breakpoints[Breakpoints.XLarge]) {
         this.displayedColumns = ['id', 'resourceID', 'path', 'method', 'star'];
-        console.dir('xlarge')
       }
       else {
-        console.error('unknown device width match!')
-        console.dir(next)
+        console.warn('unknown device width match!')
+      }
+      if (this.slide.checked && !this.displayedColumns.includes('select')) {
+        this.displayedColumns = ['select', ...this.displayedColumns]
       }
     });
   }
+  showOptions() {
+    if (!this.displayedColumns.includes('select')) {
+      this.displayedColumns = ['select', ...this.displayedColumns]
+    } else {
+      this.displayedColumns = this.displayedColumns.filter(e => e !== 'select')
 
+    }
+  }
   ngOnInit() {
   }
   applyFilter(filterValue: string) {
@@ -72,5 +84,42 @@ export class SummarySecurityProfileComponent implements OnInit {
   }
   pageHandler(e: PageEvent) {
     this.securityProfileSvc.currentPageIndex = e.pageIndex
+  }
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource ? this.dataSource.data.length : 0;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: ISecurityProfile): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+  doBatchUpdate() {
+    this.selection.selected.filter(e => e.url !== null).forEach(
+      e => {
+        this.securityProfileSvc.update(this.getNewURLFromHostname(e, this.batchUpdateForm.get('hostname').value))
+      }
+    )
+  }
+
+  private getNewURLFromHostname(sp: ISecurityProfile, hostname: string): ISecurityProfile {
+    /**
+     * e.g. replace localhost with hostname
+     * http://localhost:8080/v1/api/resourceOwners
+     */
+    sp.url = sp.url.replace('localhost', hostname);
+    return sp;
   }
 }

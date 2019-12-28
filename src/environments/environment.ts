@@ -11,8 +11,8 @@ export const environment = {
   tokenUrl: 'https://www.ngform.com/oauth/token',
   // serverUri: 'http://localhost:8111',
   // tokenUrl: 'http://localhost:8111/oauth/token',
-  // serverUri: 'http://ec2-18-188-105-82.us-east-2.compute.amazonaws.com',
-  // tokenUrl: 'http://ec2-18-188-105-82.us-east-2.compute.amazonaws.com/oauth/token',
+  // serverUri: 'http://ec2-3-135-195-137.us-east-2.compute.amazonaws.com',
+  // tokenUrl: 'http://ec2-3-135-195-137.us-east-2.compute.amazonaws.com/oauth/token',
   loginClientId: 'login-id',
   registerClientId: 'register-id',
   clientSecret: ''
