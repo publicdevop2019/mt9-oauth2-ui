@@ -14,8 +14,36 @@ import { ISecurityProfile } from '../page/summary-security-profile/summary-secur
 import { switchMap } from 'rxjs/operators';
 import { getCookie } from './utility';
 import { ICategory } from '../service/category.service';
+import { IProductSimple, IProductDetail } from '../service/product.service';
 
 export class OnlineImpl implements INetworkService {
+    getProducts(category: string): Observable<IProductSimple[]> {
+        return this._httpClient.get<IProductSimple[]>(environment.serverUri + '/api/categories/' + category);
+    };
+    getProductDetail(id: number): Observable<IProductDetail> {
+        return this._httpClient.get<IProductDetail>(environment.serverUri + '/api/productDetails/' + id);
+    };
+    createProduct(productDetail: IProductDetail): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.post(environment.serverUri + '/api/productDetails', productDetail).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    deleteProduct(productDetail: IProductDetail): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + '/api/productDetails/' + productDetail.id).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    updateProduct(productDetail: IProductDetail): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.put(environment.serverUri + '/api/productDetails/' + productDetail.id, productDetail).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
     authenticatedEmail: string;
     set currentUserAuthInfo(token: ITokenResponse) {
         document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';

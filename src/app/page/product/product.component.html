@@ -1,1 +1,31 @@
-<p>product works!</p>
+<div class="example-container" [formGroup]="productForm">
+    <button [routerLink]="'/dashboard/products'" [queryParams]="{state: 'none'}" mat-button
+        style="text-align: left;padding-left: 0px;margin-bottom: 10px;">
+        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
+    </button>
+    <mat-form-field>
+        <input matInput placeholder="Enter Category" formControlName="category">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Enter Name" formControlName="name">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Enter Price" formControlName="price">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Enter Cover Image Url" formControlName="imageUrlSmall">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Enter Description" formControlName="description">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Enter Sales" formControlName="sales">
+    </mat-form-field>
+    <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
+        (click)="productSvc.update(convertToPayload(productForm))">Update</button>
+    <button mat-raised-button color="warn" *ngIf="state==='update'"
+        (click)="productSvc.delete(convertToPayload(productForm))">Delete</button>
+    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
+        (click)="productSvc.create(convertToPayload(productForm))"
+        *ngIf="state=='create'">Create</button>
+</div>

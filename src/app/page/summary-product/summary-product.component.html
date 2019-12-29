@@ -1,1 +1,45 @@
-<p>summary-product works!</p>
+<h2>Product Dashboard</h2>
+<mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+            <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.category}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.price}} </td>
+        </ng-container>
+
+        <!-- Star Column -->
+        <ng-container matColumnDef="star">
+            <th mat-header-cell *matHeaderCellDef>Setting</th>
+            <td mat-cell *matCellDef="let row">
+                <button [routerLink]="['/dashboard/products/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
+                    <mat-icon>settings</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator  [pageIndex]="productSvc.currentPageIndex" [pageSizeOptions]="[8]" (page)="pageHandler($event)"></mat-paginator>
+</div>

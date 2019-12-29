@@ -4,6 +4,7 @@ import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
+import { IProductSimple, IProductDetail } from '../service/product.service';
 
 // regulate interface
 export interface INetworkService {
@@ -12,18 +13,28 @@ export interface INetworkService {
     login: (fg: FormGroup) => Observable<ITokenResponse>;
     register: (fg: FormGroup) => Observable<any>;
     refreshToken: () => Observable<ITokenResponse>;
-    getClients: () => Observable<IClient[]>;
+    
     getCategories: () => Observable<ICategory[]>;
     createCategory: (category:ICategory) => Observable<boolean>;
     deleteCategory: (category:ICategory) => Observable<boolean>;
     updateCategory: (category:ICategory) => Observable<boolean>;
+    
+    getProducts: (category:string) => Observable<IProductSimple[]>;
+    getProductDetail: (id:number) => Observable<IProductDetail>;
+    createProduct: (productDetail:IProductDetail) => Observable<boolean>;
+    deleteProduct: (productDetail:IProductDetail) => Observable<boolean>;
+    updateProduct: (productDetail:IProductDetail) => Observable<boolean>;
+
+    getClients: () => Observable<IClient[]>;
     updateClient: (client: IClient) => Observable<boolean>;
     deleteClient: (client: IClient) => Observable<boolean>;
     createClient: (client: IClient) => Observable<boolean>;
+    
     getResourceOwners: () => Observable<IResourceOwner[]>;
     updateResourceOwner: (resourceOwner: IResourceOwner) => Observable<boolean>;
     updateResourceOwnerPwd: (resourceOwner: IResourceOwner) => Observable<boolean>;
     deleteResourceOwner: (resourceOwner: IResourceOwner) => Observable<boolean>;
+    
     authorize: (authorizeParty: IAuthorizeParty) => Observable<IAuthorizeCode>;
     revokeClientToken: (clientId: string) => Observable<boolean>;
     revokeResourceOwnerToken: (resourceOwnerName: string) => Observable<boolean>;
