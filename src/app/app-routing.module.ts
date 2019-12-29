@@ -11,6 +11,10 @@ import { AuthService } from './service/auth.service';
 import { AuthorizeComponent } from './page/authorize/authorize.component';
 import { SummarySecurityProfileComponent } from './page/summary-security-profile/summary-security-profile.component';
 import { SecurityProfileComponent } from './page/security-profile/security-profile.component';
+import { SummaryProductComponent } from './page/summary-product/summary-product.component';
+import { ProductComponent } from './page/product/product.component';
+import { SummaryCategoryComponent } from './page/summary-category/summary-category.component';
+import { CategoryComponent } from './page/category/category.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,6 +33,12 @@ const routes: Routes = [
       { path: 'security-profiles', component: SummarySecurityProfileComponent },
       { path: 'security-profile', component: SecurityProfileComponent },
       { path: 'security-profile/:id', component: SecurityProfileComponent },
+      { path: 'products', component: SummaryProductComponent },
+      { path: 'product', component: ProductComponent },
+      { path: 'products/:id', component: ProductComponent },
+      { path: 'categories', component: SummaryCategoryComponent },
+      { path: 'categories/:id', component: CategoryComponent },
+      { path: 'category', component: CategoryComponent },
       { path: '**', component: SummaryClientComponent }
     ]
   },

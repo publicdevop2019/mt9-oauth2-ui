@@ -8,8 +8,21 @@ import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { HttpClient } from '@angular/common/http';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
+import { ICategory } from '../service/category.service';
 
 export class SandboxImpl implements INetworkService {
+    getCategories(): Observable<ICategory[]> {
+        return this.http.get<ICategory[]>('./assets/mock-categories.json').pipe(delay(this.defaultDelay))
+    };
+    createCategory(category: ICategory): Observable<boolean> {
+        return of(true).pipe(delay(this.defaultDelay))
+    };
+    deleteCategory(category: ICategory): Observable<boolean> {
+        return of(true).pipe(delay(this.defaultDelay))
+    };
+    updateCategory(category: ICategory): Observable<boolean> {
+        return of(true).pipe(delay(this.defaultDelay))
+    };
     autoApprove(clientId: string): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };

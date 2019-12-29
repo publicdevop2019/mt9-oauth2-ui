@@ -46,8 +46,23 @@ export class NavBarComponent implements OnInit {
       params: {
         state: 'none',
       },
-    }
-    ,
+    },
+    {
+      link: 'products',
+      display: 'Product Dashboard',
+      icon: 'storefront',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'categories',
+      display: 'Category Dashboard',
+      icon: 'category',
+      params: {
+        state: 'none',
+      },
+    },
     {
       link: 'client',
       display: 'Create Client',
@@ -69,6 +84,22 @@ export class NavBarComponent implements OnInit {
       link: 'security-profile',
       display: 'Add Security Profile',
       icon: 'brush',
+      params: {
+        state: 'create',
+      },
+    },
+    {
+      link: 'product',
+      display: 'Add Product',
+      icon: 'control_point',
+      params: {
+        state: 'create',
+      },
+    },
+    {
+      link: 'category',
+      display: 'Add Category',
+      icon: 'add',
       params: {
         state: 'create',
       },

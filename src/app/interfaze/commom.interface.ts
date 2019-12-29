@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
+import { ICategory } from '../service/category.service';
 
 // regulate interface
 export interface INetworkService {
@@ -12,6 +13,10 @@ export interface INetworkService {
     register: (fg: FormGroup) => Observable<any>;
     refreshToken: () => Observable<ITokenResponse>;
     getClients: () => Observable<IClient[]>;
+    getCategories: () => Observable<ICategory[]>;
+    createCategory: (category:ICategory) => Observable<boolean>;
+    deleteCategory: (category:ICategory) => Observable<boolean>;
+    updateCategory: (category:ICategory) => Observable<boolean>;
     updateClient: (client: IClient) => Observable<boolean>;
     deleteClient: (client: IClient) => Observable<boolean>;
     createClient: (client: IClient) => Observable<boolean>;

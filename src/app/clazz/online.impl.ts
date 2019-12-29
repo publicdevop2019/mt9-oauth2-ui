@@ -13,11 +13,12 @@ import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { switchMap } from 'rxjs/operators';
 import { getCookie } from './utility';
+import { ICategory } from '../service/category.service';
 
 export class OnlineImpl implements INetworkService {
     authenticatedEmail: string;
     set currentUserAuthInfo(token: ITokenResponse) {
-        document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token)+';path=/';
+        document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
     };
     get currentUserAuthInfo(): ITokenResponse | undefined {
         const jwtTokenStr: string = getCookie('jwt');
@@ -30,6 +31,31 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
+    getCategories(): Observable<ICategory[]> {
+        return this._httpClient.get<ICategory[]>(environment.serverUri + '/api/categories');
+    };
+    createCategory(category: ICategory): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.post(environment.serverUri + '/api/categories', category).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    deleteCategory(category: ICategory): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + '/api/categories/' + category.id).subscribe(next => {
+                e.next(true)
+            });
+        });
+
+    };
+    updateCategory(category: ICategory): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.put(environment.serverUri + '/api/categories/' + category.id, category).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.get<IAutoApprove>(environment.serverUri + environment.apiVersion + '/clients/autoApprove?clientId=' + clientId).subscribe(next => {

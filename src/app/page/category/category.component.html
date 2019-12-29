@@ -1,0 +1,19 @@
+<div class="example-container" [formGroup]="categoryForm">
+    <button [routerLink]="'/dashboard/categories'" [queryParams]="{state: 'none'}" mat-button
+        style="text-align: left;padding-left: 0px;margin-bottom: 10px;">
+        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
+    </button>
+    <mat-form-field>
+        <input matInput placeholder="Enter Title" formControlName="title">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Enter URL" formControlName="url">
+    </mat-form-field>
+    <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
+        (click)="categorySvc.update(convertToCategoryPayload(categoryForm))">Update</button>
+    <button mat-raised-button color="warn" *ngIf="state==='update'"
+        (click)="categorySvc.delete(convertToCategoryPayload(categoryForm))">Delete</button>
+    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
+        (click)="categorySvc.create(convertToCategoryPayload(categoryForm))"
+        *ngIf="state=='create'">Create</button>
+</div>

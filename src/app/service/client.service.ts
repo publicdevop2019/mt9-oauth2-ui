@@ -13,7 +13,6 @@ import { switchMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ClientService {
-  /** @todo set expire time for cached data */
   currentPageIndex: number;
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeClientToken(clientId: string): void {

@@ -14,12 +14,18 @@ export class CustomHttpInterceptor implements HttpInterceptor {
   constructor(private router: Router, private _httpProxy: HttpProxyService, private _snackBar: MatSnackBar) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     if (this._httpProxy.netImpl.currentUserAuthInfo && this._httpProxy.netImpl.currentUserAuthInfo.access_token && !this._httpProxy.expireRefresh)
-      req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.netImpl.currentUserAuthInfo.access_token}` } });
+      if (req.url.indexOf('categories') > -1 && req.method === 'GET') {
+        /**
+         * skip Bearer header for public urls
+         */
+      } else {
+        req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.netImpl.currentUserAuthInfo.access_token}` } });
+      }
     return next.handle(req).pipe(catchError(error => {
       if (error instanceof HttpErrorResponse) {
         let httpError = error as HttpErrorResponse;
         if (httpError.status === 401) {
-          if(this._httpProxy.netImpl.currentUserAuthInfo === undefined || this._httpProxy.netImpl.currentUserAuthInfo === null ){
+          if (this._httpProxy.netImpl.currentUserAuthInfo === undefined || this._httpProxy.netImpl.currentUserAuthInfo === null) {
             /** during log in call */
             this.openSnackbar('Bad Username or password');
             return throwError(error);
@@ -27,7 +33,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
           else if (this._httpProxy.netImpl.currentUserAuthInfo.access_token
             && this._httpProxy.netImpl.currentUserAuthInfo.refresh_token
             && !this._httpProxy.expireRefresh) {
-              /** user already logged in */
+            /** user already logged in */
             this._httpProxy.expireRefresh = true;
             return this._httpProxy.netImpl.refreshToken().pipe(mergeMap(result => {
               /**

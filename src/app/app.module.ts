@@ -26,6 +26,10 @@ import { HttpProxyService } from './service/http-proxy.service';
 import { LoadingInterceptor } from './service/loading.interceptor';
 import { ResourceOwnerService } from './service/resource-owner.service';
 import { SecurityProfileService } from './service/security-profile.service';
+import { SummaryProductComponent } from './page/summary-product/summary-product.component';
+import { SummaryCategoryComponent } from './page/summary-category/summary-category.component';
+import { CategoryComponent } from './page/category/category.component';
+import { ProductComponent } from './page/product/product.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +45,11 @@ import { SecurityProfileService } from './service/security-profile.service';
     MsgBoxComponent,
     AuthorizeComponent,
     SummarySecurityProfileComponent,
-    SecurityProfileComponent
+    SecurityProfileComponent,
+    SummaryProductComponent,
+    SummaryCategoryComponent,
+    CategoryComponent,
+    ProductComponent
   ],
   imports: [
     BrowserAnimationsModule,
