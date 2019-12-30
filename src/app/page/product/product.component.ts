@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ICategory, CategoryService } from 'src/app/service/category.service';
-import { Observable } from 'rxjs';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { IProductDetail, ProductService } from 'src/app/service/product.service';
+import { IProductDetail, ProductService, IProductOptions, IProductOption } from 'src/app/service/product.service';
 
 @Component({
   selector: 'app-product',
@@ -13,10 +12,16 @@ import { IProductDetail, ProductService } from 'src/app/service/product.service'
 })
 export class ProductComponent implements OnInit {
   state: string;
+  urlLargeCount: number = 0;
+  optionCount: number = 0;
+  optionValueCount: {} = {};
   product$: Observable<IProductDetail>;
+  imagesUrlLargeCtrls: string[] = [];
+  optionCtrls: string[] = [];
+  optionValueCtrls: string[] = [];
+
   productForm = new FormGroup({
     id: new FormControl('', [
-      Validators.required
     ]),
     category: new FormControl('', [
       Validators.required
@@ -28,19 +33,19 @@ export class ProductComponent implements OnInit {
       Validators.required
     ]),
     imageUrlSmall: new FormControl('', [
-      Validators.required
     ]),
     description: new FormControl('', [
-      Validators.required
     ]),
     sales: new FormControl('', [
-      Validators.required
+    ]),
+    rate: new FormControl('', [
     ]),
   });
   constructor(
     private route: ActivatedRoute,
     public productSvc: ProductService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.product$ = this.route.paramMap.pipe(
@@ -58,6 +63,33 @@ export class ProductComponent implements OnInit {
           this.productForm.get('imageUrlSmall').setValue(byId.imageUrlSmall)
           this.productForm.get('description').setValue(byId.description)
           this.productForm.get('sales').setValue(byId.sales)
+          this.productForm.get('rate').setValue(byId.rate)
+          if (byId.imageUrlLarge && byId.imageUrlLarge.length !== 0) {
+            byId.imageUrlLarge.forEach(url => {
+              this.imagesUrlLargeCtrls.push('imageUrlLarge_' + this.urlLargeCount);
+              this.productForm.addControl('imageUrlLarge_' + this.urlLargeCount, new FormControl(url))
+              this.urlLargeCount++;
+            })
+          }
+          if (byId.selectedOptions && byId.selectedOptions.length !== 0) {
+            byId.selectedOptions.forEach(option => {
+              let parent = 'option_' + this.optionCount;
+              this.optionCount++;
+              this.optionCtrls.push(parent);
+              this.productForm.addControl(parent, new FormControl(option.title))
+              if (option.options !== null && option.options !== undefined && option.options.length !== 0) {
+                option.options.forEach(op => {
+                  if (this.optionValueCount[parent] === undefined || this.optionValueCount[parent] === null) {
+                    this.optionValueCount[parent] = 0;
+                  }
+                  this.optionValueCtrls.push(parent + '_' + this.optionValueCount[parent]);
+                  this.productForm.addControl(parent + '_' + this.optionValueCount[parent], new FormControl(op.optionValue))
+                  this.productForm.addControl(parent + '_' + this.optionValueCount[parent] + '_value', new FormControl(op.priceVar))
+                  this.optionValueCount[parent] ++;
+                })
+              };
+            })
+          }
         })
       } else if (queryMaps.get('state') === 'none') {
 
@@ -67,14 +99,73 @@ export class ProductComponent implements OnInit {
     })
   }
   convertToPayload(formGroup: FormGroup): IProductDetail {
+    let imagesUrl: string[] = null;
+    if (this.imagesUrlLargeCtrls.length !== 0) {
+      imagesUrl = this.imagesUrlLargeCtrls.map(e => this.productForm.get(e).value)
+    }
+    let selectedOptions: IProductOptions[] = null;
+    if (this.optionCtrls.length !== 0) {
+      selectedOptions =
+        this.optionCtrls.map(e => {
+          let var1 = <IProductOptions>{}
+          var1.title = this.productForm.get(e).value;
+          var1.options = Object.keys(this.productForm.controls).filter(el => el.indexOf(e+"_") > -1 && el.indexOf('_value') === -1).map(
+            ctrl => {
+              return <IProductOption>{
+                optionValue: this.productForm.get(ctrl).value,
+                priceVar: this.productForm.get(ctrl + '_value').value
+              }
+            }
+          );
+          return var1;
+        })
+    }
     return {
       id: formGroup.get('id').value,
       category: formGroup.get('category').value,
       name: formGroup.get('name').value,
       price: formGroup.get('price').value,
       imageUrlSmall: formGroup.get('imageUrlSmall').value,
-      description:formGroup.get('description').value,
+      description: formGroup.get('description').value,
       sales: formGroup.get('sales').value,
+      rate: formGroup.get('rate').value,
+      imageUrlLarge: imagesUrl,
+      selectedOptions: selectedOptions
     }
+  }
+  addNewCtrl() {
+    this.imagesUrlLargeCtrls.push('imageUrlLarge_' + this.urlLargeCount);
+    this.productForm.addControl('imageUrlLarge_' + this.urlLargeCount, new FormControl())
+    this.urlLargeCount++;
+  }
+  removeCtrl(ctrlName: string) {
+    this.imagesUrlLargeCtrls = this.imagesUrlLargeCtrls.filter(e => e !== ctrlName);
+    this.productForm.removeControl(ctrlName)
+  }
+  addOptionNewCtrl() {
+    this.optionCtrls.push('option_' + this.optionCount);
+    this.productForm.addControl('option_' + this.optionCount, new FormControl())
+    this.optionCount++;
+  }
+  removeOptionCtrl(ctrlName: string) {
+    this.optionCtrls = this.optionCtrls.filter(e => e !== ctrlName);
+    this.productForm.removeControl(ctrlName);
+  }
+  removeOptionValueCtrl(ctrlName: string) {
+    this.optionValueCtrls = this.optionValueCtrls.filter(e => e !== ctrlName);
+    this.productForm.removeControl(ctrlName)
+  }
+  addOptionValueNewCtrl(parent: string) {
+    if (this.optionValueCount[parent] === undefined || this.optionValueCount[parent] === null) {
+      console.dir('resettting')
+      this.optionValueCount[parent] = 0;
+    }
+    this.optionValueCtrls.push(parent + '_' + this.optionValueCount[parent]);
+    this.productForm.addControl(parent + '_' + this.optionValueCount[parent], new FormControl())
+    this.productForm.addControl(parent + '_' + this.optionValueCount[parent] + '_value', new FormControl())
+    this.optionValueCount[parent] ++;
+  }
+  getRelated(list: string[], prefix: string): string[] {
+    return list.filter(e => e.indexOf(prefix) > -1)
   }
 }
