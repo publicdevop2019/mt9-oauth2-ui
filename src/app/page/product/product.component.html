@@ -41,7 +41,7 @@
     </section>
     <section>
         <h3>Product Option(s)</h3>
-        <div *ngFor="let i of optionCtrls" style="display: flex;flex-direction: row;margin-top: 36px;">
+        <div *ngFor="let i of optionCtrls" style="display: flex;flex-direction: row;margin-bottom: 36px;">
             <div style="display: flex;flex-direction: column; margin-right: 24px;">
                 <mat-form-field>
                     <input matInput placeholder="Enter Option Title" [formControlName]="i">
@@ -64,13 +64,13 @@
             </div>
             <button mat-raised-button color="primary" (click)="removeOptionCtrl(i)">Remove</button>
         </div>
-        <button mat-raised-button color="primary" (click)="addOptionNewCtrl()" style="margin-top: 20px;">
+        <button mat-raised-button color="primary" (click)="addOptionNewCtrl()">
             <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>Add Product Option</button>
     </section>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="productSvc.update(convertToPayload(productForm))">Update</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;"
         (click)="productSvc.delete(convertToPayload(productForm))">Delete</button>
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
+    <button mat-raised-button color="primary" style="margin-top: 24px;"
         (click)="productSvc.create(convertToPayload(productForm))" *ngIf="state=='create'">Create</button>
 </div>
