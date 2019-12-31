@@ -13,3 +13,10 @@ body {
   overflow: hidden;
   white-space: nowrap;
 }
+.centered{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}

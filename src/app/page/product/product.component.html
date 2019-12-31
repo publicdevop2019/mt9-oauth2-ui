@@ -24,42 +24,52 @@
     <mat-form-field>
         <input matInput placeholder="Enter Rate" formControlName="rate">
     </mat-form-field>
-
-    <div *ngFor="let i of imagesUrlLargeCtrls" style="display: flex;flex-direction: row;">
-        <mat-form-field style="width: 95%;">
-            <input matInput placeholder="Enter Image Urls" [formControlName]="i">
-        </mat-form-field>
-        <div>
-            <button mat-raised-button color="primary" (click)="removeCtrl(i)">Remove</button>
-        </div>
-    </div>
-    <button mat-raised-button color="primary" (click)="addNewCtrl()" style="margin-top: 20px;">Add Large Image
-        Url</button>
-
-    <div *ngFor="let i of optionCtrls" style="display: flex;flex-direction: column;margin-top: 20px;">
-        <mat-form-field>
-            <input matInput placeholder="Enter Option Title" [formControlName]="i">
-        </mat-form-field>
-        <div *ngFor="let el of getRelated(optionValueCtrls,i)" style="display: flex;flex-direction: row;">
+    <section>
+        <h3>Product Image Urls</h3>
+        <div *ngFor="let i of imagesUrlLargeCtrls" style="display: flex;flex-direction: row;">
             <mat-form-field>
-                <input matInput placeholder="Enter Option Value" [formControlName]="el">
+                <input matInput placeholder="Enter Image Urls" [formControlName]="i">
             </mat-form-field>
-            <mat-form-field>
-                <input matInput placeholder="Enter Option Price Change Amount" [formControlName]="el+'_value'">
-            </mat-form-field>
-            <div>
-                <button mat-raised-button color="primary" (click)="removeOptionValueCtrl(el)">Remove</button>
+            <div class="centered" style="padding-left: 8px; margin-bottom: 10px;">
+                <mat-icon (click)="removeCtrl(i)">delete</mat-icon>
             </div>
         </div>
-        <button mat-raised-button color="accent" (click)="addOptionValueNewCtrl(i)" style="margin-top: 20px;">Add
-            Product Value</button>
-        <button mat-raised-button color="primary" (click)="removeOptionCtrl(i)" style="margin-top: 20px;">Remove Entire Options</button>
-    </div>
-    <button mat-raised-button color="primary" (click)="addOptionNewCtrl()" style="margin-top: 20px;">Add Product
-        Option</button>
+        <button mat-raised-button color="primary" (click)="addNewCtrl()">
+            <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>
+            Add Large Image Url
+        </button>
+    </section>
+    <section>
+        <h3>Product Option(s)</h3>
+        <div *ngFor="let i of optionCtrls" style="display: flex;flex-direction: row;margin-top: 36px;">
+            <div style="display: flex;flex-direction: column; margin-right: 24px;">
+                <mat-form-field>
+                    <input matInput placeholder="Enter Option Title" [formControlName]="i">
+                </mat-form-field>
+                <div *ngFor="let el of getRelated(optionValueCtrls,i)" style="display: flex;flex-direction: row;">
+                    <mat-form-field style="margin-right: 16px;">
+                        <input matInput placeholder="Enter Option Value" [formControlName]="el">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Enter Changed Price" [formControlName]="el+'_value'">
+                    </mat-form-field>
+                    <div class="centered" style="padding-left: 8px; margin-bottom: 10px;">
+                        <mat-icon (click)="removeOptionValueCtrl(el)">delete</mat-icon>
+                    </div>
+                </div>
+                <button mat-raised-button color="accent" (click)="addOptionValueNewCtrl(i)">
+                    <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>
+                    Add Product Value
+                </button>
+            </div>
+            <button mat-raised-button color="primary" (click)="removeOptionCtrl(i)">Remove</button>
+        </div>
+        <button mat-raised-button color="primary" (click)="addOptionNewCtrl()" style="margin-top: 20px;">
+            <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>Add Product Option</button>
+    </section>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="productSvc.update(convertToPayload(productForm))">Update</button>
-    <button mat-raised-button color="warn" *ngIf="state==='update'"
+    <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;"
         (click)="productSvc.delete(convertToPayload(productForm))">Delete</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="productSvc.create(convertToPayload(productForm))" *ngIf="state=='create'">Create</button>
