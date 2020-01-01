@@ -65,25 +65,16 @@ export class NavBarComponent implements OnInit {
     },
     {
       link: 'client',
-      display: 'Create Client',
-      icon: 'create',
+      display: 'Add Client',
+      icon: 'add',
       params: {
         state: 'create',
-      },
-    }
-    ,
-    {
-      link: 'resource-owner',
-      display: 'Update Password',
-      icon: 'vpn_key',
-      params: {
-        state: 'update:pwd',
       },
     },
     {
       link: 'security-profile',
       display: 'Add Security Profile',
-      icon: 'brush',
+      icon: 'add',
       params: {
         state: 'create',
       },
@@ -91,7 +82,7 @@ export class NavBarComponent implements OnInit {
     {
       link: 'product',
       display: 'Add Product',
-      icon: 'control_point',
+      icon: 'add',
       params: {
         state: 'create',
       },
@@ -102,6 +93,14 @@ export class NavBarComponent implements OnInit {
       icon: 'add',
       params: {
         state: 'create',
+      },
+    },
+    {
+      link: 'resource-owner',
+      display: 'Update Password',
+      icon: 'vpn_key',
+      params: {
+        state: 'update:pwd',
       },
     },
     {

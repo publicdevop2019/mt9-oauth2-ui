@@ -13,6 +13,9 @@ export interface IProductSimple {
   price: string;
   sales: string;
   category: string;
+  storage?:number;
+  increaseStorageBy?:number;
+  decreaseStorageBy?:number;
   id: string;
 }
 export interface IProductOptions {

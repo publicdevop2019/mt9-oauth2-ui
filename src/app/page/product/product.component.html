@@ -67,6 +67,18 @@
         <button mat-raised-button color="primary" (click)="addOptionNewCtrl()">
             <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>Add Product Option</button>
     </section>
+    <section style="display: flex;flex-direction: column;">
+        <h3>Product Storage</h3>
+        <mat-form-field *ngIf="state==='create'">
+            <input matInput placeholder="Enter Initial Storage" formControlName="storage">
+        </mat-form-field>
+        <mat-form-field *ngIf="state==='update'">
+            <input matInput placeholder="Enter increase amount" formControlName="increaseStorageBy">
+        </mat-form-field>
+        <mat-form-field *ngIf="state==='update'">
+            <input matInput placeholder="Enter decrease amount" formControlName="decreaseStorageBy">
+        </mat-form-field>
+    </section>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="productSvc.update(convertToPayload(productForm))">Update</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;"

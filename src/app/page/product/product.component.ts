@@ -40,6 +40,12 @@ export class ProductComponent implements OnInit {
     ]),
     rate: new FormControl('', [
     ]),
+    storage: new FormControl('', [
+    ]),
+    increaseStorageBy: new FormControl('', [
+    ]),
+    decreaseStorageBy: new FormControl('', [
+    ]),
   });
   constructor(
     private route: ActivatedRoute,
@@ -85,7 +91,7 @@ export class ProductComponent implements OnInit {
                   this.optionValueCtrls.push(parent + '_' + this.optionValueCount[parent]);
                   this.productForm.addControl(parent + '_' + this.optionValueCount[parent], new FormControl(op.optionValue))
                   this.productForm.addControl(parent + '_' + this.optionValueCount[parent] + '_value', new FormControl(op.priceVar))
-                  this.optionValueCount[parent] ++;
+                  this.optionValueCount[parent]++;
                 })
               };
             })
@@ -109,7 +115,7 @@ export class ProductComponent implements OnInit {
         this.optionCtrls.map(e => {
           let var1 = <IProductOptions>{}
           var1.title = this.productForm.get(e).value;
-          var1.options = Object.keys(this.productForm.controls).filter(el => el.indexOf(e+"_") > -1 && el.indexOf('_value') === -1).map(
+          var1.options = Object.keys(this.productForm.controls).filter(el => el.indexOf(e + "_") > -1 && el.indexOf('_value') === -1).map(
             ctrl => {
               return <IProductOption>{
                 optionValue: this.productForm.get(ctrl).value,
@@ -130,7 +136,10 @@ export class ProductComponent implements OnInit {
       sales: formGroup.get('sales').value,
       rate: formGroup.get('rate').value,
       imageUrlLarge: imagesUrl,
-      selectedOptions: selectedOptions
+      selectedOptions: selectedOptions,
+      storage: formGroup.get('storage').value,
+      increaseStorageBy: formGroup.get('increaseStorageBy').value,
+      decreaseStorageBy: formGroup.get('decreaseStorageBy').value
     }
   }
   addNewCtrl() {
@@ -163,7 +172,7 @@ export class ProductComponent implements OnInit {
     this.optionValueCtrls.push(parent + '_' + this.optionValueCount[parent]);
     this.productForm.addControl(parent + '_' + this.optionValueCount[parent], new FormControl())
     this.productForm.addControl(parent + '_' + this.optionValueCount[parent] + '_value', new FormControl())
-    this.optionValueCount[parent] ++;
+    this.optionValueCount[parent]++;
   }
   getRelated(list: string[], prefix: string): string[] {
     return list.filter(e => e.indexOf(prefix) > -1)
