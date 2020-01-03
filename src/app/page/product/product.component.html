@@ -41,11 +41,15 @@
     </section>
     <section>
         <h3>Product Option(s)</h3>
-        <div *ngFor="let i of optionCtrls" style="display: flex;flex-direction: row;margin-bottom: 36px;">
-            <div style="display: flex;flex-direction: column; margin-right: 24px;">
-                <mat-form-field>
-                    <input matInput placeholder="Enter Option Title" [formControlName]="i">
-                </mat-form-field>
+        <div *ngFor="let i of optionCtrls" style="margin-bottom: 36px;">
+                <div style="display: flex;flex-direction: row;">
+                    <mat-form-field>
+                        <input matInput placeholder="Enter Option Title" [formControlName]="i">
+                    </mat-form-field>
+                    <div class="centered" style="padding-left: 8px; margin-bottom: 10px;">
+                        <mat-icon (click)="removeOptionCtrl(i)">delete_forever</mat-icon>
+                    </div>
+                </div>
                 <div *ngFor="let el of getRelated(optionValueCtrls,i)" style="display: flex;flex-direction: row;">
                     <mat-form-field style="margin-right: 16px;">
                         <input matInput placeholder="Enter Option Value" [formControlName]="el">
@@ -61,11 +65,11 @@
                     <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>
                     Add Product Value
                 </button>
-            </div>
-            <button mat-raised-button color="primary" (click)="removeOptionCtrl(i)">Remove</button>
+
         </div>
         <button mat-raised-button color="primary" (click)="addOptionNewCtrl()">
-            <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>Add Product Option</button>
+            <mat-icon style="margin-bottom: 3px;margin-right: 5px;">add</mat-icon>Add Product Option
+        </button>
     </section>
     <section style="display: flex;flex-direction: column;">
         <h3>Product Storage</h3>

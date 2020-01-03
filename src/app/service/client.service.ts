@@ -41,7 +41,7 @@ export class ClientService {
   deleteClient(client: IClient): void {
     this.httpProxy.netImpl.deleteClient(client).subscribe(result => {
       this.notify(result)
-      this.router.navigateByUrl('/dashboard');
+      this.router.navigateByUrl('/dashboard/clients');
     })
   }
   createClient(client: IClient): void {
