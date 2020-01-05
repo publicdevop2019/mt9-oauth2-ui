@@ -30,6 +30,8 @@ import { SummaryProductComponent } from './page/summary-product/summary-product.
 import { SummaryCategoryComponent } from './page/summary-category/summary-category.component';
 import { CategoryComponent } from './page/category/category.component';
 import { ProductComponent } from './page/product/product.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,7 @@ import { ProductComponent } from './page/product/product.component';
     MatDialogModule,
     MatSnackBarModule,
     LayoutModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   entryComponents: [MsgBoxComponent],
   providers: [
