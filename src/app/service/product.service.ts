@@ -13,9 +13,9 @@ export interface IProductSimple {
   price: string;
   sales: string;
   category: string;
-  storage?:number;
-  increaseStorageBy?:number;
-  decreaseStorageBy?:number;
+  storage?: number;
+  increaseStorageBy?: number;
+  decreaseStorageBy?: number;
   id: string;
 }
 export interface IProductOptions {
@@ -37,13 +37,8 @@ export interface IProductDetail extends IProductSimple {
 export class ProductService {
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getProductWAllCategory(): Observable<IProductSimple[]> {
-    return this.httpProxy.netImpl.getCategories().pipe(switchMap(next => {
-      let ob:Observable<IProductSimple[]>[]=next.map(e=>this.httpProxy.netImpl.getProducts(e.title));
-      let ob2:Observable<IProductSimple[]>=merge(...[ob]).pipe(flatMap(flat=>flat))
-      return   ob2;
-    }))
-    
+  getAllProduct(): Observable<IProductSimple[]> {
+    return this.httpProxy.netImpl.getProducts('all')
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.netImpl.getProductDetail(id)

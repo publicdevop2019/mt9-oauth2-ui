@@ -14,7 +14,7 @@ export class SummaryProductComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(public productSvc: ProductService) {
-    this.productSvc.getProductWAllCategory().subscribe(products => {
+    this.productSvc.getAllProduct().subscribe(products => {
       this.dataSourceArray=[...this.dataSourceArray,...products]
       this.dataSource = new MatTableDataSource(this.dataSourceArray);
       this.dataSource.paginator = this.paginator;
