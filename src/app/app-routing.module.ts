@@ -15,6 +15,8 @@ import { SummaryProductComponent } from './page/summary-product/summary-product.
 import { ProductComponent } from './page/product/product.component';
 import { SummaryCategoryComponent } from './page/summary-category/summary-category.component';
 import { CategoryComponent } from './page/category/category.component';
+import { SummaryOrderComponent } from './page/summary-order/summary-order.component';
+import { OrderComponent } from './page/order/order.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -30,6 +32,8 @@ const routes: Routes = [
       { path: 'resource-owner', component: ResourceOwnerComponent },
       { path: 'resource-owner/:id', component: ResourceOwnerComponent },
       { path: 'resource-owners', component: SummaryResourceOwnerComponent },
+      { path: 'orders', component: SummaryOrderComponent },
+      { path: 'orders/:id', component: OrderComponent },
       { path: 'security-profiles', component: SummarySecurityProfileComponent },
       { path: 'security-profile', component: SecurityProfileComponent },
       { path: 'security-profile/:id', component: SecurityProfileComponent },

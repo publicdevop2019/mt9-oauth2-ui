@@ -4,6 +4,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IProductDetail, ProductService, IProductOptions, IProductOption } from 'src/app/service/product.service';
+import { HttpProxyService } from 'src/app/service/http-proxy.service';
 
 @Component({
   selector: 'app-product',
@@ -32,7 +33,7 @@ export class ProductComponent implements OnInit {
     price: new FormControl('', [
       Validators.required
     ]),
-    imageUrlSmall: new FormControl('', [
+    imageUrlSmall: new FormControl({ value: '', disabled: true }, [
     ]),
     description: new FormControl('', [
     ]),
@@ -50,6 +51,7 @@ export class ProductComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public productSvc: ProductService,
+    private httpProxy:HttpProxyService
   ) {
   }
 
@@ -176,5 +178,10 @@ export class ProductComponent implements OnInit {
   }
   getRelated(list: string[], prefix: string): string[] {
     return list.filter(e => e.indexOf(prefix) > -1)
+  }
+  uploadFile(files: FileList) {
+    this.httpProxy.netImpl.uploadFile(files.item(0)).subscribe(next => {
+      this.productForm.get('imageUrlSmall').setValue(next)
+    })
   }
 }

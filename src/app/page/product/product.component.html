@@ -15,6 +15,8 @@
     <mat-form-field>
         <input matInput placeholder="Enter Cover Image Url" formControlName="imageUrlSmall">
     </mat-form-field>
+    <input #upload type="file" placeholder="Enter URL" (change)="uploadFile($event.target.files)" style="display: none;">
+    <button mat-raised-button color="primary" (click)="upload.click()" style="margin-bottom: 20px;margin-top: 20px;">Upload file</button>
     <mat-form-field>
         <input matInput placeholder="Enter Description" formControlName="description">
     </mat-form-field>

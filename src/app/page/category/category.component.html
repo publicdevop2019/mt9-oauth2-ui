@@ -7,13 +7,14 @@
         <input matInput placeholder="Enter Title" formControlName="title">
     </mat-form-field>
     <mat-form-field>
-        <input matInput placeholder="Enter URL" formControlName="url">
+        <input matInput placeholder="Url" formControlName="url">
     </mat-form-field>
+    <input #upload type="file" placeholder="Enter URL" (change)="uploadFile($event.target.files)" style="display: none;">
+    <button mat-raised-button color="primary" (click)="upload.click()" style="margin-bottom: 20px;margin-top: 20px;">Upload file</button>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="categorySvc.update(convertToCategoryPayload(categoryForm))">Update</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'"
         (click)="categorySvc.delete(convertToCategoryPayload(categoryForm))">Delete</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="categorySvc.create(convertToCategoryPayload(categoryForm))"
-        *ngIf="state=='create'">Create</button>
+        (click)="categorySvc.create(convertToCategoryPayload(categoryForm))" *ngIf="state=='create'">Create</button>
 </div>

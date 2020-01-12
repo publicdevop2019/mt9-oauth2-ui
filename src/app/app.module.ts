@@ -32,6 +32,8 @@ import { CategoryComponent } from './page/category/category.component';
 import { ProductComponent } from './page/product/product.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { SummaryOrderComponent } from './page/summary-order/summary-order.component';
+import { OrderComponent } from './page/order/order.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { environment } from '../environments/environment';
     SummaryProductComponent,
     SummaryCategoryComponent,
     CategoryComponent,
-    ProductComponent
+    ProductComponent,
+    SummaryOrderComponent,
+    OrderComponent
   ],
   imports: [
     BrowserAnimationsModule,

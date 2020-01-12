@@ -1,4 +1,4 @@
-import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode, IAutoApprove } from '../interfaze/commom.interface';
+import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode, IAutoApprove, IOrder } from '../interfaze/commom.interface';
 
 import { Observable } from 'rxjs';
 
@@ -17,6 +17,18 @@ import { ICategory } from '../service/category.service';
 import { IProductSimple, IProductDetail } from '../service/product.service';
 
 export class OnlineImpl implements INetworkService {
+    getOrders(): Observable<IOrder[]> {
+        return this._httpClient.get<IOrder[]>(environment.serverUri + '/api/orders');
+    };
+    uploadFile(file: File): Observable<string> {
+        return new Observable<string>(e => {
+            const formData: FormData = new FormData();
+            formData.append('file', file, file.name);
+            this._httpClient.post<void>(environment.serverUri + '/api/files', formData, { observe: 'response' }).subscribe(next => {
+                e.next(next.headers.get('location'));
+            });
+        })
+    };
     getProducts(category: string): Observable<IProductSimple[]> {
         return this._httpClient.get<IProductSimple[]>(environment.serverUri + '/api/categories/' + category);
     };

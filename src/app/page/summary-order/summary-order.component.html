@@ -1,0 +1,40 @@
+<h2>Order Dashboard</h2>
+<mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+            <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productList">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Count </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.productList.length}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="finalPrice">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Final Price </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.finalPrice}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="star">
+            <th mat-header-cell *matHeaderCellDef>Setting</th>
+            <td mat-cell *matCellDef="let row">
+                <button [routerLink]="['/dashboard/orders/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
+                    <mat-icon>settings</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageIndex]="orderSvc.currentPageIndex" [pageSizeOptions]="[8]" (page)="pageHandler($event)">
+    </mat-paginator>
+</div>

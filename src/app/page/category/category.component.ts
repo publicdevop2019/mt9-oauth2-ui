@@ -6,6 +6,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
 import { SecurityProfileService } from 'src/app/service/security-profile.service';
 import { ICategory, CategoryService } from 'src/app/service/category.service';
+import { HttpProxyService } from 'src/app/service/http-proxy.service';
 
 @Component({
   selector: 'app-category',
@@ -30,6 +31,7 @@ export class CategoryComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public categorySvc: CategoryService,
+    private httpProxy: HttpProxyService
   ) { }
 
   ngOnInit() {
@@ -48,7 +50,7 @@ export class CategoryComponent implements OnInit {
       } else if (queryMaps.get('state') === 'none') {
 
       } else {
-
+        this.categoryForm.get('url').disable()
       }
     })
   }
@@ -58,5 +60,10 @@ export class CategoryComponent implements OnInit {
       title: formGroup.get('title').value,
       url: formGroup.get('url').value,
     }
+  }
+  uploadFile(files: FileList) {
+    this.httpProxy.netImpl.uploadFile(files.item(0)).subscribe(next => {
+      this.categoryForm.get('url').setValue(next)
+    })
   }
 }

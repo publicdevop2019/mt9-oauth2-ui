@@ -1,4 +1,4 @@
-import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode } from '../interfaze/commom.interface';
+import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode, IOrder } from '../interfaze/commom.interface';
 
 import { Observable, of } from 'rxjs';
 
@@ -12,6 +12,12 @@ import { ICategory } from '../service/category.service';
 import { IProductSimple, IProductDetail } from '../service/product.service';
 
 export class SandboxImpl implements INetworkService {
+    getOrders(): Observable<IOrder[]> {
+        return this.http.get<IOrder[]>('./assets/mock-order.json').pipe(delay(this.defaultDelay))
+    };
+    uploadFile(file: File): Observable<string> {
+        return of("mockString").pipe(delay(this.defaultDelay))
+    };
     getProducts(category: string): Observable<IProductSimple[]> {
         return this.http.get<IProductSimple[]>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
     };

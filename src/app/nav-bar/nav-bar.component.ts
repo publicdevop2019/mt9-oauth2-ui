@@ -64,6 +64,14 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
+      link: 'orders',
+      display: 'Order Dashboard',
+      icon: 'assignment',
+      params: {
+        state: 'none',
+      },
+    },
+    {
       link: 'client',
       display: 'Add Client',
       icon: 'add',
