@@ -12,6 +12,6 @@ FROM nginx:latest
 
 WORKDIR /usr/share/nginx/html
 
-COPY --from=node /usr/src/app/dist .
+COPY --from=node /usr/src/app/dist/oauth2-ui .
 
 EXPOSE 80
