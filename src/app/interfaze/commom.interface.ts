@@ -70,12 +70,8 @@ export interface IOrder {
     id: string;
     productList: ICartItem[];
     address: IAddress;
-    payment: IPayment;
-    shippingCost: string;
-    taxCost: string;
-    additionalFees:any
-    finalPrice:string;
-    totalProductPrice:string;
+    paymentType: string;
+    paymentAmt: string;
   }
   export interface ICartItem {
     id: string;

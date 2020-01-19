@@ -25,19 +25,10 @@ export class OrderComponent implements OnInit {
     productList: new FormControl({ value: '', disabled: true }, [
       Validators.required
     ]),
-    finalPrice: new FormControl({ value: '', disabled: true }, [
+    paymentType: new FormControl({ value: '', disabled: true }, [
       Validators.required
     ]),
-    totalProductPrice: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    shippingCost: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    additionalFees: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    taxCost: new FormControl({ value: '', disabled: true }, [
+    paymentAmt: new FormControl({ value: '', disabled: true }, [
       Validators.required
     ]),
 
@@ -61,11 +52,8 @@ export class OrderComponent implements OnInit {
               id: order.id,
               address: JSON.stringify(order.address),
               productList: JSON.stringify(order.productList),
-              finalPrice: order.finalPrice,
-              totalProductPrice: order.totalProductPrice,
-              shippingCost: order.shippingCost,
-              additionalFees: JSON.stringify(order.additionalFees),
-              taxCost: order.taxCost,
+              paymentAmt: order.paymentAmt,
+              paymentType: order.paymentType,
             });
           })
         } else if (queryMaps.get('state') === 'none') {
