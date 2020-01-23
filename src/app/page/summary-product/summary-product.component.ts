@@ -8,7 +8,7 @@ import { IProductSimple, ProductService } from 'src/app/service/product.service'
   styleUrls: ['./summary-product.component.css']
 })
 export class SummaryProductComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'category', 'name', 'price','storage','star'];
+  displayedColumns: string[] = ['id', 'category', 'name', 'price','orderStorage','actualStorage','star'];
   dataSource: MatTableDataSource<IProductSimple>;
   dataSourceArray:IProductSimple[]=[];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

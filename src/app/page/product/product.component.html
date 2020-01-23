@@ -29,13 +29,22 @@
     <section style="display: flex;flex-direction: column;">
         <h3>Product Storage</h3>
         <mat-form-field *ngIf="state==='create'">
-            <input matInput placeholder="*Enter Initial Storage" formControlName="storage">
+            <input matInput placeholder="*Enter Initial Order Storage" formControlName="orderStorage">
         </mat-form-field>
         <mat-form-field *ngIf="state==='update'">
-            <input matInput placeholder="Enter increase amount" formControlName="increaseStorageBy">
+            <input matInput placeholder="Enter increase order storage amount" formControlName="increaseOrderStorageBy">
         </mat-form-field>
         <mat-form-field *ngIf="state==='update'">
-            <input matInput placeholder="Enter decrease amount" formControlName="decreaseStorageBy">
+            <input matInput placeholder="Enter decrease order storage amount" formControlName="decreaseOrderStorageBy">
+        </mat-form-field>
+        <mat-form-field *ngIf="state==='create'">
+            <input matInput placeholder="*Enter Initial Actual Storage" formControlName="actualStorage">
+        </mat-form-field>
+        <mat-form-field *ngIf="state==='update'">
+            <input matInput placeholder="Enter increase actual storage amount" formControlName="increaseActualStorageBy">
+        </mat-form-field>
+        <mat-form-field *ngIf="state==='update'">
+            <input matInput placeholder="Enter decrease actual storage amount" formControlName="decreaseActualStorageBy">
         </mat-form-field>
     </section>
     <section>

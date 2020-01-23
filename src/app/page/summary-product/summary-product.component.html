@@ -27,9 +27,14 @@
             <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.price}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="storage">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Storage</th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.storage}} </td>
+        <ng-container matColumnDef="orderStorage">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Storage</th>
+            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.orderStorage}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actualStorage">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Actual Storage</th>
+            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.actualStorage}} </td>
         </ng-container>
 
         <!-- Star Column -->

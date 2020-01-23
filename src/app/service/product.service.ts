@@ -13,9 +13,12 @@ export interface IProductSimple {
   price: string;
   sales: string;
   category: string;
-  storage?: number;
-  increaseStorageBy?: number;
-  decreaseStorageBy?: number;
+  orderStorage?: number;
+  actualStorage?: number;
+  increaseOrderStorageBy?: number;
+  decreaseOrderStorageBy?: number;
+  increaseActualStorageBy?: number;
+  decreaseActualStorageBy?: number;
   id: string;
 }
 export interface IProductOptions {

@@ -41,17 +41,23 @@ export class ProductComponent implements OnInit {
     ]),
     rate: new FormControl('', [
     ]),
-    storage: new FormControl('', [
+    actualStorage: new FormControl('', [
     ]),
-    increaseStorageBy: new FormControl('', [
+    increaseActualStorageBy: new FormControl('', [
     ]),
-    decreaseStorageBy: new FormControl('', [
+    decreaseActualStorageBy: new FormControl('', [
+    ]),
+    orderStorage: new FormControl('', [
+    ]),
+    increaseOrderStorageBy: new FormControl('', [
+    ]),
+    decreaseOrderStorageBy: new FormControl('', [
     ]),
   });
   constructor(
     private route: ActivatedRoute,
     public productSvc: ProductService,
-    private httpProxy:HttpProxyService
+    private httpProxy: HttpProxyService
   ) {
   }
 
@@ -139,9 +145,12 @@ export class ProductComponent implements OnInit {
       rate: formGroup.get('rate').value,
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions,
-      storage: formGroup.get('storage').value,
-      increaseStorageBy: formGroup.get('increaseStorageBy').value,
-      decreaseStorageBy: formGroup.get('decreaseStorageBy').value
+      orderStorage: formGroup.get('orderStorage').value,
+      increaseOrderStorageBy: formGroup.get('increaseOrderStorageBy').value,
+      decreaseOrderStorageBy: formGroup.get('decreaseOrderStorageBy').value,
+      actualStorage: formGroup.get('actualStorage').value,
+      increaseActualStorageBy: formGroup.get('increaseActualStorageBy').value,
+      decreaseActualStorageBy: formGroup.get('decreaseActualStorageBy').value
     }
   }
   addNewCtrl() {
