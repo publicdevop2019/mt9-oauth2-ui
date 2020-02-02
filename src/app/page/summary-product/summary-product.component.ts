@@ -8,14 +8,16 @@ import { IProductSimple, ProductService } from 'src/app/service/product.service'
   styleUrls: ['./summary-product.component.css']
 })
 export class SummaryProductComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'category', 'name', 'price','orderStorage','actualStorage','star'];
+  displayedColumns: string[] = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
   dataSource: MatTableDataSource<IProductSimple>;
-  dataSourceArray:IProductSimple[]=[];
+  dataSourceArray: IProductSimple[] = [];
+  pageNumber = 0;
+  pageSize = 20;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public productSvc: ProductService) {
-    this.productSvc.getAllProduct().subscribe(products => {
-      this.dataSourceArray=[...this.dataSourceArray,...products]
+  constructor(private productSvc: ProductService) {
+    this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
+      this.dataSourceArray = [...this.dataSourceArray, ...products]
       this.dataSource = new MatTableDataSource(this.dataSourceArray);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
@@ -30,7 +32,13 @@ export class SummaryProductComponent implements OnInit {
     }
   }
   pageHandler(e: PageEvent) {
-    this.productSvc.currentPageIndex = e.pageIndex
+    this.pageNumber = e.pageIndex;
+    this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
+      this.dataSourceArray = [...this.dataSourceArray, ...products]
+      this.dataSource = new MatTableDataSource(this.dataSourceArray);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    });
   }
 
 }

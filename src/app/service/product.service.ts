@@ -38,10 +38,9 @@ export interface IProductDetail extends IProductSimple {
   providedIn: 'root'
 })
 export class ProductService {
-  currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getAllProduct(): Observable<IProductSimple[]> {
-    return this.httpProxy.netImpl.getProducts('all')
+  getAllProduct(pageNum: number, pageSize: number): Observable<IProductSimple[]> {
+    return this.httpProxy.netImpl.getProducts('all', pageNum, pageSize)
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.netImpl.getProductDetail(id)

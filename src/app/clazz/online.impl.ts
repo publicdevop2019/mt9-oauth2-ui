@@ -29,8 +29,8 @@ export class OnlineImpl implements INetworkService {
             });
         })
     };
-    getProducts(category: string): Observable<IProductSimple[]> {
-        return this._httpClient.get<IProductSimple[]>(environment.serverUri + '/api/categories/' + category);
+    getProducts(category: string, pageNum: number, pageSize: number): Observable<IProductSimple[]> {
+        return this._httpClient.get<IProductSimple[]>(environment.serverUri + '/api/categories/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getProductDetail(id: number): Observable<IProductDetail> {
         return this._httpClient.get<IProductDetail>(environment.serverUri + '/api/productDetails/' + id);
