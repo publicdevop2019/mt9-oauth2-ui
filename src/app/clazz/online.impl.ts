@@ -14,9 +14,12 @@ import { ISecurityProfile } from '../page/summary-security-profile/summary-secur
 import { switchMap } from 'rxjs/operators';
 import { getCookie } from './utility';
 import { ICategory } from '../service/category.service';
-import { IProductSimple, IProductDetail } from '../service/product.service';
+import { IProductSimple, IProductDetail, IProductTotalResponse } from '../service/product.service';
 
 export class OnlineImpl implements INetworkService {
+    getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + '/api/categories/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
+    };
     getOrders(): Observable<IOrder[]> {
         return this._httpClient.get<IOrder[]>(environment.serverUri + '/api/orders');
     };

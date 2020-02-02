@@ -51,5 +51,5 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator  [pageIndex]="pageNumber" [pageSize]="10" (page)="pageHandler($event)"></mat-paginator>
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="pageSize" [length]="totoalProductCount" (page)="pageHandler($event)"></mat-paginator>
 </div>

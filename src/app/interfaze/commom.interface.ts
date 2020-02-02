@@ -4,7 +4,7 @@ import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
-import { IProductSimple, IProductDetail } from '../service/product.service';
+import { IProductSimple, IProductDetail, IProductTotalResponse } from '../service/product.service';
 
 // regulate interface
 export interface INetworkService {
@@ -22,6 +22,7 @@ export interface INetworkService {
   deleteCategory: (category: ICategory) => Observable<boolean>;
   updateCategory: (category: ICategory) => Observable<boolean>;
 
+  getAllProducts: (pageNum: number, pageSize: number) => Observable<IProductTotalResponse>;
   getProducts: (category: string, pageNum: number, pageSize: number) => Observable<IProductSimple[]>;
   getProductDetail: (id: number) => Observable<IProductDetail>;
   createProduct: (productDetail: IProductDetail) => Observable<boolean>;

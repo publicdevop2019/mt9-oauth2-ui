@@ -9,7 +9,7 @@ import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-
 import { HttpClient } from '@angular/common/http';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
-import { IProductSimple, IProductDetail } from '../service/product.service';
+import { IProductSimple, IProductDetail, IProductTotalResponse } from '../service/product.service';
 
 export class SandboxImpl implements INetworkService {
     getOrders(): Observable<IOrder[]> {
@@ -20,6 +20,9 @@ export class SandboxImpl implements INetworkService {
     };
     getProducts(category: string): Observable<IProductSimple[]> {
         return this.http.get<IProductSimple[]>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
+    };
+    getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple-total.json').pipe(delay(this.defaultDelay))
     };
     getProductDetail(id: number): Observable<import("../service/product.service").IProductDetail> {
         return this.http.get<IProductDetail>('./assets/mock-product-detail.json').pipe(delay(this.defaultDelay))

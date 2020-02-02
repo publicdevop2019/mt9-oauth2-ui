@@ -5,6 +5,11 @@ import { CustomHttpInterceptor } from './http.interceptor';
 import { Observable, of, merge } from 'rxjs';
 import { ICategory } from './category.service';
 import { switchMap, flatMap } from 'rxjs/operators';
+export interface IProductTotalResponse {
+  productSimpleList: IProductSimple[],
+  totalPageCount: number,
+  totalProductCount: number,
+}
 export interface IProductSimple {
   imageUrlSmall: string;
   name: string;
@@ -39,8 +44,8 @@ export interface IProductDetail extends IProductSimple {
 })
 export class ProductService {
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getAllProduct(pageNum: number, pageSize: number): Observable<IProductSimple[]> {
-    return this.httpProxy.netImpl.getProducts('all', pageNum, pageSize)
+  getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
+    return this.httpProxy.netImpl.getAllProducts(pageNum, pageSize)
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.netImpl.getProductDetail(id)

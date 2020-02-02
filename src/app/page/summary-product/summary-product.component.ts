@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
-import { IProductSimple, ProductService } from 'src/app/service/product.service';
+import { IProductSimple, ProductService, IProductTotalResponse } from 'src/app/service/product.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-summary-product',
@@ -10,17 +11,40 @@ import { IProductSimple, ProductService } from 'src/app/service/product.service'
 export class SummaryProductComponent implements OnInit {
   displayedColumns: string[] = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
   dataSource: MatTableDataSource<IProductSimple>;
-  dataSourceArray: IProductSimple[] = [];
   pageNumber = 0;
   pageSize = 20;
+  totoalProductCount = 0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(private productSvc: ProductService) {
+  constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver) {
     this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
-      this.dataSourceArray = [...this.dataSourceArray, ...products]
-      this.dataSource = new MatTableDataSource(this.dataSourceArray);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.totalProductHandler(products)
+    });
+    this.breakpointObserver.observe([
+      Breakpoints.XSmall,
+      Breakpoints.Small,
+      Breakpoints.Medium,
+      Breakpoints.Large,
+      Breakpoints.XLarge,
+    ]).subscribe(next => {
+      if (next.breakpoints[Breakpoints.XSmall]) {
+        this.displayedColumns = ['id', 'name', 'price', 'actualStorage', 'star'];
+      }
+      else if (next.breakpoints[Breakpoints.Small]) {
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+      }
+      else if (next.breakpoints[Breakpoints.Medium]) {
+        this.displayedColumns = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+      }
+      else if (next.breakpoints[Breakpoints.Large]) {
+        this.displayedColumns = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+      }
+      else if (next.breakpoints[Breakpoints.XLarge]) {
+        this.displayedColumns = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+      }
+      else {
+        console.warn('unknown device width match!')
+      }
     });
   }
   ngOnInit() {
@@ -34,11 +58,13 @@ export class SummaryProductComponent implements OnInit {
   pageHandler(e: PageEvent) {
     this.pageNumber = e.pageIndex;
     this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
-      this.dataSourceArray = [...this.dataSourceArray, ...products]
-      this.dataSource = new MatTableDataSource(this.dataSourceArray);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.totalProductHandler(products)
     });
+  }
+  private totalProductHandler(products: IProductTotalResponse) {
+    this.dataSource = new MatTableDataSource(products.productSimpleList);
+    this.totoalProductCount = products.totalProductCount;
+    this.dataSource.sort = this.sort;
   }
 
 }
