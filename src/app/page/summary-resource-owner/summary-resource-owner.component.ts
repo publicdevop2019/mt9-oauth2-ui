@@ -9,6 +9,11 @@ export interface IResourceOwner {
   locked: boolean;
   grantedAuthorities: IAuthority[];
 }
+export interface IResourceOwnerUpdatePwd {
+  email: string;
+  password: string;
+  currentPwd: string;
+}
 @Component({
   selector: 'app-summary-resource-owner',
   templateUrl: './summary-resource-owner.component.html',

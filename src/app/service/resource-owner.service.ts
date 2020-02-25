@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { MsgBoxComponent } from '../msg-box/msg-box.component';
-import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 /**
@@ -34,7 +34,7 @@ export class ResourceOwnerService {
       this._httpInterceptor.openSnackbar('operation success')
     });
   }
-  updateResourceOwnerPwd(resourceOwner: IResourceOwner): void {
+  updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): void {
     this.httpProxy.netImpl.updateResourceOwnerPwd(resourceOwner).subscribe(result => {
       if (!result)
         this._httpInterceptor.openSnackbar('operation failed')

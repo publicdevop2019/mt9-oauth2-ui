@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { FormGroup } from '@angular/forms';
 import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { HttpClient } from '@angular/common/http';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
@@ -80,7 +80,7 @@ export class SandboxImpl implements INetworkService {
     authorize(authorizeParty: IAuthorizeParty): Observable<IAuthorizeCode> {
         return of({ authorize_code: 'dummyCode' } as IAuthorizeCode).pipe(delay(this.defaultDelay))
     };
-    updateResourceOwnerPwd(resourceOwner: IResourceOwner): Observable<boolean> {
+    updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     updateResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {

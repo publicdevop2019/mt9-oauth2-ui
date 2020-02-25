@@ -1,7 +1,7 @@
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
 import { IProductSimple, IProductDetail, IProductTotalResponse } from '../service/product.service';
@@ -36,7 +36,7 @@ export interface INetworkService {
 
   getResourceOwners: () => Observable<IResourceOwner[]>;
   updateResourceOwner: (resourceOwner: IResourceOwner) => Observable<boolean>;
-  updateResourceOwnerPwd: (resourceOwner: IResourceOwner) => Observable<boolean>;
+  updateResourceOwnerPwd: (resourceOwner: IResourceOwnerUpdatePwd) => Observable<boolean>;
   deleteResourceOwner: (resourceOwner: IResourceOwner) => Observable<boolean>;
 
   authorize: (authorizeParty: IAuthorizeParty) => Observable<IAuthorizeCode>;

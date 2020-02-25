@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { IResourceOwner } from '../summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../summary-resource-owner/summary-resource-owner.component';
 import { ResourceOwnerService } from 'src/app/service/resource-owner.service';
 import { Observable } from 'rxjs';
 import { IAuthority } from '../summary-client/summary-client.component';
@@ -32,6 +32,9 @@ export class ResourceOwnerComponent implements OnInit {
       Validators.required
     ]),
     locked: new FormControl(false, [
+      Validators.required
+    ]),
+    currentPwd: new FormControl('', [
       Validators.required
     ]),
     pwd: new FormControl('', [
@@ -92,6 +95,13 @@ export class ResourceOwnerComponent implements OnInit {
       password: formGroup.get('pwd').value,
       locked: formGroup.get('locked').value,
       grantedAuthorities: authority
+    }
+  }
+  convertToIResourceOwnerUpdatePwd(formGroup: FormGroup): IResourceOwnerUpdatePwd {
+    return {
+      email: formGroup.get('email').value,
+      password: formGroup.get('pwd').value,
+      currentPwd: formGroup.get('currentPwd').value
     }
   }
 }

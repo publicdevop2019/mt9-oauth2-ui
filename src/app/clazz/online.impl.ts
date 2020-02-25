@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { switchMap } from 'rxjs/operators';
 import { getCookie } from './utility';
@@ -158,9 +158,9 @@ export class OnlineImpl implements INetworkService {
         formData.append('redirect_uri', authorizeParty.redirect_uri);
         return this._httpClient.post<IAuthorizeCode>(environment.serverUri + environment.apiVersion + '/authorize', formData);
     };
-    updateResourceOwnerPwd(resourceOwner: IResourceOwner): Observable<boolean> {
+    updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.patch<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwner/pwd', resourceOwner).subscribe(next => {
+            this._httpClient.patch<IResourceOwnerUpdatePwd>(environment.serverUri + environment.apiVersion + '/resourceOwner/pwd', resourceOwner).subscribe(next => {
                 e.next(true)
             });
         });

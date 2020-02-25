@@ -9,14 +9,21 @@
     </mat-form-field>
     <section name="update-pwd-or-register" *ngIf="state==='update:pwd'" style="display: flex;flex-direction: column">
         <mat-form-field style="margin-bottom: 10px;">
-            <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'" formControlName="pwd">
+            <input matInput placeholder="Enter your current password" [type]="hide ? 'password' : 'text'" formControlName="currentPwd">
             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide">
                 <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
         </mat-form-field>
         <mat-form-field style="margin-bottom: 10px;">
-            <input matInput placeholder="Re-enter your password" [type]="hide2 ? 'password' : 'text'"
+            <input matInput placeholder="Enter your new password" [type]="hide ? 'password' : 'text'" formControlName="pwd">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+        </mat-form-field>
+        <mat-form-field style="margin-bottom: 10px;">
+            <input matInput placeholder="Re-enter your new password" [type]="hide2 ? 'password' : 'text'"
                 formControlName="confirmPwd">
             <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide2">
@@ -43,7 +50,7 @@
         </div>
     </section>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;margin-top: 20px;" *ngIf="state==='update:pwd'"
-        (click)="resourceOwnerService.updateResourceOwnerPwd(convertToResourceOwner(resourceOwnerForm))">Update Password</button>
+        (click)="resourceOwnerService.updateResourceOwnerPwd(convertToIResourceOwnerUpdatePwd(resourceOwnerForm))">Update Password</button>
     <button mat-raised-button color="primary" *ngIf="state==='update:authority'"
         style="margin-bottom: 20px;margin-top: 20px;"
         (click)="resourceOwnerService.updateResourceOwner(convertToResourceOwner(resourceOwnerForm))">Update</button>
