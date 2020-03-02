@@ -119,7 +119,7 @@ export class SummarySecurityProfileComponent implements OnInit {
      * e.g. replace localhost with hostname
      * http://localhost:8080/v1/api/resourceOwners
      */
-    sp.url = sp.url ? sp.url.replace(/(:\/\/)(.*?)(:)/g, hostname) : null;
+    sp.url = sp.url ? sp.url.replace(/(:\/\/)(.*?)(:)/g, '://' + hostname + ':') : null;
     return sp;
   }
 }
