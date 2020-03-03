@@ -7,6 +7,7 @@ export interface IResourceOwner {
   email: string;
   password: string;
   locked: boolean;
+  subscription?: boolean;
   grantedAuthorities: IAuthority[];
 }
 export interface IResourceOwnerUpdatePwd {

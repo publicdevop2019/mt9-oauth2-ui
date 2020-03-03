@@ -34,6 +34,9 @@ export class ResourceOwnerComponent implements OnInit {
     locked: new FormControl(false, [
       Validators.required
     ]),
+    subNewOrder: new FormControl(false, [
+      Validators.required
+    ]),
     currentPwd: new FormControl('', [
       Validators.required
     ]),
@@ -66,6 +69,7 @@ export class ResourceOwnerComponent implements OnInit {
           this.resourceOwnerForm.get('authorityAdmin').setValue(resourceOwner.grantedAuthorities.some(e => e.grantedAuthority === 'ROLE_ADMIN'))
           this.resourceOwnerForm.get('authorityUser').setValue(resourceOwner.grantedAuthorities.some(e => e.grantedAuthority === 'ROLE_USER'))
           this.resourceOwnerForm.get('locked').setValue(resourceOwner.locked)
+          this.resourceOwnerForm.get('subNewOrder').setValue(resourceOwner.subscription)
         })
       } else if (queryMaps.get('state') === 'update:pwd') {
         this.resourceOwnerForm.get('email').setValue(this.httpProxy.netImpl.authenticatedEmail)
@@ -94,6 +98,7 @@ export class ResourceOwnerComponent implements OnInit {
       email: formGroup.get('email').value,
       password: formGroup.get('pwd').value,
       locked: formGroup.get('locked').value,
+      subscription: formGroup.get('subNewOrder').value,
       grantedAuthorities: authority
     }
   }
