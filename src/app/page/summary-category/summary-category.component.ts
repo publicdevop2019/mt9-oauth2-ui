@@ -9,7 +9,7 @@ import { IClient } from '../summary-client/summary-client.component';
   styleUrls: ['./summary-category.component.css']
 })
 export class SummaryCategoryComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'title', 'url', 'star'];
+  displayedColumns: string[] = ['id', 'title', 'star'];
   dataSource: MatTableDataSource<ICategory>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

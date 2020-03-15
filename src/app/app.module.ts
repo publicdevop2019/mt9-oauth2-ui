@@ -55,7 +55,7 @@ import { OrderComponent } from './page/order/order.component';
     CategoryComponent,
     ProductComponent,
     SummaryOrderComponent,
-    OrderComponent
+    OrderComponent,
   ],
   imports: [
     BrowserAnimationsModule,

@@ -9,32 +9,32 @@
         <!-- ID Column -->
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.id}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.id}} </td>
         </ng-container>
 
         <ng-container matColumnDef="category">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.category}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.category}} </td>
         </ng-container>
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.name}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.name}} </td>
         </ng-container>
 
         <ng-container matColumnDef="price">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Price </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.price}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.price}} </td>
         </ng-container>
 
         <ng-container matColumnDef="orderStorage">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Storage</th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.orderStorage}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.orderStorage}} </td>
         </ng-container>
 
         <ng-container matColumnDef="actualStorage">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Actual Storage</th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/products/'+row.id]"> {{row.actualStorage}} </td>
+            <td mat-cell *matCellDef="let row"> {{row.actualStorage}} </td>
         </ng-container>
 
         <!-- Star Column -->

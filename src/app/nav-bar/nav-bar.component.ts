@@ -1,7 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { MediaMatcher } from '@angular/cdk/layout';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { MediaMatcher, BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { environment } from 'src/environments/environment';
 import { ActivatedRouteSnapshot, ActivatedRoute, Router } from '@angular/router';
+import { MatSidenav } from '@angular/material';
 export interface INavElement {
   link: string;
   icon?: string;
@@ -121,10 +122,20 @@ export class NavBarComponent implements OnInit {
     }
   ];
   private _mobileQueryListener: () => void;
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router) {
+  @ViewChild("snav", { static: true }) snav: MatSidenav;
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.breakpointObserver.observe([Breakpoints.Large,
+    Breakpoints.XLarge,]).subscribe(next => {
+      if (next.breakpoints[Breakpoints.Large] || next.breakpoints[Breakpoints.XLarge]) {
+        this.snav.open()
+      }
+      else {
+        console.warn('unknown device width match!')
+      }
+    })
   }
 
   ngOnDestroy(): void {

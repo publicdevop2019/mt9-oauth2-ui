@@ -31,5 +31,6 @@
   }
   .nav-active{
     background-color: #fafafa;
-    font-weight: 500;
+    font-weight: 700;
+    border-bottom: 1px solid #673ab7;
   }
