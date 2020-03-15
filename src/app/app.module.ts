@@ -7,7 +7,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MsgBoxComponent } from './msg-box/msg-box.component';
+import { MsgBoxComponent } from './components/msg-box/msg-box.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { AuthorizeComponent } from './page/authorize/authorize.component';
 import { ClientComponent } from './page/client/client.component';
@@ -18,7 +18,7 @@ import { SecurityProfileComponent } from './page/security-profile/security-profi
 import { SummaryClientComponent } from './page/summary-client/summary-client.component';
 import { SummaryResourceOwnerComponent } from './page/summary-resource-owner/summary-resource-owner.component';
 import { SummarySecurityProfileComponent } from './page/summary-security-profile/summary-security-profile.component';
-import { ProgressSpinnerComponent } from './progress-spinner/progress-spinner.component';
+import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { AuthService } from './service/auth.service';
 import { ClientService } from './service/client.service';
 import { CustomHttpInterceptor } from './service/http.interceptor';

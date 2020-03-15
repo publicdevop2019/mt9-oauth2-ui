@@ -3,7 +3,7 @@ import { FormControl, Validators, FormGroup, Form } from '@angular/forms';
 import { HttpProxyService } from 'src/app/service/http-proxy.service';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { MsgBoxComponent } from 'src/app/msg-box/msg-box.component';
+import { MsgBoxComponent } from 'src/app/components/msg-box/msg-box.component';
 import { environment } from 'src/environments/environment';
 
 @Component({
