@@ -76,6 +76,9 @@ export class SandboxImpl implements INetworkService {
     constructor(http: HttpClient) {
         this.http = http;
     }
+    activate(fg: FormGroup): Observable<any> {
+        return of()
+    };
     currentUserAuthInfo: ITokenResponse;
     authorize(authorizeParty: IAuthorizeParty): Observable<IAuthorizeCode> {
         return of({ authorize_code: 'dummyCode' } as IAuthorizeCode).pipe(delay(this.defaultDelay))

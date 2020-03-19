@@ -12,6 +12,7 @@ export interface INetworkService {
   currentUserAuthInfo: ITokenResponse;
   login: (fg: FormGroup) => Observable<ITokenResponse>;
   register: (fg: FormGroup) => Observable<any>;
+  activate: (fg: FormGroup) => Observable<any>;
   refreshToken: () => Observable<ITokenResponse>;
   uploadFile: (file: File) => Observable<string>;
 

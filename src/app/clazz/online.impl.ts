@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd, IPendingResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { switchMap } from 'rxjs/operators';
 import { getCookie } from './utility';
@@ -74,6 +74,11 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
+    activate(fg: FormGroup): Observable<any> {
+        const formData = new FormData();
+        formData.append('grant_type', 'client_credentials');
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
+    };
     getCategories(): Observable<ICategory[]> {
         return this._httpClient.get<ICategory[]>(environment.serverUri + '/api/categories');
     };
@@ -237,12 +242,19 @@ export class OnlineImpl implements INetworkService {
     private _createUser(token: string, registerFG: FormGroup): Observable<any> {
         return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners', this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
-    private _getRegPayload(fg: FormGroup): IResourceOwner {
+    private _getActivationCode(token: string, registerFG: FormGroup): Observable<any> {
+        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners/register', this._getActivatePayload(registerFG), { headers: this._getAuthHeader(false, token) })
+    }
+    private _getRegPayload(fg: FormGroup): IPendingResourceOwner {
         return {
             email: fg.get('email').value,
             password: fg.get('pwd').value,
-            grantedAuthorities: [],
-            locked: false
+            activationCode: fg.get('activationCode').value,
+        };
+    }
+    private _getActivatePayload(fg: FormGroup): IPendingResourceOwner {
+        return {
+            email: fg.get('email').value,
         };
     }
 }

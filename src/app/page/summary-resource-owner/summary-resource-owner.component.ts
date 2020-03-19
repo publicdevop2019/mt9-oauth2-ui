@@ -10,6 +10,11 @@ export interface IResourceOwner {
   subscription?: boolean;
   grantedAuthorities: IAuthority[];
 }
+export interface IPendingResourceOwner {
+  email: string;
+  password?: string;
+  activationCode?:string;
+}
 export interface IResourceOwnerUpdatePwd {
   email: string;
   password: string;

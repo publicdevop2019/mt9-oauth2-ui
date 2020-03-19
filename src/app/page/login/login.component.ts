@@ -26,6 +26,9 @@ export class LoginComponent implements OnInit {
     confirmPwd: new FormControl('', [
       Validators.required
     ]),
+    activationCode: new FormControl('', [
+      Validators.required
+    ]),
   });
   hide = true;
   hide2 = true;
@@ -60,6 +63,12 @@ export class LoginComponent implements OnInit {
       this.loginOrRegForm.get('state').setValue(false);
       this.openDialog('register success, please login');
     })
+  }
+  getCode() {
+    this.httpProxy.netImpl.activate(this.loginOrRegForm).subscribe(next => {
+      this.openDialog('code send success, please check your email');
+    })
+
   }
   openDialog(msg: string): void {
     this.dialog.open(MsgBoxComponent, {
