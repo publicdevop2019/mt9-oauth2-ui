@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpInterceptor, HttpResponse } from '@angular/common/http';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, finalize } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
 
 @Injectable()
@@ -13,15 +13,9 @@ export class LoadingInterceptor implements HttpInterceptor {
     this.totalRequests++;
     this.httpProxy.inProgress = true;
     return next.handle(request).pipe(
-      tap(res => {
-        if (res instanceof HttpResponse) {
-          this.decreaseRequests();
-        }
-      }),
-      catchError(err => {
+      finalize(() => {
         this.decreaseRequests();
-        throw err;
-      })
+    })
     );
   }
 
