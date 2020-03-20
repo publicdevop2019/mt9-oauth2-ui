@@ -13,7 +13,12 @@ export interface IResourceOwner {
 export interface IPendingResourceOwner {
   email: string;
   password?: string;
-  activationCode?:string;
+  activationCode?: string;
+}
+export interface IForgetPasswordRequest {
+  email: string;
+  token?: string;
+  newPassword?: string;
 }
 export interface IResourceOwnerUpdatePwd {
   email: string;

@@ -14,8 +14,19 @@
         </mat-form-field>
         <button *ngIf="loginOrRegForm.get('state').value" mat-raised-button (click)="getCode()" color="primary">Get
             Activation Code</button>
+        <button *ngIf="!loginOrRegForm.get('state').value && forgetPwd" mat-raised-button (click)="getToken()"
+            color="primary">Get
+            Password Reset Token</button>
         <mat-form-field *ngIf="loginOrRegForm.get('state').value">
             <input matInput placeholder="activation code" formControlName="activationCode">
+        </mat-form-field>
+        <mat-form-field *ngIf="!loginOrRegForm.get('state').value && forgetPwd">
+            <input matInput placeholder="Enter password reset token" [type]="hide ? 'password' : 'text'"
+                formControlName="token" [autocomplete]="false">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide">
+                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
         </mat-form-field>
         <mat-form-field>
             <input matInput placeholder="Enter your password" [type]="hide ? 'password' : 'text'" formControlName="pwd"
@@ -25,7 +36,7 @@
                 <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
         </mat-form-field>
-        <mat-form-field *ngIf="loginOrRegForm.get('state').value">
+        <mat-form-field *ngIf="loginOrRegForm.get('state').value || forgetPwd">
             <input matInput placeholder="Confirm your password" [type]="hide2 ? 'password' : 'text'"
                 formControlName="confirmPwd" [autocomplete]="false">
             <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'"
@@ -33,9 +44,15 @@
                 <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
         </mat-form-field>
-        <button mat-raised-button *ngIf="!loginOrRegForm.get('state').value" (click)="login()"
+        <button mat-raised-button *ngIf="!loginOrRegForm.get('state').value && !forgetPwd" (click)="login()"
             color="primary">Login</button>
         <button mat-raised-button *ngIf="loginOrRegForm.get('state').value" (click)="register()"
             color="primary">Register</button>
+        <button mat-raised-button *ngIf="!loginOrRegForm.get('state').value && forgetPwd" (click)="changePassword()"
+            color="primary">Change password</button>
+        <a *ngIf="!loginOrRegForm.get('state').value && !forgetPwd" (click)="forgetPwd=true" class="forget-pwd">Forget
+            password ?</a>
+        <a *ngIf="!loginOrRegForm.get('state').value && forgetPwd" (click)="forgetPwd=false" class="forget-pwd">Go back
+            to login</a>
     </div>
 </form>

@@ -79,6 +79,12 @@ export class SandboxImpl implements INetworkService {
     activate(fg: FormGroup): Observable<any> {
         return of()
     };
+    resetPwd(fg: FormGroup): Observable<any> {
+        return of()
+    };
+    forgetPwd(fg: FormGroup): Observable<any> {
+        return of()
+    };
     currentUserAuthInfo: ITokenResponse;
     authorize(authorizeParty: IAuthorizeParty): Observable<IAuthorizeCode> {
         return of({ authorize_code: 'dummyCode' } as IAuthorizeCode).pipe(delay(this.defaultDelay))

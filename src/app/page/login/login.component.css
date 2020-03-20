@@ -34,9 +34,13 @@
   input.example-right-align {
     -moz-appearance: textfield;
   }
-  /* :host{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-} */
+  .forget-pwd{
+    margin-top: 16px;
+    font: 16px;
+    color: blue;
+    text-decoration: underline;
+    
+  }
+  .forget-pwd:hover{
+    cursor: pointer;
+  }

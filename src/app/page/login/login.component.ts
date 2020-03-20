@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 })
 export class LoginComponent implements OnInit {
   nextUrl: string = '/dashboard';
+  forgetPwd: boolean = false;
   loginOrRegForm = new FormGroup({
     state: new FormControl('', [
       Validators.required
@@ -27,6 +28,9 @@ export class LoginComponent implements OnInit {
       Validators.required
     ]),
     activationCode: new FormControl('', [
+      Validators.required
+    ]),
+    token: new FormControl('', [
       Validators.required
     ]),
   });
@@ -69,6 +73,18 @@ export class LoginComponent implements OnInit {
       this.openDialog('code send success, please check your email');
     })
 
+  }
+  getToken() {
+    this.httpProxy.netImpl.forgetPwd(this.loginOrRegForm).subscribe(next => {
+      this.openDialog('token send success, please check your email');
+    })
+  }
+  changePassword() {
+    this.httpProxy.netImpl.resetPwd(this.loginOrRegForm).subscribe(next => {
+      this.loginOrRegForm.get('state').setValue(false);
+      this.forgetPwd=false;
+      this.openDialog('password update success, please login');
+    })
   }
   openDialog(msg: string): void {
     this.dialog.open(MsgBoxComponent, {

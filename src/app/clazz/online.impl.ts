@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd, IPendingResourceOwner } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd, IPendingResourceOwner, IForgetPasswordRequest } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { switchMap } from 'rxjs/operators';
 import { getCookie } from './utility';
@@ -74,6 +74,16 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
+    forgetPwd(fg: FormGroup): Observable<any> {
+        const formData = new FormData();
+        formData.append('grant_type', 'client_credentials');
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._forgetPwd(this._getToken(token), fg)))
+    };
+    resetPwd(fg: FormGroup): Observable<any> {
+        const formData = new FormData();
+        formData.append('grant_type', 'client_credentials');
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._resetPwd(this._getToken(token), fg)))
+    };
     activate(fg: FormGroup): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
@@ -245,6 +255,12 @@ export class OnlineImpl implements INetworkService {
     private _getActivationCode(token: string, registerFG: FormGroup): Observable<any> {
         return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners/register', this._getActivatePayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
+    private _resetPwd(token: string, registerFG: FormGroup): Observable<any> {
+        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+    }
+    private _forgetPwd(token: string, registerFG: FormGroup): Observable<any> {
+        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+    }
     private _getRegPayload(fg: FormGroup): IPendingResourceOwner {
         return {
             email: fg.get('email').value,
@@ -255,6 +271,18 @@ export class OnlineImpl implements INetworkService {
     private _getActivatePayload(fg: FormGroup): IPendingResourceOwner {
         return {
             email: fg.get('email').value,
+        };
+    }
+    private _getForgetPayload(fg: FormGroup): IForgetPasswordRequest {
+        return {
+            email: fg.get('email').value,
+        };
+    }
+    private _getResetPayload(fg: FormGroup): IForgetPasswordRequest {
+        return {
+            email: fg.get('email').value,
+            token: fg.get('token').value,
+            newPassword: fg.get('pwd').value,
         };
     }
 }

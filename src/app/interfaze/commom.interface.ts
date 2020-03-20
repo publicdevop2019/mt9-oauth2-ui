@@ -13,6 +13,8 @@ export interface INetworkService {
   login: (fg: FormGroup) => Observable<ITokenResponse>;
   register: (fg: FormGroup) => Observable<any>;
   activate: (fg: FormGroup) => Observable<any>;
+  forgetPwd: (fg: FormGroup) => Observable<any>;
+  resetPwd: (fg: FormGroup) => Observable<any>;
   refreshToken: () => Observable<ITokenResponse>;
   uploadFile: (file: File) => Observable<string>;
 
