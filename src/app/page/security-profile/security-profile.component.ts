@@ -25,7 +25,7 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     public securityProfileService: SecurityProfileService,
     private fis: FormInfoService
   ) {
-    this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
+    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();

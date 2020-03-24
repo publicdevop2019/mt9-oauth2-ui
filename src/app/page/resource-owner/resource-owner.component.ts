@@ -22,13 +22,13 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   hide2 = true;
   formId = 'resourceOwner';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  validator: ValidateHelper;;
+  validator: ValidateHelper;
   constructor(
     private route: ActivatedRoute,
     public resourceOwnerService: ResourceOwnerService,
     private fis: FormInfoService
   ) {
-    this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
+    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);

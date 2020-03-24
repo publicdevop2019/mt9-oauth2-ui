@@ -7,7 +7,6 @@ import { CustomHttpInterceptor } from './http.interceptor';
 export interface ICategory{
   id:number,
   title:string,
-  url:string
 }
 @Injectable({
   providedIn: 'root'
