@@ -6,6 +6,7 @@ import { ISecurityProfile } from '../page/summary-security-profile/summary-secur
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { switchMap } from 'rxjs/operators';
+import { FORM_CONFIG } from '../form-configs/security-profile.config';
 
 @Injectable({
   providedIn: 'root'

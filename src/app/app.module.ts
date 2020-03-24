@@ -34,6 +34,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SummaryOrderComponent } from './page/summary-order/summary-order.component';
 import { OrderComponent } from './page/order/order.component';
+import { FormInfoService, MagicFormModule } from 'magic-form';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { OrderComponent } from './page/order/order.component';
     MatDialogModule,
     MatSnackBarModule,
     LayoutModule,
+    MagicFormModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   entryComponents: [MsgBoxComponent],
@@ -97,7 +99,7 @@ import { OrderComponent } from './page/order/order.component';
       useClass: LoadingInterceptor,
       multi: true
     },
-    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService,CustomHttpInterceptor],
+    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService,CustomHttpInterceptor,FormInfoService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

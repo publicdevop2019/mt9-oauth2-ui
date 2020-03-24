@@ -1,28 +1,14 @@
-<div class="example-container" [formGroup]="securityProfileForm">
+<div class="example-container">
     <button [routerLink]="'/dashboard/security-profiles'" [queryParams]="{state: 'none'}" mat-button
         style="text-align: left;padding-left: 0px;margin-bottom: 10px;">
         <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
     </button>
-    <mat-form-field>
-        <input matInput placeholder="Enter resource-id" formControlName="resourceID">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter endpoint" formControlName="path">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter method" formControlName="method">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter expression" formControlName="expression">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter url" formControlName="url">
-    </mat-form-field>
+    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="securityProfileService.update(convertToSecurityProfile(securityProfileForm))">Update</button>
+        (click)="validate('Update')&&securityProfileService.update(convertToSecurityProfile())">Update</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'"
-        (click)="securityProfileService.delete(convertToSecurityProfile(securityProfileForm))">Delete</button>
+        (click)="validate('Delete')&&securityProfileService.delete(convertToSecurityProfile())">Delete</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="securityProfileService.create(convertToSecurityProfile(securityProfileForm))"
+        (click)="validate('Create')&&securityProfileService.create(convertToSecurityProfile())"
         *ngIf="state=='create'">Create</button>
 </div>
