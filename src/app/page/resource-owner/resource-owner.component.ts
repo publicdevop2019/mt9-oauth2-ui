@@ -1,98 +1,77 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../summary-resource-owner/summary-resource-owner.component';
-import { ResourceOwnerService } from 'src/app/service/resource-owner.service';
+import { FormInfoService } from 'magic-form';
+import { IForm } from 'magic-form/lib/classes/template.interface';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { FORM_CONFIG } from 'src/app/form-configs/resource-owner.config';
+import { ResourceOwnerService } from 'src/app/service/resource-owner.service';
 import { IAuthority } from '../summary-client/summary-client.component';
-import { HttpProxyService } from 'src/app/service/http-proxy.service';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../summary-resource-owner/summary-resource-owner.component';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',
   styleUrls: ['./resource-owner.component.css']
 })
-export class ResourceOwnerComponent implements OnInit {
+export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy {
   state: string;
   resourceOwner: IResourceOwner;
   resourceOwner$: Observable<IResourceOwner>;
   hide = true;
   hide2 = true;
-  resourceOwnerForm = new FormGroup({
-    id: new FormControl('', [
-      Validators.required
-    ]),
-    email: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    authorityAdmin: new FormControl('', [
-      Validators.required
-    ]),
-    authorityUser: new FormControl('', [
-      Validators.required
-    ]),
-    locked: new FormControl(false, [
-      Validators.required
-    ]),
-    subNewOrder: new FormControl(false, [
-      Validators.required
-    ]),
-    currentPwd: new FormControl('', [
-      Validators.required
-    ]),
-    pwd: new FormControl('', [
-      Validators.required
-    ]),
-    confirmPwd: new FormControl('', [
-      Validators.required
-    ]),
-  });
+  formId = 'resourceOwner';
+  formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
+  validator: ValidateHelper;;
   constructor(
     private route: ActivatedRoute,
     public resourceOwnerService: ResourceOwnerService,
-    private httpProxy: HttpProxyService
+    private fis: FormInfoService
   ) {
+    this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
   }
-
+  ngAfterViewInit(): void {
+    this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
+  }
+  ngOnDestroy(): void {
+    this.fis.formGroupCollection[this.formId].reset();
+  }
   ngOnInit() {
-    this.resourceOwner$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) =>
-        this.resourceOwnerService.getResourceOwner(+params.get('id')))
-
-    );
+    this.resourceOwner$ = this.route.paramMap.pipe(switchMap((params: ParamMap) => this.resourceOwnerService.getResourceOwner(+params.get('id'))));
     this.route.queryParamMap.subscribe(queryMaps => {
       this.state = queryMaps.get('state');
       if (queryMaps.get('state') === 'update:authority') {
         this.resourceOwner$.subscribe(resourceOwner => {
-          this.resourceOwnerForm.get('id').setValue(resourceOwner.id)
-          this.resourceOwnerForm.get('email').setValue(resourceOwner.email)
-          this.resourceOwnerForm.get('authorityAdmin').setValue(resourceOwner.grantedAuthorities.some(e => e.grantedAuthority === 'ROLE_ADMIN'))
-          this.resourceOwnerForm.get('authorityUser').setValue(resourceOwner.grantedAuthorities.some(e => e.grantedAuthority === 'ROLE_USER'))
-          this.resourceOwnerForm.get('locked').setValue(resourceOwner.locked)
-          this.resourceOwnerForm.get('subNewOrder').setValue(resourceOwner.subscription)
+          console.dir(resourceOwner)
+          console.dir(resourceOwner.grantedAuthorities.map(e => e.grantedAuthority))
+          this.fis.formGroupCollection[this.formId].get('id').setValue(resourceOwner.id)
+          this.fis.formGroupCollection[this.formId].get('email').setValue(resourceOwner.email)
+          this.fis.formGroupCollection[this.formId].get('authority').setValue(resourceOwner.grantedAuthorities.map(e => e.grantedAuthority))
+          this.fis.formGroupCollection[this.formId].get('locked').setValue(resourceOwner.locked)
+          this.fis.formGroupCollection[this.formId].get('subNewOrder').setValue(resourceOwner.subscription)
         })
       } else if (queryMaps.get('state') === 'update:pwd') {
-        this.resourceOwnerForm.get('email').setValue(this.httpProxy.netImpl.authenticatedEmail)
-
+        let ctrls = ['currentPwd', 'pwd', 'confirmPwd'];
+        this.formInfo.inputs.forEach(e => e.display = ctrls.indexOf(e.key) > -1);
       } else if (queryMaps.get('state') === 'none') {
 
       } else {
 
       }
     })
+
   }
 
-  getErrorMessage() {
-    return this.resourceOwnerForm.get('email').hasError('required') ? 'You must enter a value' :
-      this.resourceOwnerForm.get('email').hasError('email') ? 'Not a valid email' :
-        '';
-  }
-  convertToResourceOwner(formGroup: FormGroup): IResourceOwner {
+  convertToResourceOwner(): IResourceOwner {
+    let formGroup = this.fis.formGroupCollection[this.formId];
     let authority: IAuthority[] = [];
-    if (formGroup.get('authorityAdmin').value)
-      authority.push({ grantedAuthority: "ROLE_ADMIN" } as IAuthority)
-    if (formGroup.get('authorityUser').value)
-      authority.push({ grantedAuthority: "ROLE_USER" } as IAuthority)
+    if (Array.isArray(formGroup.get('authority').value)) {
+      authority = (formGroup.get('authority').value as Array<string>).map(e => {
+        return <IAuthority>{
+          grantedAuthority: e
+        }
+      })
+    }
     return {
       id: formGroup.get('id').value,
       email: formGroup.get('email').value,
@@ -102,9 +81,9 @@ export class ResourceOwnerComponent implements OnInit {
       grantedAuthorities: authority
     }
   }
-  convertToIResourceOwnerUpdatePwd(formGroup: FormGroup): IResourceOwnerUpdatePwd {
+  convertToIResourceOwnerUpdatePwd(): IResourceOwnerUpdatePwd {
+    let formGroup = this.fis.formGroupCollection[this.formId];
     return {
-      email: formGroup.get('email').value,
       password: formGroup.get('pwd').value,
       currentPwd: formGroup.get('currentPwd').value
     }

@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
   hide = true;
   hide2 = true;
   constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute) {
-    this.httpProxy.netImpl.authenticatedEmail = undefined;
     this.httpProxy.netImpl.currentUserAuthInfo = undefined;
     this.httpProxy.expireRefresh = false;
     this.router.queryParamMap.subscribe(queryMaps => {
@@ -57,7 +56,6 @@ export class LoginComponent implements OnInit {
   }
   login() {
     this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(next => {
-      this.httpProxy.netImpl.authenticatedEmail = this.loginOrRegForm.get('email').value;
       this.httpProxy.netImpl.currentUserAuthInfo = next;
       this.route.navigate([this.nextUrl], { queryParams: this.router.snapshot.queryParams });
     })

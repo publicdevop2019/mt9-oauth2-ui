@@ -5,10 +5,10 @@
     </button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validate('Update')&&securityProfileService.update(convertToSecurityProfile())">Update</button>
+        (click)="validator.valid()&&securityProfileService.update(convertToSecurityProfile())">Update</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'"
-        (click)="validate('Delete')&&securityProfileService.delete(convertToSecurityProfile())">Delete</button>
+        (click)="validator.valid()&&securityProfileService.delete(convertToSecurityProfile())">Delete</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="validate('Create')&&securityProfileService.create(convertToSecurityProfile())"
+        (click)="validator.valid()&&securityProfileService.create(convertToSecurityProfile())"
         *ngIf="state=='create'">Create</button>
 </div>

@@ -1,65 +1,15 @@
-<div class="example-container" [formGroup]="resourceOwnerForm">
+<div class="example-container">
     <button [routerLink]="'/dashboard/resource-owners'" [queryParams]="{state: 'none'}" mat-button
         style="text-align: left;padding-left: 0px;margin-bottom: 10px;">
         <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
     </button>
-    <mat-form-field *ngIf="state==='update:authority'" style="margin-bottom: 10px;">
-        <input matInput placeholder="Enter your email" formControlName="email">
-        <mat-error *ngIf="resourceOwnerForm.get('email').invalid">{{getErrorMessage()}}</mat-error>
-    </mat-form-field>
-    <section name="update-pwd-or-register" *ngIf="state==='update:pwd'" style="display: flex;flex-direction: column">
-        <mat-form-field style="margin-bottom: 10px;">
-            <input matInput placeholder="Enter your current password" [type]="hide ? 'password' : 'text'" formControlName="currentPwd">
-            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hide">
-                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-        </mat-form-field>
-        <mat-form-field style="margin-bottom: 10px;">
-            <input matInput placeholder="Enter your new password" [type]="hide ? 'password' : 'text'" formControlName="pwd">
-            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hide">
-                <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-        </mat-form-field>
-        <mat-form-field style="margin-bottom: 10px;">
-            <input matInput placeholder="Re-enter your new password" [type]="hide2 ? 'password' : 'text'"
-                formControlName="confirmPwd">
-            <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hide2">
-                <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-        </mat-form-field>
-    </section>
-    <section name="authority" *ngIf="state==='update:authority'" style="margin-bottom: 10px;">
-        <mat-label>Please select authority(s)</mat-label>
-        <div>
-            <mat-checkbox class="example-margin" formControlName="authorityAdmin">Admin
-            </mat-checkbox>
-        </div>
-        <div>
-            <mat-checkbox class="example-margin" formControlName="authorityUser">User
-            </mat-checkbox>
-        </div>
-
-    </section>
-    <section name="lock" *ngIf="state==='update:authority'" style="margin-bottom: 10px;">
-        <mat-label>Lock or unlock user</mat-label>
-        <div>
-            <mat-checkbox class="example-margin" formControlName="locked">Lock</mat-checkbox>
-        </div>
-    </section>
-    <section name="email-sub" *ngIf="state==='update:authority'" style="margin-bottom: 10px;">
-        <mat-label>New Order Subscribe</mat-label>
-        <div>
-            <mat-checkbox class="example-margin" formControlName="subNewOrder">Subscribe for new order</mat-checkbox>
-        </div>
-    </section>
+    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;margin-top: 20px;" *ngIf="state==='update:pwd'"
-        (click)="resourceOwnerService.updateResourceOwnerPwd(convertToIResourceOwnerUpdatePwd(resourceOwnerForm))">Update Password</button>
+        (click)="validator.valid()&&resourceOwnerService.updateResourceOwnerPwd(convertToIResourceOwnerUpdatePwd())">Update
+        Password</button>
     <button mat-raised-button color="primary" *ngIf="state==='update:authority'"
         style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="resourceOwnerService.updateResourceOwner(convertToResourceOwner(resourceOwnerForm))">Update</button>
+        (click)="validator.valid()&&resourceOwnerService.updateResourceOwner(convertToResourceOwner())">Update</button>
     <button mat-raised-button color="warn" *ngIf="state==='update:authority'"
-        (click)="resourceOwnerService.deleteResourceOwner(convertToResourceOwner(resourceOwnerForm))">Delete</button>
+        (click)="validator.valid()&&resourceOwnerService.deleteResourceOwner(convertToResourceOwner())">Delete</button>
 </div>

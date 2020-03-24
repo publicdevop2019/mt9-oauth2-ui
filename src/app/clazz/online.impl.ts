@@ -59,7 +59,6 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    authenticatedEmail: string;
     set currentUserAuthInfo(token: ITokenResponse) {
         document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
     };

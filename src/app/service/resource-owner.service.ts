@@ -6,6 +6,7 @@ import { MsgBoxComponent } from '../components/msg-box/msg-box.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
+import { delay } from 'rxjs/operators';
 /**
  * responsible for convert FormGroup to business model
  */
@@ -40,7 +41,6 @@ export class ResourceOwnerService {
         this._httpInterceptor.openSnackbar('operation failed')
       this._httpInterceptor.openSnackbar('operation success, please login again')
       /** clear authentication info */
-      this.httpProxy.netImpl.authenticatedEmail = undefined;
       this.httpProxy.netImpl.currentUserAuthInfo = undefined;
       this.router.navigateByUrl('/login');
     });

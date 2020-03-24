@@ -1,13 +1,13 @@
-import { Component, OnInit, AfterContentInit, AfterViewChecked, AfterViewInit, AfterContentChecked, OnDestroy } from '@angular/core';
-import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
-import { Observable } from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { SecurityProfileService } from 'src/app/service/security-profile.service';
-import { switchMap } from 'rxjs/operators';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { FORM_CONFIG } from 'src/app/form-configs/security-profile.config';
 import { FormInfoService } from 'magic-form';
-import { IForm, IInputConfig, IAttribute } from 'magic-form/lib/classes/template.interface';
+import { IAttribute, IForm } from 'magic-form/lib/classes/template.interface';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { FORM_CONFIG } from 'src/app/form-configs/security-profile.config';
+import { SecurityProfileService } from 'src/app/service/security-profile.service';
+import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
 
 @Component({
   selector: 'app-security-profile',
@@ -19,22 +19,19 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   formId = 'securityProfile';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   securityProfile$: Observable<ISecurityProfile>;
-  private previousPayload: any;
+  validator: ValidateHelper;;
   constructor(
     private route: ActivatedRoute,
     public securityProfileService: SecurityProfileService,
     private fis: FormInfoService
-  ) { }
+  ) {
+    this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
+  }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();
   }
   ngAfterViewInit(): void {
-    this.previousPayload = this.fis.formGroupCollection[this.formId].value;
-    this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
-      const changedKey = this.findDelta(e);
-      this.formInfo.inputs.filter(input => input.key === changedKey).forEach(input => this.fis.validateInput(this.formId, input));
-      this.previousPayload = this.fis.formGroupCollection[this.formId].value;
-    });
+    this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
   }
   ngOnInit() {
     this.securityProfile$ = this.route.paramMap.pipe(
@@ -77,32 +74,5 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
       expression: formGroup.get('expression').value,
       url: formGroup.get('url').value
     }
-  }
-  findDelta(newPayload: any): string {
-    const changeKeys: string[] = [];
-    for (const p in newPayload) {
-      if (this.previousPayload[p] === newPayload[p]) {
-      } else {
-        changeKeys.push(p as string);
-      }
-    }
-    return changeKeys[0];
-  }
-  validate(context: string): boolean {
-    if (context.toLowerCase() === 'create') {
-      this.formInfo.inputs.forEach(input => this.fis.validateInput(this.formId, input));
-      return this.noErrorPresent(this.formInfo.inputs);
-    }
-    else if (context.toLowerCase() === 'update') {
-      this.formInfo.inputs.forEach(input => this.fis.validateInput(this.formId, input));
-      return this.noErrorPresent(this.formInfo.inputs);
-    }
-    else if (context.toLowerCase() === 'delete') {
-      this.formInfo.inputs.forEach(input => this.fis.validateInput(this.formId, input));
-      return this.noErrorPresent(this.formInfo.inputs);
-    }
-  }
-  private noErrorPresent(inputs: IInputConfig[]): boolean {
-    return inputs.find(input => input.errorMsg !== null && input.errorMsg !== undefined) === undefined
   }
 }

@@ -8,7 +8,6 @@ import { IProductSimple, IProductDetail, IProductTotalResponse } from '../servic
 
 // regulate interface
 export interface INetworkService {
-  authenticatedEmail: string
   currentUserAuthInfo: ITokenResponse;
   login: (fg: FormGroup) => Observable<ITokenResponse>;
   register: (fg: FormGroup) => Observable<any>;

@@ -21,7 +21,6 @@ export interface IForgetPasswordRequest {
   newPassword?: string;
 }
 export interface IResourceOwnerUpdatePwd {
-  email: string;
   password: string;
   currentPwd: string;
 }
