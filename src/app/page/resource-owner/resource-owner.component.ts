@@ -42,8 +42,6 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
       this.state = queryMaps.get('state');
       if (queryMaps.get('state') === 'update:authority') {
         this.resourceOwner$.subscribe(resourceOwner => {
-          console.dir(resourceOwner)
-          console.dir(resourceOwner.grantedAuthorities.map(e => e.grantedAuthority))
           this.fis.formGroupCollection[this.formId].get('id').setValue(resourceOwner.id)
           this.fis.formGroupCollection[this.formId].get('email').setValue(resourceOwner.email)
           this.fis.formGroupCollection[this.formId].get('authority').setValue(resourceOwner.grantedAuthorities.map(e => e.grantedAuthority))

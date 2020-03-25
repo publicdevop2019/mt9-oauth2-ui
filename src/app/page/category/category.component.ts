@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'magic-form';
@@ -7,18 +7,19 @@ import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/category.config';
 import { CategoryService, ICategory } from 'src/app/service/category.service';
+import { IForm } from 'magic-form/lib/classes/template.interface';
 
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.css']
 })
-export class CategoryComponent implements OnInit, AfterViewInit {
+export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   state: string;
   category: ICategory;
   category$: Observable<ICategory>;
   formId = 'category';
-  formInfo = FORM_CONFIG;
+  formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +30,9 @@ export class CategoryComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
+  }
+  ngOnDestroy(): void {
+    this.fis.formGroupCollection[this.formId].reset();
   }
   ngOnInit() {
     this.category$ = this.route.paramMap.pipe(

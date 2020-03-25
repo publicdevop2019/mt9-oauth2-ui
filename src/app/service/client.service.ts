@@ -34,6 +34,7 @@ export class ClientService {
     }))
   }
   updateClient(client: IClient): void {
+    console.dir(client)
     this.httpProxy.netImpl.updateClient(client).subscribe(result => {
       this.notifyTokenRevocation(result)
     })
@@ -45,6 +46,7 @@ export class ClientService {
     })
   }
   createClient(client: IClient): void {
+    console.dir(client)
     this.httpProxy.netImpl.createClient(client).subscribe(result => {
       this.notify(result)
     })

@@ -1,11 +1,10 @@
-// import { IForm, IInputConfig } from "magic-form/lib/classes/template.interface";
-// import { IForm } from 'magic-form/lib/classes/template.interface';
 import { FormInfoService } from "magic-form";
 import { FormGroup } from "@angular/forms";
+import { IForm } from 'magic-form/lib/classes/template.interface';
 
 export class ValidateHelper {
   private previousPayload: any;
-  private _formInfo: any;
+  private _formInfo: IForm;
   private _formId: string;
   private _fis: FormInfoService
   constructor(formId: string, formInfo: any, fis: FormInfoService) {
