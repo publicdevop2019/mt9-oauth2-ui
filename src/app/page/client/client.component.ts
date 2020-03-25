@@ -82,16 +82,12 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
       // prevent infinite loop
       if (this.findDelta(e) !== undefined) {
-        // clear form value on display = ''
-        this.formInfo.inputs.find(e => e.key === 'clientSecret').display = e['hasSecret'] ? 'true' : 'false';
-        this.formInfo.inputs.find(e => e.key === 'registeredRedirectUri').display = (e['grantType'] as string[] || []).indexOf('authorization_code') > -1 ? 'true' : 'false';
-        this.formInfo.inputs.find(e => e.key === 'refreshToken').display = (e['grantType'] as string[] || []).indexOf('password') > -1 ? 'true' : 'false';
-        this.formInfo.inputs.find(e => e.key === 'autoApprove').display = (e['grantType'] as string[] || []).indexOf('authorization_code') > -1 ? 'true' : 'false';
-        this.formInfo.inputs.find(e => e.key === 'refreshTokenValiditySeconds').display = (e['grantType'] as string[] || []).indexOf('password') > -1 && e['refreshToken'] ? 'true' : 'false';
-          // this.formInfo = JSON.parse(JSON.stringify(this.formInfo));
-        // if (this.updateViewRequired(this.previousFormInfo, this.formInfo)) {
-        //   this.previousFormInfo = JSON.parse(JSON.stringify(this.formInfo));
-        // }
+        // clear form value on display = false
+        this.formInfo.inputs.find(e => e.key === 'clientSecret').display = e['hasSecret'];
+        this.formInfo.inputs.find(e => e.key === 'registeredRedirectUri').display = (e['grantType'] as string[] || []).indexOf('authorization_code') > -1;
+        this.formInfo.inputs.find(e => e.key === 'refreshToken').display = (e['grantType'] as string[] || []).indexOf('password') > -1;
+        this.formInfo.inputs.find(e => e.key === 'autoApprove').display = (e['grantType'] as string[] || []).indexOf('authorization_code') > -1;
+        this.formInfo.inputs.find(e => e.key === 'refreshTokenValiditySeconds').display = (e['grantType'] as string[] || []).indexOf('password') > -1 && e['refreshToken'];
       }
       this.previousPayload = e;
       // update form config
@@ -107,9 +103,6 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     return changeKeys[0];
-  }
-  private updateViewRequired(previous: any, newPayload: any): boolean {
-    return JSON.stringify(previous) !== JSON.stringify(newPayload);
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();

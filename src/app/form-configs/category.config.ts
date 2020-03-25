@@ -5,7 +5,7 @@ export const FORM_CONFIG: IForm = {
     "inputs": [
         {
             "type": "text",
-            "display": '',
+            "display": false,
             "label": "ID",
             "key": "id",
             "position": {
@@ -15,7 +15,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": 'true',
+            "display": true,
             "label": "Enter title",
             "key": "title",
             "position": {

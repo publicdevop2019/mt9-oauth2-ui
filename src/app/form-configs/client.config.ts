@@ -5,7 +5,7 @@ export const FORM_CONFIG: IForm = {
     "inputs": [
         {
             "type": "text",
-            "display": 'false',
+            "display": false,
             "label": "ID",
             "key": "id",
             "position": {
@@ -15,7 +15,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": 'true',
+            "display": true,
             "label": "Enter client id",
             "key": "clientId",
             "position": {
@@ -31,7 +31,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": 'true',
+            "display": true,
             "label": "",
             "key": "hasSecret",
             "position": {
@@ -44,7 +44,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": 'false',
+            "display": false,
             "label": "Enter client secret",
             "key": "clientSecret",
             "position": {
@@ -60,7 +60,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "select",
-            "display": 'true',
+            "display": true,
             "label": "Select a grant type",
             "key": "grantType",
             "position": {
@@ -79,7 +79,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": 'false',
+            "display": false,
             "label": "Enter redirect uri",
             "key": "registeredRedirectUri",
             "position": {
@@ -95,7 +95,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": 'false',
+            "display": false,
             "label": "",
             "key": "refreshToken",
             "position": {
@@ -108,7 +108,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": 'true',
+            "display": true,
             "label": "",
             "key": "resourceIndicator",
             "position": {
@@ -121,7 +121,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": 'false',
+            "display": false,
             "label": "",
             "key": "autoApprove",
             "position": {
@@ -134,7 +134,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": 'true',
+            "display": true,
             "label": "Please select authority(s)",
             "key": "authority",
             "position": {
@@ -158,7 +158,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": 'true',
+            "display": true,
             "label": "Please select scope(s)",
             "key": "scope",
             "position": {
@@ -179,7 +179,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": 'true',
+            "display": true,
             "label": "Please select resouce id(s)",
             "key": "resourceId",
             "position": {
@@ -191,7 +191,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": 'true',
+            "display": true,
             "label": "Access Token validity seconds",
             "key": "accessTokenValiditySeconds",
             "position": {
@@ -211,7 +211,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": 'false',
+            "display": false,
             "label": "Refresh Token validity seconds",
             "key": "refreshTokenValiditySeconds",
             "position": {

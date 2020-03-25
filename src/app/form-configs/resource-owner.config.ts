@@ -5,7 +5,7 @@ export const FORM_CONFIG: IForm = {
     "inputs": [
         {
             "type": "text",
-            "display": "",
+            "display": false,
             "label": "ID",
             "key": "id",
             "position": {
@@ -15,10 +15,10 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": "true",
+            "display": true,
             "label": "Enter email",
             "key": "email",
-            "readonly": 'true',
+            "readonly": true,
             "position": {
                 "row": "1",
                 "column": "0"
@@ -26,7 +26,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": '',
+            "display": false,
             "label": "Enter your current password",
             "key": "currentPwd",
             "position": {
@@ -42,7 +42,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": '',
+            "display": false,
             "label": "Enter your new password",
             "key": "pwd",
             "position": {
@@ -58,7 +58,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": '',
+            "display": false,
             "label": "Re-enter your new password",
             "key": "confirmPwd",
             "position": {
@@ -74,7 +74,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": "true",
+            "display": true,
             "label": "Please select authority(s)",
             "key": "authority",
             "position": {
@@ -87,7 +87,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": "true",
+            "display": true,
             "label": "Lock or unlock user",
             "key": "locked",
             "position": {
@@ -100,7 +100,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "checkbox",
-            "display": "true",
+            "display": true,
             "label": "New Order Subscribe",
             "key": "subNewOrder",
             "position": {
