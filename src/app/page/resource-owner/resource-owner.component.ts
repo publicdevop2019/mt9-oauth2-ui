@@ -50,7 +50,7 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
         })
       } else if (queryMaps.get('state') === 'update:pwd') {
         let ctrls = ['currentPwd', 'pwd', 'confirmPwd'];
-        this.formInfo.inputs.forEach(e => e.display = ctrls.indexOf(e.key) > -1);
+        this.formInfo.inputs.forEach(e => e.display = ctrls.indexOf(e.key) > -1 ? 'true' : 'false');
       } else if (queryMaps.get('state') === 'none') {
 
       } else {

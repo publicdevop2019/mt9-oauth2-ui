@@ -5,7 +5,7 @@ export const FORM_CONFIG: IForm = {
     "inputs": [
         {
             "type": "text",
-            "display": false,
+            "display": "",
             "label": "ID",
             "key": "id",
             "position": {
@@ -15,7 +15,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
+            "display": "true",
             "label": "Enter resource id",
             "key": "resourceID",
             "position": {
@@ -31,7 +31,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
+            "display": "true",
             "label": "Enter endpoint",
             "key": "path",
             "position": {
@@ -47,7 +47,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "select",
-            "display": true,
+            "display": "true",
             "label": "Select method",
             "key": "method",
             "position": {
@@ -66,7 +66,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
+            "display": "true",
             "label": "Enter security expression",
             "key": "expression",
             "position": {
@@ -82,7 +82,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
+            "display": "true",
             "label": "Enter url",
             "key": "url",
             "position": {

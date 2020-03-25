@@ -30,6 +30,18 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
+    this.route.queryParamMap.subscribe(queryMaps => {
+      this.state = queryMaps.get('state');
+      if (queryMaps.get('state') === 'update') {
+        this.category$.subscribe(byId => {
+          this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
+          this.fis.formGroupCollection[this.formId].get('title').setValue(byId.title)
+        })
+      } else if (queryMaps.get('state') === 'none') {
+  
+      } else {
+      }
+    });
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();
@@ -39,21 +51,9 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
       switchMap((params: ParamMap) =>
         this.categorySvc.getCategoryById(+params.get('id')))
     );
-    this.route.queryParamMap.subscribe(queryMaps => {
-      this.state = queryMaps.get('state');
-      if (queryMaps.get('state') === 'update') {
-        this.category$.subscribe(byId => {
-          this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
-          this.fis.formGroupCollection[this.formId].get('title').setValue(byId.title)
-        })
-      } else if (queryMaps.get('state') === 'none') {
-
-      } else {
-        this.fis.formGroupCollection[this.formId].get('url').disable()
-      }
-    })
   }
-  convertToCategoryPayload(formGroup: FormGroup): ICategory {
+  convertToCategoryPayload(): ICategory {
+    let formGroup = this.fis.formGroupCollection[this.formId];
     return {
       id: formGroup.get('id').value,
       title: formGroup.get('title').value
