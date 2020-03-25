@@ -137,6 +137,7 @@ export const FORM_CONFIG: IForm = {
             "display": true,
             "label": "Please select authority(s)",
             "key": "authority",
+            "direction":'row',
             "position": {
                 "row": "9",
                 "column": "0"
@@ -165,6 +166,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "10",
                 "column": "0"
             },
+            "direction":'row',
             "options": [
                 "read",
                 "write",

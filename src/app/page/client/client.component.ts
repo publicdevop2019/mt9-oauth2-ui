@@ -42,7 +42,7 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     this.clientService.getResourceClient().pipe(switchMap(resources => {
       this.resources = resources;
       /** add new ctrl, ctrl name is default to client-id */
-      // this.formInfo.inputs.find(e => e.key === 'resourceId').options = this.resources.map(e => e.clientId);
+      this.formInfo.inputs.find(e => e.key === 'resourceId').options = this.resources.map(e => e.clientId);
       // this.formInfo = JSON.parse(JSON.stringify(this.formInfo))
       return this.route.queryParamMap
     })).subscribe(queryMaps => {
