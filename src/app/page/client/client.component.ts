@@ -1,15 +1,14 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { Observable, timer } from 'rxjs';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { ClientService } from 'src/app/service/client.service';
-import { IClient, grantTypeEnums, scopeEnums, IAuthority } from '../summary-client/summary-client.component';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { IForm } from 'magic-form/lib/classes/template.interface';
-import { FORM_CONFIG } from 'src/app/form-configs/client.config';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'magic-form';
+import { IForm, IInputConfig } from 'magic-form/lib/classes/template.interface';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { FORM_CONFIG } from 'src/app/form-configs/client.config';
+import { ClientService } from 'src/app/service/client.service';
+import { grantTypeEnums, IAuthority, IClient, scopeEnums } from '../summary-client/summary-client.component';
 
 @Component({
   selector: 'app-client',
@@ -27,7 +26,6 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   private previousPayload: any = {};
-  private previousFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   constructor(
     private route: ActivatedRoute,
     public clientService: ClientService,
@@ -41,9 +39,6 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     this.clientService.getResourceClient().pipe(switchMap(resources => {
       this.resources = resources;
-      /** add new ctrl, ctrl name is default to client-id */
-      this.formInfo.inputs.find(e => e.key === 'resourceId').options = this.resources.map(e => e.clientId);
-      // this.formInfo = JSON.parse(JSON.stringify(this.formInfo))
       return this.route.queryParamMap
     })).subscribe(queryMaps => {
       this.state = queryMaps.get('state') as 'update' | 'create';
@@ -64,10 +59,8 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
             scope: client.scopeEnums.map(e => e.toString()),
             accessTokenValiditySeconds: client.accessTokenValiditySeconds,
             refreshTokenValiditySeconds: client.refreshTokenValiditySeconds,
+            resourceId: client.resourceIds,
           });
-          /** prefill dynamic resource-id inputs */
-          if (this.resources)
-            this.fis.formGroupCollection[this.formId].get('resourceId').setValue(client.resourceIds)
         })
       } else if (queryMaps.get('state') === 'none') {
 
@@ -91,7 +84,12 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.previousPayload = e;
       // update form config
-    })
+    });
+    this.clientService.getResourceClient().subscribe(next => {
+      let newConfig = (JSON.parse(JSON.stringify(this.formInfo.inputs.find(e => e.key === 'resourceId'))) as IInputConfig);
+      newConfig.options = next.map(e => e.clientId);
+      this.fis.dynamicInputs['resourceId'].next(newConfig);
+    });
   }
   private findDelta(newPayload: any): string {
     const changeKeys: string[] = [];
