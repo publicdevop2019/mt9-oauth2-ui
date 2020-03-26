@@ -137,7 +137,6 @@ export const FORM_CONFIG: IForm = {
             "display": true,
             "label": "Please select authority(s)",
             "key": "authority",
-            "direction":'row',
             "position": {
                 "row": "9",
                 "column": "0"
@@ -166,7 +165,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "10",
                 "column": "0"
             },
-            "direction":'row',
+            "direction": 'row',
             "options": [
                 "read",
                 "write",
@@ -180,7 +179,7 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "checkbox",
+            "type": "observable-checkbox",
             "display": true,
             "label": "Please select resouce id(s)",
             "key": "resourceId",
@@ -190,6 +189,12 @@ export const FORM_CONFIG: IForm = {
             },
             "options": [
             ],
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ]
         },
         {
             "type": "text",

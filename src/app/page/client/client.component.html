@@ -29,7 +29,7 @@
     <button mat-raised-button color="warn" style="margin-bottom: 20px;"
         (click)="validator.valid()&&clientService.deleteClient(convertToClient())"
         *ngIf="state=='update'">Delete</button>
-        <!-- && !clientForm.get('authorityRoot').value -->
+    <!-- && !clientForm.get('authorityRoot').value -->
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&clientService.createClient(convertToClient())"
         *ngIf="state=='create'">Create</button>
