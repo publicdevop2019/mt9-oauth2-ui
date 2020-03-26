@@ -16,7 +16,8 @@ export class ValidateHelper {
     this.previousPayload = fg.value;
     fg.valueChanges.subscribe(e => {
       const changedKey = this.findDelta(e);
-      this._formInfo.inputs.filter(input => input.key === changedKey).forEach(input => this._fis.validateInput(this._formId, input));
+      if (changedKey.length !== 0)
+        this._formInfo.inputs.forEach(input => this._fis.validateInput(this._formId, input));
       this.previousPayload = fg.value;
     });
   }
@@ -27,14 +28,21 @@ export class ValidateHelper {
   private noErrorPresent(inputs: any[]): boolean {
     return inputs.filter(e => e.display).find(input => input.errorMsg !== null && input.errorMsg !== undefined) === undefined
   }
-  private findDelta(newPayload: any): string {
+  private findDelta(newPayload: any): string[] {
     const changeKeys: string[] = [];
     for (const p in newPayload) {
-      if (this.previousPayload[p] === newPayload[p]) {
+      // convert null, undefined, [] to null, treat them all same
+      if (this.previousPayload[p] === '' || this.previousPayload[p] === null || this.previousPayload[p] === undefined || (Array.isArray(this.previousPayload[p]) && this.previousPayload[p].length === 0)) {
+        this.previousPayload[p] = null;
+      }
+      if (newPayload[p] === '' || newPayload[p] === null || newPayload[p] === undefined || (Array.isArray(newPayload[p]) && newPayload[p].length === 0)) {
+        newPayload[p] = null;
+      }
+      if (this.previousPayload[p] === newPayload[p] || JSON.stringify(this.previousPayload[p]) === JSON.stringify(newPayload[p])) {
       } else {
         changeKeys.push(p as string);
       }
     }
-    return changeKeys[0];
+    return changeKeys;
   }
 }
