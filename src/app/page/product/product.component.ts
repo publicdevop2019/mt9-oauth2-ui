@@ -37,6 +37,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
+    this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) });
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();

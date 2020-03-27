@@ -62,6 +62,16 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
+            "type": "file",
+            "display": true,
+            "label": "Upload product image small",
+            "key": "imageUrlSmallFile",
+            "position": {
+                "row": "4",
+                "column": "0"
+            },
+        },
+        {
             "type": "text",
             "display": true,
             "readonly":true,

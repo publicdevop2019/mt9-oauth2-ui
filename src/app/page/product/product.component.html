@@ -5,8 +5,6 @@
     </button>
 
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <input #upload type="file" placeholder="Enter URL" (change)="uploadFile($event.target.files)" style="display: none;">
-    <button mat-raised-button color="primary" (click)="upload.click()" style="margin-bottom: 20px;margin-top: 20px;">Upload file</button>
     <section>
         <h3>Product Image Urls</h3>
         <div *ngFor="let i of imagesUrlLargeCtrls" style="display: flex;flex-direction: row;">
