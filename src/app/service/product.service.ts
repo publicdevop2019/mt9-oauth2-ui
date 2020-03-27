@@ -56,6 +56,7 @@ export class ProductService {
     })
   }
   update(product: IProductDetail) {
+    console.dir(product)
     this.httpProxy.netImpl.updateProduct(product).subscribe(result => {
       this.notify(result)
     })

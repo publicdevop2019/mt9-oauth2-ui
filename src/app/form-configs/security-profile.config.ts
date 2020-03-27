@@ -19,7 +19,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter resource id",
             "key": "resourceID",
             "position": {
-                "row": "0",
+                "row": "1",
                 "column": "0"
             },
             "attributes": [
@@ -35,7 +35,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter endpoint",
             "key": "path",
             "position": {
-                "row": "1",
+                "row": "2",
                 "column": "0"
             },
             "attributes": [
@@ -51,7 +51,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Select method",
             "key": "method",
             "position": {
-                "row": "2",
+                "row": "3",
                 "column": "0"
             },
             "options": [

@@ -22,7 +22,7 @@ export class SandboxImpl implements INetworkService {
         return this.http.get<IProductSimple[]>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
     };
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple-total.json').pipe(delay(this.defaultDelay))
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
     };
     getProductDetail(id: number): Observable<import("../service/product.service").IProductDetail> {
         return this.http.get<IProductDetail>('./assets/mock-product-detail.json').pipe(delay(this.defaultDelay))

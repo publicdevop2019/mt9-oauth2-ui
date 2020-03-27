@@ -1,12 +1,12 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IProductDetail, ProductService, IProductOptions, IProductOption } from 'src/app/service/product.service';
 import { HttpProxyService } from 'src/app/service/http-proxy.service';
 import { IForm } from 'magic-form/lib/classes/template.interface';
-import { FORM_CONFIG } from 'src/app/form-configs/product.config';
+import { FORM_CONFIG, FORM_CONFIG_IMAGE } from 'src/app/form-configs/product.config';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FormInfoService } from 'magic-form';
 
@@ -21,12 +21,16 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionCount: number = 0;
   optionValueCount: {} = {};
   product$: Observable<IProductDetail>;
-  imagesUrlLargeCtrls: string[] = [];
+  // imagesUrlLargeCtrls: string[] = [];
   optionCtrls: string[] = [];
   optionValueCtrls: string[] = [];
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
+  imageFormId = 'product_image';
+  imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
+  imageFormvalidator: ValidateHelper;
+  subs: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
     public productSvc: ProductService,
@@ -34,78 +38,87 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     private fis: FormInfoService
   ) {
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
+    this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis)
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
-    this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) });
+    this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);
+    this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
   }
   ngOnDestroy(): void {
+    this.subs.forEach(e => e.unsubscribe());
     this.fis.formGroupCollection[this.formId].reset();
+    delete this.fis.formGroupCollection[this.imageFormId];
   }
   ngOnInit() {
     this.product$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.productSvc.getProductDetailById(+params.get('id')))
     );
-    this.route.queryParamMap.subscribe(queryMaps => {
-      this.state = queryMaps.get('state');
-      if (queryMaps.get('state') === 'update') {
-        let showCtrls = ['decreaseActualStorageBy', 'increaseActualStorageBy', 'decreaseOrderStorageBy', 'increaseOrderStorageBy'];
-        let hideCtrls = ['orderStorage', 'actualStorage'];
-        this.formInfo.inputs.forEach(e => {
-          if (showCtrls.indexOf(e.key) > -1)
-            e.display = true;
-          if (hideCtrls.indexOf(e.key) > -1)
-            e.display = false;
-        });
-        this.product$.subscribe(byId => {
-          this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
-          this.fis.formGroupCollection[this.formId].get('category').setValue(byId.category)
-          this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name)
-          this.fis.formGroupCollection[this.formId].get('price').setValue(byId.price)
-          this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(byId.imageUrlSmall)
-          this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description)
-          this.fis.formGroupCollection[this.formId].get('sales').setValue(byId.sales)
-          this.fis.formGroupCollection[this.formId].get('rate').setValue(byId.rate)
-          if (byId.imageUrlLarge && byId.imageUrlLarge.length !== 0) {
-            byId.imageUrlLarge.forEach(url => {
-              this.imagesUrlLargeCtrls.push('imageUrlLarge_' + this.urlLargeCount);
-              this.fis.formGroupCollection[this.formId].addControl('imageUrlLarge_' + this.urlLargeCount, new FormControl(url))
-              this.urlLargeCount++;
-            })
-          }
-          if (byId.selectedOptions && byId.selectedOptions.length !== 0) {
-            byId.selectedOptions.forEach(option => {
-              let parent = 'option_' + this.optionCount;
-              this.optionCount++;
-              this.optionCtrls.push(parent);
-              this.fis.formGroupCollection[this.formId].addControl(parent, new FormControl(option.title))
-              if (option.options !== null && option.options !== undefined && option.options.length !== 0) {
-                option.options.forEach(op => {
-                  if (this.optionValueCount[parent] === undefined || this.optionValueCount[parent] === null) {
-                    this.optionValueCount[parent] = 0;
-                  }
-                  this.optionValueCtrls.push(parent + '_' + this.optionValueCount[parent]);
-                  this.fis.formGroupCollection[this.formId].addControl(parent + '_' + this.optionValueCount[parent], new FormControl(op.optionValue))
-                  this.fis.formGroupCollection[this.formId].addControl(parent + '_' + this.optionValueCount[parent] + '_value', new FormControl(op.priceVar))
-                  this.optionValueCount[parent]++;
-                })
-              };
-            })
-          }
-        })
-      } else if (queryMaps.get('state') === 'none') {
+    this.subs.push(
+      this.route.queryParamMap.subscribe(queryMaps => {
+        this.state = queryMaps.get('state');
+        if (queryMaps.get('state') === 'update') {
+          let showCtrls = ['decreaseActualStorageBy', 'increaseActualStorageBy', 'decreaseOrderStorageBy', 'increaseOrderStorageBy'];
+          let hideCtrls = ['orderStorage', 'actualStorage'];
+          this.formInfo.inputs.forEach(e => {
+            if (showCtrls.indexOf(e.key) > -1)
+              e.display = true;
+            if (hideCtrls.indexOf(e.key) > -1)
+              e.display = false;
+          });
+          this.subs.push(this.product$.subscribe(byId => {
+            this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
+            this.fis.formGroupCollection[this.formId].get('category').setValue(byId.category)
+            this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name)
+            this.fis.formGroupCollection[this.formId].get('price').setValue(byId.price)
+            this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(byId.imageUrlSmall)
+            this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description)
+            this.fis.formGroupCollection[this.formId].get('sales').setValue(byId.sales)
+            this.fis.formGroupCollection[this.formId].get('rate').setValue(byId.rate)
+            if (byId.imageUrlLarge && byId.imageUrlLarge.length !== 0) {
+              byId.imageUrlLarge.forEach((url, index) => {
+                if (index === 0) {
+                  this.fis.formGroupCollection[this.imageFormId].get('imageUrl').setValue(url);
+                } else {
+                  this.fis.formGroupCollection[this.imageFormId].addControl('imageUrl' + this.fis.formGroupCollection_index[this.imageFormId], new FormControl(url));
+                  this.fis.add(this.imageFormId);
+                }
+                this.fis.refreshLayout(this.imageFormInfo, this.imageFormId);
+              })
+            }
+            if (byId.selectedOptions && byId.selectedOptions.length !== 0) {
+              byId.selectedOptions.forEach(option => {
+                let parent = 'option_' + this.optionCount;
+                this.optionCount++;
+                this.optionCtrls.push(parent);
+                this.fis.formGroupCollection[this.formId].addControl(parent, new FormControl(option.title))
+                if (option.options !== null && option.options !== undefined && option.options.length !== 0) {
+                  option.options.forEach(op => {
+                    if (this.optionValueCount[parent] === undefined || this.optionValueCount[parent] === null) {
+                      this.optionValueCount[parent] = 0;
+                    }
+                    this.optionValueCtrls.push(parent + '_' + this.optionValueCount[parent]);
+                    this.fis.formGroupCollection[this.formId].addControl(parent + '_' + this.optionValueCount[parent], new FormControl(op.optionValue))
+                    this.fis.formGroupCollection[this.formId].addControl(parent + '_' + this.optionValueCount[parent] + '_value', new FormControl(op.priceVar))
+                    this.optionValueCount[parent]++;
+                  })
+                };
+              })
+            }
+          }))
+        } else if (queryMaps.get('state') === 'none') {
 
-      } else {
+        } else {
 
-      }
-    })
+        }
+      })
+    );
   }
-  convertToPayload(formGroup: FormGroup): IProductDetail {
-    let imagesUrl: string[] = null;
-    if (this.imagesUrlLargeCtrls.length !== 0) {
-      imagesUrl = this.imagesUrlLargeCtrls.map(e => this.fis.formGroupCollection[this.formId].get(e).value)
-    }
+  convertToPayload(): IProductDetail {
+    let formGroup = this.fis.formGroupCollection[this.formId];
+    let valueSnapshot = this.fis.formGroupCollection[this.imageFormId].value;
+    let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string);
     let selectedOptions: IProductOptions[] = null;
     if (this.optionCtrls.length !== 0) {
       selectedOptions =
@@ -142,15 +155,15 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       decreaseActualStorageBy: formGroup.get('decreaseActualStorageBy').value
     }
   }
-  addNewCtrl() {
-    this.imagesUrlLargeCtrls.push('imageUrlLarge_' + this.urlLargeCount);
-    this.fis.formGroupCollection[this.formId].addControl('imageUrlLarge_' + this.urlLargeCount, new FormControl())
-    this.urlLargeCount++;
-  }
-  removeCtrl(ctrlName: string) {
-    this.imagesUrlLargeCtrls = this.imagesUrlLargeCtrls.filter(e => e !== ctrlName);
-    this.fis.formGroupCollection[this.formId].removeControl(ctrlName)
-  }
+  // addNewCtrl() {
+  //   this.imagesUrlLargeCtrls.push('imageUrlLarge_' + this.urlLargeCount);
+  //   this.fis.formGroupCollection[this.formId].addControl('imageUrlLarge_' + this.urlLargeCount, new FormControl())
+  //   this.urlLargeCount++;
+  // }
+  // removeCtrl(ctrlName: string) {
+  //   this.imagesUrlLargeCtrls = this.imagesUrlLargeCtrls.filter(e => e !== ctrlName);
+  //   this.fis.formGroupCollection[this.formId].removeControl(ctrlName)
+  // }
   addOptionNewCtrl() {
     this.optionCtrls.push('option_' + this.optionCount);
     this.fis.formGroupCollection[this.formId].addControl('option_' + this.optionCount, new FormControl())

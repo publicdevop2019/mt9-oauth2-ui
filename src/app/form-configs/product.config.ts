@@ -78,7 +78,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Coverage Image Url",
             "key": "imageUrlSmall",
             "position": {
-                "row": "4",
+                "row": "5",
                 "column": "0"
             },
         },
@@ -88,7 +88,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter description",
             "key": "description",
             "position": {
-                "row": "5",
+                "row": "6",
                 "column": "0"
             },
         },
@@ -98,7 +98,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter sales",
             "key": "sales",
             "position": {
-                "row": "6",
+                "row": "7",
                 "column": "0"
             },
         },
@@ -108,7 +108,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter rate",
             "key": "rate",
             "position": {
-                "row": "7",
+                "row": "8",
                 "column": "0"
             },
         },
@@ -118,7 +118,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter initial order storage",
             "key": "orderStorage",
             "position": {
-                "row": "8",
+                "row": "9",
                 "column": "0"
             },
             "attributes": [
@@ -138,7 +138,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter initial actual storage",
             "key": "actualStorage",
             "position": {
-                "row": "9",
+                "row": "10",
                 "column": "0"
             },
             "attributes": [
@@ -158,7 +158,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter increase order storage amount",
             "key": "increaseOrderStorageBy",
             "position": {
-                "row": "10",
+                "row": "11",
                 "column": "0"
             },
             "attributes": [
@@ -174,7 +174,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter decrease order storage amount",
             "key": "decreaseOrderStorageBy",
             "position": {
-                "row": "11",
+                "row": "12",
                 "column": "0"
             },
             "attributes": [
@@ -190,7 +190,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter increase actual storage amount",
             "key": "increaseActualStorageBy",
             "position": {
-                "row": "12",
+                "row": "13",
                 "column": "0"
             },
             "attributes": [
@@ -206,7 +206,7 @@ export const FORM_CONFIG: IForm = {
             "label": "Enter decrease actual storage amount",
             "key": "decreaseActualStorageBy",
             "position": {
-                "row": "13",
+                "row": "14",
                 "column": "0"
             },
             "attributes": [
@@ -215,6 +215,25 @@ export const FORM_CONFIG: IForm = {
                     "errorMsg": "please enter number"
                 }
             ]
+        },
+    ],
+    "column": 1,
+    "ratio": "10:1"
+}
+
+
+export const FORM_CONFIG_IMAGE: IForm = {
+    "repeatable": true,
+    "inputs": [
+        {
+            "type": "text",
+            "display": true,
+            "label": "Enter image url",
+            "key": "imageUrl",
+            "position": {
+                "row": "0",
+                "column": "0"
+            }
         },
     ],
     "column": 1,
