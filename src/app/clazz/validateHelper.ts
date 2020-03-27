@@ -17,7 +17,7 @@ export class ValidateHelper {
     fg.valueChanges.subscribe(e => {
       const changedKey = this.findDelta(e);
       if (changedKey.length !== 0)
-        this._formInfo.inputs.forEach(input => this._fis.validateInput(this._formId, input));
+        this._formInfo.inputs.filter(e => changedKey.indexOf(e.key) > -1).forEach(input => this._fis.validateInput(this._formId, input));
       this.previousPayload = fg.value;
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { OrderService } from 'src/app/service/order.service';
 import { IOrder } from 'src/app/interfaze/commom.interface';
@@ -6,37 +6,28 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { grantTypeEnums, scopeEnums } from '../summary-client/summary-client.component';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { FORM_CONFIG } from 'src/app/form-configs/order.config';
+import { IForm } from 'magic-form/lib/classes/template.interface';
+import { FormInfoService } from 'magic-form';
 
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.css']
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent implements OnInit, AfterViewInit, OnDestroy {
   order$: Observable<IOrder>;
   state: 'update' | 'create';
-  orderForm = new FormGroup({
-    id: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    address: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    productList: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    paymentType: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-    paymentAmt: new FormControl({ value: '', disabled: true }, [
-      Validators.required
-    ]),
-
-  });
+  formId = 'order';
+  formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
+  validator: ValidateHelper;
   constructor(
     private route: ActivatedRoute,
     public clientService: OrderService,
+    private fis: FormInfoService
   ) {
+    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
     this.order$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.clientService.getOrderById(params.get('id')))
@@ -48,7 +39,7 @@ export class OrderComponent implements OnInit {
           this.order$.subscribe(order => {
             if (order === null || order === undefined)
               throw new Error('unable to find target resource');//replace with error handler
-            this.orderForm.patchValue({
+            this.fis.formGroupCollection[this.formId].patchValue({
               id: order.id,
               address: JSON.stringify(order.address),
               productList: JSON.stringify(order.productList),
@@ -64,8 +55,14 @@ export class OrderComponent implements OnInit {
       }
     )
   }
+  ngOnInit(): void {
+  }
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
+    this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
+  }
+  ngOnDestroy(): void {
+    this.fis.formGroupCollection[this.formId].reset();
   }
 
 }

@@ -1,21 +1,7 @@
-<div class="example-container" [formGroup]="orderForm">
+<div class="example-container">
     <button [routerLink]="'/dashboard/orders'" [queryParams]="{state: 'none'}" mat-button
         style="text-align: left;padding-left: 0px;margin-bottom: 10px;">
         <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
     </button>
-    <mat-form-field>
-        <input matInput placeholder="Enter order id" formControlName="id">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter address" formControlName="address">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter productList" formControlName="productList">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter Payment Amt" formControlName="paymentAmt">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter Payment Type" formControlName="paymentType">
-    </mat-form-field>
+    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 </div>

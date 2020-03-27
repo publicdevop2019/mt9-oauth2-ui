@@ -1,52 +1,12 @@
-<div class="example-container" [formGroup]="productForm">
+<div class="example-container">
     <button [routerLink]="'/dashboard/products'" [queryParams]="{state: 'none'}" mat-button
         style="text-align: left;padding-left: 0px;margin-bottom: 10px;">
         <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
     </button>
-    <mat-form-field>
-        <input matInput placeholder="*Enter Category" formControlName="category">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="*Enter Name" formControlName="name">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="*Enter Price" formControlName="price">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter Cover Image Url" formControlName="imageUrlSmall">
-    </mat-form-field>
+
+    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <input #upload type="file" placeholder="Enter URL" (change)="uploadFile($event.target.files)" style="display: none;">
     <button mat-raised-button color="primary" (click)="upload.click()" style="margin-bottom: 20px;margin-top: 20px;">Upload file</button>
-    <mat-form-field>
-        <input matInput placeholder="Enter Description" formControlName="description">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter Sales" formControlName="sales">
-    </mat-form-field>
-    <mat-form-field>
-        <input matInput placeholder="Enter Rate" formControlName="rate">
-    </mat-form-field>
-    <section style="display: flex;flex-direction: column;">
-        <h3>Product Storage</h3>
-        <mat-form-field *ngIf="state==='create'">
-            <input matInput placeholder="*Enter Initial Order Storage" formControlName="orderStorage">
-        </mat-form-field>
-        <mat-form-field *ngIf="state==='update'">
-            <input matInput placeholder="Enter increase order storage amount" formControlName="increaseOrderStorageBy">
-        </mat-form-field>
-        <mat-form-field *ngIf="state==='update'">
-            <input matInput placeholder="Enter decrease order storage amount" formControlName="decreaseOrderStorageBy">
-        </mat-form-field>
-        <mat-form-field *ngIf="state==='create'">
-            <input matInput placeholder="*Enter Initial Actual Storage" formControlName="actualStorage">
-        </mat-form-field>
-        <mat-form-field *ngIf="state==='update'">
-            <input matInput placeholder="Enter increase actual storage amount" formControlName="increaseActualStorageBy">
-        </mat-form-field>
-        <mat-form-field *ngIf="state==='update'">
-            <input matInput placeholder="Enter decrease actual storage amount" formControlName="decreaseActualStorageBy">
-        </mat-form-field>
-    </section>
     <section>
         <h3>Product Image Urls</h3>
         <div *ngFor="let i of imagesUrlLargeCtrls" style="display: flex;flex-direction: row;">
