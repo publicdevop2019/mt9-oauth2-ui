@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { IProductDetail, ProductService, IProductOptions, IProductOption } from 'src/app/service/product.service';
 import { HttpProxyService } from 'src/app/service/http-proxy.service';
 import { IForm } from 'magic-form/lib/classes/template.interface';
-import { FORM_CONFIG, FORM_CONFIG_IMAGE } from 'src/app/form-configs/product.config';
+import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FormInfoService } from 'magic-form';
 
@@ -21,7 +21,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionCount: number = 0;
   optionValueCount: {} = {};
   product$: Observable<IProductDetail>;
-  // imagesUrlLargeCtrls: string[] = [];
   optionCtrls: string[] = [];
   optionValueCtrls: string[] = [];
   formId = 'product';
@@ -30,6 +29,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   imageFormId = 'product_image';
   imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
   imageFormvalidator: ValidateHelper;
+  optionFormId = 'product_option';
+  optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
+  optionFormvalidator: ValidateHelper;
   subs: Subscription[] = [];
   constructor(
     private route: ActivatedRoute,
@@ -39,10 +41,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis)
+    this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis)
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);
+    this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
     this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
   }
   ngOnDestroy(): void {
@@ -155,15 +159,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       decreaseActualStorageBy: formGroup.get('decreaseActualStorageBy').value
     }
   }
-  // addNewCtrl() {
-  //   this.imagesUrlLargeCtrls.push('imageUrlLarge_' + this.urlLargeCount);
-  //   this.fis.formGroupCollection[this.formId].addControl('imageUrlLarge_' + this.urlLargeCount, new FormControl())
-  //   this.urlLargeCount++;
-  // }
-  // removeCtrl(ctrlName: string) {
-  //   this.imagesUrlLargeCtrls = this.imagesUrlLargeCtrls.filter(e => e !== ctrlName);
-  //   this.fis.formGroupCollection[this.formId].removeControl(ctrlName)
-  // }
   addOptionNewCtrl() {
     this.optionCtrls.push('option_' + this.optionCount);
     this.fis.formGroupCollection[this.formId].addControl('option_' + this.optionCount, new FormControl())
@@ -190,7 +185,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   getRelated(list: string[], prefix: string): string[] {
     return list.filter(e => e.indexOf(prefix) > -1)
   }
-  uploadFile(files: FileList) {
+  private uploadFile(files: FileList) {
     this.httpProxy.netImpl.uploadFile(files.item(0)).subscribe(next => {
       this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
     })

@@ -237,6 +237,4 @@ export const FORM_CONFIG: IForm = {
             ]
         },
     ],
-    "column": 1,
-    "ratio": "10:1"
 }

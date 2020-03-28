@@ -74,7 +74,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "readonly":true,
+            "readonly": true,
             "label": "Coverage Image Url",
             "key": "imageUrlSmall",
             "position": {
@@ -217,8 +217,6 @@ export const FORM_CONFIG: IForm = {
             ]
         },
     ],
-    "column": 1,
-    "ratio": "10:1"
 }
 
 
@@ -236,6 +234,56 @@ export const FORM_CONFIG_IMAGE: IForm = {
             }
         },
     ],
-    "column": 1,
-    "ratio": "10:1"
+}
+
+export const FORM_CONFIG_OPTIONS: IForm = {
+    "repeatable": true,
+    "inputs": [
+        {
+            "type": "text",
+            "display": true,
+            "label": "Enter product option title",
+            "key": "productOption",
+            "position": {
+                "row": "0",
+                "column": "0"
+            }
+        },
+        {
+            "type": "form",
+            "display": true,
+            "label": "",
+            "key": "optionForm",
+            form: {
+                repeatable: true,
+                inputs: [
+                    {
+                        "type": "text",
+                        "display": true,
+                        "label": "Enter option value",
+                        "key": "optionValue",
+                        "position": {
+                            "row": "0",
+                            "column": "0"
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "display": true,
+                        "label": "Enter option price change",
+                        "key": "optionPriceChange",
+                        "position": {
+                            "row": "0",
+                            "column": "1"
+                        }
+                    },
+                ]
+            },
+            "position": {
+                "row": "1",
+                "column": "0"
+            }
+        },
+
+    ],
 }
