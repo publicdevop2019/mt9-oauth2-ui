@@ -15,7 +15,7 @@ import { grantTypeEnums, IAuthority, IClient, scopeEnums } from '../summary-clie
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
 })
-export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ClientComponent implements AfterViewInit, OnDestroy {
   hide = true;
   state: 'update' | 'create';
   disabled = false;
@@ -104,8 +104,6 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();
-  }
-  ngOnInit() {
   }
   convertToClient(): IClient {
     let formGroup = this.fis.formGroupCollection[this.formId];

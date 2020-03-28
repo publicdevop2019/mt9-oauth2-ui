@@ -32,12 +32,6 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
-  }
-  ngOnDestroy(): void {
-    this.fis.formGroupCollection[this.formId].reset();
-  }
-  ngOnInit() {
-    this.resourceOwner$ = this.route.paramMap.pipe(switchMap((params: ParamMap) => this.resourceOwnerService.getResourceOwner(+params.get('id'))));
     this.route.queryParamMap.subscribe(queryMaps => {
       this.state = queryMaps.get('state');
       if (queryMaps.get('state') === 'update:authority') {
@@ -52,11 +46,17 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
         let ctrls = ['currentPwd', 'pwd', 'confirmPwd'];
         this.formInfo.inputs.forEach(e => e.display = ctrls.indexOf(e.key) > -1);
       } else if (queryMaps.get('state') === 'none') {
-
+  
       } else {
-
+  
       }
     })
+  }
+  ngOnDestroy(): void {
+    this.fis.formGroupCollection[this.formId].reset();
+  }
+  ngOnInit() {
+    this.resourceOwner$ = this.route.paramMap.pipe(switchMap((params: ParamMap) => this.resourceOwnerService.getResourceOwner(+params.get('id'))));
 
   }
 
