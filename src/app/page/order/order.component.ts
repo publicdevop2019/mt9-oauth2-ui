@@ -8,8 +8,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { grantTypeEnums, scopeEnums } from '../summary-client/summary-client.component';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/order.config';
-import { IForm } from 'magic-form/lib/classes/template.interface';
-import { FormInfoService } from 'magic-form';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { FormInfoService } from 'mt-form-builder';
 
 @Component({
   selector: 'app-order',

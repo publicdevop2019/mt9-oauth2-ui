@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  mode: 'offline' as 'online' | 'offline',
+  mode: 'online' as 'online' | 'offline',
   home: 'https://github.com/publicdevop2019/oauth2service',
   apiVersion: '/api',
   serverUri: 'http://localhost:8111',

@@ -5,10 +5,10 @@ import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IProductDetail, ProductService, IProductOptions, IProductOption } from 'src/app/service/product.service';
 import { HttpProxyService } from 'src/app/service/http-proxy.service';
-import { IForm } from 'magic-form/lib/classes/template.interface';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
-import { FormInfoService } from 'magic-form';
+import { FormInfoService } from 'mt-form-builder';
 import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
 
 @Component({

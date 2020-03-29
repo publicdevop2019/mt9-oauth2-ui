@@ -1,6 +1,6 @@
-import { FormInfoService } from "magic-form";
+import { FormInfoService } from "mt-form-builder";
 import { FormGroup } from "@angular/forms";
-import { IForm } from 'magic-form/lib/classes/template.interface';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 
 export class ValidateHelper {
   private previousPayload: any;

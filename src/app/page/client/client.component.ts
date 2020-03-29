@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { FormInfoService } from 'magic-form';
-import { IForm, IInputConfig } from 'magic-form/lib/classes/template.interface';
+import { FormInfoService } from 'mt-form-builder';
+import { IForm, IInputConfig } from 'mt-form-builder/lib/classes/template.interface';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';

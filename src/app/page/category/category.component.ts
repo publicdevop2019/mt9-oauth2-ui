@@ -1,13 +1,13 @@
 import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { FormInfoService } from 'magic-form';
+import { FormInfoService } from 'mt-form-builder';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/category.config';
 import { CategoryService, ICategory } from 'src/app/service/category.service';
-import { IForm } from 'magic-form/lib/classes/template.interface';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 
 @Component({
   selector: 'app-category',

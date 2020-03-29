@@ -34,7 +34,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SummaryOrderComponent } from './page/summary-order/summary-order.component';
 import { OrderComponent } from './page/order/order.component';
-import { FormInfoService, MagicFormModule } from 'magic-form';
+import { FormInfoService, MagicFormModule } from 'mt-form-builder';
 
 @NgModule({
   declarations: [

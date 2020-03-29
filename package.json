@@ -28,7 +28,7 @@
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1",
-    "magic-form": "file:/home/haolinwei/Apps/MagicFormBuilder/output-lib/magic-form"
+    "mt-form-builder": "0.0.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.0",
