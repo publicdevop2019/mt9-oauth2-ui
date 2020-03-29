@@ -144,25 +144,21 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   convertToPayload(): IProductDetail {
     let formGroup = this.fis.formGroupCollection[this.formId];
     let valueSnapshot = this.fis.formGroupCollection[this.imageFormId].value;
-    let imagesUrl = [];
-    imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string)
-    let selectedOptions: IProductOptions[] = null;
-    // if (this.optionCtrls.length !== 0) {
-    //   selectedOptions =
-    //     this.optionCtrls.map(e => {
-    //       let var1 = <IProductOptions>{}
-    //       var1.title = this.fis.formGroupCollection[this.formId].get(e).value;
-    //       var1.options = Object.keys(this.fis.formGroupCollection[this.formId].controls).filter(el => el.indexOf(e + "_") > -1 && el.indexOf('_value') === -1).map(
-    //         ctrl => {
-    //           return <IProductOption>{
-    //             optionValue: this.fis.formGroupCollection[this.formId].get(ctrl).value,
-    //             priceVar: this.fis.formGroupCollection[this.formId].get(ctrl + '_value').value
-    //           }
-    //         }
-    //       );
-    //       return var1;
-    //     })
-    // }
+    let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string);
+    let selectedOptions: IProductOptions[] = [];
+    Object.keys(this.fis.formGroupCollection[this.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((opt) => {
+      let var1 = <IProductOptions>{};
+      var1.title = this.fis.formGroupCollection[this.optionFormId].get(opt).value;
+      var1.options = [];
+      let fg = this.fis.formGroupCollection['optionForm' + opt.replace('productOption', '')];
+      var1.options = Object.keys(fg.controls).filter(e => e.indexOf('optionValue') > -1).map(e => {
+        return <IProductOption>{
+          optionValue: fg.get(e).value,
+          priceVar: fg.get(e.replace('optionValue', 'optionPriceChange')).value,
+        }
+      });
+      selectedOptions.push(var1)
+    });
     return {
       id: formGroup.get('id').value,
       category: formGroup.get('category').value,

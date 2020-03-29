@@ -16,7 +16,6 @@ export class AuthService implements CanActivateChild, CanActivate {
   private defaultCanActivate(route: ActivatedRouteSnapshot): boolean {
 
     if (this.httpProxy.netImpl.currentUserAuthInfo === undefined || this.httpProxy.netImpl.currentUserAuthInfo === null) {
-      console.dir(this.httpProxy.netImpl.currentUserAuthInfo)
       console.error('no authentication found! redirect to login page')
       if (route.routeConfig.path === 'authorize' && Object.keys(route.queryParams).length != 0) {
         this.router.navigate(['/login'], { queryParams: route.queryParams });
