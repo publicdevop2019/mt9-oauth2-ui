@@ -1,20 +1,20 @@
-import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode, IAutoApprove, IOrder } from '../interfaze/commom.interface';
-
-import { Observable } from 'rxjs';
-
-import { environment } from 'src/environments/environment';
-
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
-
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd, IPendingResourceOwner, IForgetPasswordRequest } from '../page/summary-resource-owner/summary-resource-owner.component';
-import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
+import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { getCookie } from './utility';
+import { environment } from 'src/environments/environment';
+import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
+import { IClient } from '../page/summary-client/summary-client.component';
+import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
+import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
-import { IProductSimple, IProductDetail, IProductTotalResponse } from '../service/product.service';
+import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
+import { getCookie } from './utility';
+
+
+
+
+
 
 export class OnlineImpl implements INetworkService {
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
@@ -73,6 +73,13 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
+    batchUpdateSecurityProfile(securitypProfile: {[key:string]:string}): Observable<boolean>{
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {
+                e.next(true)
+            });
+        });        
+    };
     forgetPwd(fg: FormGroup): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');

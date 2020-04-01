@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { of } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
+import { switchMap } from 'rxjs/operators';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { switchMap } from 'rxjs/operators';
-import { FORM_CONFIG } from '../form-configs/security-profile.config';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +27,12 @@ export class SecurityProfileService {
   }
   update(securityProfiel: ISecurityProfile) {
     this.httpProxy.netImpl.updateSecurityProfile(securityProfiel).subscribe(result => {
+      this.notify(result)
+    })
+
+  }
+  batchUpdate(batchUpdateForm: {[key:string]:string}) {
+    this.httpProxy.netImpl.batchUpdateSecurityProfile(batchUpdateForm).subscribe(result => {
       this.notify(result)
     })
 

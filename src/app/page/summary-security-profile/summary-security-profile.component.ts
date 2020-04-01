@@ -107,19 +107,22 @@ export class SummarySecurityProfileComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
   doBatchUpdate() {
-    this.selection.selected.filter(e => e.url !== null).forEach(
-      e => {
-        this.securityProfileSvc.update(this.getNewURLFromHostname(e, this.batchUpdateForm.get('hostname').value))
-      }
-    )
+    let form = {};
+    this.selection.selected
+      .filter(e => e.url !== null && e.url !== undefined)
+      .forEach(
+        e => {
+          form[String(e.id)] = this.getNewURLFromHostname(e, this.batchUpdateForm.get('hostname').value);
+        }
+      );
+    this.securityProfileSvc.batchUpdate(form);
   }
 
-  private getNewURLFromHostname(sp: ISecurityProfile, hostname: string): ISecurityProfile {
+  private getNewURLFromHostname(sp: ISecurityProfile, hostname: string): string {
     /**
      * e.g. replace localhost with hostname
      * http://localhost:8080/v1/api/resourceOwners
      */
-    sp.url = sp.url ? sp.url.replace(/(:\/\/)(.*?)(:)/g, '://' + hostname + ':') : null;
-    return sp;
+    return sp.url ? sp.url.replace(/(:\/\/)(.*?)(:)/g, '://' + hostname + ':') : null;
   }
 }

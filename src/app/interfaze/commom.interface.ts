@@ -4,7 +4,7 @@ import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
-import { IProductSimple, IProductDetail, IProductTotalResponse } from '../service/product.service';
+import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
 
 // regulate interface
 export interface INetworkService {
@@ -47,6 +47,7 @@ export interface INetworkService {
   getSecurityProfiles: () => Observable<ISecurityProfile[]>;
   createSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
   updateSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
+  batchUpdateSecurityProfile: (securitypProfile: {[key:string]:string}) => Observable<boolean>;
   deleteSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
   autoApprove: (clientId: string) => Observable<boolean>;
 }

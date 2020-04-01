@@ -55,7 +55,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "GET", "POST", "PUT", "DELETE"
+                "GET", "POST", "PUT", "DELETE","PATCH"
             ],
             "attributes": [
                 {

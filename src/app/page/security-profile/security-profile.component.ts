@@ -55,9 +55,6 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
 
       }
       else if (queryMaps.get('state') === 'create') {
-        // url is required for create
-        let attributes: IAttribute[] = [{ type: "required", errorMsg: "field cannot be empty" }];
-        this.formInfo.inputs.find(e => e.key === 'url').attributes = attributes;
       }
       else {
 

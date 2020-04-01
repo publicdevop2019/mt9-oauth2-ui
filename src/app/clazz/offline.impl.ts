@@ -1,15 +1,15 @@
-import { INetworkService, ITokenResponse, IAuthorizeParty, IAuthorizeCode, IOrder } from '../interfaze/commom.interface';
-
-import { Observable, of } from 'rxjs';
-
-import { delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
+import { IAuthorizeCode, IAuthorizeParty, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
 import { IClient } from '../page/summary-client/summary-client.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
-import { HttpClient } from '@angular/common/http';
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
-import { IProductSimple, IProductDetail, IProductTotalResponse } from '../service/product.service';
+import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
+
+
 
 export class SandboxImpl implements INetworkService {
     getOrders(): Observable<IOrder[]> {
@@ -75,6 +75,9 @@ export class SandboxImpl implements INetworkService {
     constructor(http: HttpClient) {
         this.http = http;
     }
+    batchUpdateSecurityProfile(securitypProfile: {[key:string]:string}): Observable<boolean> {
+        return of(true);
+    };
     activate(fg: FormGroup): Observable<any> {
         return of()
     };
