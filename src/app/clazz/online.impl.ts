@@ -73,9 +73,9 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
-    batchUpdateSecurityProfile(securitypProfile: FormData): Observable<boolean>{
+    batchUpdateSecurityProfile(securitypProfile: {[key:string]:string}): Observable<boolean>{
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {
+            this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {
                 e.next(true)
             });
         });        

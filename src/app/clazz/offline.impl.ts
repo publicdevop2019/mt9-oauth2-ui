@@ -75,7 +75,7 @@ export class SandboxImpl implements INetworkService {
     constructor(http: HttpClient) {
         this.http = http;
     }
-    batchUpdateSecurityProfile(securitypProfile: FormData): Observable<boolean> {
+    batchUpdateSecurityProfile(securitypProfile: {[key:string]:string}): Observable<boolean> {
         return of(true);
     };
     activate(fg: FormGroup): Observable<any> {

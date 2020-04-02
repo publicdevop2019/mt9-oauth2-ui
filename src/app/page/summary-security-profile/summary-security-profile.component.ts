@@ -110,12 +110,12 @@ export class SummarySecurityProfileComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
   doBatchUpdate() {
-    let form = new FormData();
+    let form = {};
     let ids = this.selection.selected
       .filter(e => e.scheme !== null && e.scheme !== undefined)
       .map(e => String(e.id));
-    form.set('host', this.batchUpdateForm.get('host').value);
-    form.set('ids', ids.join(','));
+    form['host'] = this.batchUpdateForm.get('host').value;
+    form['ids'] = ids.join(',');
     this.securityProfileSvc.batchUpdate(form);
   }
 

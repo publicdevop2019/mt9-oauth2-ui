@@ -47,7 +47,7 @@ export interface INetworkService {
   getSecurityProfiles: () => Observable<ISecurityProfile[]>;
   createSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
   updateSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
-  batchUpdateSecurityProfile: (securitypProfile: FormData) => Observable<boolean>;
+  batchUpdateSecurityProfile: (securitypProfile: {[key:string]:string}) => Observable<boolean>;
   deleteSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
   autoApprove: (clientId: string) => Observable<boolean>;
 }
