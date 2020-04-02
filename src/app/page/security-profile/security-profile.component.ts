@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
-import { IAttribute, IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
