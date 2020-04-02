@@ -43,12 +43,16 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
       if (queryMaps.get('state') === 'update') {
         this.securityProfile$.subscribe(securityProfile => {
           this.fis.formGroupCollection[this.formId].get('id').setValue(securityProfile.id)
-          this.fis.formGroupCollection[this.formId].get('resourceID').setValue(securityProfile.resourceID)
-          this.fis.formGroupCollection[this.formId].get('path').setValue(securityProfile.path)
+          this.fis.formGroupCollection[this.formId].get('resourceId').setValue(securityProfile.resourceId)
+          this.fis.formGroupCollection[this.formId].get('lookupPath').setValue(securityProfile.lookupPath)
           this.fis.formGroupCollection[this.formId].get('method').setValue(securityProfile.method)
           this.fis.formGroupCollection[this.formId].get('expression').setValue(securityProfile.expression)
-          if (securityProfile.url !== null || securityProfile.url !== undefined)
-            this.fis.formGroupCollection[this.formId].get('url').setValue(securityProfile.url)
+          if (securityProfile.scheme !== null || securityProfile.scheme !== undefined) {
+            this.fis.formGroupCollection[this.formId].get('scheme').setValue(securityProfile.scheme)
+            this.fis.formGroupCollection[this.formId].get('host').setValue(securityProfile.host)
+            this.fis.formGroupCollection[this.formId].get('port').setValue(securityProfile.port)
+            this.fis.formGroupCollection[this.formId].get('path').setValue(securityProfile.path)
+          }
         })
       }
       else if (queryMaps.get('state') === 'none') {
@@ -65,11 +69,14 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     let formGroup = this.fis.formGroupCollection[this.formId];
     return {
       id: formGroup.get('id').value,
-      resourceID: formGroup.get('resourceID').value,
-      path: formGroup.get('path').value,
+      resourceId: formGroup.get('resourceId').value,
+      lookupPath: formGroup.get('lookupPath').value,
       method: formGroup.get('method').value,
       expression: formGroup.get('expression').value,
-      url: formGroup.get('url').value
+      scheme: formGroup.get('scheme').value,
+      host: formGroup.get('host').value,
+      port: formGroup.get('port').value,
+      path: formGroup.get('path').value,
     }
   }
 }

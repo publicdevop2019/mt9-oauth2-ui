@@ -17,7 +17,7 @@ export const FORM_CONFIG: IForm = {
             "type": "text",
             "display": true,
             "label": "Enter resource id",
-            "key": "resourceID",
+            "key": "resourceId",
             "position": {
                 "row": "1",
                 "column": "0"
@@ -33,7 +33,7 @@ export const FORM_CONFIG: IForm = {
             "type": "text",
             "display": true,
             "label": "Enter endpoint",
-            "key": "path",
+            "key": "lookupPath",
             "position": {
                 "row": "2",
                 "column": "0"
@@ -83,10 +83,40 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter url",
-            "key": "url",
+            "label": "Enter scheme",
+            "key": "scheme",
             "position": {
                 "row": "5",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "Enter host",
+            "key": "host",
+            "position": {
+                "row": "6",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "Enter port number",
+            "key": "port",
+            "position": {
+                "row": "7",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "Enter path",
+            "key": "path",
+            "position": {
+                "row": "8",
                 "column": "0"
             },
         }

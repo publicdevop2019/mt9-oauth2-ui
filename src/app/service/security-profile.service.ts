@@ -31,7 +31,7 @@ export class SecurityProfileService {
     })
 
   }
-  batchUpdate(batchUpdateForm: {[key:string]:string}) {
+  batchUpdate(batchUpdateForm: FormData) {
     this.httpProxy.netImpl.batchUpdateSecurityProfile(batchUpdateForm).subscribe(result => {
       this.notify(result)
     })

@@ -37,9 +37,9 @@
         </ng-container>
 
         <!-- Method Column -->
-        <ng-container matColumnDef="resourceID">
+        <ng-container matColumnDef="resourceId">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Resource ID </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/security-profile/'+row.id]" [queryParams]="{state: 'update'}" > {{row.resourceID}} </td>
+            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/security-profile/'+row.id]" [queryParams]="{state: 'update'}" > {{row.resourceId}} </td>
         </ng-container>
 
         <!-- URL Column -->
@@ -71,7 +71,7 @@
 </div>
 <div *ngIf="batchUpdate.checked" style="margin-top: 16px;"  [formGroup]="batchUpdateForm">
     <mat-form-field>
-        <input matInput placeholder="Hostname" formControlName="hostname">
+        <input matInput placeholder="Enter host" formControlName="host">
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="doBatchUpdate()" >Update</button>
 </div>

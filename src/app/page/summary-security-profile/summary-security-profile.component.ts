@@ -6,12 +6,15 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { FormGroup, FormControl } from '@angular/forms';
 
 export interface ISecurityProfile {
-  resourceID: string;
-  path: string;
+  resourceId: string;
+  lookupPath: string;
   method: string;
   expression: string;
   id: number;
-  url?: string;
+  scheme?: string;
+  host?: string;
+  port?: string;
+  path?: string;
 }
 @Component({
   selector: 'app-summary-security-profile',
@@ -20,10 +23,10 @@ export interface ISecurityProfile {
 })
 export class SummarySecurityProfileComponent implements OnInit {
   header: string;
-  displayedColumns: string[] = ['id', 'resourceID', 'path', 'method', 'star'];
+  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'star'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   batchUpdateForm = new FormGroup({
-    hostname: new FormControl('', []),
+    host: new FormControl('', []),
   });
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -44,19 +47,19 @@ export class SummarySecurityProfileComponent implements OnInit {
       Breakpoints.XLarge,
     ]).subscribe(next => {
       if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['resourceID', 'path', 'method'];
+        this.displayedColumns = ['resourceId', 'path', 'method'];
       }
       else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['resourceID', 'path', 'method'];
+        this.displayedColumns = ['resourceId', 'path', 'method'];
       }
       else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'resourceID', 'path', 'method', 'star'];
+        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'resourceID', 'path', 'method', 'star'];
+        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
       }
       else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'resourceID', 'path', 'method', 'star'];
+        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
       }
       else {
         console.warn('unknown device width match!')
@@ -107,22 +110,13 @@ export class SummarySecurityProfileComponent implements OnInit {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
   doBatchUpdate() {
-    let form = {};
-    this.selection.selected
-      .filter(e => e.url !== null && e.url !== undefined)
-      .forEach(
-        e => {
-          form[String(e.id)] = this.getNewURLFromHostname(e, this.batchUpdateForm.get('hostname').value);
-        }
-      );
+    let form = new FormData();
+    let ids = this.selection.selected
+      .filter(e => e.scheme !== null && e.scheme !== undefined)
+      .map(e => String(e.id));
+    form.set('host', this.batchUpdateForm.get('host').value);
+    form.set('ids', ids.join(','));
     this.securityProfileSvc.batchUpdate(form);
   }
 
-  private getNewURLFromHostname(sp: ISecurityProfile, hostname: string): string {
-    /**
-     * e.g. replace localhost with hostname
-     * http://localhost:8080/v1/api/resourceOwners
-     */
-    return sp.url ? sp.url.replace(/(:\/\/)(.*?)(:)/g, '://' + hostname + ':') : null;
-  }
 }
