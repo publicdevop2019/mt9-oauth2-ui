@@ -17,44 +17,48 @@ import { getCookie } from './utility';
 
 
 export class OnlineImpl implements INetworkService {
+    private AUTH_SVC_NAME = '/auth-svc';
+    private PRODUCT_SVC_NAME = '/product-svc';
+    private PROFILE_SVC_NAME = '/profile-svc';
+    private FILE_UPLOAD_SVC_NAME = '/file-upload-svc';
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + '/api/categories/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getOrders(): Observable<IOrder[]> {
-        return this._httpClient.get<IOrder[]>(environment.serverUri + '/api/orders');
+        return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME +'/orders');
     };
     uploadFile(file: File): Observable<string> {
         return new Observable<string>(e => {
             const formData: FormData = new FormData();
             formData.append('file', file, file.name);
-            this._httpClient.post<void>(environment.serverUri + '/api/files', formData, { observe: 'response' }).subscribe(next => {
+            this._httpClient.post<void>(environment.serverUri + this.FILE_UPLOAD_SVC_NAME +'/files', formData, { observe: 'response' }).subscribe(next => {
                 e.next(next.headers.get('location'));
             });
         })
     };
     getProducts(category: string, pageNum: number, pageSize: number): Observable<IProductSimple[]> {
-        return this._httpClient.get<IProductSimple[]>(environment.serverUri + '/api/categories/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
+        return this._httpClient.get<IProductSimple[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getProductDetail(id: number): Observable<IProductDetail> {
-        return this._httpClient.get<IProductDetail>(environment.serverUri + '/api/productDetails/' + id);
+        return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + id);
     };
     createProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + '/api/productDetails', productDetail).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails', productDetail).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + '/api/productDetails/' + productDetail.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + productDetail.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + '/api/productDetails/' + productDetail.id, productDetail).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + productDetail.id, productDetail).subscribe(next => {
                 e.next(true)
             });
         });
@@ -73,12 +77,12 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
-    batchUpdateSecurityProfile(securitypProfile: {[key:string]:string}): Observable<boolean>{
+    batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {
                 e.next(true)
             });
-        });        
+        });
     };
     forgetPwd(fg: FormGroup): Observable<any> {
         const formData = new FormData();
@@ -96,18 +100,18 @@ export class OnlineImpl implements INetworkService {
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
     };
     getCategories(): Observable<ICategory[]> {
-        return this._httpClient.get<ICategory[]>(environment.serverUri + '/api/categories');
+        return this._httpClient.get<ICategory[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories');
     };
     createCategory(category: ICategory): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + '/api/categories', category).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories', category).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteCategory(category: ICategory): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + '/api/categories/' + category.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/' + category.id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -115,14 +119,14 @@ export class OnlineImpl implements INetworkService {
     };
     updateCategory(category: ICategory): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + '/api/categories/' + category.id, category).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/' + category.id, category).subscribe(next => {
                 e.next(true)
             });
         });
     };
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.get<IAutoApprove>(environment.serverUri + environment.apiVersion + '/clients/autoApprove?clientId=' + clientId).subscribe(next => {
+            this._httpClient.get<IAutoApprove>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/autoApprove?clientId=' + clientId).subscribe(next => {
                 if (next.autoApprove)
                     e.next(true)
                 e.next(false)
@@ -177,18 +181,18 @@ export class OnlineImpl implements INetworkService {
         formData.append('client_id', authorizeParty.client_id);
         formData.append('state', authorizeParty.state);
         formData.append('redirect_uri', authorizeParty.redirect_uri);
-        return this._httpClient.post<IAuthorizeCode>(environment.serverUri + environment.apiVersion + '/authorize', formData);
+        return this._httpClient.post<IAuthorizeCode>(environment.serverUri + this.AUTH_SVC_NAME + '/authorize', formData);
     };
     updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.patch<IResourceOwnerUpdatePwd>(environment.serverUri + environment.apiVersion + '/resourceOwner/pwd', resourceOwner).subscribe(next => {
+            this._httpClient.patch<IResourceOwnerUpdatePwd>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwner/pwd', resourceOwner).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwners/' + resourceOwner.id, resourceOwner).subscribe(next => {
+            this._httpClient.put<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + resourceOwner.id, resourceOwner).subscribe(next => {
                 e.next(true)
             });
         });
@@ -196,37 +200,37 @@ export class OnlineImpl implements INetworkService {
     };
     deleteResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete<IResourceOwner>(environment.serverUri + environment.apiVersion + '/resourceOwners/' + resourceOwner.id).subscribe(next => {
+            this._httpClient.delete<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + resourceOwner.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     createClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + environment.apiVersion + '/clients', client).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.AUTH_SVC_NAME + '/clients', client).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + environment.apiVersion + '/clients/' + client.id, client).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + client.id, client).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteClient(client: IClient): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + environment.apiVersion + '/clients/' + client.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + client.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     getResourceOwners(): Observable<IResourceOwner[]> {
-        return this._httpClient.get<IResourceOwner[]>(environment.serverUri + environment.apiVersion + '/resourceOwners');
+        return this._httpClient.get<IResourceOwner[]>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners');
     };
     getClients(): Observable<IClient[]> {
-        return this._httpClient.get<IClient[]>(environment.serverUri + environment.apiVersion + '/clients');
+        return this._httpClient.get<IClient[]>(environment.serverUri + this.AUTH_SVC_NAME + '/clients');
     };
     refreshToken(): Observable<ITokenResponse> {
         const formData = new FormData();
@@ -256,16 +260,16 @@ export class OnlineImpl implements INetworkService {
         return res.access_token;
     }
     private _createUser(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners', this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners', this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _getActivationCode(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners/register', this._getActivatePayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/register', this._getActivatePayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _resetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _forgetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + environment.apiVersion + '/resourceOwners/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _getRegPayload(fg: FormGroup): IPendingResourceOwner {
         return {
