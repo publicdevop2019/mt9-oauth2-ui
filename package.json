@@ -6,6 +6,7 @@
     "start": "ng serve",
     "deploy": "ng build --prod && cp -a ./dist/oauth2-ui/. ./public/ && rm -r ./public/* && cp -a ./dist/oauth2-ui/. ./public/ && firebase deploy",
     "build": "ng build --prod",
+    "build:hw": "ng build --configuration hw",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
