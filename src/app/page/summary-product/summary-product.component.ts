@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { IProductSimple, ProductService, IProductTotalResponse } from 'src/app/service/product.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
   styleUrls: ['./summary-product.component.css']
 })
-export class SummaryProductComponent implements OnInit {
+export class SummaryProductComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
   dataSource: MatTableDataSource<IProductSimple>;
   pageNumber = 0;
@@ -16,6 +17,7 @@ export class SummaryProductComponent implements OnInit {
   totoalProductCount = 0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  private sub: Subscription
   constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver) {
     this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
       this.totalProductHandler(products)
@@ -46,6 +48,9 @@ export class SummaryProductComponent implements OnInit {
         console.warn('unknown device width match!')
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
   ngOnInit() {
   }

@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { SecurityProfileService } from 'src/app/service/security-profile.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle } from '@angular/material';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 export interface ISecurityProfile {
   resourceId: string;
@@ -21,7 +22,7 @@ export interface ISecurityProfile {
   templateUrl: './summary-security-profile.component.html',
   styleUrls: ['./summary-security-profile.component.css']
 })
-export class SummarySecurityProfileComponent implements OnInit {
+export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
   header: string;
   displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'star'];
   dataSource: MatTableDataSource<ISecurityProfile>;
@@ -32,14 +33,14 @@ export class SummarySecurityProfileComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
   selection = new SelectionModel<ISecurityProfile>(true, []);
-
+  private sub: Subscription;
   constructor(public securityProfileSvc: SecurityProfileService, private breakpointObserver: BreakpointObserver) {
     this.securityProfileSvc.readAll().subscribe(profiles => {
       this.dataSource = new MatTableDataSource(profiles);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
-    this.breakpointObserver.observe([
+    this.sub = this.breakpointObserver.observe([
       Breakpoints.XSmall,
       Breakpoints.Small,
       Breakpoints.Medium,
@@ -68,6 +69,9 @@ export class SummarySecurityProfileComponent implements OnInit {
         this.displayedColumns = ['select', ...this.displayedColumns]
       }
     });
+  }
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
   showOptions() {
     if (!this.displayedColumns.includes('select')) {
