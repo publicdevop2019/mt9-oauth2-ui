@@ -11,7 +11,7 @@ import { OrderService } from 'src/app/service/order.service';
   styleUrls: ['./summary-order.component.css']
 })
 export class SummaryOrderComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'productList', 'paymentAmt','paymentStatus','star'];
+  displayedColumns: string[] = ['id', 'productList', 'paymentAmt','orderState','star'];
   dataSource: MatTableDataSource<IOrder>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

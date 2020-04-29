@@ -13,7 +13,7 @@
 
         <ng-container matColumnDef="productList">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Product Count </th>
-            <td mat-cell *matCellDef="let row" class="column-size"> {{row.productList.length}} </td>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.productList?row.productList.length:0}} </td>
         </ng-container>
 
         <ng-container matColumnDef="paymentAmt">
@@ -21,13 +21,13 @@
             <td mat-cell *matCellDef="let row" class="column-size"> {{row.paymentAmt}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="paymentStatus">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Payment Status</th>
-            <td mat-cell *matCellDef="let row" class="column-size"> {{row.paymentStatus}} </td>
+        <ng-container matColumnDef="orderState">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Order Status</th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.orderState}} </td>
         </ng-container>
 
         <ng-container matColumnDef="star">
-            <th mat-header-cell *matHeaderCellDef>Setting</th>
+            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Setting</th>
             <td mat-cell *matCellDef="let row">
                 <button [routerLink]="['/dashboard/orders/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
                     <mat-icon>settings</mat-icon>

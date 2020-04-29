@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./summary-product.component.css']
 })
 export class SummaryProductComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+  displayedColumns: string[] = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
   dataSource: MatTableDataSource<IProductSimple>;
   pageNumber = 0;
   pageSize = 20;
@@ -22,7 +22,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
       this.totalProductHandler(products)
     });
-    this.breakpointObserver.observe([
+    this.sub = this.breakpointObserver.observe([
       Breakpoints.XSmall,
       Breakpoints.Small,
       Breakpoints.Medium,
@@ -30,19 +30,19 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
       Breakpoints.XLarge,
     ]).subscribe(next => {
       if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['id', 'name', 'price', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'name',  'actualStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'name',  'orderStorage', 'actualStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'category', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
       }
       else {
         console.warn('unknown device width match!')

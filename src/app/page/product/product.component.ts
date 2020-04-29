@@ -169,7 +169,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       sales: formGroup.get('sales').value,
       rate: formGroup.get('rate').value,
       imageUrlLarge: imagesUrl,
-      selectedOptions: selectedOptions,
+      selectedOptions: selectedOptions.filter(e => e.title !== ''),
       orderStorage: formGroup.get('orderStorage').value,
       increaseOrderStorageBy: formGroup.get('increaseOrderStorageBy').value,
       decreaseOrderStorageBy: formGroup.get('decreaseOrderStorageBy').value,
