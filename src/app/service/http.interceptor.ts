@@ -56,6 +56,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
           }
         } else if (this._errorStatus.indexOf(httpError.status) > -1) {
           this.router.navigate(['/error'])
+          this.openSnackbar('Server return 5xx');
         } else if (httpError.status === 404) {
           this.openSnackbar('URL Not Found');
           return throwError(error);
