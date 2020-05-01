@@ -65,7 +65,7 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
       else {
         console.warn('unknown device width match!')
       }
-      if (this.slide.checked && !this.displayedColumns.includes('select')) {
+      if (this.slide && this.slide.checked && !this.displayedColumns.includes('select')) {
         this.displayedColumns = ['select', ...this.displayedColumns]
       }
     });
