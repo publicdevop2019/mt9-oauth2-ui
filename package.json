@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4300",
     "deploy": "ng build --prod && cp -a ./dist/oauth2-ui/. ./public/ && rm -r ./public/* && cp -a ./dist/oauth2-ui/. ./public/ && firebase deploy",
     "build": "ng build --prod",
     "build:hw": "ng build --configuration hw",
