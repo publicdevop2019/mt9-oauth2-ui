@@ -9,15 +9,44 @@
     <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
         <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
             fixedTopGap="56">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{'AUTH_CENTER'| translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                    <mat-list-item mat-list-item [routerLink]="nav.link" routerLinkActive="nav-active"
+                        [queryParams]="nav.params" *ngFor="let nav of menuAuth">
+                        <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display| translate}}
+                    </mat-list-item>
+                </mat-nav-list>
+
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{'MALL_CENTER'| translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                    <mat-list-item mat-list-item [routerLink]="nav.link" routerLinkActive="nav-active"
+                        [queryParams]="nav.params" *ngFor="let nav of menuMall">
+                        <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display | translate}}
+                    </mat-list-item>
+                </mat-nav-list>
+
+            </mat-expansion-panel>
             <mat-nav-list>
                 <mat-list-item mat-list-item [routerLink]="nav.link" routerLinkActive="nav-active"
-                    [queryParams]="nav.params" *ngFor="let nav of fillerNav">
-                    <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display}}
+                    [queryParams]="nav.params" *ngFor="let nav of menuMisc">
+                    <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display| translate}}
                 </mat-list-item>
             </mat-nav-list>
         </mat-sidenav>
 
-        <mat-sidenav-content [style.padding-left.px]="mobileQuery.matches ? 15 : 30" [style.padding-right.px]="mobileQuery.matches ? 15 : 30">
+        <mat-sidenav-content [style.padding-left.px]="mobileQuery.matches ? 15 : 30"
+            [style.padding-right.px]="mobileQuery.matches ? 15 : 30">
             <router-outlet></router-outlet>
         </mat-sidenav-content>
     </mat-sidenav-container>

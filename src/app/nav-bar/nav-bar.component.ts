@@ -22,10 +22,10 @@ export const NAV_LIST: { [index: string]: string } = {
 export class NavBarComponent implements OnInit {
   menuOpen: boolean = false;
   mobileQuery: MediaQueryList;
-  fillerNav: INavElement[] = [
+  menuAuth: INavElement[] = [
     {
       link: 'clients',
-      display: 'Client Dashboard',
+      display: 'CLIENT_DASHBOARD',
       icon: 'apps',
       params: {
         state: 'none',
@@ -34,7 +34,7 @@ export class NavBarComponent implements OnInit {
     ,
     {
       link: 'resource-owners',
-      display: 'Resource Owner Dashboard',
+      display: 'RESOURCE_OWNER_DASHBOARD',
       icon: 'perm_identity',
       params: {
         state: 'none',
@@ -43,39 +43,15 @@ export class NavBarComponent implements OnInit {
     ,
     {
       link: 'security-profiles',
-      display: 'Security Profile Dashboard',
+      display: 'SECURITY_PROFILE_DASHBOARD',
       icon: 'security',
       params: {
         state: 'none',
       },
     },
     {
-      link: 'products',
-      display: 'Product Dashboard',
-      icon: 'storefront',
-      params: {
-        state: 'none',
-      },
-    },
-    {
-      link: 'categories',
-      display: 'Category Dashboard',
-      icon: 'category',
-      params: {
-        state: 'none',
-      },
-    },
-    {
-      link: 'orders',
-      display: 'Order Dashboard',
-      icon: 'assignment',
-      params: {
-        state: 'none',
-      },
-    },
-    {
       link: 'client',
-      display: 'Add Client',
+      display: 'ADD_CLIENT',
       icon: 'add',
       params: {
         state: 'create',
@@ -83,31 +59,17 @@ export class NavBarComponent implements OnInit {
     },
     {
       link: 'security-profile',
-      display: 'Add Security Profile',
+      display: 'ADD_SECURITY_PROFILE',
       icon: 'add',
       params: {
         state: 'create',
       },
     },
-    {
-      link: 'product',
-      display: 'Add Product',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
-    {
-      link: 'category',
-      display: 'Add Category',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
+  ];
+  menuMisc: INavElement[] = [
     {
       link: 'resource-owner',
-      display: 'Update Password',
+      display: 'UPDATE_PASSWORD',
       icon: 'vpn_key',
       params: {
         state: 'update:pwd',
@@ -115,12 +77,55 @@ export class NavBarComponent implements OnInit {
     },
     {
       link: '/login',
-      display: 'Logout',
+      display: 'LOGOUT',
       icon: 'exit_to_app',
       params: {
         state: 'none',
       },
     }
+  ];
+  menuMall: INavElement[] = [
+    {
+      link: 'products',
+      display: 'PRODUCT_DASHBOARD',
+      icon: 'storefront',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'categories',
+      display: 'CATEGORY_DASHBOARD',
+      icon: 'category',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'orders',
+      display: 'ORDER_DASHBOARD',
+      icon: 'assignment',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'product',
+      display: 'ADD_PRODUCT',
+      icon: 'add',
+      params: {
+        state: 'create',
+      },
+    },
+    {
+      link: 'category',
+      display: 'ADD_CATEGORY',
+      icon: 'add',
+      params: {
+        state: 'create',
+      },
+    },
+   
   ];
   private _mobileQueryListener: () => void;
   private sub: Subscription;
