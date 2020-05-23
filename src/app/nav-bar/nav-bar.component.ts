@@ -147,7 +147,4 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit() {
   }
-  toGitHub() {
-    window.open(environment.home, '_blank')
-  }
 }

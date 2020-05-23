@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  mode: 'online' as 'online' | 'offline',
-  home: 'https://github.com/publicdevop2019/oauth2service',
+  mode: 'offline' as 'online' | 'offline',
   serverUri: 'http://localhost:8111',
   tokenUrl: 'http://localhost:8111/auth-svc/oauth/token',
   // serverUri: 'http://localhost:8083/v1',
@@ -14,7 +13,8 @@ export const environment = {
   // tokenUrl: 'http://ec2-18-191-132-78.us-east-2.compute.amazonaws.com/oauth/token',
   loginClientId: 'login-id',
   registerClientId: 'register-id',
-  clientSecret: ''
+  clientSecret: '',
+  lang:'zhHans'
 };
 
 /*

@@ -1,5 +1,5 @@
 import { LayoutModule } from '@angular/cdk/layout';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule, MatSnackBarModule } from '@angular/material';
@@ -35,6 +35,12 @@ import { environment } from '../environments/environment';
 import { SummaryOrderComponent } from './page/summary-order/summary-order.component';
 import { OrderComponent } from './page/order/order.component';
 import { FormInfoService, MagicFormModule } from 'mt-form-builder';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { CustomLoader } from './clazz/locale/custom-loader';
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -86,6 +92,12 @@ import { FormInfoService, MagicFormModule } from 'mt-form-builder';
     LayoutModule,
     MagicFormModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useClass:CustomLoader
+      }
+  }),
   ],
   entryComponents: [MsgBoxComponent],
   providers: [

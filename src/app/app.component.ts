@@ -1,5 +1,6 @@
 import { Component, AfterContentChecked, ChangeDetectorRef } from '@angular/core';
 import { HttpProxyService } from './service/http-proxy.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,8 @@ export class AppComponent implements AfterContentChecked{
     this.changeDec.detectChanges()
   }
   title = 'OAuth2-Manager';
-  constructor(public httpProxy:HttpProxyService,private changeDec:ChangeDetectorRef){
-
+  constructor(public httpProxy:HttpProxyService,private changeDec:ChangeDetectorRef,public translate: TranslateService){
+    this.translate.setDefaultLang('zhHans');
+    this.translate.use('zhHans')
   }
 }

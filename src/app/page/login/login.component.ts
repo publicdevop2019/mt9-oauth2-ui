@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router'
 import { MatDialog } from '@angular/material';
 import { MsgBoxComponent } from 'src/app/components/msg-box/msg-box.component';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +37,7 @@ export class LoginComponent implements OnInit {
   });
   hide = true;
   hide2 = true;
-  constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute) {
+  constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute, public translate: TranslateService) {
     this.httpProxy.netImpl.currentUserAuthInfo = undefined;
     this.httpProxy.expireRefresh = false;
     this.router.queryParamMap.subscribe(queryMaps => {
@@ -80,7 +81,7 @@ export class LoginComponent implements OnInit {
   changePassword() {
     this.httpProxy.netImpl.resetPwd(this.loginOrRegForm).subscribe(next => {
       this.loginOrRegForm.get('state').setValue(false);
-      this.forgetPwd=false;
+      this.forgetPwd = false;
       this.openDialog('password update success, please login');
     })
   }
@@ -90,7 +91,12 @@ export class LoginComponent implements OnInit {
       data: msg
     });
   }
-  toGitHub() {
-    window.open(environment.home, '_blank')
+  public toggleLang() {
+    if (this.translate.currentLang === 'enUS') {
+      this.translate.use('zhHans')
+    }
+    else {
+      this.translate.use('enUS')
+    }
   }
 }
