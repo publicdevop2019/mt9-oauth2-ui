@@ -1,18 +1,18 @@
 <div class="example-container">
-    <button [routerLink]="'/dashboard/products'" [queryParams]="{state: 'none'}" mat-button
-       class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
+    <button [routerLink]="'/dashboard/products'" [queryParams]="{state: 'none'}" mat-button class="nav-back">
+        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
     </button>
 
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <h3>Product Image Urls</h3>
+    <h3>{{'PRODUCT_IMAGE_URLS'|translate}}</h3>
     <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>
-    <h3>Product Option(s)</h3>
+    <h3>{{'PRODUCT_OPTION(S)'|translate}}</h3>
     <lib-factory [formId]="optionFormId" [formInfo]="optionFormInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">Update</button>
+        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.delete(convertToPayload())">Delete</button>
-    <button mat-raised-button color="primary" style="margin-top: 24px;" (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
-        *ngIf="state=='create'">Create</button>
+        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.delete(convertToPayload())">{{'DELETE'|translate}}</button>
+    <button mat-raised-button color="primary" style="margin-top: 24px;"
+        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
+        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
 </div>

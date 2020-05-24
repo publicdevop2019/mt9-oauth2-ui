@@ -1,6 +1,6 @@
-<h2>Category Dashboard</h2>
+<h2>{{'CATEGORY_DASHBOARD'|translate}}</h2>
 <mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
 </mat-form-field>
 
 <div class="mat-elevation-z8">
@@ -14,13 +14,13 @@
 
         <!-- clientId Column -->
         <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'TITLE' |translate}}</th>
             <td mat-cell *matCellDef="let row" class="column-size"> {{row.title}} </td>
         </ng-container>
-        
+
         <!-- Star Column -->
         <ng-container matColumnDef="star">
-            <th mat-header-cell *matHeaderCellDef style="text-align: center;">Setting</th>
+            <th mat-header-cell *matHeaderCellDef style="text-align: center;">{{'SETTING'|translate}}</th>
             <td mat-cell *matCellDef="let row">
                 <button [routerLink]="['/dashboard/categories/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
                     <mat-icon>settings</mat-icon>
@@ -32,5 +32,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator  [pageIndex]="categorySvc.currentPageIndex" [pageSizeOptions]="[8]" (page)="pageHandler($event)"></mat-paginator>
+    <mat-paginator [pageIndex]="categorySvc.currentPageIndex" [pageSizeOptions]="[8]" (page)="pageHandler($event)">
+    </mat-paginator>
 </div>

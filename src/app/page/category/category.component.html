@@ -1,14 +1,14 @@
 <div class="example-container">
     <button [routerLink]="'/dashboard/categories'" [queryParams]="{state: 'none'}" mat-button
        class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
+        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
     </button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validator.valid()&&categorySvc.update(convertToCategoryPayload())">Update</button>
+        (click)="validator.valid()&&categorySvc.update(convertToCategoryPayload())">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'"
-        (click)="validator.valid()&&categorySvc.delete(convertToCategoryPayload())">Delete</button>
+        (click)="validator.valid()&&categorySvc.delete(convertToCategoryPayload())">{{'DELETE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&categorySvc.create(convertToCategoryPayload())"
-        *ngIf="state=='create'">Create</button>
+        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
 </div>

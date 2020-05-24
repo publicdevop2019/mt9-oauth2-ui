@@ -1,14 +1,14 @@
 <div class="example-container">
     <button [routerLink]="'/dashboard/security-profiles'" [queryParams]="{state: 'none'}" mat-button
        class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
+        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
     </button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validator.valid()&&securityProfileService.update(convertToSecurityProfile())">Update</button>
+        (click)="validator.valid()&&securityProfileService.update(convertToSecurityProfile())">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'"
-        (click)="validator.valid()&&securityProfileService.delete(convertToSecurityProfile())">Delete</button>
+        (click)="validator.valid()&&securityProfileService.delete(convertToSecurityProfile())">{{'DELETE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&securityProfileService.create(convertToSecurityProfile())"
-        *ngIf="state=='create'">Create</button>
+        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
 </div>

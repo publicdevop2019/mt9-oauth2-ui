@@ -10,6 +10,7 @@ import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/for
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FormInfoService } from 'mt-form-builder';
 import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-product',
@@ -34,6 +35,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
     private fis: FormInfoService,
+    public translate: TranslateService
   ) {
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis)
@@ -134,7 +136,41 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.fis.formGroupCollection[this.formId].reset();
     delete this.fis.formGroupCollection[this.imageFormId];
   }
+  private sub: Subscription;
+  private transKeyMap: Map<string, string> = new Map();
+  private updateFormLabel() {
+    this.formInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.imageFormInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.optionFormInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    //nested form
+    this.optionFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+  }
   ngOnInit() {
+    this.updateFormLabel();
+    this.sub = this.translate.onLangChange.subscribe(() => {
+      this.updateFormLabel();
+    })
+    this.subs.push(this.sub);
     this.product$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.productSvc.getProductDetailById(+params.get('id')))

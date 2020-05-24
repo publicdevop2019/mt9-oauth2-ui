@@ -11,7 +11,6 @@ import { MsgBoxComponent } from './components/msg-box/msg-box.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { AuthorizeComponent } from './page/authorize/authorize.component';
 import { ClientComponent } from './page/client/client.component';
-import { ErrorComponent } from './page/error/error.component';
 import { LoginComponent } from './page/login/login.component';
 import { ResourceOwnerComponent } from './page/resource-owner/resource-owner.component';
 import { SecurityProfileComponent } from './page/security-profile/security-profile.component';
@@ -48,7 +47,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     LoginComponent,
     ClientComponent,
     ResourceOwnerComponent,
-    ErrorComponent,
     SummaryClientComponent,
     SummaryResourceOwnerComponent,
     NavBarComponent,

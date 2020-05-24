@@ -16,7 +16,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter Category",
+            "label": "ENTER_CATEGORY",
             "key": "category",
             "position": {
                 "row": "1",
@@ -32,7 +32,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter Name",
+            "label": "ENTER_NAME",
             "key": "name",
             "position": {
                 "row": "2",
@@ -48,7 +48,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter Price",
+            "label": "ENTER_PRICE",
             "key": "price",
             "position": {
                 "row": "3",
@@ -64,7 +64,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "file",
             "display": true,
-            "label": "Upload product image small",
+            "label": "UPLOAD_PRODUCT_IMAGE_SMALL",
             "key": "imageUrlSmallFile",
             "position": {
                 "row": "4",
@@ -75,7 +75,7 @@ export const FORM_CONFIG: IForm = {
             "type": "text",
             "display": true,
             "readonly": true,
-            "label": "Coverage Image Url",
+            "label": "COVERAGE_IMAGE_URL",
             "key": "imageUrlSmall",
             "position": {
                 "row": "5",
@@ -85,7 +85,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter description",
+            "label": "ENTER_DESCRIPTION",
             "key": "description",
             "position": {
                 "row": "6",
@@ -95,7 +95,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter sales",
+            "label": "ENTER_SALES",
             "key": "sales",
             "position": {
                 "row": "7",
@@ -105,7 +105,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter rate",
+            "label": "ENTER_RATE",
             "key": "rate",
             "position": {
                 "row": "8",
@@ -115,7 +115,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter initial order storage",
+            "label": "ENTER_INITIAL_ORDER_STORAGE",
             "key": "orderStorage",
             "position": {
                 "row": "9",
@@ -135,7 +135,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter initial actual storage",
+            "label": "ENTER_INITIAL_ACTUAL_STORAGE",
             "key": "actualStorage",
             "position": {
                 "row": "10",
@@ -155,7 +155,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter increase order storage amount",
+            "label": "ENTER_INCREASE_ORDER_STORAGE_AMOUNT",
             "key": "increaseOrderStorageBy",
             "position": {
                 "row": "11",
@@ -171,7 +171,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter decrease order storage amount",
+            "label": "ENTER_DECREASE_ORDER_STORAGE_AMOUNT",
             "key": "decreaseOrderStorageBy",
             "position": {
                 "row": "12",
@@ -187,7 +187,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter increase actual storage amount",
+            "label": "ENTER_INCREASE_ACTUAL_STORAGE_AMOUNT",
             "key": "increaseActualStorageBy",
             "position": {
                 "row": "13",
@@ -203,7 +203,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter decrease actual storage amount",
+            "label": "ENTER_DECREASE_ACTUAL_STORAGE_AMOUNT",
             "key": "decreaseActualStorageBy",
             "position": {
                 "row": "14",
@@ -226,7 +226,7 @@ export const FORM_CONFIG_IMAGE: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter image url",
+            "label": "ENTER_IMAGE_URL",
             "key": "imageUrl",
             "position": {
                 "row": "0",
@@ -242,7 +242,7 @@ export const FORM_CONFIG_OPTIONS: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter product option title",
+            "label": "ENTER_PRODUCT_OPTION_TITLE",
             "key": "productOption",
             "position": {
                 "row": "0",
@@ -254,13 +254,13 @@ export const FORM_CONFIG_OPTIONS: IForm = {
             "display": true,
             "label": "",
             "key": "optionForm",
-            form: {
-                repeatable: true,
-                inputs: [
+            "form": {
+                "repeatable": true,
+                "inputs": [
                     {
                         "type": "text",
                         "display": true,
-                        "label": "Enter option value",
+                        "label": "ENTER_OPTION_VALUE",
                         "key": "optionValue",
                         "position": {
                             "row": "0",
@@ -270,7 +270,7 @@ export const FORM_CONFIG_OPTIONS: IForm = {
                     {
                         "type": "text",
                         "display": true,
-                        "label": "Enter option price change",
+                        "label": "ENTER_OPTION_PRICE_CHANGE",
                         "key": "optionPriceChange",
                         "position": {
                             "row": "0",

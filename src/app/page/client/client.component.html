@@ -1,9 +1,8 @@
 <div class="example-container">
-    <button [routerLink]="'/dashboard/clients'" [queryParams]="{state: 'none'}" mat-button
-       class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">Back</span>
+    <button [routerLink]="'/dashboard/clients'" [queryParams]="{state: 'none'}" mat-button class="nav-back">
+        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
     </button>
-    <mat-accordion style="margin-top: 16px;margin-bottom: 16px; ">
+    <!-- <mat-accordion style="margin-top: 16px;margin-bottom: 16px; ">
         <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>
@@ -21,16 +20,16 @@
                 <mat-list-item role="listitem">3. Use comman seperated value for multiple redirect URL</mat-list-item>
             </mat-list>
         </mat-expansion-panel>
-    </mat-accordion>
+    </mat-accordion> -->
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&clientService.updateClient(convertToClient())"
-        *ngIf="state=='update'">Update</button>
+        *ngIf="state=='update'">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="warn" style="margin-bottom: 20px;"
         (click)="validator.valid()&&clientService.deleteClient(convertToClient())"
-        *ngIf="state=='update'">Delete</button>
+        *ngIf="state=='update'">{{'DELETE'|translate}}</button>
     <!-- && !clientForm.get('authorityRoot').value -->
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&clientService.createClient(convertToClient())"
-        *ngIf="state=='create'">Create</button>
+        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
 </div>
