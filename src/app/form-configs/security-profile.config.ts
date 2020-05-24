@@ -16,7 +16,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter resource id",
+            "label": "ENTER_RESOURCE_ID",
             "key": "resourceId",
             "position": {
                 "row": "1",
@@ -32,7 +32,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter endpoint",
+            "label": "ENTER_ENDPOINT",
             "key": "lookupPath",
             "position": {
                 "row": "2",
@@ -48,7 +48,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "select",
             "display": true,
-            "label": "Select method",
+            "label": "SELECT_METHOD",
             "key": "method",
             "position": {
                 "row": "3",
@@ -67,7 +67,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter security expression",
+            "label": "ENTER_SECURITY_EXPRESSION",
             "key": "expression",
             "position": {
                 "row": "4",
@@ -83,7 +83,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter scheme",
+            "label": "ENTER_SCHEME",
             "key": "scheme",
             "position": {
                 "row": "5",
@@ -93,7 +93,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter host",
+            "label": "ENTER_HOST",
             "key": "host",
             "position": {
                 "row": "6",
@@ -103,7 +103,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter port number",
+            "label": "ENTER_PORT_NUMBER",
             "key": "port",
             "position": {
                 "row": "7",
@@ -113,7 +113,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter path",
+            "label": "ENTER_PATH",
             "key": "path",
             "position": {
                 "row": "8",

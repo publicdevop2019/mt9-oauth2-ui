@@ -2,13 +2,14 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/resource-owner.config';
 import { ResourceOwnerService } from 'src/app/service/resource-owner.service';
 import { IAuthority } from '../summary-client/summary-client.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../summary-resource-owner/summary-resource-owner.component';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',
@@ -26,7 +27,8 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   constructor(
     private route: ActivatedRoute,
     public resourceOwnerService: ResourceOwnerService,
-    private fis: FormInfoService
+    private fis: FormInfoService,
+    public translate: TranslateService
   ) {
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
@@ -54,8 +56,24 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();
+    this.sub.unsubscribe();
   }
+  private sub: Subscription;
+  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
+    this.formInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.sub = this.translate.onLangChange.subscribe(() => {
+      this.formInfo.inputs.filter(e => e.label).forEach(e => {
+        this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
+          e.label = res;
+        });
+      })
+    })
     this.resourceOwner$ = this.route.paramMap.pipe(switchMap((params: ParamMap) => this.resourceOwnerService.getResourceOwner(+params.get('id'))));
 
   }

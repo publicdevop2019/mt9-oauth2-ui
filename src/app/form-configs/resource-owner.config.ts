@@ -27,7 +27,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter your current password",
+            "label": "ENTER_YOUR_CURRENT_PASSWORD",
             "key": "currentPwd",
             "position": {
                 "row": "2",
@@ -43,7 +43,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter your new password",
+            "label": "ENTER_YOUR_NEW_PASSWORD",
             "key": "pwd",
             "position": {
                 "row": "3",
@@ -59,7 +59,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Re-enter your new password",
+            "label": "REENTER_YOUR_NEW_PASSWORD",
             "key": "confirmPwd",
             "position": {
                 "row": "4",
@@ -75,7 +75,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "checkbox",
             "display": true,
-            "label": "Please select authority(s)",
+            "label": "PLEASE_SELECT_AUTHORITY(S)",
             "key": "authority",
             "position": {
                 "row": "5",
@@ -88,7 +88,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "checkbox",
             "display": true,
-            "label": "Lock or unlock user",
+            "label": "LOCK_OR_UNLOCK_USER",
             "key": "locked",
             "position": {
                 "row": "6",
@@ -101,7 +101,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "checkbox",
             "display": true,
-            "label": "New Order Subscribe",
+            "label": "NEW_ORDER_SUBSCRIBE",
             "key": "subNewOrder",
             "position": {
                 "row": "7",
