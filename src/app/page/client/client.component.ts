@@ -3,19 +3,20 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IInputConfig } from 'mt-form-builder/lib/classes/template.interface';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/service/client.service';
 import { grantTypeEnums, IAuthority, IClient, scopeEnums } from '../summary-client/summary-client.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client',
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
 })
-export class ClientComponent implements AfterViewInit, OnDestroy {
+export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
   hide = true;
   state: 'update' | 'create';
   disabled = false;
@@ -30,9 +31,10 @@ export class ClientComponent implements AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     public clientService: ClientService,
     public dialog: MatDialog,
-    private fis: FormInfoService
+    private fis: FormInfoService,
+    public translate: TranslateService
   ) {
-    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
+    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.client$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.clientService.getClient(+params.get('id')))
@@ -67,6 +69,23 @@ export class ClientComponent implements AfterViewInit, OnDestroy {
       } else {
 
       }
+    })
+  }
+  private sub: Subscription;
+  private transKeyMap: Map<string, string> = new Map();
+  ngOnInit(): void {
+    this.formInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.sub = this.translate.onLangChange.subscribe(() => {
+      this.formInfo.inputs.filter(e => e.label).forEach(e => {
+        this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
+          e.label = res;
+        });
+      })
     })
   }
 
@@ -104,6 +123,7 @@ export class ClientComponent implements AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();
+    this.sub.unsubscribe();
   }
   convertToClient(): IClient {
     let formGroup = this.fis.formGroupCollection[this.formId];

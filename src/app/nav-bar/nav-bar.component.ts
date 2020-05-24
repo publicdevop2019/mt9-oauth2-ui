@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { ActivatedRouteSnapshot, ActivatedRoute, Router } from '@angular/router';
 import { MatSidenav } from '@angular/material';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 export interface INavElement {
   link: string;
   icon?: string;
@@ -130,7 +131,7 @@ export class NavBarComponent implements OnInit {
   private _mobileQueryListener: () => void;
   private sub: Subscription;
   @ViewChild("snav", { static: true }) snav: MatSidenav;
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver,public translate: TranslateService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -151,5 +152,13 @@ export class NavBarComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+  public toggleLang() {
+    if (this.translate.currentLang === 'enUS') {
+      this.translate.use('zhHans')
+    }
+    else {
+      this.translate.use('enUS')
+    }
   }
 }

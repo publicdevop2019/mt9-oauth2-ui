@@ -2,12 +2,13 @@ import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/category.config';
 import { CategoryService, ICategory } from 'src/app/service/category.service';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-category',
@@ -24,7 +25,8 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public categorySvc: CategoryService,
-    private fis: FormInfoService
+    private fis: FormInfoService,
+    public translate: TranslateService
   ) {
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
   }
@@ -38,15 +40,31 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
           this.fis.formGroupCollection[this.formId].get('title').setValue(byId.title)
         })
       } else if (queryMaps.get('state') === 'none') {
-  
+
       } else {
       }
     });
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();
+    this.sub.unsubscribe();
   }
+  private sub: Subscription;
+  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
+    this.formInfo.inputs.forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.sub = this.translate.onLangChange.subscribe(() => {
+      this.formInfo.inputs.forEach(e => {
+        this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
+          e.label = res;
+        });
+      })
+    })
     this.category$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.categorySvc.getCategoryById(+params.get('id')))

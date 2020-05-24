@@ -16,7 +16,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter client id",
+            "label": "ENTER_CLIENT_ID",
             "key": "clientId",
             "position": {
                 "row": "1",
@@ -45,7 +45,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter client secret",
+            "label": "ENTER_CLIENT_SECRET",
             "key": "clientSecret",
             "position": {
                 "row": "3",
@@ -61,7 +61,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "select",
             "display": true,
-            "label": "Select a grant type",
+            "label": "SELECT_A_GRANT＿TYPE",
             "key": "grantType",
             "position": {
                 "row": "4",
@@ -80,7 +80,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Enter redirect uri",
+            "label": "ENTER_REDIRECT_URI",
             "key": "registeredRedirectUri",
             "position": {
                 "row": "5",
@@ -135,7 +135,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "checkbox",
             "display": true,
-            "label": "Please select authority(s)",
+            "label": "PLEASE_SELECT_AUTHORITY(S)",
             "key": "authority",
             "position": {
                 "row": "9",
@@ -159,7 +159,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "checkbox",
             "display": true,
-            "label": "Please select scope(s)",
+            "label": "PLEASE_SELECT_SCOPE(S)",
             "key": "scope",
             "position": {
                 "row": "10",
@@ -181,7 +181,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "observable-checkbox",
             "display": true,
-            "label": "Please select resouce id(s)",
+            "label": "PLEASE_SELECT_RESOUCE_ID(S)",
             "key": "resourceId",
             "position": {
                 "row": "11",
@@ -199,7 +199,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Access Token validity seconds",
+            "label": "ACCESS_TOKEN_VALIDITY_SECONDS",
             "key": "accessTokenValiditySeconds",
             "position": {
                 "row": "12",
@@ -219,7 +219,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": false,
-            "label": "Refresh Token validity seconds",
+            "label": "REFRESH_TOKEN_VALIDITY_SECONDS",
             "key": "refreshTokenValiditySeconds",
             "position": {
                 "row": "13",

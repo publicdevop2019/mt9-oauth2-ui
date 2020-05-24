@@ -15,7 +15,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "Enter title",
+            "label": "ENTER_TITLE",
             "key": "title",
             "position": {
                 "row": "1",
