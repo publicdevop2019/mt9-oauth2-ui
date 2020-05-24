@@ -21,6 +21,20 @@ export class OnlineImpl implements INetworkService {
     private PRODUCT_SVC_NAME = '/product-svc';
     private PROFILE_SVC_NAME = '/profile-svc';
     private FILE_UPLOAD_SVC_NAME = '/file-upload-svc';
+    set currentUserAuthInfo(token: ITokenResponse) {
+        document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
+    };
+    get currentUserAuthInfo(): ITokenResponse | undefined {
+        const jwtTokenStr: string = getCookie('jwt');
+        if (jwtTokenStr !== 'undefined' && jwtTokenStr !== undefined) {
+            return <ITokenResponse>JSON.parse(jwtTokenStr)
+        } else {
+            return undefined;
+        }
+    }
+    // OAuth2 pwd flow
+    constructor(private _httpClient: HttpClient) {
+    }
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
@@ -63,20 +77,6 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    set currentUserAuthInfo(token: ITokenResponse) {
-        document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
-    };
-    get currentUserAuthInfo(): ITokenResponse | undefined {
-        const jwtTokenStr: string = getCookie('jwt');
-        if (jwtTokenStr !== 'undefined' && jwtTokenStr !== undefined) {
-            return <ITokenResponse>JSON.parse(jwtTokenStr)
-        } else {
-            return undefined;
-        }
-    }
-    // OAuth2 pwd flow
-    constructor(private _httpClient: HttpClient) {
-    }
     batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {

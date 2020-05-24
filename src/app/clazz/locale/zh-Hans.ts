@@ -67,6 +67,8 @@ export const zhHans = {
     "ENTER_PRODUCT_OPTION_TITLE": "输入产品选项名称",
     "ENTER_OPTION_VALUE": "输入产品选项值",
     "ENTER_OPTION_PRICE_CHANGE": "输入产品选项价格变化",
+    "PRODUCT_IMAGE_URLS": "产品图片",
+    "PRODUCT_OPTION(S)": "产品选项",
     "BACK": "返回",
     "CREATE": "创建",
     "UPDATE": "更新",
