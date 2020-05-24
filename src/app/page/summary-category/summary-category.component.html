@@ -20,7 +20,7 @@
 
         <!-- Star Column -->
         <ng-container matColumnDef="star">
-            <th mat-header-cell *matHeaderCellDef style="text-align: center;">{{'SETTING'|translate}}</th>
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
             <td mat-cell *matCellDef="let row">
                 <button [routerLink]="['/dashboard/categories/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
                     <mat-icon>settings</mat-icon>
