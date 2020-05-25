@@ -31,17 +31,7 @@ export class NavBarComponent implements OnInit {
       params: {
         state: 'none',
       },
-    }
-    ,
-    {
-      link: 'resource-owners',
-      display: 'RESOURCE_OWNER_DASHBOARD',
-      icon: 'perm_identity',
-      params: {
-        state: 'none',
-      },
-    }
-    ,
+    },
     {
       link: 'security-profiles',
       display: 'SECURITY_PROFILE_DASHBOARD',
@@ -64,6 +54,16 @@ export class NavBarComponent implements OnInit {
       icon: 'add',
       params: {
         state: 'create',
+      },
+    },
+  ];
+  menuUser: INavElement[] = [
+    {
+      link: 'resource-owners',
+      display: 'RESOURCE_OWNER_DASHBOARD',
+      icon: 'perm_identity',
+      params: {
+        state: 'none',
       },
     },
   ];
@@ -124,6 +124,57 @@ export class NavBarComponent implements OnInit {
       icon: 'add',
       params: {
         state: 'create',
+      },
+    },
+   
+  ];
+  menuBbs: INavElement[] = [
+    {
+      link: 'posts',
+      display: 'POSTS',
+      icon: 'post_add',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'comments',
+      display: 'COMMENTS',
+      icon: 'mode_comment',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'reports',
+      display: 'REPORTS',
+      icon: 'block',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'likess',
+      display: 'LIKES',
+      icon: 'thumb_up',
+      params: {
+        state: 'none',
+      },
+    },
+    {
+      link: 'dislikes',
+      display: 'DISLIKES',
+      icon: 'thumb_down',
+      params: {
+        state: 'create',
+      },
+    },
+    {
+      link: 'notInterested',
+      display: 'NOT_INTERESTED',
+      icon: 'label_off',
+      params: {
+        state: 'none',
       },
     },
    

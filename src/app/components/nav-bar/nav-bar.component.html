@@ -28,12 +28,40 @@
             <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
+                        {{'USER_CENTER'| translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                    <mat-list-item mat-list-item [routerLink]="nav.link" routerLinkActive="nav-active"
+                        [queryParams]="nav.params" *ngFor="let nav of menuUser">
+                        <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display| translate}}
+                    </mat-list-item>
+                </mat-nav-list>
+
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
                         {{'MALL_CENTER'| translate}}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-nav-list>
                     <mat-list-item mat-list-item [routerLink]="nav.link" routerLinkActive="nav-active"
                         [queryParams]="nav.params" *ngFor="let nav of menuMall">
+                        <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display | translate}}
+                    </mat-list-item>
+                </mat-nav-list>
+
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{'BBS_CENTER'| translate}}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-nav-list>
+                    <mat-list-item mat-list-item [routerLink]="nav.link" routerLinkActive="nav-active"
+                        [queryParams]="nav.params" *ngFor="let nav of menuBbs">
                         <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display | translate}}
                     </mat-list-item>
                 </mat-nav-list>

@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MsgBoxComponent } from './components/msg-box/msg-box.component';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { AuthorizeComponent } from './page/authorize/authorize.component';
 import { ClientComponent } from './page/client/client.component';
 import { LoginComponent } from './page/login/login.component';
@@ -37,6 +37,12 @@ import { FormInfoService, MagicFormModule } from 'mt-form-builder';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CustomLoader } from './clazz/locale/custom-loader';
+import { SummaryPostComponent } from './bbs-module/pages/summary-post/summary-post.component';
+import { SummaryCommentComponent } from './bbs-module/pages/summary-comment/summary-comment.component';
+import { SummaryLikeComponent } from './bbs-module/pages/summary-like/summary-like.component';
+import { SummaryDislikeComponent } from './bbs-module/pages/summary-dislike/summary-dislike.component';
+import { SummaryNotInterestedComponent } from './bbs-module/pages/summary-not-interested/summary-not-interested.component';
+import { SummaryReportComponent } from './bbs-module/pages/summary-report/summary-report.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -61,6 +67,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     ProductComponent,
     SummaryOrderComponent,
     OrderComponent,
+    SummaryPostComponent,
+    SummaryCommentComponent,
+    SummaryLikeComponent,
+    SummaryDislikeComponent,
+    SummaryNotInterestedComponent,
+    SummaryReportComponent,
   ],
   imports: [
     BrowserAnimationsModule,
