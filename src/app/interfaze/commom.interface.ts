@@ -25,6 +25,8 @@ export interface INetworkService {
   rankDisLikes: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
   rankReports: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
   rankNotInterested: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
+  deletePost: (id: string) => Observable<boolean>;
+  deleteComment: (id: string) => Observable<boolean>;
 
   getOrders: () => Observable<IOrder[]>
 

@@ -9,13 +9,13 @@ import { CommentService, IComment } from 'src/app/service/comment.service';
   styleUrls: ['./summary-comment.component.css']
 })
 export class SummaryCommentComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'content', 'publishedAt', 'publisherId'];
+  displayedColumns: string[] = ['id', 'content', 'publishedAt', 'publisherId','star'];
   dataSource: MatTableDataSource<IComment>;
   pageNumber = 0;
   pageSize = 20;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(private commentSvc: CommentService) {
+  constructor(public commentSvc: CommentService) {
     this.commentSvc.getAllComments(this.pageNumber || 0, this.pageSize).subscribe(products => {
       this.totalHandler(products)
     });

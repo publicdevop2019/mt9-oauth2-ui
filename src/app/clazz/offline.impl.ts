@@ -20,6 +20,12 @@ export class SandboxImpl implements INetworkService {
     constructor(http: HttpClient) {
         this.http = http;
     }
+    deletePost(id: string): Observable<boolean> {
+        return of(true);
+    };
+    deleteComment(id: string): Observable<boolean> {
+        return of(true);
+    };
     rankLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
         return of({
             "results": [

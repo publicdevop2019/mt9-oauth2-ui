@@ -14,5 +14,8 @@ export class CommentService {
   getAllComments(pageNum: number, pageSize: number) {
     return this.httpProxy.netImpl.getAllComments(pageNum, pageSize)
   }
+  deleteComment(id: string) {
+    return this.httpProxy.netImpl.deleteComment(id).subscribe()
+  }
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
 }

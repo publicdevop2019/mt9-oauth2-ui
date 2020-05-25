@@ -39,6 +39,20 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
+    deletePost(id: string): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts/' + id).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    deleteComment(id: string): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + this.BBS_SVC_NAME + '/admin/comments/' + id).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
     rankLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
         return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/likes?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
     };

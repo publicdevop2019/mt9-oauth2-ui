@@ -17,7 +17,7 @@ export class SummaryPostComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   private sub: Subscription
-  constructor(private postSvc: PostService, private breakpointObserver: BreakpointObserver) {
+  constructor(public postSvc: PostService, private breakpointObserver: BreakpointObserver) {
     this.postSvc.getAllPosts(this.pageNumber || 0, this.pageSize).subscribe(products => {
       this.totalPostHandler(products)
     });
