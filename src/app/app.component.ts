@@ -1,5 +1,5 @@
 import { Component, AfterContentChecked, ChangeDetectorRef } from '@angular/core';
-import { HttpProxyService } from './service/http-proxy.service';
+import { HttpProxyService } from './services/http-proxy.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({

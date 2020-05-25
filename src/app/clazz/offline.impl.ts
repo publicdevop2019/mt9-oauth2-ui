@@ -3,14 +3,14 @@ import { FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { IAuthorizeCode, IAuthorizeParty, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
-import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
-import { ICategory } from '../service/category.service';
-import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
-import { IPostCard } from '../service/post.service';
-import { IComment } from '../service/comment.service';
-import { IUserReactionResult } from '../service/reaction.service';
+import { IClient } from '../pages/summary-client/summary-client.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
+import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
+import { ICategory } from '../services/category.service';
+import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
+import { IPostCard } from '../services/post.service';
+import { IComment } from '../services/comment.service';
+import { IUserReactionResult } from '../services/reaction.service';
 
 
 
@@ -82,7 +82,7 @@ export class SandboxImpl implements INetworkService {
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
         return this.http.get<IProductTotalResponse>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
     };
-    getProductDetail(id: number): Observable<import("../service/product.service").IProductDetail> {
+    getProductDetail(id: number): Observable<import("../services/product.service").IProductDetail> {
         return this.http.get<IProductDetail>('./assets/mock-product-detail.json').pipe(delay(this.defaultDelay))
 
     };

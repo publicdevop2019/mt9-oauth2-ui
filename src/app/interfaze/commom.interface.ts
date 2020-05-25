@@ -1,13 +1,13 @@
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { IClient } from '../page/summary-client/summary-client.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
-import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
-import { ICategory } from '../service/category.service';
-import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
-import { IPostCard } from '../service/post.service';
-import { IComment } from '../service/comment.service';
-import { IUserReactionResult } from '../service/reaction.service';
+import { IClient } from '../pages/summary-client/summary-client.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
+import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
+import { ICategory } from '../services/category.service';
+import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
+import { IPostCard } from '../services/post.service';
+import { IComment } from '../services/comment.service';
+import { IUserReactionResult } from '../services/reaction.service';
 
 // regulate interface
 export interface INetworkService {

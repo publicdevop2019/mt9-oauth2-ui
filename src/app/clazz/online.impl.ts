@@ -4,15 +4,15 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { IClient } from '../page/summary-client/summary-client.component';
-import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resource-owner/summary-resource-owner.component';
-import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
-import { ICategory } from '../service/category.service';
-import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
+import { IClient } from '../pages/summary-client/summary-client.component';
+import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
+import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
+import { ICategory } from '../services/category.service';
+import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { getCookie } from './utility';
-import { IPostCard } from '../service/post.service';
-import { IComment } from '../service/comment.service';
-import { IUserReactionResult } from '../service/reaction.service';
+import { IPostCard } from '../services/post.service';
+import { IComment } from '../services/comment.service';
+import { IUserReactionResult } from '../services/reaction.service';
 
 
 
