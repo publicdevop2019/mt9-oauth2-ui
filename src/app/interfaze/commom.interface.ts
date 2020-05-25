@@ -5,6 +5,9 @@ import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resourc
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
+import { IPostCard } from '../service/post.service';
+import { IComment } from '../service/comment.service';
+import { IUserReactionResult } from '../service/reaction.service';
 
 // regulate interface
 export interface INetworkService {
@@ -16,6 +19,12 @@ export interface INetworkService {
   resetPwd: (fg: FormGroup) => Observable<any>;
   refreshToken: () => Observable<ITokenResponse>;
   uploadFile: (file: File) => Observable<string>;
+  getAllPosts: (pageNum: number, pageSize: number) => Observable<IPostCard[]>;
+  getAllComments: (pageNum: number, pageSize: number) => Observable<IComment[]>;
+  rankLikes: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
+  rankDisLikes: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
+  rankReports: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
+  rankNotInterested: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
 
   getOrders: () => Observable<IOrder[]>
 

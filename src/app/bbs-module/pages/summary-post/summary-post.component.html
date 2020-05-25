@@ -1,1 +1,50 @@
-<p>summary-post works!</p>
+<h2>{{'POST_DASHBOARD'|translate}}</h2>
+<mat-form-field>
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+            <td mat-cell *matCellDef="let row"  class="column-size"> {{row.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'TITLE'|translate}} </th>
+            <td mat-cell *matCellDef="let row"  class="column-size"> {{row.title}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="topic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'TOPIC'|translate}} </th>
+            <td mat-cell *matCellDef="let row"  class="column-size"> {{row.topic}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="publishedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'PUBLISHED_AT'|translate}}</th>
+            <td mat-cell *matCellDef="let row"> {{row.publishedAt}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="publisherId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'PUBLISHER_ID'|translate}}</th>
+            <td mat-cell *matCellDef="let row"> {{row.publisherId}} </td>
+        </ng-container>
+
+        <!-- Star Column -->
+        <ng-container matColumnDef="star" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
+            <td mat-cell *matCellDef="let row">
+                <button [routerLink]="['/dashboard/products/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
+                    <mat-icon>settings</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="pageSize" [length]="99" (page)="pageHandler($event)"></mat-paginator>
+</div>

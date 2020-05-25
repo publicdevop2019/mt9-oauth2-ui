@@ -10,6 +10,9 @@ import { ISecurityProfile } from '../page/summary-security-profile/summary-secur
 import { ICategory } from '../service/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
 import { getCookie } from './utility';
+import { IPostCard } from '../service/post.service';
+import { IComment } from '../service/comment.service';
+import { IUserReactionResult } from '../service/reaction.service';
 
 
 
@@ -21,6 +24,7 @@ export class OnlineImpl implements INetworkService {
     private PRODUCT_SVC_NAME = '/product-svc';
     private PROFILE_SVC_NAME = '/profile-svc';
     private FILE_UPLOAD_SVC_NAME = '/file-upload-svc';
+    private BBS_SVC_NAME = '/bbs-svc';
     set currentUserAuthInfo(token: ITokenResponse) {
         document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
     };
@@ -35,17 +39,35 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
+    rankLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/likes?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+    };
+    rankDisLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/dislikes?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+    };
+    rankReports(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/reports?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+    };
+    rankNotInterested(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/notInterested?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+    };
+    getAllComments(pageNum: number, pageSize: number): Observable<IComment[]> {
+        return this._httpClient.get<IComment[]>(environment.serverUri + this.BBS_SVC_NAME + '/admin/comments?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
+    };
+    getAllPosts(pageNum: number, pageSize: number): Observable<IPostCard[]> {
+        return this._httpClient.get<IPostCard[]>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
+    };
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getOrders(): Observable<IOrder[]> {
-        return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME +'/orders');
+        return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME + '/orders');
     };
     uploadFile(file: File): Observable<string> {
         return new Observable<string>(e => {
             const formData: FormData = new FormData();
             formData.append('file', file, file.name);
-            this._httpClient.post<void>(environment.serverUri + this.FILE_UPLOAD_SVC_NAME +'/files', formData, { observe: 'response' }).subscribe(next => {
+            this._httpClient.post<void>(environment.serverUri + this.FILE_UPLOAD_SVC_NAME + '/files', formData, { observe: 'response' }).subscribe(next => {
                 e.next(next.headers.get('location'));
             });
         })

@@ -8,10 +8,62 @@ import { IResourceOwner, IResourceOwnerUpdatePwd } from '../page/summary-resourc
 import { ISecurityProfile } from '../page/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../service/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../service/product.service';
+import { IPostCard } from '../service/post.service';
+import { IComment } from '../service/comment.service';
+import { IUserReactionResult } from '../service/reaction.service';
 
 
 
 export class SandboxImpl implements INetworkService {
+    private defaultDelay: number = 0;
+    http: HttpClient;
+    constructor(http: HttpClient) {
+        this.http = http;
+    }
+    rankLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return of({
+            "results": [
+                {
+                    "count": 1,
+                    "referenceId": "101",
+                    "referenceType": "COMMENT"
+                }
+            ]
+        });
+    };
+    rankDisLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return of({
+            "results": [
+                {
+                    "count": 1,
+                    "referenceId": "101",
+                    "referenceType": "COMMENT"
+                }
+            ]
+        });
+    };
+    rankReports(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return of({
+            "results": [
+                {
+                    "count": 1,
+                    "referenceId": "101",
+                    "referenceType": "COMMENT"
+                }
+            ]
+        });
+    };
+    rankNotInterested(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
+        return of({
+            "results": [
+                {
+                    "count": 1,
+                    "referenceId": "101",
+                    "referenceType": "COMMENT"
+                }
+            ]
+        });
+    };
     getOrders(): Observable<IOrder[]> {
         return this.http.get<IOrder[]>('./assets/mock-order.json').pipe(delay(this.defaultDelay))
     };
@@ -70,12 +122,13 @@ export class SandboxImpl implements INetworkService {
     revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     }
-    private defaultDelay: number = 0;
-    http: HttpClient;
-    constructor(http: HttpClient) {
-        this.http = http;
-    }
-    batchUpdateSecurityProfile(securitypProfile: {[key:string]:string}): Observable<boolean> {
+    getAllComments(pageNum: number, pageSize: number): Observable<IComment[]> {
+        return of([])
+    };
+    getAllPosts(pageNum: number, pageSize: number): Observable<IPostCard[]> {
+        return of([])
+    };
+    batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return of(true);
     };
     activate(fg: FormGroup): Observable<any> {
