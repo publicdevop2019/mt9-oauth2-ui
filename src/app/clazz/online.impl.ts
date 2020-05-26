@@ -10,8 +10,8 @@ import { ISecurityProfile } from '../pages/summary-security-profile/summary-secu
 import { ICategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { getCookie } from './utility';
-import { IPostCard } from '../services/post.service';
-import { IComment } from '../services/comment.service';
+import { IPostCard, IPostSummary } from '../services/post.service';
+import { IComment, ICommentSummary } from '../services/comment.service';
 import { IUserReactionResult } from '../services/reaction.service';
 
 
@@ -54,22 +54,22 @@ export class OnlineImpl implements INetworkService {
         });
     };
     rankLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
-        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/likes?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/likes?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=DESC');
     };
     rankDisLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
-        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/dislikes?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/dislikes?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=DESC');
     };
     rankReports(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
-        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/reports?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/reports?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=DESC');
     };
     rankNotInterested(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
-        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/notInterested?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=ASC');
+        return this._httpClient.get<IUserReactionResult>(environment.serverUri + this.BBS_SVC_NAME + '/admin/notInterested?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortOrder=DESC');
     };
-    getAllComments(pageNum: number, pageSize: number): Observable<IComment[]> {
-        return this._httpClient.get<IComment[]>(environment.serverUri + this.BBS_SVC_NAME + '/admin/comments?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
+    getAllComments(pageNum: number, pageSize: number): Observable<ICommentSummary> {
+        return this._httpClient.get<ICommentSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/comments?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
-    getAllPosts(pageNum: number, pageSize: number): Observable<IPostCard[]> {
-        return this._httpClient.get<IPostCard[]>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
+    getAllPosts(pageNum: number, pageSize: number): Observable<IPostSummary> {
+        return this._httpClient.get<IPostSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/all?pageNum=' + pageNum + '&pageSize=' + pageSize);

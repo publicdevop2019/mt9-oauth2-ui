@@ -5,8 +5,8 @@ import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resour
 import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
-import { IPostCard } from '../services/post.service';
-import { IComment } from '../services/comment.service';
+import { IPostCard, IPostSummary } from '../services/post.service';
+import { IComment, ICommentSummary } from '../services/comment.service';
 import { IUserReactionResult } from '../services/reaction.service';
 
 // regulate interface
@@ -19,8 +19,8 @@ export interface INetworkService {
   resetPwd: (fg: FormGroup) => Observable<any>;
   refreshToken: () => Observable<ITokenResponse>;
   uploadFile: (file: File) => Observable<string>;
-  getAllPosts: (pageNum: number, pageSize: number) => Observable<IPostCard[]>;
-  getAllComments: (pageNum: number, pageSize: number) => Observable<IComment[]>;
+  getAllPosts: (pageNum: number, pageSize: number) => Observable<IPostSummary>;
+  getAllComments: (pageNum: number, pageSize: number) => Observable<ICommentSummary>;
   rankLikes: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
   rankDisLikes: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;
   rankReports: (pageNum: number, pageSize: number) => Observable<IUserReactionResult>;

@@ -13,6 +13,7 @@ export class SummaryLikeComponent implements OnInit {
   dataSource: MatTableDataSource<IUserReaction>;
   pageNumber = 0;
   pageSize = 20;
+  totoal = 0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(private commentSvc: ReactionService) {
@@ -39,5 +40,6 @@ export class SummaryLikeComponent implements OnInit {
   private totalHandler(posts: IUserReactionResult) {
     this.dataSource = new MatTableDataSource(posts.results);
     this.dataSource.sort = this.sort;
+    this.totoal = posts.total;
   }
 }

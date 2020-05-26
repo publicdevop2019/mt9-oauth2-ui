@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
 import { CustomHttpInterceptor } from './http.interceptor';
+export interface IPostSummary {
+  results: IPostCard[]
+  total: number
+}
 export interface IPostCard {
   id: number,
   title: string,

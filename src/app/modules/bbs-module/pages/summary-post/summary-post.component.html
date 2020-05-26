@@ -46,5 +46,5 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="pageSize" [length]="99" (page)="pageHandler($event)"></mat-paginator>
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="pageSize" [length]="totoal" (page)="pageHandler($event)"></mat-paginator>
 </div>

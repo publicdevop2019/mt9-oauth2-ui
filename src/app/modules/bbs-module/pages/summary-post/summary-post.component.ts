@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, PageEvent } from '@angular/material';
 import { Subscription } from 'rxjs';
-import { IPostCard, PostService } from 'src/app/services/post.service';
+import { IPostCard, PostService, IPostSummary } from 'src/app/services/post.service';
 
 @Component({
   selector: 'app-summary-post',
@@ -16,7 +16,8 @@ export class SummaryPostComponent implements OnInit {
   pageSize = 20;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  private sub: Subscription
+  private sub: Subscription;
+  totoal = 0;
   constructor(public postSvc: PostService, private breakpointObserver: BreakpointObserver) {
     this.postSvc.getAllPosts(this.pageNumber || 0, this.pageSize).subscribe(products => {
       this.totalPostHandler(products)
@@ -65,9 +66,10 @@ export class SummaryPostComponent implements OnInit {
       this.totalPostHandler(products)
     });
   }
-  private totalPostHandler(posts: IPostCard[]) {
-    this.dataSource = new MatTableDataSource(posts);
+  private totalPostHandler(posts: IPostSummary) {
+    this.dataSource = new MatTableDataSource(posts.results);
     this.dataSource.sort = this.sort;
+    this.totoal=posts.total
   }
 
 }

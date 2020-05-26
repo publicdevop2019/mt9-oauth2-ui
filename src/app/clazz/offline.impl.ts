@@ -8,8 +8,8 @@ import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resour
 import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
 import { ICategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
-import { IPostCard } from '../services/post.service';
-import { IComment } from '../services/comment.service';
+import { IPostCard, IPostSummary } from '../services/post.service';
+import { IComment, ICommentSummary } from '../services/comment.service';
 import { IUserReactionResult } from '../services/reaction.service';
 
 
@@ -34,7 +34,7 @@ export class SandboxImpl implements INetworkService {
                     "referenceId": "101",
                     "referenceType": "COMMENT"
                 }
-            ]
+            ], total: 1
         });
     };
     rankDisLikes(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
@@ -45,7 +45,8 @@ export class SandboxImpl implements INetworkService {
                     "referenceId": "101",
                     "referenceType": "COMMENT"
                 }
-            ]
+            ],
+            total: 1
         });
     };
     rankReports(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
@@ -56,7 +57,7 @@ export class SandboxImpl implements INetworkService {
                     "referenceId": "101",
                     "referenceType": "COMMENT"
                 }
-            ]
+            ], total: 1
         });
     };
     rankNotInterested(pageNum: number, pageSize: number): Observable<IUserReactionResult> {
@@ -67,7 +68,7 @@ export class SandboxImpl implements INetworkService {
                     "referenceId": "101",
                     "referenceType": "COMMENT"
                 }
-            ]
+            ], total: 1
         });
     };
     getOrders(): Observable<IOrder[]> {
@@ -128,11 +129,11 @@ export class SandboxImpl implements INetworkService {
     revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     }
-    getAllComments(pageNum: number, pageSize: number): Observable<IComment[]> {
-        return of([])
+    getAllComments(pageNum: number, pageSize: number): Observable<ICommentSummary> {
+        return of(<ICommentSummary>{ results: [], total: 0 })
     };
-    getAllPosts(pageNum: number, pageSize: number): Observable<IPostCard[]> {
-        return of([])
+    getAllPosts(pageNum: number, pageSize: number): Observable<IPostSummary> {
+        return of(<IPostSummary>{ results: [], total: 0 })
     };
     batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return of(true);

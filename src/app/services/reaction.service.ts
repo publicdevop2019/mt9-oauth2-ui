@@ -3,7 +3,8 @@ import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IUserReactionResult {
-  results: IUserReaction[]
+  results: IUserReaction[];
+  total:number;
 }
 export interface IUserReaction {
   count: number,
