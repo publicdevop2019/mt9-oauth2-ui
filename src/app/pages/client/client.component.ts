@@ -74,17 +74,32 @@ export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
   private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit(): void {
-    this.formInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
+    this.formInfo.inputs.forEach(e => {
+      if (e.options) {
+        e.options.forEach(el => {
+          this.translate.get(el.label).subscribe((res: string) => {
+            this.transKeyMap.set(e.key + el.value, el.label);
+            el.label = res;
+          });
+        })
+      }
+      e.label && this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
         e.label = res;
       });
     })
     this.sub = this.translate.onLangChange.subscribe(() => {
-      this.formInfo.inputs.filter(e => e.label).forEach(e => {
-        this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
+      this.formInfo.inputs.forEach(e => {
+        e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
           e.label = res;
         });
+        if (e.options) {
+          e.options.forEach(el => {
+            this.translate.get(this.transKeyMap.get(e.key + el.value)).subscribe((res: string) => {
+              el.label = res;
+            });
+          })
+        }
       })
     })
   }

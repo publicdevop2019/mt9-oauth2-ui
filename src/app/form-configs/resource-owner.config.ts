@@ -102,7 +102,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "checkbox",
             "display": true,
-            "label": "NEW_ORDER_SUBSCRIBE",
+            "label": "",
             "key": "subNewOrder",
             "position": {
                 "row": "7",
