@@ -33,7 +33,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
 import { OrderComponent } from './modules/mall/pages/order/order.component';
-import { FormInfoService, MagicFormModule } from 'mt-form-builder';
+import { FormInfoService, MtFormBuilderModule } from 'mt-form-builder';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CustomLoader } from './clazz/locale/custom-loader';
@@ -100,7 +100,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatDialogModule,
     MatSnackBarModule,
     LayoutModule,
-    MagicFormModule,
+    MtFormBuilderModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     TranslateModule.forRoot({
       loader: {

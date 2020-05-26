@@ -39,7 +39,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "Has secret"
+                { label: 'HAS_SECRET', value: "Has secret" }
             ],
         },
         {
@@ -68,7 +68,9 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "client_credentials", "password", "authorization_code"
+                { label: 'CLIENT_CREDENTIALS', value: "client_credentials" },
+                { label: 'PASSWORD', value: "password" },
+                { label: 'AUTHORIZATION_CODE', value: "authorization_code" },
             ],
             "attributes": [
                 {
@@ -103,7 +105,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "Add Refresh Token"
+                { label: 'ADD_REFRESH_TOKEN', value: "Add Refresh Token" },
             ]
         },
         {
@@ -116,7 +118,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "Set As Resource"
+                { label: 'SET_AS_RESOURCE', value: "Set As Resource" },
             ],
         },
         {
@@ -129,7 +131,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "Auto approve authorize request"
+                { label: 'AUTO_APPROVE_AUTHORIZE_REQUEST', value: "Auto approve authorize request" },
             ],
         },
         {
@@ -142,12 +144,12 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "ROLE_FRONTEND",
-                "ROLE_BACKEND",
-                "ROLE_FIRST_PARTY",
-                "ROLE_THIRD_PARTY",
-                "ROLE_TRUST",
-                "ROLE_ROOT",
+                { label: 'ROLE_FRONTEND', value: "ROLE_FRONTEND" },
+                { label: 'ROLE_BACKEND', value: "ROLE_BACKEND" },
+                { label: 'ROLE_FIRST_PARTY', value: "ROLE_FIRST_PARTY" },
+                { label: 'ROLE_THIRD_PARTY', value: "ROLE_THIRD_PARTY" },
+                { label: 'ROLE_TRUST', value: "ROLE_TRUST" },
+                { label: 'ROLE_ROOT', value: "ROLE_ROOT" },
             ],
             "attributes": [
                 {
@@ -167,9 +169,9 @@ export const FORM_CONFIG: IForm = {
             },
             "direction": 'row',
             "options": [
-                "read",
-                "write",
-                "trust",
+                { label: 'READ', value: "read" },
+                { label: 'WRITE', value: "write" },
+                { label: 'TRUST', value: "trust" },
             ],
             "attributes": [
                 {

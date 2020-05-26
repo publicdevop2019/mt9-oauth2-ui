@@ -82,7 +82,8 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "ROLE_ADMIN", "ROLE_USER"
+                { label: 'ROLE_ADMIN', value: "ROLE_ADMIN" },
+                { label: 'ROLE_USER', value: "ROLE_USER" },
             ],
         },
         {
@@ -95,7 +96,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "Lock"
+                { label: 'LOCK', value: "Lock" },
             ],
         },
         {
@@ -108,7 +109,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                "Subscribe for new order"
+                { label: 'SUBSCRIBE_FOR_NEW_ORDER', value: "Subscribe for new order" },
             ],
         },
     ],

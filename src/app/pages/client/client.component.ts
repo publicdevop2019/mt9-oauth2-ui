@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
-import { IForm, IInputConfig } from 'mt-form-builder/lib/classes/template.interface';
+import { IForm, IInputConfig, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
@@ -106,7 +106,7 @@ export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
     });
     this.clientService.getResourceClient().subscribe(next => {
       let newConfig = (JSON.parse(JSON.stringify(this.formInfo.inputs.find(e => e.key === 'resourceId'))) as IInputConfig);
-      newConfig.options = next.map(e => e.clientId);
+      newConfig.options = next.map(e => <IOption>{ label: e.clientId, value: e.clientId });
       this.fis.dynamicInputs['resourceId'].next(newConfig);
     });
   }
