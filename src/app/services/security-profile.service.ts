@@ -3,9 +3,9 @@ import { MatDialog } from '@angular/material';
 import { of } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { switchMap } from 'rxjs/operators';
-import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
+import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 
 @Injectable({
   providedIn: 'root'

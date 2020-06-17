@@ -1,15 +1,13 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { OrderService } from 'src/app/services/order.service';
-import { IOrder } from 'src/app/interfaze/commom.interface';
+import { FormInfoService } from 'mt-form-builder';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { grantTypeEnums, scopeEnums } from '../../../../pages/summary-client/summary-client.component';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/order.config';
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { FormInfoService } from 'mt-form-builder';
+import { IOrder } from 'src/app/interfaze/commom.interface';
+import { OrderService } from 'src/app/services/order.service';
 
 @Component({
   selector: 'app-order',

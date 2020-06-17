@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
-import { IClient } from '../../../../pages/summary-client/summary-client.component';
-import { ClientService } from 'src/app/services/client.service';
+import { MatPaginator, MatSort, MatTableDataSource, PageEvent } from '@angular/material';
 import { IOrder } from 'src/app/interfaze/commom.interface';
 import { OrderService } from 'src/app/services/order.service';
 

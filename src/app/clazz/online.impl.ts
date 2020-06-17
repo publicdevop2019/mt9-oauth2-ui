@@ -4,15 +4,15 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { IClient } from '../pages/summary-client/summary-client.component';
-import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
-import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
 import { ICategory, IAdminCategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { getCookie } from './utility';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';
 import { IUserReactionResult } from '../services/reaction.service';
+import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
+import { IResourceOwnerUpdatePwd, IResourceOwner, IPendingResourceOwner, IForgetPasswordRequest } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 
 
 

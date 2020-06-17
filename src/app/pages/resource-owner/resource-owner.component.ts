@@ -7,9 +7,9 @@ import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/resource-owner.config';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
-import { IAuthority } from '../summary-client/summary-client.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../summary-resource-owner/summary-resource-owner.component';
 import { TranslateService } from '@ngx-translate/core';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from 'src/app/modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
+import { IAuthority } from 'src/app/modules/my-apps/pages/summary-client/summary-client.component';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',

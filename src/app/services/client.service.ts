@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { IClient } from '../pages/summary-client/summary-client.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { switchMap } from 'rxjs/operators';
+import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 /**
  * responsible for convert FormGroup to business model
  */

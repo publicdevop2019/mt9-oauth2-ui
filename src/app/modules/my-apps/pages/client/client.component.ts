@@ -8,8 +8,8 @@ import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
-import { grantTypeEnums, IAuthority, IClient, scopeEnums } from '../summary-client/summary-client.component';
 import { TranslateService } from '@ngx-translate/core';
+import { IClient, grantTypeEnums, IAuthority, scopeEnums } from '../summary-client/summary-client.component';
 
 @Component({
   selector: 'app-client',

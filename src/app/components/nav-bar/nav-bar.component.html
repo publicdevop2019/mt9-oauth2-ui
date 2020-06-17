@@ -3,7 +3,7 @@
         <button mat-icon-button (click)="snav.toggle();">
             <mat-icon>{{snav.opened?'menu_open':'menu'}}</mat-icon>
         </button>
-        <mat-slide-toggle class="example-margin" [color]="'accent'" [checked]="'false'" (change)="toggleLang()">
+        <mat-slide-toggle class="example-margin" [color]="'accent'" [checked]="'false'" (change)="toggleLang();snav.close()">
             {{'CURRENT_LANG' | translate}}
         </mat-slide-toggle>
     </mat-toolbar>

@@ -1,15 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
-import { ClientComponent } from './pages/client/client.component';
 import { ResourceOwnerComponent } from './pages/resource-owner/resource-owner.component';
-import { SummaryClientComponent } from './pages/summary-client/summary-client.component';
-import { SummaryResourceOwnerComponent } from './pages/summary-resource-owner/summary-resource-owner.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { AuthService } from './services/auth.service';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
-import { SummarySecurityProfileComponent } from './pages/summary-security-profile/summary-security-profile.component';
-import { SecurityProfileComponent } from './pages/security-profile/security-profile.component';
 import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
 import { ProductComponent } from './modules/mall/pages/product/product.component';
 import { SummaryCategoryComponent } from './modules/mall/pages/summary-category/summary-category.component';
@@ -22,6 +17,11 @@ import { SummaryReportComponent } from './modules/bbs-module/pages/summary-repor
 import { SummaryLikeComponent } from './modules/bbs-module/pages/summary-like/summary-like.component';
 import { SummaryDislikeComponent } from './modules/bbs-module/pages/summary-dislike/summary-dislike.component';
 import { SummaryNotInterestedComponent } from './modules/bbs-module/pages/summary-not-interested/summary-not-interested.component';
+import { ClientComponent } from './modules/my-apps/pages/client/client.component';
+import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
+import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
+import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },

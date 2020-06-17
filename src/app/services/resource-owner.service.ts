@@ -3,10 +3,9 @@ import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { MsgBoxComponent } from '../components/msg-box/msg-box.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { delay } from 'rxjs/operators';
 /**
  * responsible for convert FormGroup to business model
  */

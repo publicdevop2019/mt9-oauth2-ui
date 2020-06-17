@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CategoryService, ICategory } from 'src/app/services/category.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
-import { IClient } from '../../../../pages/summary-client/summary-client.component';
 
 @Component({
   selector: 'app-summary-category',

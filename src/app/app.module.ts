@@ -10,13 +10,8 @@ import { AppComponent } from './app.component';
 import { MsgBoxComponent } from './components/msg-box/msg-box.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
-import { ClientComponent } from './pages/client/client.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ResourceOwnerComponent } from './pages/resource-owner/resource-owner.component';
-import { SecurityProfileComponent } from './pages/security-profile/security-profile.component';
-import { SummaryClientComponent } from './pages/summary-client/summary-client.component';
-import { SummaryResourceOwnerComponent } from './pages/summary-resource-owner/summary-resource-owner.component';
-import { SummarySecurityProfileComponent } from './pages/summary-security-profile/summary-security-profile.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { AuthService } from './services/auth.service';
 import { ClientService } from './services/client.service';
@@ -43,6 +38,11 @@ import { SummaryLikeComponent } from './modules/bbs-module/pages/summary-like/su
 import { SummaryDislikeComponent } from './modules/bbs-module/pages/summary-dislike/summary-dislike.component';
 import { SummaryNotInterestedComponent } from './modules/bbs-module/pages/summary-not-interested/summary-not-interested.component';
 import { SummaryReportComponent } from './modules/bbs-module/pages/summary-report/summary-report.component';
+import { ClientComponent } from './modules/my-apps/pages/client/client.component';
+import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
+import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
+import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

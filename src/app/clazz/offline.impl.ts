@@ -3,14 +3,14 @@ import { FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { IAuthorizeCode, IAuthorizeParty, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { IClient } from '../pages/summary-client/summary-client.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
-import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
 import { ICategory, IAdminCategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';
 import { IUserReactionResult } from '../services/reaction.service';
+import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
+import { IResourceOwnerUpdatePwd, IResourceOwner } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 
 
 

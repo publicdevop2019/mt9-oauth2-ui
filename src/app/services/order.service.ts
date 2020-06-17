@@ -4,9 +4,9 @@ import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { Observable, of } from 'rxjs';
-import { IClient } from '../pages/summary-client/summary-client.component';
 import { switchMap } from 'rxjs/operators';
 import { IOrder } from '../interfaze/commom.interface';
+import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 
 @Injectable({
   providedIn: 'root'
