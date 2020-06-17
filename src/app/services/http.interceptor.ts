@@ -14,7 +14,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
   constructor(private router: Router, private _httpProxy: HttpProxyService, private _snackBar: MatSnackBar) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     if (this._httpProxy.netImpl.currentUserAuthInfo && this._httpProxy.netImpl.currentUserAuthInfo.access_token && !this._httpProxy.expireRefresh)
-      if ((req.url.indexOf('categories') > -1 && req.method === 'GET') ||
+      if (
         (req.url.indexOf('oauth/token') > -1 && req.method === 'POST') ||
         (req.url.indexOf('productDetails') > -1 && req.method === 'GET')) {
         /**

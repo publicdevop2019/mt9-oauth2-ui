@@ -7,7 +7,7 @@ import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder,
 import { IClient } from '../pages/summary-client/summary-client.component';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
-import { ICategory } from '../services/category.service';
+import { ICategory, IAdminCategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { getCookie } from './utility';
 import { IPostCard, IPostSummary } from '../services/post.service';
@@ -135,8 +135,8 @@ export class OnlineImpl implements INetworkService {
         formData.append('grant_type', 'client_credentials');
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
     };
-    getCategories(): Observable<ICategory[]> {
-        return this._httpClient.get<ICategory[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories');
+    getCategories(): Observable<IAdminCategory> {
+        return this._httpClient.get<IAdminCategory>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/categories');
     };
     createCategory(category: ICategory): Observable<boolean> {
         return new Observable<boolean>(e => {

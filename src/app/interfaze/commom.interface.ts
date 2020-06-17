@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { IClient } from '../pages/summary-client/summary-client.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
-import { ICategory } from '../services/category.service';
+import { ICategory, IAdminCategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';
@@ -30,7 +30,7 @@ export interface INetworkService {
 
   getOrders: () => Observable<IOrder[]>
 
-  getCategories: () => Observable<ICategory[]>;
+  getCategories: () => Observable<IAdminCategory>;
   createCategory: (category: ICategory) => Observable<boolean>;
   deleteCategory: (category: ICategory) => Observable<boolean>;
   updateCategory: (category: ICategory) => Observable<boolean>;

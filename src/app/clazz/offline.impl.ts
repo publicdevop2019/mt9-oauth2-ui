@@ -6,7 +6,7 @@ import { IAuthorizeCode, IAuthorizeParty, INetworkService, IOrder, ITokenRespons
 import { IClient } from '../pages/summary-client/summary-client.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../pages/summary-resource-owner/summary-resource-owner.component';
 import { ISecurityProfile } from '../pages/summary-security-profile/summary-security-profile.component';
-import { ICategory } from '../services/category.service';
+import { ICategory, IAdminCategory } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';
@@ -96,8 +96,8 @@ export class SandboxImpl implements INetworkService {
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    getCategories(): Observable<ICategory[]> {
-        return this.http.get<ICategory[]>('./assets/mock-categories.json').pipe(delay(this.defaultDelay))
+    getCategories(): Observable<IAdminCategory> {
+        return this.http.get<IAdminCategory>('./assets/mock-categories.json').pipe(delay(this.defaultDelay))
     };
     createCategory(category: ICategory): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))

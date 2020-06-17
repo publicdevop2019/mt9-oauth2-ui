@@ -4,9 +4,12 @@ import { switchMap } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
 import { CustomHttpInterceptor } from './http.interceptor';
-export interface ICategory{
-  id:number,
-  title:string,
+export interface ICategory {
+  id: number,
+  title: string,
+}
+export interface IAdminCategory {
+  categoryList: ICategory[],
 }
 @Injectable({
   providedIn: 'root'
@@ -14,12 +17,12 @@ export interface ICategory{
 export class CategoryService {
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getCategories(): Observable<ICategory[]> {
+  getCategories(): Observable<IAdminCategory> {
     return this.httpProxy.netImpl.getCategories()
   }
   getCategoryById(id: number): Observable<ICategory> {
-    return this.getCategories().pipe(switchMap(clients => {
-      return of(clients.find(el => el.id === id))
+    return this.getCategories().pipe(switchMap(els => {
+      return of(els.categoryList.find(el => el.id === id))
     }))
   }
   create(category: ICategory) {

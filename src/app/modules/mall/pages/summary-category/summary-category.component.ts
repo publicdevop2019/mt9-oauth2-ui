@@ -16,7 +16,7 @@ export class SummaryCategoryComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(public categorySvc:CategoryService) { 
     this.categorySvc.getCategories().subscribe(categories => {
-      this.dataSource = new MatTableDataSource(categories)
+      this.dataSource = new MatTableDataSource(categories.categoryList)
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     })
