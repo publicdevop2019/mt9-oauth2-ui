@@ -26,3 +26,6 @@ body {
   margin-bottom: 10px !important;
   margin-top: 10px !important;
 }
+.mat-expansion-panel {
+  border-radius: 0px !important;
+}

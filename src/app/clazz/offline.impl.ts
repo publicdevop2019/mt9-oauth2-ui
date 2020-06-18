@@ -11,6 +11,7 @@ import { IUserReactionResult } from '../services/reaction.service';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 import { IResourceOwnerUpdatePwd, IResourceOwner } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
+import { getCookie } from './utility';
 
 
 
@@ -147,7 +148,17 @@ export class SandboxImpl implements INetworkService {
     forgetPwd(fg: FormGroup): Observable<any> {
         return of()
     };
-    currentUserAuthInfo: ITokenResponse;
+    set currentUserAuthInfo(token: ITokenResponse) {
+        document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
+    };
+    get currentUserAuthInfo(): ITokenResponse | undefined {
+        const jwtTokenStr: string = getCookie('jwt');
+        if (jwtTokenStr !== 'undefined' && jwtTokenStr !== undefined) {
+            return <ITokenResponse>JSON.parse(jwtTokenStr)
+        } else {
+            return undefined;
+        }
+    }
     authorize(authorizeParty: IAuthorizeParty): Observable<IAuthorizeCode> {
         return of({ authorize_code: 'dummyCode' } as IAuthorizeCode).pipe(delay(this.defaultDelay))
     };
