@@ -4,10 +4,10 @@ import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/m
 
 @Component({
   selector: 'app-summary-category',
-  templateUrl: './summary-category.component.html',
-  styleUrls: ['./summary-category.component.css']
+  templateUrl: './summary-catalog-customer.component.html',
+  styleUrls: ['./summary-catalog-customer.component.css']
 })
-export class SummaryCategoryComponent implements OnInit {
+export class SummaryCatalogCustomerComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'star'];
   dataSource: MatTableDataSource<ICategory>;
 

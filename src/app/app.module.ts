@@ -21,8 +21,6 @@ import { LoadingInterceptor } from './services/loading.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
 import { SecurityProfileService } from './services/security-profile.service';
 import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
-import { SummaryCategoryComponent } from './modules/mall/pages/summary-category/summary-category.component';
-import { CategoryComponent } from './modules/mall/pages/category/category.component';
 import { ProductComponent } from './modules/mall/pages/product/product.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
@@ -43,6 +41,8 @@ import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/s
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
+import { CatalogCustomerComponent } from './modules/mall/pages/catalog-customer/catalog-customer.component';
+import { SummaryCatalogCustomerComponent } from './modules/mall/pages/summary-catalog-customer/summary-catalog-customer.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -62,8 +62,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SummarySecurityProfileComponent,
     SecurityProfileComponent,
     SummaryProductComponent,
-    SummaryCategoryComponent,
-    CategoryComponent,
+    SummaryCatalogCustomerComponent,
+    CatalogCustomerComponent,
     ProductComponent,
     SummaryOrderComponent,
     OrderComponent,

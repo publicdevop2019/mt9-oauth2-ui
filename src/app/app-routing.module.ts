@@ -7,8 +7,6 @@ import { AuthService } from './services/auth.service';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
 import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
 import { ProductComponent } from './modules/mall/pages/product/product.component';
-import { SummaryCategoryComponent } from './modules/mall/pages/summary-category/summary-category.component';
-import { CategoryComponent } from './modules/mall/pages/category/category.component';
 import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
 import { OrderComponent } from './modules/mall/pages/order/order.component';
 import { SummaryPostComponent } from './modules/bbs-module/pages/summary-post/summary-post.component';
@@ -22,6 +20,8 @@ import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/s
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
+import { CatalogCustomerComponent } from './modules/mall/pages/catalog-customer/catalog-customer.component';
+import { SummaryCatalogCustomerComponent } from './modules/mall/pages/summary-catalog-customer/summary-catalog-customer.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -44,9 +44,9 @@ const routes: Routes = [
       { path: 'products', component: SummaryProductComponent },
       { path: 'product', component: ProductComponent },
       { path: 'products/:id', component: ProductComponent },
-      { path: 'categories', component: SummaryCategoryComponent },
-      { path: 'categories/:id', component: CategoryComponent },
-      { path: 'category', component: CategoryComponent },
+      { path: 'categories', component: SummaryCatalogCustomerComponent },
+      { path: 'categories/:id', component: CatalogCustomerComponent },
+      { path: 'category', component: CatalogCustomerComponent },
       { path: 'posts', component: SummaryPostComponent },
       { path: 'comments', component: SummaryCommentComponent },
       { path: 'reports', component: SummaryReportComponent },

@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
 import { Observable, Subscription } from 'rxjs';
@@ -11,11 +10,11 @@ import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.css']
+  selector: 'app-catalog-customer',
+  templateUrl: './catalog-customer.component.html',
+  styleUrls: ['./catalog-customer.component.css']
 })
-export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CatalogCustomerComponent implements OnInit, AfterViewInit, OnDestroy {
   state: string;
   category: ICategory;
   category$: Observable<ICategory>;
