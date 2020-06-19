@@ -43,6 +43,7 @@ import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
 import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
 import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
+import { BackButtonComponent } from './components/back-button/back-button.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -73,6 +74,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SummaryDislikeComponent,
     SummaryNotInterestedComponent,
     SummaryReportComponent,
+    BackButtonComponent,
   ],
   imports: [
     BrowserAnimationsModule,

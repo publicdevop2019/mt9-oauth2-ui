@@ -1,8 +1,5 @@
 <div class="example-container">
-    <button [routerLink]="'/dashboard/catalog'" [queryParams]="{state: 'none'}" mat-button
-       class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
-    </button>
+    <app-back-button></app-back-button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="validator.valid()&&categorySvc.update(convertToCategoryPayload())">{{'UPDATE'|translate}}</button>

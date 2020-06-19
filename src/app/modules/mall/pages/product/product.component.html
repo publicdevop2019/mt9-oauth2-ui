@@ -1,8 +1,5 @@
 <div class="example-container">
-    <button [routerLink]="'/dashboard/products'" [queryParams]="{state: 'none'}" mat-button class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
-    </button>
-
+    <app-back-button></app-back-button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <h3>{{'PRODUCT_IMAGE_URLS'|translate}}</h3>
     <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>

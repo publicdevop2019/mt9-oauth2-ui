@@ -1,8 +1,5 @@
 <div class="example-container">
-    <button [routerLink]="'/dashboard/resource-owners'" [queryParams]="{state: 'none'}" mat-button
-       class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
-    </button>
+    <app-back-button></app-back-button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;margin-top: 20px;" *ngIf="state==='update:pwd'"
         (click)="validator.valid()&&resourceOwnerService.updateResourceOwnerPwd(convertToIResourceOwnerUpdatePwd())">{{'UPDATE_PASSWORD'|translate}}</button>

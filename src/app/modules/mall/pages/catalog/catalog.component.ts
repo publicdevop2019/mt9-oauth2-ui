@@ -9,6 +9,7 @@ import { CategoryService, ICatalogCustomer } from 'src/app/services/category.ser
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { TranslateService } from '@ngx-translate/core';
 
+
 @Component({
   selector: 'app-catalog',
   templateUrl: './catalog.component.html',
@@ -25,10 +26,11 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     public categorySvc: CategoryService,
     private fis: FormInfoService,
-    public translate: TranslateService
+    public translate: TranslateService,
   ) {
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
   }
+
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     this.route.queryParamMap.subscribe(queryMaps => {
@@ -56,16 +58,31 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
     this.formInfo.inputs.forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
+      if (e.options) {
+        e.options.forEach(el => {
+          this.translate.get(el.label).subscribe((res: string) => {
+            this.transKeyMap.set(e.key + el.value, el.label);
+            el.label = res;
+          });
+        })
+      }
+      e.label && this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
         e.label = res;
       });
     })
     this.sub = this.translate.onLangChange.subscribe(() => {
       this.formInfo.inputs.forEach(e => {
-        this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
+        e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
           e.label = res;
         });
+        if (e.options) {
+          e.options.forEach(el => {
+            this.translate.get(this.transKeyMap.get(e.key + el.value)).subscribe((res: string) => {
+              el.label = res;
+            });
+          })
+        }
       })
     })
     this.category$ = this.route.paramMap.pipe(

@@ -58,8 +58,8 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                { label: 'FRONTEND', value: "FRONTEND" },
-                { label: 'BACKEND', value: "BACKEND" },
+                { label: 'CATALOG_FRONTEND', value: "FRONTEND" },
+                { label: 'CATALOG_BACKEND', value: "BACKEND" },
             ],
         },
     ],

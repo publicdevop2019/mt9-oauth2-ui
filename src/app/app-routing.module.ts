@@ -46,6 +46,7 @@ const routes: Routes = [
       { path: 'products/:id', component: ProductComponent },
       { path: 'catalogs', component: SummaryCatalogComponent },
       { path: 'catalogs/:id', component: CatalogComponent },
+      { path: 'catalog', component: CatalogComponent },
       { path: 'posts', component: SummaryPostComponent },
       { path: 'comments', component: SummaryCommentComponent },
       { path: 'reports', component: SummaryReportComponent },

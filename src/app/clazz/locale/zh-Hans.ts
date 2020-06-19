@@ -138,7 +138,7 @@ export const zhHans = {
     "PARENT_ID": "父类ID",
     "TAGS": "标签",
     "PLEASE_SELECT_TYPE": "请选择类目类别",
-    "FRONTEND": "前台商品类目",
-    "BACKEND": "后台商品类目",
+    "CATALOG_FRONTEND": "前台商品类目",
+    "CATALOG_BACKEND": "后台商品类目",
     "": "",
 }

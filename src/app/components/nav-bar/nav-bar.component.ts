@@ -129,7 +129,7 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
-      link: 'category',
+      link: 'catalog',
       display: 'ADD_CATEGORY',
       icon: 'add',
       params: {

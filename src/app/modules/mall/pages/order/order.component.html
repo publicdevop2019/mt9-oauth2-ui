@@ -1,7 +1,4 @@
 <div class="example-container">
-    <button [routerLink]="'/dashboard/orders'" [queryParams]="{state: 'none'}" mat-button
-       class="nav-back">
-        <mat-icon>arrow_back_ios</mat-icon> <span style="font-size: 16px;">{{'BACK'|translate}}</span>
-    </button>
+    <app-back-button></app-back-button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 </div>
