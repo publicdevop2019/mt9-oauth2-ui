@@ -2,7 +2,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule, MatSnackBarModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule, MatSnackBarModule, MatTreeModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -41,8 +41,10 @@ import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/s
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
-import { CatalogCustomerComponent } from './modules/mall/pages/catalog-customer/catalog-customer.component';
-import { SummaryCatalogCustomerComponent } from './modules/mall/pages/summary-catalog-customer/summary-catalog-customer.component';
+import { SummaryCatalogCustomerComponent } from './modules/mall/pages/summary-catalog-frontend-admin/summary-catalog-frontend-admin.component';
+import { CatalogCustomerComponent } from './modules/mall/pages/catalog-frontend-admin/catalog-frontend-admin.component';
+import { SummaryCatalogAdminComponent } from './modules/mall/pages/summary-catalog-backend-admin/summary-catalog-backend-admin.component';
+import { CatalogAdminComponent } from './modules/mall/pages/catalog-backend-admin/catalog-backend-admin.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -73,6 +75,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SummaryDislikeComponent,
     SummaryNotInterestedComponent,
     SummaryReportComponent,
+    SummaryCatalogAdminComponent,
+    CatalogAdminComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -99,6 +103,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatTreeModule,
     LayoutModule,
     MtFormBuilderModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),

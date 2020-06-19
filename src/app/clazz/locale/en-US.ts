@@ -129,5 +129,12 @@ export const enUS = {
     "ROLE_USER": "User",
     "LOCK": "Lock",
     "SUBSCRIBE_FOR_NEW_ORDER": "Sub for new order",
+    "PLEASE_SELECT_VIEW": "Please select view",
+    "TREE_VIEW": "Tree view",
+    "LIST_VIEW": "List view",
+    "ENTER_PARENT_ID": "Enter parent id",
+    "ENTER_TAGS": "Enter tags",
+    "PARENT_ID": "Parent ID",
+    "TAGS": "tags",
     "": "",
 }

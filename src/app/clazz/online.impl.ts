@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { ICategory, IAdminCategory } from '../services/category.service';
+import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { getCookie } from './utility';
 import { IPostCard, IPostSummary } from '../services/post.service';
@@ -72,7 +72,7 @@ export class OnlineImpl implements INetworkService {
         return this._httpClient.get<IPostSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getOrders(): Observable<IOrder[]> {
         return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME + '/orders');
@@ -87,7 +87,7 @@ export class OnlineImpl implements INetworkService {
         })
     };
     getProducts(category: string, pageNum: number, pageSize: number): Observable<IProductSimple[]> {
-        return this._httpClient.get<IProductSimple[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
+        return this._httpClient.get<IProductSimple[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getProductDetail(id: number): Observable<IProductDetail> {
         return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + id);
@@ -135,27 +135,30 @@ export class OnlineImpl implements INetworkService {
         formData.append('grant_type', 'client_credentials');
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
     };
-    getCategories(): Observable<IAdminCategory> {
-        return this._httpClient.get<IAdminCategory>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/categories');
+    getCatalogFrontendAdmin(): Observable<ICatalogCustomerHttp> {
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/frontend/catalogs');
     };
-    createCategory(category: ICategory): Observable<boolean> {
+    getCatalogBackendAdmin(): Observable<ICatalogCustomerHttp> {
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/backend/catalogs');
+    };
+    createCategory(category: ICatalogCustomer): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories', category).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs', category).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    deleteCategory(category: ICategory): Observable<boolean> {
+    deleteCategory(category: ICatalogCustomer): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/' + category.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + category.id).subscribe(next => {
                 e.next(true)
             });
         });
 
     };
-    updateCategory(category: ICategory): Observable<boolean> {
+    updateCategory(category: ICatalogCustomer): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/categories/' + category.id, category).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + category.id, category).subscribe(next => {
                 e.next(true)
             });
         });

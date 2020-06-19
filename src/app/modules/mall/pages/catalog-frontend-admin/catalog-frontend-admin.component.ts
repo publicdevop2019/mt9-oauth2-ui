@@ -4,20 +4,20 @@ import { FormInfoService } from 'mt-form-builder';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
-import { FORM_CONFIG } from 'src/app/form-configs/category.config';
-import { CategoryService, ICategory } from 'src/app/services/category.service';
+import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-catalog-customer',
-  templateUrl: './catalog-customer.component.html',
-  styleUrls: ['./catalog-customer.component.css']
+  selector: 'app-catalog-frontend-admin',
+  templateUrl: './catalog-frontend-admin.component.html',
+  styleUrls: ['./catalog-frontend-admin.component.css']
 })
 export class CatalogCustomerComponent implements OnInit, AfterViewInit, OnDestroy {
   state: string;
-  category: ICategory;
-  category$: Observable<ICategory>;
+  category: ICatalogCustomer;
+  category$: Observable<ICatalogCustomer>;
   formId = 'category';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
@@ -35,8 +35,12 @@ export class CatalogCustomerComponent implements OnInit, AfterViewInit, OnDestro
       this.state = queryMaps.get('state');
       if (queryMaps.get('state') === 'update') {
         this.category$.subscribe(byId => {
-          this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
-          this.fis.formGroupCollection[this.formId].get('title').setValue(byId.title)
+          this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
+          this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
+          this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId);
+          this.fis.formGroupCollection[this.formId].get('catalogType').setValue(byId.catalogType);
+          if (byId.tags)
+            this.fis.formGroupCollection[this.formId].get('tags').setValue(byId.tags.join(','));
         })
       } else if (queryMaps.get('state') === 'none') {
 
@@ -66,14 +70,18 @@ export class CatalogCustomerComponent implements OnInit, AfterViewInit, OnDestro
     })
     this.category$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.categorySvc.getCategoryById(+params.get('id')))
+        this.categorySvc.getCatalogById(+params.get('id')))
     );
   }
-  convertToCategoryPayload(): ICategory {
+  convertToCategoryPayload(): ICatalogCustomer {
     let formGroup = this.fis.formGroupCollection[this.formId];
+
     return {
       id: formGroup.get('id').value,
-      title: formGroup.get('title').value
+      name: formGroup.get('name').value,
+      parentId: formGroup.get('parentId').value,
+      tags: formGroup.get('tags').value ? String(formGroup.get('tags').value).split(',') : null,
+      catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
     }
   }
 }

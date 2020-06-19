@@ -4,12 +4,22 @@ import { switchMap } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
 import { CustomHttpInterceptor } from './http.interceptor';
-export interface ICategory {
+export interface ICatalogCustomer {
   id: number,
-  title: string,
+  name: string,
+  parentId?: number,
+  tags?: string[],
+  catalogType?: 'BACKEND' | 'FRONTEND',
 }
-export interface IAdminCategory {
-  categoryList: ICategory[],
+export interface ICatalogCustomerTreeNode {
+  id: number,
+  name: string,
+  children?: ICatalogCustomerTreeNode[],
+  tags?: string[],
+}
+export interface ICatalogCustomerHttp {
+  data: ICatalogCustomer[],
+  meta?: any
 }
 @Injectable({
   providedIn: 'root'
@@ -17,26 +27,29 @@ export interface IAdminCategory {
 export class CategoryService {
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getCategories(): Observable<IAdminCategory> {
-    return this.httpProxy.netImpl.getCategories()
+  getCatalogCustomer(): Observable<ICatalogCustomerHttp> {
+    return this.httpProxy.netImpl.getCatalogFrontendAdmin()
   }
-  getCategoryById(id: number): Observable<ICategory> {
-    return this.getCategories().pipe(switchMap(els => {
-      return of(els.categoryList.find(el => el.id === id))
+  getCatalogAdmin(): Observable<ICatalogCustomerHttp> {
+    return this.httpProxy.netImpl.getCatalogBackendAdmin()
+  }
+  getCatalogById(id: number): Observable<ICatalogCustomer> {
+    return this.getCatalogCustomer().pipe(switchMap(els => {
+      return of(els.data.find(el => el.id === id))
     }))
   }
-  create(category: ICategory) {
+  create(category: ICatalogCustomer) {
     this.httpProxy.netImpl.createCategory(category).subscribe(result => {
       this.notify(result)
     })
   }
-  update(category: ICategory) {
+  update(category: ICatalogCustomer) {
     this.httpProxy.netImpl.updateCategory(category).subscribe(result => {
       this.notify(result)
     })
 
   }
-  delete(category: ICategory) {
+  delete(category: ICatalogCustomer) {
     this.httpProxy.netImpl.deleteCategory(category).subscribe(result => {
       this.notify(result)
     })

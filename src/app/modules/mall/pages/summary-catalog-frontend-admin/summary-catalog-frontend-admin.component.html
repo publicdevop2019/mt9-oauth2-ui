@@ -1,0 +1,64 @@
+<h2>{{'CATEGORY_DASHBOARD'|translate}}</h2>
+<lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+<ng-container *ngIf="viewType==='LIST_VIEW'">
+    <mat-form-field>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
+    </mat-form-field>
+
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME' |translate}}</th>
+                <td mat-cell *matCellDef="let row" class="column-size"> {{row.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="parentId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PARENT_ID' |translate}}</th>
+                <td mat-cell *matCellDef="let row" class="column-size"> {{row.parentId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tags">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'TAGS' |translate}}</th>
+                <td mat-cell *matCellDef="let row" class="column-size"> {{row.tags}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="star">
+                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                    <button [routerLink]="['/dashboard/categories/'+row.id]" [queryParams]="{state: 'update'}"
+                        mat-button>
+                        <mat-icon>settings</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [pageIndex]="categorySvc.currentPageIndex" [pageSizeOptions]="[8]" (page)="pageHandler($event)">
+        </mat-paginator>
+    </div>
+</ng-container>
+<div *ngIf="viewType==='TREE_VIEW'">
+    <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <button mat-icon-button disabled></button>
+            <span [routerLink]="['/dashboard/categories/'+node.id]" [queryParams]="{state: 'update'}" >{{node.name}}</span>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+                <mat-icon class="mat-icon-rtl-mirror">
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+            </button>
+            <span [routerLink]="['/dashboard/categories/'+node.id]" [queryParams]="{state: 'update'}">{{node.name}}</span>
+        </mat-tree-node>
+    </mat-tree>
+</div>

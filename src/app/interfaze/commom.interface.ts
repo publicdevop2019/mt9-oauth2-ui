@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { IAdminCategory, ICategory } from '../services/category.service';
+import { ICatalogCustomerHttp, ICatalogCustomer } from '../services/category.service';
 import { ICommentSummary } from '../services/comment.service';
 import { IPostSummary } from '../services/post.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
@@ -30,10 +30,11 @@ export interface INetworkService {
 
   getOrders: () => Observable<IOrder[]>
 
-  getCategories: () => Observable<IAdminCategory>;
-  createCategory: (category: ICategory) => Observable<boolean>;
-  deleteCategory: (category: ICategory) => Observable<boolean>;
-  updateCategory: (category: ICategory) => Observable<boolean>;
+  getCatalogFrontendAdmin: () => Observable<ICatalogCustomerHttp>;
+  getCatalogBackendAdmin: () => Observable<ICatalogCustomerHttp>;
+  createCategory: (category: ICatalogCustomer) => Observable<boolean>;
+  deleteCategory: (category: ICatalogCustomer) => Observable<boolean>;
+  updateCategory: (category: ICatalogCustomer) => Observable<boolean>;
 
   getAllProducts: (pageNum: number, pageSize: number) => Observable<IProductTotalResponse>;
   getProducts: (category: string, pageNum: number, pageSize: number) => Observable<IProductSimple[]>;

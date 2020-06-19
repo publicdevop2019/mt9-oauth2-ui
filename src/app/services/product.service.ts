@@ -3,7 +3,7 @@ import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { Observable, of, merge } from 'rxjs';
-import { ICategory } from './category.service';
+import { ICatalogCustomer } from './category.service';
 import { switchMap, flatMap } from 'rxjs/operators';
 export interface IProductTotalResponse {
   productSimpleList: IProductSimple[],

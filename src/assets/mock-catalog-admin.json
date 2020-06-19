@@ -1,0 +1,114 @@
+{
+	"data": [
+		{
+			"id": 0,
+			"name": "服装"
+		},
+		{
+			"id": 1,
+			"name": "家电"
+		},
+		{
+			"id": 2,
+			"name": "美食"
+		},
+		{
+			"id": 3,
+			"name": "数码"
+		},
+		{
+			"id": 4,
+			"name": "游戏"
+		},
+		{
+			"id": 5,
+			"name": "生鲜"
+		},
+		{
+			"id": 6,
+			"name": "男装",
+			"parentId":0
+		},
+		{
+			"id": 7,
+			"name": "女装",
+			"parentId":0
+		},
+		{
+			"id": 8,
+			"name": "春季",
+			"parentId":6
+		},
+		{
+			"id": 9,
+			"name": "夏季",
+			"parentId":6
+		},
+		{
+			"id": 10,
+			"name": "秋季",
+			"parentId":6
+		},
+		{
+			"id": 11,
+			"name": "冬季",
+			"parentId":6
+		},
+		{
+			"id": 12,
+			"name": "春季",
+			"parentId":7
+		},
+		{
+			"id": 13,
+			"name": "夏季",
+			"parentId":7
+		},
+		{
+			"id": 14,
+			"name": "秋季",
+			"parentId":7
+		},
+		{
+			"id": 15,
+			"name": "冬季",
+			"parentId":7
+		},
+		{
+			"id": 16,
+			"name": "电视",
+			"parentId":1
+		},
+		{
+			"id": 17,
+			"name": "冰箱",
+			"parentId":1
+		},
+		{
+			"id": 18,
+			"name": "洗衣机",
+			"parentId":1
+		},
+		{
+			"id": 19,
+			"name": "烘干机",
+			"parentId":1
+		},
+		{
+			"id": 20,
+			"name": "微波炉",
+			"parentId":1
+		},
+		{
+			"id": 21,
+			"name": "烤箱",
+			"parentId":1
+		},
+		{
+			"id": 22,
+			"name": "洗碗机",
+			"parentId":1,
+			"tags":["洗碗机"]
+		}
+	]
+}

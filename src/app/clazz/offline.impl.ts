@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { IAuthorizeCode, IAuthorizeParty, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { ICategory, IAdminCategory } from '../services/category.service';
+import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/category.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';
@@ -97,16 +97,19 @@ export class SandboxImpl implements INetworkService {
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    getCategories(): Observable<IAdminCategory> {
-        return this.http.get<IAdminCategory>('./assets/mock-categories.json').pipe(delay(this.defaultDelay))
+    getCatalogFrontendAdmin(): Observable<ICatalogCustomerHttp> {
+        return this.http.get<ICatalogCustomerHttp>('./assets/mock-catalog-customer.json').pipe(delay(this.defaultDelay))
     };
-    createCategory(category: ICategory): Observable<boolean> {
+    getCatalogBackendAdmin(): Observable<ICatalogCustomerHttp> {
+        return this.http.get<ICatalogCustomerHttp>('./assets/mock-catalog-admin.json').pipe(delay(this.defaultDelay))
+    };
+    createCategory(category: ICatalogCustomer): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteCategory(category: ICategory): Observable<boolean> {
+    deleteCategory(category: ICatalogCustomer): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    updateCategory(category: ICategory): Observable<boolean> {
+    updateCategory(category: ICatalogCustomer): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     autoApprove(clientId: string): Observable<boolean> {
