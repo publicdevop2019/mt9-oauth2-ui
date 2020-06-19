@@ -95,19 +95,21 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
-      link: 'categories',
+      link: 'catalogs',
       display: 'CATEGORY_DASHBOARD',
       icon: 'category',
       params: {
         state: 'none',
+        type: 'frontend'
       },
     },
     {
-      link: 'categoriesAdmin',
+      link: 'catalogs',
       display: 'CATEGORY_ADMIN_DASHBOARD',
       icon: 'category',
       params: {
         state: 'none',
+        type: 'backend'
       },
     },
     {
@@ -134,7 +136,7 @@ export class NavBarComponent implements OnInit {
         state: 'create',
       },
     },
-   
+
   ];
   menuBbs: INavElement[] = [
     {
@@ -185,12 +187,12 @@ export class NavBarComponent implements OnInit {
         state: 'none',
       },
     },
-   
+
   ];
   private _mobileQueryListener: () => void;
   private sub: Subscription;
   @ViewChild("snav", { static: true }) snav: MatSidenav;
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver,public translate: TranslateService) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver, public translate: TranslateService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);

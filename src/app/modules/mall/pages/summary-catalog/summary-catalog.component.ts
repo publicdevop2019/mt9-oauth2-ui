@@ -1,12 +1,13 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode } from 'src/app/services/category.service';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode, ICatalogCustomerHttp } from 'src/app/services/category.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
 import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -15,15 +16,15 @@ interface CatalogCustomerFlatNode {
 
 @Component({
   selector: 'app-summary-category',
-  templateUrl: './summary-catalog-frontend-admin.component.html',
-  styleUrls: ['./summary-catalog-frontend-admin.component.css']
+  templateUrl: './summary-catalog.component.html',
+  styleUrls: ['./summary-catalog.component.css']
 })
-export class SummaryCatalogCustomerComponent implements OnInit, AfterViewInit {
+export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   displayedColumns: string[] = ['id', 'name', 'parentId', 'tags', 'star'];
   dataSource: MatTableDataSource<ICatalogCustomer>;
-
+  catalogType: string;
   treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
   private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
@@ -41,14 +42,29 @@ export class SummaryCatalogCustomerComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService) {
-    this.categorySvc.getCatalogCustomer().subscribe(categories => {
-      this.dataSource = new MatTableDataSource(categories.data)
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-      if (categories.data)
-        this.treeDataSource.data = this.convertToTree(categories.data);
-    })
+  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute) {
+    this.route.queryParamMap.subscribe(queryMaps => {
+      this.catalogType = queryMaps.get('type');
+      let ob: Observable<ICatalogCustomerHttp>;
+      if (queryMaps.get('type') === 'frontend') {
+        ob = this.categorySvc.getCatalogCustomer();
+      } else if (queryMaps.get('type') === 'backend') {
+        ob = this.categorySvc.getCatalogAdmin();
+      } else {
+        console.error('unknow catalog type')
+      }
+      ob.subscribe(catalogs => {
+        this.dataSource = new MatTableDataSource(catalogs.data)
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        if (catalogs.data)
+          this.treeDataSource.data = this.convertToTree(catalogs.data);
+      })
+    });
+  }
+  ngOnDestroy(): void {
+    if (this.sub)
+      this.sub.unsubscribe();
   }
   ngAfterViewInit(): void {
     this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {

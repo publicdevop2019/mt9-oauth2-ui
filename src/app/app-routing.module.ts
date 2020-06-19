@@ -20,9 +20,8 @@ import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/s
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
-import { SummaryCatalogCustomerComponent } from './modules/mall/pages/summary-catalog-frontend-admin/summary-catalog-frontend-admin.component';
-import { SummaryCatalogAdminComponent } from './modules/mall/pages/summary-catalog-backend-admin/summary-catalog-backend-admin.component';
-import { CatalogCustomerComponent } from './modules/mall/pages/catalog-frontend-admin/catalog-frontend-admin.component';
+import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
+import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -45,10 +44,8 @@ const routes: Routes = [
       { path: 'products', component: SummaryProductComponent },
       { path: 'product', component: ProductComponent },
       { path: 'products/:id', component: ProductComponent },
-      { path: 'categories', component: SummaryCatalogCustomerComponent },
-      { path: 'categoriesAdmin', component: SummaryCatalogAdminComponent },
-      { path: 'categories/:id', component: CatalogCustomerComponent },
-      { path: 'category', component: CatalogCustomerComponent },
+      { path: 'catalogs', component: SummaryCatalogComponent },
+      { path: 'catalogs/:id', component: CatalogComponent },
       { path: 'posts', component: SummaryPostComponent },
       { path: 'comments', component: SummaryCommentComponent },
       { path: 'reports', component: SummaryReportComponent },

@@ -10,11 +10,11 @@ import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-catalog-frontend-admin',
-  templateUrl: './catalog-frontend-admin.component.html',
-  styleUrls: ['./catalog-frontend-admin.component.css']
+  selector: 'app-catalog',
+  templateUrl: './catalog.component.html',
+  styleUrls: ['./catalog.component.css']
 })
-export class CatalogCustomerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   state: string;
   category: ICatalogCustomer;
   category$: Observable<ICatalogCustomer>;

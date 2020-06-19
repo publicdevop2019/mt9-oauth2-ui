@@ -136,5 +136,8 @@ export const enUS = {
     "ENTER_TAGS": "Enter tags",
     "PARENT_ID": "Parent ID",
     "TAGS": "tags",
+    "PLEASE_SELECT_TYPE": "Please select catalog type",
+    "FRONTEND": "Frontend catalog",
+    "BACKEND": "Backend catalog",
     "": "",
 }

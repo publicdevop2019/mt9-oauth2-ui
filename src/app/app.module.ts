@@ -41,10 +41,8 @@ import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/s
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
-import { SummaryCatalogCustomerComponent } from './modules/mall/pages/summary-catalog-frontend-admin/summary-catalog-frontend-admin.component';
-import { CatalogCustomerComponent } from './modules/mall/pages/catalog-frontend-admin/catalog-frontend-admin.component';
-import { SummaryCatalogAdminComponent } from './modules/mall/pages/summary-catalog-backend-admin/summary-catalog-backend-admin.component';
-import { CatalogAdminComponent } from './modules/mall/pages/catalog-backend-admin/catalog-backend-admin.component';
+import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
+import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -64,8 +62,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SummarySecurityProfileComponent,
     SecurityProfileComponent,
     SummaryProductComponent,
-    SummaryCatalogCustomerComponent,
-    CatalogCustomerComponent,
+    SummaryCatalogComponent,
+    CatalogComponent,
     ProductComponent,
     SummaryOrderComponent,
     OrderComponent,
@@ -75,8 +73,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     SummaryDislikeComponent,
     SummaryNotInterestedComponent,
     SummaryReportComponent,
-    SummaryCatalogAdminComponent,
-    CatalogAdminComponent,
   ],
   imports: [
     BrowserAnimationsModule,
