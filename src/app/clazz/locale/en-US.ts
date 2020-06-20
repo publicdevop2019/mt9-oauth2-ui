@@ -139,5 +139,11 @@ export const enUS = {
     "PLEASE_SELECT_TYPE": "Please select catalog type",
     "FRONTEND": "Frontend catalog",
     "BACKEND": "Backend catalog",
+    "EXPRESS_SEARCH": "Express search",
+    "EXACT_SEARCH": "Search by id",
+    "ENTER_PRODUCT_ID": "Please enter product id",
+    "ID": "Id",
+    "RANGE_SEARCH": "Range search",
+    "ENTER_KEYWORD": "Enter keyword",
     "": "",
 }

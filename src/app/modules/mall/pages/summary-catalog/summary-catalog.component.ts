@@ -8,7 +8,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-interface CatalogCustomerFlatNode {
+export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
   level: number;

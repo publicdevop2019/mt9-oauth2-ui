@@ -11,6 +11,9 @@ import { IUserReactionResult } from '../services/reaction.service';
 
 // regulate interface
 export interface INetworkService {
+  searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse>;
+  searchProductById(id: number): Observable<IProductTotalResponse>;
+  searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse>;
   currentUserAuthInfo: ITokenResponse;
   login: (fg: FormGroup) => Observable<ITokenResponse>;
   register: (fg: FormGroup) => Observable<any>;

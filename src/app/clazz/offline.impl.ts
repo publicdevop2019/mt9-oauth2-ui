@@ -21,6 +21,15 @@ export class SandboxImpl implements INetworkService {
     constructor(http: HttpClient) {
         this.http = http;
     }
+    searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
+    }
+    searchProductById(id: number): Observable<IProductTotalResponse> {
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple-single.json').pipe(delay(this.defaultDelay))
+    }
+    searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
+    }
     deletePost(id: string): Observable<boolean> {
         return of(true);
     };

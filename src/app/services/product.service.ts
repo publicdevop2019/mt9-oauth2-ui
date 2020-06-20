@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
+import { Observable } from 'rxjs';
+import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { Observable, of, merge } from 'rxjs';
-import { ICatalogCustomer } from './category.service';
-import { switchMap, flatMap } from 'rxjs/operators';
 export interface IProductTotalResponse {
-  productSimpleList: IProductSimple[],
-  totalPageCount: number,
-  totalProductCount: number,
+  data: IProductSimple[],
+  meta: {
+    totalPageCount: number,
+    totalProductCount: number,
+  }
 }
 export interface IProductSimple {
   imageUrlSmall: string;
@@ -46,6 +46,15 @@ export class ProductService {
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
     return this.httpProxy.netImpl.getAllProducts(pageNum, pageSize)
+  }
+  searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
+    return this.httpProxy.netImpl.searchProductsByTags(pageNum, pageSize,tags)
+  }
+  searchProductById(id: number): Observable<IProductTotalResponse> {
+    return this.httpProxy.netImpl.searchProductById(id)
+  }
+  searchProductByKeyword(pageNum: number, pageSize: number,keyword: string): Observable<IProductTotalResponse> {
+    return this.httpProxy.netImpl.searchProductByKeyword(pageNum,pageSize,keyword)
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.netImpl.getProductDetail(id)

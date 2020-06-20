@@ -1,25 +1,67 @@
 <h2>{{'PRODUCT_DASHBOARD'|translate}}</h2>
+<mat-expansion-panel>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <h3>{{'EXPRESS_SEARCH'|translate}}</h3>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+            <button mat-icon-button disabled></button>
+            <span (click)="searchWithTags(node.tags)">{{node.name}}</span>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+                <mat-icon class="mat-icon-rtl-mirror">
+                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                </mat-icon>
+            </button>
+            <span (click)="searchWithTags(node.tags)">{{node.name}}</span>
+        </mat-tree-node>
+    </mat-tree>
+</mat-expansion-panel>
+<mat-expansion-panel>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <h3>{{'EXACT_SEARCH'|translate}}</h3>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+        <input matInput placeholder="{{'ENTER_PRODUCT_ID'|translate}}" [formControl]="exactSearch">
+    </mat-form-field>
+</mat-expansion-panel>
+<mat-expansion-panel style="margin-bottom: 12px;">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <h3>{{'RANGE_SEARCH'|translate}}</h3>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+        <input matInput placeholder="{{'ENTER_KEYWORD'|translate}}" [formControl]="rangeSearch">
+    </mat-form-field>
+</mat-expansion-panel>
+
 <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
 </mat-form-field>
 
-<div class="mat-elevation-z8">
+<div class="mat-elevation-z8" style="margin-bottom: 20px;">
     <table mat-table [dataSource]="dataSource" matSort>
 
         <!-- ID Column -->
         <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-            <td mat-cell *matCellDef="let row"  class="column-size"> {{row.id}} </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'ID'|translate}} </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.id}} </td>
         </ng-container>
 
         <ng-container matColumnDef="category">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CATEGORY'|translate}} </th>
-            <td mat-cell *matCellDef="let row"  class="column-size"> {{row.category}} </td>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.category}} </td>
         </ng-container>
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME'|translate}} </th>
-            <td mat-cell *matCellDef="let row"  class="column-size"> {{row.name}} </td>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.name}} </td>
         </ng-container>
 
         <ng-container matColumnDef="orderStorage">
@@ -46,5 +88,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="pageSize" [length]="totoalProductCount" (page)="pageHandler($event)"></mat-paginator>
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="pageSize"
+        [length]="totoalProductCount" (page)="pageHandler($event)"></mat-paginator>
 </div>
