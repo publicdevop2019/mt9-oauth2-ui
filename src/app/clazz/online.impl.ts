@@ -72,7 +72,7 @@ export class OnlineImpl implements INetworkService {
         return this._httpClient.get<IPostSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getOrders(): Observable<IOrder[]> {
         return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME + '/orders');
@@ -90,25 +90,25 @@ export class OnlineImpl implements INetworkService {
         return this._httpClient.get<IProductSimple[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getProductDetail(id: number): Observable<IProductDetail> {
-        return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + id);
+        return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id);
     };
     createProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails', productDetail).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails', productDetail).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + productDetail.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + productDetail.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + productDetail.id, productDetail).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + productDetail.id, productDetail).subscribe(next => {
                 e.next(true)
             });
         });

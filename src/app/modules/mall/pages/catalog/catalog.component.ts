@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
@@ -84,11 +84,13 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
           })
         }
       })
-    })
-    this.category$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) =>
-        this.categorySvc.getCatalogById(+params.get('id')))
-    );
+    });
+    // use non-observable hence forkjoin does not work with route observable
+    if (this.route.snapshot.queryParamMap.get('type') === 'frontend') {
+      this.category$ = this.categorySvc.getCatalogFrontendById(+this.route.snapshot.paramMap.get('id'))
+    } else {
+      this.category$ = this.categorySvc.getCatalogBackendById(+this.route.snapshot.paramMap.get('id'))
+    }
   }
   convertToCategoryPayload(): ICatalogCustomer {
     let formGroup = this.fis.formGroupCollection[this.formId];

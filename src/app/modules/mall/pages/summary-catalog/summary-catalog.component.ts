@@ -47,9 +47,9 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
       this.catalogType = queryMaps.get('type');
       let ob: Observable<ICatalogCustomerHttp>;
       if (queryMaps.get('type') === 'frontend') {
-        ob = this.categorySvc.getCatalogCustomer();
+        ob = this.categorySvc.getCatalogFrontend();
       } else if (queryMaps.get('type') === 'backend') {
-        ob = this.categorySvc.getCatalogAdmin();
+        ob = this.categorySvc.getCatalogBackend();
       } else {
         console.error('unknow catalog type')
       }

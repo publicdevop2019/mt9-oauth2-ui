@@ -15,8 +15,8 @@ export class CustomHttpInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     if (this._httpProxy.netImpl.currentUserAuthInfo && this._httpProxy.netImpl.currentUserAuthInfo.access_token && !this._httpProxy.expireRefresh)
       if (
-        (req.url.indexOf('oauth/token') > -1 && req.method === 'POST') ||
-        (req.url.indexOf('productDetails') > -1 && req.method === 'GET')) {
+        req.url.indexOf('oauth/token') > -1 && req.method === 'POST'
+        ) {
         /**
          * skip Bearer header for public urls
          */

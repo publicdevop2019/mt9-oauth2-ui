@@ -27,14 +27,19 @@ export interface ICatalogCustomerHttp {
 export class CategoryService {
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getCatalogCustomer(): Observable<ICatalogCustomerHttp> {
+  getCatalogFrontend(): Observable<ICatalogCustomerHttp> {
     return this.httpProxy.netImpl.getCatalogFrontendAdmin()
   }
-  getCatalogAdmin(): Observable<ICatalogCustomerHttp> {
+  getCatalogBackend(): Observable<ICatalogCustomerHttp> {
     return this.httpProxy.netImpl.getCatalogBackendAdmin()
   }
-  getCatalogById(id: number): Observable<ICatalogCustomer> {
-    return this.getCatalogCustomer().pipe(switchMap(els => {
+  getCatalogFrontendById(id: number): Observable<ICatalogCustomer> {
+    return this.getCatalogFrontend().pipe(switchMap(els => {
+      return of(els.data.find(el => el.id === id))
+    }))
+  }
+  getCatalogBackendById(id: number): Observable<ICatalogCustomer> {
+    return this.getCatalogBackend().pipe(switchMap(els => {
       return of(els.data.find(el => el.id === id))
     }))
   }
