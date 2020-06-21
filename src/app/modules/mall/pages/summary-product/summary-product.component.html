@@ -16,7 +16,7 @@
                     {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
             </button>
-            <span (click)="searchWithTags(node.tags)">{{node.name}}</span>
+            <span (click)="searchWithTags(node.tags)">{{node.name }}</span>
         </mat-tree-node>
     </mat-tree>
 </mat-expansion-panel>
@@ -54,14 +54,14 @@
             <td mat-cell *matCellDef="let row" class="column-size"> {{row.id}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CATEGORY'|translate}} </th>
-            <td mat-cell *matCellDef="let row" class="column-size"> {{row.category}} </td>
-        </ng-container>
-
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME'|translate}} </th>
             <td mat-cell *matCellDef="let row" class="column-size"> {{row.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PRICE'|translate}} </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.price}} </td>
         </ng-container>
 
         <ng-container matColumnDef="orderStorage">
@@ -72,6 +72,11 @@
         <ng-container matColumnDef="actualStorage">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'ACTUAL_STORAGE'|translate}}</th>
             <td mat-cell *matCellDef="let row"> {{row.actualStorage}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="tags">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'TAGS'|translate}} </th>
+            <td mat-cell *matCellDef="let row" class="column-size"> {{row.tags}} </td>
         </ng-container>
 
         <!-- Star Column -->

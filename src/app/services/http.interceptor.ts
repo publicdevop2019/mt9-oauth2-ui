@@ -36,8 +36,8 @@ export class CustomHttpInterceptor implements HttpInterceptor {
             && this._httpProxy.netImpl.currentUserAuthInfo.refresh_token
             && !this._httpProxy.expireRefresh) {
             /** user already logged in */
-            this._httpProxy.expireRefresh = true;
             return this._httpProxy.netImpl.refreshToken().pipe(mergeMap(result => {
+              this._httpProxy.expireRefresh = true;
               /**
                * get ride of duplicate jwt cookie
                */

@@ -146,5 +146,6 @@ export const zhHans = {
     "ID": "编号",
     "RANGE_SEARCH": "模糊查找",
     "ENTER_KEYWORD": "输入关键词",
+    "PRICE": "价格",
     "": "",
 }

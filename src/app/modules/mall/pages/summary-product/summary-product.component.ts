@@ -18,7 +18,7 @@ import { debounce, filter, map, switchMap } from 'rxjs/operators';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id', 'category', 'name', 'orderStorage', 'actualStorage', 'star'];
+  displayedColumns: string[];
   dataSource: MatTableDataSource<IProductSimple>;
   pageNumber = 0;
   pageSize = 20;
@@ -53,25 +53,25 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
       Breakpoints.XLarge,
     ]).subscribe(next => {
       if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['id', 'name', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['id', 'name', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'category', 'name', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'tags', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'category', 'name', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'tags', 'star'];
       }
       else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'category', 'name', 'orderStorage', 'actualStorage', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'tags', 'star'];
       }
       else {
         console.warn('unknown device width match!')
       }
     });
-    let ob = this.categorySvc.getCatalogBackend()
+    this.categorySvc.getCatalogBackend()
       .subscribe(catalogs => {
         if (catalogs.data)
           this.treeDataSource.data = this.convertToTree(catalogs.data);
@@ -115,9 +115,15 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     });
   }
   private totalProductHandler(products: IProductTotalResponse) {
-    this.dataSource = new MatTableDataSource(products.data);
-    this.totoalProductCount = products.meta.totalProductCount;
-    this.dataSource.sort = this.sort;
+    if (products.data) {
+      this.dataSource = new MatTableDataSource(products.data);
+      this.totoalProductCount = products.totalProductCount;
+      this.dataSource.sort = this.sort;
+    } else {
+      this.dataSource = new MatTableDataSource([]);
+      this.totoalProductCount = 0;
+      this.dataSource.sort = this.sort;
+    }
   }
   hasChild = (_: number, node: CatalogCustomerFlatNode) => node.expandable;
   notLeafNode(catalogs: ICatalogCustomer[], nodes: ICatalogCustomerTreeNode[]): boolean {
@@ -130,6 +136,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
       id: e.id,
       name: e.name,
+      tags: e.tags
     });
     let currentLevel = treeNodes;
     while (this.notLeafNode(catalogs, currentLevel)) {
@@ -138,6 +145,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
         let nextLevel = catalogs.filter(el => el.parentId === childNode.id).map(e => <ICatalogCustomerTreeNode>{
           id: e.id,
           name: e.name,
+          tags: e.tags
         });
         childNode.children = nextLevel;
         nextLevelCol.push(...nextLevel);

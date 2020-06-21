@@ -5,10 +5,8 @@ import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IProductTotalResponse {
   data: IProductSimple[],
-  meta: {
-    totalPageCount: number,
-    totalProductCount: number,
-  }
+  totalPageCount: number,
+  totalProductCount: number,
 }
 export interface IProductSimple {
   imageUrlSmall: string;
@@ -48,13 +46,13 @@ export class ProductService {
     return this.httpProxy.netImpl.getAllProducts(pageNum, pageSize)
   }
   searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
-    return this.httpProxy.netImpl.searchProductsByTags(pageNum, pageSize,tags)
+    return this.httpProxy.netImpl.searchProductsByTags(pageNum, pageSize, tags)
   }
   searchProductById(id: number): Observable<IProductTotalResponse> {
     return this.httpProxy.netImpl.searchProductById(id)
   }
-  searchProductByKeyword(pageNum: number, pageSize: number,keyword: string): Observable<IProductTotalResponse> {
-    return this.httpProxy.netImpl.searchProductByKeyword(pageNum,pageSize,keyword)
+  searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
+    return this.httpProxy.netImpl.searchProductByKeyword(pageNum, pageSize, keyword)
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.netImpl.getProductDetail(id)

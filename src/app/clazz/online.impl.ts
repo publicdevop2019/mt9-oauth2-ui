@@ -46,7 +46,7 @@ export class OnlineImpl implements INetworkService {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?id=' + id);
     }
     searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize + '&tags' + tags.join(','));
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/search?pageNum=' + pageNum + '&pageSize=' + pageSize + '&tags=' + tags.join(','));
     }
     deletePost(id: string): Observable<boolean> {
         return new Observable<boolean>(e => {

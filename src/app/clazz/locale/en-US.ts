@@ -22,7 +22,8 @@ export const enUS = {
     "UPDATE_PASSWORD": "Update Password",
     "LOGOUT": "Logout",
     "PRODUCT_DASHBOARD": "Product Dashboard",
-    "CATEGORY_DASHBOARD": "Category Dashboard",
+    "CATEGORY_DASHBOARD": "Frontend Category Dashboard",
+    "CATEGORY_ADMIN_DASHBOARD":"Backend Category Dashboard",
     "ORDER_DASHBOARD": "Order Dashboard",
     "ADD_PRODUCT": "Add Product",
     "ADD_CATEGORY": "Add Category",
@@ -145,5 +146,6 @@ export const enUS = {
     "ID": "Id",
     "RANGE_SEARCH": "Range search",
     "ENTER_KEYWORD": "Enter keyword",
+    "PRICE": "Price",
     "": "",
 }
