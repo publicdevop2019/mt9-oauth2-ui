@@ -194,6 +194,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         e.label = res;
       });
     })
+    this.attrFormInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
     this.imageFormInfo.inputs.filter(e => e.label).forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);

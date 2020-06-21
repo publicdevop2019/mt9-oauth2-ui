@@ -160,5 +160,8 @@ export const zhHans = {
     "SELECT": "多选一",
     "MANUAL": "手动输入",
     "ADD_OTHER_ATTRIBUTES": "添加属性",
+    "SELECT_AN_ATTRIBUTE": "选择任意属性",
+    "SELECT_AN_ATTRIBUTE_VALUE": "选择属性值",
+    "ENTER_AN_ATTRIBUTE_VALUE": "输入属性值",
     "": "",
 }
