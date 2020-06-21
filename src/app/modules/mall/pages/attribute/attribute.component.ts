@@ -1,30 +1,30 @@
-import { AfterViewInit, Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { FormInfoService } from 'mt-form-builder';
-import { Observable, Subscription, forkJoin } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
-import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
+import { Component, OnInit } from '@angular/core';
+import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
+import { Observable, Subscription } from 'rxjs';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { FORM_CONFIG } from 'src/app/form-configs/tag.config';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ActivatedRoute } from '@angular/router';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
+import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
 
-
 @Component({
-  selector: 'app-catalog',
-  templateUrl: './catalog.component.html',
-  styleUrls: ['./catalog.component.css']
+  selector: 'app-attribute',
+  templateUrl: './attribute.component.html',
+  styleUrls: ['./attribute.component.css']
 })
-export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AttributeComponent implements OnInit {
+
   state: string;
-  category: ICatalogCustomer;
-  category$: Observable<ICatalogCustomer>;
-  formId = 'category';
+  attribute: IAttribute;
+  attribute$: Observable<IAttribute>;
+  formId = 'tag';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   constructor(
     private route: ActivatedRoute,
-    public categorySvc: CategoryService,
+    public attributeSvc: AttributeService,
     private fis: FormInfoService,
     public translate: TranslateService,
   ) {
@@ -36,13 +36,11 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.queryParamMap.subscribe(queryMaps => {
       this.state = queryMaps.get('state');
       if (queryMaps.get('state') === 'update') {
-        this.category$.subscribe(byId => {
+        this.attribute$.subscribe(byId => {
           this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
-          this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId);
-          this.fis.formGroupCollection[this.formId].get('catalogType').setValue(byId.catalogType);
-          if (byId.attributes)
-            this.fis.formGroupCollection[this.formId].get('tags').setValue(byId.attributes.join(','));
+          this.fis.formGroupCollection[this.formId].get('value').setValue(byId.value);
+          this.fis.formGroupCollection[this.formId].get('method').setValue(byId.method);
         })
       } else if (queryMaps.get('state') === 'none') {
 
@@ -85,22 +83,15 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     });
-    // use non-observable hence forkjoin does not work with route observable
-    if (this.route.snapshot.queryParamMap.get('type') === 'frontend') {
-      this.category$ = this.categorySvc.getCatalogFrontendById(+this.route.snapshot.paramMap.get('id'))
-    } else {
-      this.category$ = this.categorySvc.getCatalogBackendById(+this.route.snapshot.paramMap.get('id'))
-    }
+    this.attribute$ = this.attributeSvc.getAttributeById(+this.route.snapshot.paramMap.get('id'))
   }
-  convertToCategoryPayload(): ICatalogCustomer {
+  convertToPayload(): IAttribute {
     let formGroup = this.fis.formGroupCollection[this.formId];
-
     return {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
-      parentId: formGroup.get('parentId').value,
-      attributes: formGroup.get('tags').value ? String(formGroup.get('tags').value).split(',') : null,
-      catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
+      value: formGroup.get('value').value,
+      method: formGroup.get('method').value,
     }
   }
 }

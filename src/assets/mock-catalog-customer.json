@@ -2,66 +2,27 @@
 	"data": [
 		{
 			"id": 0,
-			"name": "男装",
-			"parentId": 5
+			"name": "手机"
 		},
 		{
 			"id": 1,
-			"name": "秋季",
-			"parentId": 0
+			"name": "平板"
 		},
 		{
 			"id": 2,
-			"name": "最近款式",
-			"parentId": 1,
-			"tags": [
-				"man",
-				"automn",
-				"new"
+			"name": "苹果",
+			"parentId": 0,
+			"attributes": [
+				"brand:apple","type:mobile"
 			]
 		},
 		{
 			"id": 3,
-			"name": "超值折扣",
+			"name": "华为",
 			"parentId": 0,
-			"tags": [
-				"man",
-				"discount"
+			"attributes": [
+				"brand:huawei","type:mobile"
 			]
-		},
-		{
-			"id": 4,
-			"name": "女装",
-			"parentId": 5
-		},
-		{
-			"id": 5,
-			"name": "服装"
-		},
-		{
-			"id": 6,
-			"name": "level0",
-			"parentId": 4
-		},
-		{
-			"id": 7,
-			"name": "leve1",
-			"parentId": 6
-		},
-		{
-			"id": 8,
-			"name": "leve2",
-			"parentId": 7
-		},
-		{
-			"id": 9,
-			"name": "leve3",
-			"parentId": 8
-		},
-		{
-			"id": 10,
-			"name": "leve4",
-			"parentId": 9
 		}
 	]
 }

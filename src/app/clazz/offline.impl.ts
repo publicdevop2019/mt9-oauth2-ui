@@ -12,6 +12,7 @@ import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-prof
 import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 import { IResourceOwnerUpdatePwd, IResourceOwner } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { getCookie } from './utility';
+import { IAttributeHttp, IAttribute } from '../services/attribute.service';
 
 
 
@@ -20,6 +21,18 @@ export class SandboxImpl implements INetworkService {
     http: HttpClient;
     constructor(http: HttpClient) {
         this.http = http;
+    }
+    deleteAttribute(tag: IAttribute): Observable<boolean> {
+        return of(true);
+    };
+    updateAttribute(tag: IAttribute): Observable<boolean> {
+        return of(true);
+    };
+    createAttribute(tag: IAttribute): Observable<boolean> {
+        return of(true);
+    };
+    getAttributes(): Observable<IAttributeHttp> {
+        return this.http.get<IAttributeHttp>('./assets/mock-attributes.json').pipe(delay(this.defaultDelay))
     }
     searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
         return this.http.get<IProductTotalResponse>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))

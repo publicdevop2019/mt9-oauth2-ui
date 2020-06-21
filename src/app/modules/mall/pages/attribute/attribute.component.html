@@ -1,0 +1,11 @@
+<div class="example-container">
+    <app-back-button></app-back-button>
+    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+    <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
+        (click)="validator.valid()&&attributeSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
+    <button mat-raised-button color="warn" *ngIf="state==='update'"
+        (click)="validator.valid()&&attributeSvc.delete(convertToPayload())">{{'DELETE'|translate}}</button>
+    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
+        (click)="validator.valid()&&attributeSvc.create(convertToPayload())"
+        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
+</div>

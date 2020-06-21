@@ -13,6 +13,7 @@ import { IUserReactionResult } from '../services/reaction.service';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 import { IResourceOwnerUpdatePwd, IResourceOwner, IPendingResourceOwner, IForgetPasswordRequest } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
+import { IAttribute } from '../services/attribute.service';
 
 
 
@@ -38,6 +39,30 @@ export class OnlineImpl implements INetworkService {
     }
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
+    }
+    deleteAttribute(tag: IAttribute): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/tags').subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    updateAttribute(tag: IAttribute): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/tags', tag).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    createAttribute(tag: IAttribute): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/tags', tag).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    getAttributes(): Observable<import("../services/attribute.service").IAttributeHttp> {
+        throw new Error("Method not implemented.");
     }
     searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize + '&key=' + keyword);

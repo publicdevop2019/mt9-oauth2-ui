@@ -8,9 +8,14 @@ import { ICommentSummary } from '../services/comment.service';
 import { IPostSummary } from '../services/post.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IUserReactionResult } from '../services/reaction.service';
+import { IAttributeHttp, IAttribute } from '../services/attribute.service';
 
 // regulate interface
 export interface INetworkService {
+  deleteAttribute: (tag: IAttribute) => Observable<boolean>;
+  updateAttribute: (tag: IAttribute) => Observable<boolean>;
+  createAttribute: (tag: IAttribute) => Observable<boolean>;
+  getAttributes(): Observable<IAttributeHttp>;
   searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse>;
   searchProductById(id: number): Observable<IProductTotalResponse>;
   searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse>;

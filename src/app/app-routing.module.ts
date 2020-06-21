@@ -22,6 +22,8 @@ import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
 import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
 import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
+import { AttributeComponent } from './modules/mall/pages/attribute/attribute.component';
+import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -47,6 +49,9 @@ const routes: Routes = [
       { path: 'catalogs', component: SummaryCatalogComponent },
       { path: 'catalogs/:id', component: CatalogComponent },
       { path: 'catalog', component: CatalogComponent },
+      { path: 'attributes', component: SummaryAttributeComponent },
+      { path: 'attributes/:id', component: AttributeComponent },
+      { path: 'attribute', component: AttributeComponent },
       { path: 'posts', component: SummaryPostComponent },
       { path: 'comments', component: SummaryCommentComponent },
       { path: 'reports', component: SummaryReportComponent },

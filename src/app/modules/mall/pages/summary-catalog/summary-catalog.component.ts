@@ -22,7 +22,7 @@ export interface CatalogCustomerFlatNode {
 export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  displayedColumns: string[] = ['id', 'name', 'parentId', 'tags', 'star'];
+  displayedColumns: string[] = ['id', 'name', 'parentId', 'attributes', 'star'];
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
   treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);

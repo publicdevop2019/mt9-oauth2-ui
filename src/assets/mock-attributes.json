@@ -1,0 +1,64 @@
+{
+    "data": [
+        {
+            "id": 0,
+            "name": "brand",
+            "value": "apple,huawei,samsung,xiaomi",
+            "method": "SELECT",
+            "type":"KEY_ATTR"
+        },
+        {
+            "id": 1,
+            "name": "mobile-model",
+            "method": "MANUAL",
+            "type":"KEY_ATTR"
+        },
+        {
+            "id": 2,
+            "name": "tablet-model",
+            "method": "MANUAL",
+            "type":"KEY_ATTR"
+        },
+        {
+            "id": 3,
+            "name": "memory",
+            "value": "64g,128g,256g,512g",
+            "method": "SELECT",
+            "type":"SALES_ATTR"
+        },
+        {
+            "id": 4,
+            "name": "tablet-screen-size",
+            "value": "10.0inch,12.0inch",
+            "method": "SELECT",
+            "type":"GEN_ATTR"
+        },
+        {
+            "id": 5,
+            "name": "mobile-screen-size",
+            "value": "5.4inch,5.5inch,6.0inch,7.0inch",
+            "method": "SELECT",
+            "type":"GEN_ATTR"
+        },
+        {
+            "id": 6,
+            "name": "resolution",
+            "value": "1280px,1920px,2380px,3840px",
+            "method": "SELECT",
+            "type":"GEN_ATTR"
+        },
+        {
+            "id": 7,
+            "name": "color",
+            "method": "MANUAL",
+            "type":"SALES_ATTR"
+        },
+        {
+            "id": 7,
+            "name": "type",
+            "value": "mobile,tablet,laptop,desktop",
+            "method": "SELECT",
+            "type":"KEY_ATTR"
+        }
+    ]
+}

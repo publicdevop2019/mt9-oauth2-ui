@@ -1,15 +1,38 @@
 <div class="example-container">
     <app-back-button></app-back-button>
+    <ng-container *ngIf="this.state==='create'">
+        <h3>{{'PLEASE_SELECT_CATALOG'|translate}}</h3>
+        <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                <button mat-icon-button disabled></button>
+                <span (click)="loadAttributes(node.id)">{{node.name}}</span>
+            </mat-tree-node>
+            <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                <span>{{node.name }}</span>
+            </mat-tree-node>
+        </mat-tree>
+    </ng-container>
+    <button mat-raised-button color="primary" style="margin-bottom: 20px;margin-top: 20px;width: 100%;"
+        (click)="fetchAttrList()">{{'ADD_OTHER_ATTRIBUTES'|translate}}</button>
+    <lib-factory [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
+    <button *ngIf="showAddAttrBtn" mat-raised-button color="primary" (click)="addAttrToProduct()"
+        style="margin-bottom: 20px;margin-top: 20px;width: 100%;">{{'ADD'|translate}}</button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <h3>{{'PRODUCT_IMAGE_URLS'|translate}}</h3>
     <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>
     <h3>{{'PRODUCT_OPTION(S)'|translate}}</h3>
     <lib-factory [formId]="optionFormId" [formInfo]="optionFormInfo"></lib-factory>
-    <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
+    <button mat-raised-button color="primary" *ngIf="state==='update'"
+        style="margin-bottom: 20px;margin-top: 20px;width: 100%;"
         (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
-    <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;"
+    <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;width: 100%;"
         (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.delete(convertToPayload())">{{'DELETE'|translate}}</button>
-    <button mat-raised-button color="primary" style="margin-top: 24px;"
+    <button mat-raised-button color="primary" style="margin-top: 24px;width: 100%;margin-bottom: 24px;"
         (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
         *ngIf="state=='create'">{{'CREATE'|translate}}</button>
 </div>

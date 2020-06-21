@@ -113,6 +113,14 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
+      link: 'attributes',
+      display: 'ATTRIBUTE_DASHBOARD',
+      icon: 'category',
+      params: {
+        state: 'none'
+      },
+    },
+    {
       link: 'orders',
       display: 'ORDER_DASHBOARD',
       icon: 'assignment',

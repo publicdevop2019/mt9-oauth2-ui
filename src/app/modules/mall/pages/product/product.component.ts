@@ -5,12 +5,18 @@ import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IProductDetail, ProductService, IProductOptions, IProductOption } from 'src/app/services/product.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FormInfoService } from 'mt-form-builder';
 import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
 import { TranslateService } from '@ngx-translate/core';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { CatalogCustomerFlatNode } from '../summary-catalog/summary-catalog.component';
+import { ICatalogCustomerTreeNode, ICatalogCustomer, CategoryService, ICatalogCustomerHttp } from 'src/app/services/category.service';
+import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
+import { ATTR_FORM_CONFIG } from 'src/app/form-configs/attribute.config';
 
 @Component({
   selector: 'app-product',
@@ -22,6 +28,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   product$: Observable<IProductDetail>;
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
+  attrFormId = 'attr';
+  attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_FORM_CONFIG));
   validator: ValidateHelper;
   imageFormId = 'product_image';
   imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
@@ -30,16 +38,33 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
   optionFormvalidator: ValidateHelper;
   subs: Subscription[] = [];
+  treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
+  private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      level: level,
+      id: node.id,
+      tags: node.tags
+    };
+  }
+  treeFlattener = new MatTreeFlattener(
+    this._transformer, node => node.level, node => node.expandable, node => node.children);
+
+  treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
   constructor(
     private route: ActivatedRoute,
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
     private fis: FormInfoService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private categorySvc: CategoryService,
+    public attrSvc: AttributeService
   ) {
-    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
-    this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis)
-    this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis)
+    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
+    this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);
+    this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis);
   }
   ngAfterViewInit(): void {
     this.subs.push(
@@ -56,7 +81,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           });
           this.subs.push(this.product$.subscribe(byId => {
             this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
-            this.fis.formGroupCollection[this.formId].get('category').setValue(byId.category)
+            this.fis.formGroupCollection[this.formId].get('attributes').setValue(byId.attributes)
             this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name)
             this.fis.formGroupCollection[this.formId].get('price').setValue(byId.price)
             this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(byId.imageUrlSmall)
@@ -131,9 +156,33 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
     this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
   }
+  attrList: IAttribute[];
+  fetchAttrList() {
+    this.attrSvc.getAttributeList().subscribe(next => {
+      this.attrList = next.data;
+      this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) })
+      this.attrFormInfo.inputs[0].display = true;
+    });
+    this.fis.formGroupCollection[this.attrFormId].get('attributeId').valueChanges.subscribe(next => {
+      let selected = this.attrList.find(e => String(e.id) === next);
+      this.attrFormInfo.inputs[1].display = selected.method === 'SELECT';
+      this.attrFormInfo.inputs[2].display = selected.method !== 'SELECT';
+      if (selected.method === 'SELECT') {
+        this.attrFormInfo.inputs[1].options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
+      }
+    })
+    this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').valueChanges.subscribe(next => {
+      if (next !== null && next !== undefined)
+        this.showAddAttrBtn = true;
+    })
+    this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').valueChanges.subscribe(next => {
+      if (next !== null && next !== undefined)
+        this.showAddAttrBtn = true;
+    })
+  }
   ngOnDestroy(): void {
     this.subs.forEach(e => e.unsubscribe());
-    this.fis.formGroupCollection[this.formId].reset();
+    if (this.fis.formGroupCollection[this.formId]) this.fis.formGroupCollection[this.formId].reset();
     delete this.fis.formGroupCollection[this.imageFormId];
   }
   private sub: Subscription;
@@ -165,12 +214,20 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     })
   }
+  private catalogs: ICatalogCustomerHttp;
   ngOnInit() {
     this.updateFormLabel();
     this.sub = this.translate.onLangChange.subscribe(() => {
       this.updateFormLabel();
     })
     this.subs.push(this.sub);
+    this.categorySvc.getCatalogBackend()
+      .subscribe(next => {
+        if (next.data) {
+          this.catalogs = next;
+          this.treeDataSource.data = this.convertToTree(next.data);
+        }
+      });
     this.product$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
         this.productSvc.getProductDetailById(+params.get('id')))
@@ -197,7 +254,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     return {
       id: formGroup.get('id').value,
-      category: formGroup.get('category').value,
+      attributes: formGroup.get('attributes').value,
       name: formGroup.get('name').value,
       price: formGroup.get('price').value,
       imageUrlSmall: formGroup.get('imageUrlSmall').value,
@@ -218,5 +275,56 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.httpProxy.netImpl.uploadFile(files.item(0)).subscribe(next => {
       this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
     })
+  }
+  hasChild = (_: number, node: CatalogCustomerFlatNode) => node.expandable;
+  notLeafNode(catalogs: ICatalogCustomer[], nodes: ICatalogCustomerTreeNode[]): boolean {
+    return nodes.filter(node => {
+      return catalogs.filter(el => el.parentId === node.id).length >= 1
+    }).length >= 1
+  }
+  convertToTree(catalogs: ICatalogCustomer[]): ICatalogCustomerTreeNode[] {
+    let rootNodes = catalogs.filter(e => e.parentId === null || e.parentId === undefined);
+    let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
+      id: e.id,
+      name: e.name,
+      tags: e.attributes
+    });
+    let currentLevel = treeNodes;
+    while (this.notLeafNode(catalogs, currentLevel)) {
+      let nextLevelCol: ICatalogCustomerTreeNode[] = []
+      currentLevel.forEach(childNode => {
+        let nextLevel = catalogs.filter(el => el.parentId === childNode.id).map(e => <ICatalogCustomerTreeNode>{
+          id: e.id,
+          name: e.name,
+          tags: e.attributes
+        });
+        childNode.children = nextLevel;
+        nextLevelCol.push(...nextLevel);
+      });
+      currentLevel = nextLevelCol;
+    }
+    return treeNodes;
+  }
+  loadAttributes(id: number) {
+    let tags: string[] = [];
+    let attr = this.catalogs.data.find(e => e.id === id);
+    tags.push(...attr.attributes);
+    while (attr.parentId !== null && attr.parentId !== undefined) {
+      let nextId = attr.parentId;
+      attr = this.catalogs.data.find(e => e.id === nextId);
+      tags.push(...attr.attributes);
+    }
+    this.fis.formGroupCollection[this.formId].get('attributes').setValue(tags);
+  }
+  public showAddAttrBtn = false;
+  addAttrToProduct() {
+    let ctrl = this.fis.formGroupCollection[this.formId].get('attributes');
+    let at = this.attrList.find(e => String(e.id) === this.fis.formGroupCollection[this.attrFormId].get('attributeId').value);
+    if (at.method === 'SELECT') {
+      this.fis.formGroupCollection[this.formId].get('attributes').setValue(ctrl.value + ',' + at.name + ':' + this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').value);
+    }
+    else {
+      this.fis.formGroupCollection[this.formId].get('attributes').setValue(ctrl.value + ',' + at.name + ':' + this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').value);
+    }
   }
 }

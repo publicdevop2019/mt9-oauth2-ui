@@ -2,113 +2,136 @@
 	"data": [
 		{
 			"id": 0,
-			"name": "服装"
+			"name": "苹果",
+			"attributes":["brand:apple"]
 		},
 		{
 			"id": 1,
-			"name": "家电"
+			"name": "华为",
+			"attributes":["brand:huawei"]
 		},
 		{
 			"id": 2,
-			"name": "美食"
+			"name": "小米",
+			"attributes":["brand:xiaomi"]
 		},
 		{
 			"id": 3,
-			"name": "数码"
+			"name": "三星",
+			"attributes":["brand:samsung"]
 		},
 		{
 			"id": 4,
-			"name": "游戏"
-		},
-		{
-			"id": 5,
-			"name": "生鲜"
+			"name": "其他",
+			"attributes":["brand:others"]
 		},
 		{
 			"id": 6,
-			"name": "男装",
-			"parentId":0
-		},
-		{
-			"id": 7,
-			"name": "女装",
-			"parentId":0
-		},
-		{
-			"id": 8,
-			"name": "春季",
-			"parentId":6
-		},
-		{
-			"id": 9,
-			"name": "夏季",
-			"parentId":6
-		},
-		{
-			"id": 10,
-			"name": "秋季",
-			"parentId":6
-		},
-		{
-			"id": 11,
-			"name": "冬季",
-			"parentId":6
-		},
-		{
-			"id": 12,
-			"name": "春季",
-			"parentId":7
-		},
-		{
-			"id": 13,
-			"name": "夏季",
-			"parentId":7
-		},
-		{
-			"id": 14,
-			"name": "秋季",
-			"parentId":7
-		},
-		{
-			"id": 15,
-			"name": "冬季",
-			"parentId":7
-		},
-		{
-			"id": 16,
-			"name": "电视",
-			"parentId":1
-		},
-		{
-			"id": 17,
-			"name": "冰箱",
-			"parentId":1
-		},
-		{
-			"id": 18,
-			"name": "洗衣机",
-			"parentId":1
-		},
-		{
-			"id": 19,
-			"name": "烘干机",
-			"parentId":1
-		},
-		{
-			"id": 20,
-			"name": "微波炉",
-			"parentId":1
+			"name": "手机",
+			"parentId":0,
+			"attributes":["type:mobile"]
 		},
 		{
 			"id": 21,
-			"name": "烤箱",
-			"parentId":1
+			"name": "iphone10",
+			"parentId":6,
+			"attributes":["model:iphone10"]
 		},
 		{
 			"id": 22,
-			"name": "洗碗机",
+			"name": "iphone11",
+			"parentId":6,
+			"attributes":["model:iphone11"]
+		},
+		{
+			"id": 23,
+			"name": "iphone11xr",
+			"parentId":6,
+			"attributes":["model:iphone11xr"]
+		},
+		{
+			"id": 7,
+			"name": "平板",
+			"parentId":0,
+			"attributes":["type:tablet"]
+		},
+		{
+			"id": 8,
+			"name": "笔记本",
+			"parentId":0,
+			"attributes":["type:laptop,GPU:,keyboard:"]
+		},
+		{
+			"id": 9,
+			"name": "耳机",
+			"parentId":0,
+			"attributes":["type:earphone"]
+		},
+		{
+			"id": 10,
+			"name": "手机",
 			"parentId":1,
-			"tags":["洗碗机"]
+			"attributes":["type:mobile"]
+		},
+		{
+			"id": 11,
+			"name": "平板",
+			"parentId":1,
+			"attributes":["type:tablet"]
+		},
+		{
+			"id": 12,
+			"name": "笔记本",
+			"parentId":1,
+			"attributes":["type:laptop"]
+		},
+		{
+			"id": 13,
+			"name": "手机",
+			"parentId":2,
+			"attributes":["type:mobile"]
+		},
+		{
+			"id": 14,
+			"name": "平板",
+			"parentId":2,
+			"attributes":["type:tablet"]
+		},
+		{
+			"id": 15,
+			"name": "笔记本",
+			"parentId":2,
+			"attributes":["type:laptop"]
+		},
+		{
+			"id": 16,
+			"name": "家电",
+			"parentId":2,
+			"attributes":["type:appliance"]
+		},
+		{
+			"id": 17,
+			"name": "手机",
+			"parentId":3,
+			"attributes":["type:mobile"]
+		},
+		{
+			"id": 18,
+			"name": "平板",
+			"parentId":3,
+			"attributes":["type:tablet"]
+		},
+		{
+			"id": 19,
+			"name": "笔记本",
+			"parentId":3,
+			"attributes":["type:laptop"]
+		},
+		{
+			"id": 20,
+			"name": "家电",
+			"parentId":3,
+			"attributes":["type:appliance"]
 		}
 	]
 }

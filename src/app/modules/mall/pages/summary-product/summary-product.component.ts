@@ -136,7 +136,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
       id: e.id,
       name: e.name,
-      tags: e.tags
+      tags: e.attributes
     });
     let currentLevel = treeNodes;
     while (this.notLeafNode(catalogs, currentLevel)) {
@@ -145,7 +145,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
         let nextLevel = catalogs.filter(el => el.parentId === childNode.id).map(e => <ICatalogCustomerTreeNode>{
           id: e.id,
           name: e.name,
-          tags: e.tags
+          tags: e.attributes
         });
         childNode.children = nextLevel;
         nextLevelCol.push(...nextLevel);

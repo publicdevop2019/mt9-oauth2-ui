@@ -16,8 +16,9 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "ENTER_CATEGORY",
-            "key": "category",
+            "label": "INDEX_ATTRIBUTES",
+            "readonly": true,
+            "key": "attributes",
             "position": {
                 "row": "1",
                 "column": "0"
