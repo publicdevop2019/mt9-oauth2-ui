@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -14,9 +14,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { CatalogCustomerFlatNode } from '../summary-catalog/summary-catalog.component';
 import { ICatalogCustomerTreeNode, ICatalogCustomer, CategoryService, ICatalogCustomerHttp } from 'src/app/services/category.service';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { MatTreeFlattener, MatTreeFlatDataSource, MatSlideToggle } from '@angular/material';
 import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
 import { ATTR_FORM_CONFIG } from 'src/app/form-configs/attribute.config';
+import { by } from 'protractor';
 
 @Component({
   selector: 'app-product',
@@ -39,6 +40,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionFormvalidator: ValidateHelper;
   subs: Subscription[] = [];
   treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
+  @ViewChild('toggle', { static: true }) toggle: MatSlideToggle;
   private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
     return {
       expandable: !!node.children && node.children.length > 0,
@@ -81,13 +83,71 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           });
           this.subs.push(this.product$.subscribe(byId => {
             this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
-            this.fis.formGroupCollection[this.formId].get('attributes').setValue(byId.attributes)
+            this.fis.formGroupCollection[this.formId].get('attributesSearch').setValue(byId.attributesSearch)
             this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name)
             this.fis.formGroupCollection[this.formId].get('price').setValue(byId.price)
             this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(byId.imageUrlSmall)
             this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description)
             this.fis.formGroupCollection[this.formId].get('sales').setValue(byId.sales)
             this.fis.formGroupCollection[this.formId].get('rate').setValue(byId.rate)
+            if (byId.attributesCustom) {
+              this.attrSvc.getAttributeList().subscribe(next => {
+                //update formInfo first then initialize form, so add template can be correct
+                this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
+                this.attrList = next.data;
+                setTimeout(() => {
+                  byId.attributesCustom.forEach((attr, index) => {
+                    if (index === 0) {
+                      let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+                      this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
+                      if (selected.method === 'SELECT') {
+                        this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect').display = true;
+                        this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').setValue(attr.split(':')[1]);
+                      } else {
+                        this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual').display = true;
+                        this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').setValue(String(attr.split(':')[1]));
+                      }
+                    } else {
+                      let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+                      this.fis.formGroupCollection[this.attrFormId].addControl('attributeId_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(String(selected.id)));
+                      if (selected.method === 'SELECT') {
+                        this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueSelect_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(attr.split(':')[1]));
+                        this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueManual_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(''));
+                      } else {
+                        this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueSelect_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(''));
+                        this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueManual_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(attr.split(':')[1]));
+                      }
+                      this.fis.add(this.attrFormId);
+                      //update display after new inputs added
+                      let copy=this.fis.formGroupCollection_index[this.attrFormId];
+                      copy--;
+                      if (selected.method === 'SELECT') {
+                        this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).display = true;
+                      } else {
+                        this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual_' + copy).display = true;
+                      }
+                    }
+                    this.fis.refreshLayout(this.attrFormInfo, this.attrFormId);
+                  })
+                  console.dir(this.fis.formGroupCollection[this.attrFormId].value)
+                  // @todo add observable to indicate form has been initialized
+                  this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
+                    Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
+                      let selected = this.attrList.find(e => String(e.id) === next[idKey]);
+                      if (selected) {
+                        let append = idKey.replace('attributeId', '');
+                        this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
+                        this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
+                        if (selected.method === 'SELECT') {
+                          this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
+                        }
+                      }
+                    });
+                    console.dir(this.fis.formGroupCollection[this.attrFormId].value)
+                  });
+                }, 0);
+              });
+            }
             if (byId.imageUrlLarge && byId.imageUrlLarge.length !== 0) {
               byId.imageUrlLarge.forEach((url, index) => {
                 if (index === 0) {
@@ -180,6 +240,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         }, 0);
       });
+    } else {
+      this.attrList = undefined;
+      delete this.fis.formGroupCollection[this.attrFormId];
+      console.dir(this.fis.formGroupCollection)
     }
   }
   ngOnDestroy(): void {
@@ -260,12 +324,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       selectedOptions.push(var1)
     });
-    let attrStr: string[] = [];
-    attrStr.push(formGroup.get('attributes').value)
-    attrStr.push(this.getAddedAttrs())
     return {
       id: formGroup.get('id').value,
-      attributes: attrStr.join(','),
+      attributesSearch: formGroup.get('attributes').value,
+      attributesCustom: this.attrList ? this.getAddedAttrs() : null,
       name: formGroup.get('name').value,
       price: formGroup.get('price').value,
       imageUrlSmall: formGroup.get('imageUrlSmall').value,
@@ -327,7 +389,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.fis.formGroupCollection[this.formId].get('attributes').setValue(tags);
   }
-  getAddedAttrs(): string {
+  getAddedAttrs(): string[] {
     let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
       let selected = this.attrList.find(e => String(e.id) === attrFormValue[idKey]);
@@ -339,6 +401,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual' + append).value;
       }
       return selected.name + ':' + attrValue
-    }).join(',');
+    });
   }
 }

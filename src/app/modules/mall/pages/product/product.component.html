@@ -17,8 +17,8 @@
             </mat-tree-node>
         </mat-tree>
     </ng-container>
-    <mat-slide-toggle #slide [checked]="'false'" style="margin-bottom: 12px;margin-top: 24px;"
-        (change)="fetchAttrList(slide.checked)">
+    <mat-slide-toggle #toggle [checked]="'false'" style="margin-bottom: 12px;margin-top: 24px;"
+        (change)="fetchAttrList(toggle.checked)">
         {{'ADD_OTHER_ATTRIBUTES' | translate}}
     </mat-slide-toggle>
     <ng-container *ngIf="attrList">
