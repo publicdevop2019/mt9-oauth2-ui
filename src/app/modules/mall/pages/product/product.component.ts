@@ -157,28 +157,30 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
   }
   attrList: IAttribute[];
-  fetchAttrList() {
-    this.attrSvc.getAttributeList().subscribe(next => {
-      this.attrList = next.data;
-      this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) })
-      this.attrFormInfo.inputs[0].display = true;
-    });
-    this.fis.formGroupCollection[this.attrFormId].get('attributeId').valueChanges.subscribe(next => {
-      let selected = this.attrList.find(e => String(e.id) === next);
-      this.attrFormInfo.inputs[1].display = selected.method === 'SELECT';
-      this.attrFormInfo.inputs[2].display = selected.method !== 'SELECT';
-      if (selected.method === 'SELECT') {
-        this.attrFormInfo.inputs[1].options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
-      }
-    })
-    this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').valueChanges.subscribe(next => {
-      if (next !== null && next !== undefined)
-        this.showAddAttrBtn = true;
-    })
-    this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').valueChanges.subscribe(next => {
-      if (next !== null && next !== undefined)
-        this.showAddAttrBtn = true;
-    })
+  fetchAttrList(checked: boolean) {
+    if (checked) {
+      this.attrSvc.getAttributeList().subscribe(next => {
+        //update formInfo first then initialize form, so add template can be correct
+        this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
+        this.attrList = next.data;
+        setTimeout(() => {
+          //@todo add observable to indicate form has been initialized
+          this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
+            Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
+              let selected = this.attrList.find(e => String(e.id) === next[idKey]);
+              if (selected) {
+                let append = idKey.replace('attributeId', '');
+                this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
+                this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
+                if (selected.method === 'SELECT') {
+                  this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
+                }
+              }
+            })
+          });
+        }, 0);
+      });
+    }
   }
   ngOnDestroy(): void {
     this.subs.forEach(e => e.unsubscribe());
@@ -258,9 +260,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       selectedOptions.push(var1)
     });
+    let attrStr: string[] = [];
+    attrStr.push(formGroup.get('attributes').value)
+    attrStr.push(this.getAddedAttrs())
     return {
       id: formGroup.get('id').value,
-      attributes: formGroup.get('attributes').value,
+      attributes: attrStr.join(','),
       name: formGroup.get('name').value,
       price: formGroup.get('price').value,
       imageUrlSmall: formGroup.get('imageUrlSmall').value,
@@ -322,15 +327,18 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.fis.formGroupCollection[this.formId].get('attributes').setValue(tags);
   }
-  public showAddAttrBtn = false;
-  addAttrToProduct() {
-    let ctrl = this.fis.formGroupCollection[this.formId].get('attributes');
-    let at = this.attrList.find(e => String(e.id) === this.fis.formGroupCollection[this.attrFormId].get('attributeId').value);
-    if (at.method === 'SELECT') {
-      this.fis.formGroupCollection[this.formId].get('attributes').setValue(ctrl.value + ',' + at.name + ':' + this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').value);
-    }
-    else {
-      this.fis.formGroupCollection[this.formId].get('attributes').setValue(ctrl.value + ',' + at.name + ':' + this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').value);
-    }
+  getAddedAttrs(): string {
+    let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;
+    return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
+      let selected = this.attrList.find(e => String(e.id) === attrFormValue[idKey]);
+      let append = idKey.replace('attributeId', '');
+      let attrValue: string;
+      if (selected.method === 'SELECT') {
+        attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect' + append).value;
+      } else {
+        attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual' + append).value;
+      }
+      return selected.name + ':' + attrValue
+    }).join(',');
   }
 }

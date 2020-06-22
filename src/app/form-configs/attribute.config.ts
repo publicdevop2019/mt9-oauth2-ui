@@ -1,10 +1,10 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 export const ATTR_FORM_CONFIG: IForm = {
-    "repeatable": false,
+    "repeatable": true,
     "inputs": [
         {
             "type": "select",
-            "display": false,
+            "display": true,
             "label": "SELECT_AN_ATTRIBUTE",
             "key": "attributeId",
             "position": {
@@ -26,8 +26,8 @@ export const ATTR_FORM_CONFIG: IForm = {
             "label": "SELECT_AN_ATTRIBUTE_VALUE",
             "key": "attributeValueSelect",
             "position": {
-                "row": "1",
-                "column": "0"
+                "row": "0",
+                "column": "1"
             },
             "options": [
             ],
@@ -44,8 +44,8 @@ export const ATTR_FORM_CONFIG: IForm = {
             "label": "ENTER_AN_ATTRIBUTE_VALUE",
             "key": "attributeValueManual",
             "position": {
-                "row": "2",
-                "column": "0"
+                "row": "0",
+                "column": "1"
             },
             "attributes": [
                 {
