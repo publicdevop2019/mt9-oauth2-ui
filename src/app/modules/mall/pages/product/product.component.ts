@@ -123,13 +123,13 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                       copy--;
                       if (selected.method === 'SELECT') {
                         this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).display = true;
+                        this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
                       } else {
                         this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual_' + copy).display = true;
                       }
                     }
                     this.fis.refreshLayout(this.attrFormInfo, this.attrFormId);
                   })
-                  console.dir(this.fis.formGroupCollection[this.attrFormId].value)
                   // @todo add observable to indicate form has been initialized
                   this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
                     Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
@@ -143,7 +143,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
                       }
                     });
-                    console.dir(this.fis.formGroupCollection[this.attrFormId].value)
                   });
                 }, 0);
               });
@@ -243,7 +242,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.attrList = undefined;
       delete this.fis.formGroupCollection[this.attrFormId];
-      console.dir(this.fis.formGroupCollection)
     }
   }
   ngOnDestroy(): void {
@@ -387,7 +385,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       attr = this.catalogs.data.find(e => e.id === nextId);
       tags.push(...attr.attributes);
     }
-    this.fis.formGroupCollection[this.formId].get('attributes').setValue(tags);
+    this.fis.formGroupCollection[this.formId].get('attributesSearch').setValue(tags);
   }
   getAddedAttrs(): string[] {
     let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;
