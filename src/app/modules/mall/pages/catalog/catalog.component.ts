@@ -44,12 +44,6 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
           if (byId.attributes)
             this.fis.formGroupCollection[this.formId].get('tags').setValue(byId.attributes.join(','));
         })
-        // use non-observable hence forkjoin does not work with route observable
-        if (this.route.snapshot.queryParamMap.get('type').toLowerCase() === 'frontend') {
-          this.category$ = this.categorySvc.getCatalogFrontendById(+this.route.snapshot.paramMap.get('id'))
-        } else {
-          this.category$ = this.categorySvc.getCatalogBackendById(+this.route.snapshot.paramMap.get('id'))
-        }
       } else if (queryMaps.get('state') === 'none') {
 
       } else {
@@ -90,6 +84,12 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     });
+    // use non-observable hence forkjoin does not work with route observable
+    if (this.route.snapshot.queryParamMap.get('type').toLowerCase() === 'frontend') {
+      this.category$ = this.categorySvc.getCatalogFrontendById(+this.route.snapshot.paramMap.get('id'))
+    } else {
+      this.category$ = this.categorySvc.getCatalogBackendById(+this.route.snapshot.paramMap.get('id'))
+    }
   }
   convertToCategoryPayload(): ICatalogCustomer {
     let formGroup = this.fis.formGroupCollection[this.formId];
