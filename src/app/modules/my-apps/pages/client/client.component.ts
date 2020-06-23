@@ -120,9 +120,7 @@ export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
       // update form config
     });
     this.clientService.getResourceClient().subscribe(next => {
-      let newConfig = (JSON.parse(JSON.stringify(this.formInfo.inputs.find(e => e.key === 'resourceId'))) as IInputConfig);
-      newConfig.options = next.map(e => <IOption>{ label: e.clientId, value: e.clientId });
-      this.fis.dynamicInputs['resourceId'].next(newConfig);
+      this.formInfo.inputs.find(e => e.key === 'resourceId').options = next.map(e => <IOption>{ label: e.clientId, value: e.clientId });
     });
   }
   private findDelta(newPayload: any): string {
@@ -137,7 +135,6 @@ export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
     return changeKeys[0];
   }
   ngOnDestroy(): void {
-    this.fis.formGroupCollection[this.formId].reset();
     this.sub.unsubscribe();
   }
   convertToClient(): IClient {
