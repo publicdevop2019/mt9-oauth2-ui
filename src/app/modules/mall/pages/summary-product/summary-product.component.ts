@@ -23,24 +23,10 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   pageNumber = 0;
   pageSize = 20;
   totoalProductCount = 0;
-  treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
-  private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      level: level,
-      id: node.id,
-      tags: node.tags
-    };
-  }
-  treeFlattener = new MatTreeFlattener(
-    this._transformer, node => node.level, node => node.expandable, node => node.children);
-
-  treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   private sub: Subscription
+  public catalogsData: ICatalogCustomer[];
   constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver, private categorySvc: CategoryService) {
     this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
       this.totalProductHandler(products)
@@ -74,7 +60,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     this.categorySvc.getCatalogBackend()
       .subscribe(catalogs => {
         if (catalogs.data)
-          this.treeDataSource.data = this.convertToTree(catalogs.data);
+          this.catalogsData = catalogs.data;
       });
     this.exactSearch.valueChanges.pipe(debounce(() => interval(1000)))
       .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).pipe(switchMap(e => {
@@ -96,9 +82,9 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
   }
-  searchWithTags(tags: string[]) {
+  searchWithTags(catalog: ICatalogCustomer) {
     this.pageNumber = 0;
-    this.productSvc.searchProductsByTags(this.pageNumber, this.pageSize, tags).subscribe(products => {
+    this.productSvc.searchProductsByTags(this.pageNumber, this.pageSize, catalog.attributes).subscribe(products => {
       this.totalProductHandler(products)
     });
   }
@@ -124,35 +110,6 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
       this.totoalProductCount = 0;
       this.dataSource.sort = this.sort;
     }
-  }
-  hasChild = (_: number, node: CatalogCustomerFlatNode) => node.expandable;
-  notLeafNode(catalogs: ICatalogCustomer[], nodes: ICatalogCustomerTreeNode[]): boolean {
-    return nodes.filter(node => {
-      return catalogs.filter(el => el.parentId === node.id).length >= 1
-    }).length >= 1
-  }
-  convertToTree(catalogs: ICatalogCustomer[]): ICatalogCustomerTreeNode[] {
-    let rootNodes = catalogs.filter(e => e.parentId === null || e.parentId === undefined);
-    let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
-      id: e.id,
-      name: e.name,
-      tags: e.attributes
-    });
-    let currentLevel = treeNodes;
-    while (this.notLeafNode(catalogs, currentLevel)) {
-      let nextLevelCol: ICatalogCustomerTreeNode[] = []
-      currentLevel.forEach(childNode => {
-        let nextLevel = catalogs.filter(el => el.parentId === childNode.id).map(e => <ICatalogCustomerTreeNode>{
-          id: e.id,
-          name: e.name,
-          tags: e.attributes
-        });
-        childNode.children = nextLevel;
-        nextLevelCol.push(...nextLevel);
-      });
-      currentLevel = nextLevelCol;
-    }
-    return treeNodes;
   }
   private invalidSearchParam(input: string): boolean {
     let spaces: RegExp = new RegExp(/^\s*$/)

@@ -28,7 +28,8 @@ export class CatalogTreeComponent implements OnInit, OnChanges {
   treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
-    this.treeDataSource.data = this.convertToTree(this.catalogs);
+    if (this.catalogs)
+      this.treeDataSource.data = this.convertToTree(this.catalogs);
   }
 
   ngOnInit() {
@@ -61,7 +62,7 @@ export class CatalogTreeComponent implements OnInit, OnChanges {
     return treeNodes;
   }
   emitBranchNodeClick(id: number) {
-    this.nonLeafNodeClicked.emit(this.catalogs.find(e =>e.id === id))
+    this.nonLeafNodeClicked.emit(this.catalogs.find(e => e.id === id))
   }
   emitLeafNodeClick(id: number) {
     this.leafNodeClicked.emit(this.catalogs.find(e => e.id === id))

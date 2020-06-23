@@ -41,22 +41,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
   optionFormvalidator: ValidateHelper;
   subs: Subscription[] = [];
-  treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
   attrCtrl: FormControl = new FormControl(false);
-  private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      level: level,
-      id: node.id,
-      tags: node.tags
-    };
-  }
-  treeFlattener = new MatTreeFlattener(
-    this._transformer, node => node.level, node => node.expandable, node => node.children);
-
-  treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
   constructor(
     private route: ActivatedRoute,
     public productSvc: ProductService,
@@ -293,7 +278,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     })
   }
-  private catalogs: ICatalogCustomerHttp;
+  public catalogs: ICatalogCustomerHttp;
   ngOnInit() {
     this.updateFormLabel();
     this.sub = this.translate.onLangChange.subscribe(() => {
@@ -304,7 +289,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(next => {
         if (next.data) {
           this.catalogs = next;
-          this.treeDataSource.data = this.convertToTree(next.data);
         }
       });
     this.product$ = this.route.paramMap.pipe(
@@ -358,38 +342,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
     })
   }
-  hasChild = (_: number, node: CatalogCustomerFlatNode) => node.expandable;
-  notLeafNode(catalogs: ICatalogCustomer[], nodes: ICatalogCustomerTreeNode[]): boolean {
-    return nodes.filter(node => {
-      return catalogs.filter(el => el.parentId === node.id).length >= 1
-    }).length >= 1
-  }
-  convertToTree(catalogs: ICatalogCustomer[]): ICatalogCustomerTreeNode[] {
-    let rootNodes = catalogs.filter(e => e.parentId === null || e.parentId === undefined);
-    let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
-      id: e.id,
-      name: e.name,
-      tags: e.attributes
-    });
-    let currentLevel = treeNodes;
-    while (this.notLeafNode(catalogs, currentLevel)) {
-      let nextLevelCol: ICatalogCustomerTreeNode[] = []
-      currentLevel.forEach(childNode => {
-        let nextLevel = catalogs.filter(el => el.parentId === childNode.id).map(e => <ICatalogCustomerTreeNode>{
-          id: e.id,
-          name: e.name,
-          tags: e.attributes
-        });
-        childNode.children = nextLevel;
-        nextLevelCol.push(...nextLevel);
-      });
-      currentLevel = nextLevelCol;
-    }
-    return treeNodes;
-  }
-  loadAttributes(id: number) {
+  loadAttributes(attr: ICatalogCustomer) {
     let tags: string[] = [];
-    let attr = this.catalogs.data.find(e => e.id === id);
     tags.push(...attr.attributes);
     while (attr.parentId !== null && attr.parentId !== undefined) {
       let nextId = attr.parentId;

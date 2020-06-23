@@ -2,7 +2,7 @@
     <app-back-button></app-back-button>
     <ng-container *ngIf="this.state==='create'">
         <h3>{{'PLEASE_SELECT_CATALOG'|translate}}</h3>
-        <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
+        <!-- <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
             <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
                 <button mat-icon-button disabled></button>
                 <span (click)="loadAttributes(node.id)">{{node.name}}</span>
@@ -15,7 +15,8 @@
                 </button>
                 <span>{{node.name }}</span>
             </mat-tree-node>
-        </mat-tree>
+        </mat-tree> -->
+        <app-catalog-tree [catalogs]="catalogs&&catalogs.data" (leafNodeClicked)="loadAttributes($event)"></app-catalog-tree>
     </ng-container>
     <mat-slide-toggle style="margin-bottom: 12px;margin-top: 24px;" [formControl]="attrCtrl">
         {{'ADD_OTHER_ATTRIBUTES' | translate}}
