@@ -50,7 +50,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "label": "ENTER_VALUE",
             "key": "value",
             "position": {

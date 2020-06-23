@@ -39,14 +39,17 @@ export class AttributeComponent implements OnInit {
         this.attribute$.subscribe(byId => {
           this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
-          this.fis.formGroupCollection[this.formId].get('value').setValue(byId.value);
           this.fis.formGroupCollection[this.formId].get('method').setValue(byId.method);
+          this.fis.formGroupCollection[this.formId].get('value').setValue(byId.value);
         })
       } else if (queryMaps.get('state') === 'none') {
 
       } else {
       }
     });
+    this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
+      this.formInfo.inputs.find(e => e.key === 'value').display = next === 'SELECT';
+    })
   }
   ngOnDestroy(): void {
     this.fis.formGroupCollection[this.formId].reset();
