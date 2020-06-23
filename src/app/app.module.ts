@@ -46,6 +46,7 @@ import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/su
 import { BackButtonComponent } from './components/back-button/back-button.component';
 import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
 import { AttributeComponent } from './modules/mall/pages/attribute/attribute.component';
+import { CatalogTreeComponent } from './modules/mall/components/catalog-tree/catalog-tree.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -79,6 +80,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BackButtonComponent,
     SummaryAttributeComponent,
     AttributeComponent,
+    CatalogTreeComponent,
   ],
   imports: [
     BrowserAnimationsModule,

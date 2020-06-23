@@ -7,7 +7,7 @@ import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
 import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -20,29 +20,16 @@ export interface CatalogCustomerFlatNode {
   styleUrls: ['./summary-catalog.component.css']
 })
 export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   displayedColumns: string[] = ['id', 'name', 'parentId', 'attributes', 'star'];
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
-  treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
-  private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      level: level,
-      id: node.id
-    };
-  }
-  treeFlattener = new MatTreeFlattener(
-    this._transformer, node => node.level, node => node.expandable, node => node.children);
-
-  treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute) {
+  public catalogsData: ICatalogCustomer[];
+  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute, private router: Router) {
     this.route.queryParamMap.subscribe(queryMaps => {
       this.catalogType = queryMaps.get('type');
       let ob: Observable<ICatalogCustomerHttp>;
@@ -57,8 +44,9 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
         this.dataSource = new MatTableDataSource(catalogs.data)
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
-        if (catalogs.data)
-          this.treeDataSource.data = this.convertToTree(catalogs.data);
+        if (catalogs.data) {
+          this.catalogsData = catalogs.data;
+        }
       })
     });
   }
@@ -114,31 +102,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   pageHandler(e: PageEvent) {
     this.categorySvc.currentPageIndex = e.pageIndex
   }
-  hasChild = (_: number, node: CatalogCustomerFlatNode) => node.expandable;
-  notLeafNode(catalogs: ICatalogCustomer[], nodes: ICatalogCustomerTreeNode[]): boolean {
-    return nodes.filter(node => {
-      return catalogs.filter(el => el.parentId === node.id).length >= 1
-    }).length >= 1
-  }
-  convertToTree(catalogs: ICatalogCustomer[]): ICatalogCustomerTreeNode[] {
-    let rootNodes = catalogs.filter(e => e.parentId === null || e.parentId === undefined);
-    let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
-      id: e.id,
-      name: e.name,
-    });
-    let currentLevel = treeNodes;
-    while (this.notLeafNode(catalogs, currentLevel)) {
-      let nextLevelCol: ICatalogCustomerTreeNode[] = []
-      currentLevel.forEach(childNode => {
-        let nextLevel = catalogs.filter(el => el.parentId === childNode.id).map(e => <ICatalogCustomerTreeNode>{
-          id: e.id,
-          name: e.name,
-        });
-        childNode.children = nextLevel;
-        nextLevelCol.push(...nextLevel);
-      });
-      currentLevel = nextLevelCol;
-    }
-    return treeNodes;
+  navCatalog($event: ICatalogCustomer) {
+    this.router.navigate(['/dashboard/catalogs/' + $event.id], { queryParams: { state: 'update', type: $event.catalogType } })
   }
 }

@@ -2,11 +2,13 @@
 	"data": [
 		{
 			"id": 0,
-			"name": "手机"
+			"name": "手机",
+			"catalogType":"FRONTEND"
 		},
 		{
 			"id": 1,
-			"name": "平板"
+			"name": "平板",
+			"catalogType":"FRONTEND"
 		},
 		{
 			"id": 2,
@@ -14,7 +16,8 @@
 			"parentId": 0,
 			"attributes": [
 				"brand:apple","type:mobile"
-			]
+			],
+			"catalogType":"FRONTEND"
 		},
 		{
 			"id": 3,
@@ -22,7 +25,8 @@
 			"parentId": 0,
 			"attributes": [
 				"brand:huawei","type:mobile"
-			]
+			],
+			"catalogType":"FRONTEND"
 		}
 	]
 }

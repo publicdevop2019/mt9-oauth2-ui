@@ -86,7 +86,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     });
     // use non-observable hence forkjoin does not work with route observable
-    if (this.route.snapshot.queryParamMap.get('type') === 'frontend') {
+    if (this.route.snapshot.queryParamMap.get('type').toLowerCase() === 'frontend') {
       this.category$ = this.categorySvc.getCatalogFrontendById(+this.route.snapshot.paramMap.get('id'))
     } else {
       this.category$ = this.categorySvc.getCatalogBackendById(+this.route.snapshot.paramMap.get('id'))
