@@ -29,8 +29,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   product$: Observable<IProductDetail>;
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  attrFormId = 'attr';
+  attrFormId = 'attributes';
   attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_FORM_CONFIG));
+  // save a copy of attrFormInfo so when toggle, no need to translate again
+  attrFormInfoI18n: IForm;
   validator: ValidateHelper;
   imageFormId = 'product_image';
   imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
@@ -40,7 +42,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionFormvalidator: ValidateHelper;
   subs: Subscription[] = [];
   treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
-  @ViewChild('toggle', { static: true }) toggle: MatSlideToggle;
+  attrCtrl: FormControl = new FormControl(false);
   private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
     return {
       expandable: !!node.children && node.children.length > 0,
@@ -91,6 +93,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             this.fis.formGroupCollection[this.formId].get('sales').setValue(byId.sales)
             this.fis.formGroupCollection[this.formId].get('rate').setValue(byId.rate)
             if (byId.attributesCustom) {
+              this.attrCtrl.setValue(true, { emitEvent: false });
               this.attrSvc.getAttributeList().subscribe(next => {
                 //update formInfo first then initialize form, so add template can be correct
                 this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
@@ -119,7 +122,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                       }
                       this.fis.add(this.attrFormId);
                       //update display after new inputs added
-                      let copy=this.fis.formGroupCollection_index[this.attrFormId];
+                      let copy = this.fis.formGroupCollection_index[this.attrFormId];
                       copy--;
                       if (selected.method === 'SELECT') {
                         this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).display = true;
@@ -216,8 +219,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
   }
   attrList: IAttribute[];
-  fetchAttrList(checked: boolean) {
-    if (checked) {
+  fetchAttrList() {
+    if (this.attrCtrl.value) {
       this.attrSvc.getAttributeList().subscribe(next => {
         //update formInfo first then initialize form, so add template can be correct
         this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
@@ -242,6 +245,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.attrList = undefined;
       delete this.fis.formGroupCollection[this.attrFormId];
+      delete this.fis.formGroupCollection_formInfo[this.attrFormId];
+      delete this.fis.formGroupCollection_index[this.attrFormId];
+      delete this.fis.formGroupCollection_template[this.attrFormId];
+      delete this.fis.groupedRowCollection[this.attrFormId];
+      this.attrFormInfo=JSON.parse(JSON.stringify(this.attrFormInfoI18n));
     }
   }
   ngOnDestroy(): void {
@@ -264,6 +272,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         e.label = res;
       });
     })
+    this.attrFormInfoI18n=JSON.parse(JSON.stringify(this.attrFormInfo));
     this.imageFormInfo.inputs.filter(e => e.label).forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
@@ -302,7 +311,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       switchMap((params: ParamMap) =>
         this.productSvc.getProductDetailById(+params.get('id')))
     );
-
+    this.attrCtrl.valueChanges.subscribe(next => {
+      this.fetchAttrList();
+    });
   }
   convertToPayload(): IProductDetail {
     let formGroup = this.fis.formGroupCollection[this.formId];
@@ -324,7 +335,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     return {
       id: formGroup.get('id').value,
-      attributesSearch: formGroup.get('attributes').value,
+      attributesSearch: formGroup.get('attributesSearch').value,
       attributesCustom: this.attrList ? this.getAddedAttrs() : null,
       name: formGroup.get('name').value,
       price: formGroup.get('price').value,
