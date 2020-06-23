@@ -144,6 +144,14 @@ export class NavBarComponent implements OnInit {
         state: 'create',
       },
     },
+    {
+      link: 'attribute',
+      display: 'ADD_ATTRIBUTE',
+      icon: 'add',
+      params: {
+        state: 'create',
+      },
+    },
 
   ];
   menuBbs: INavElement[] = [

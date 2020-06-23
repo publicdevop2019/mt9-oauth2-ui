@@ -136,7 +136,6 @@ export const enUS = {
     "ENTER_PARENT_ID": "Enter parent id",
     "ENTER_TAGS": "Enter tags",
     "PARENT_ID": "Parent ID",
-    "TAGS": "tags",
     "PLEASE_SELECT_TYPE": "Please select catalog type",
     "FRONTEND": "Frontend catalog",
     "BACKEND": "Backend catalog",
@@ -160,5 +159,7 @@ export const enUS = {
     "SELECT": "Select",
     "MANUAL": "Manual",
     "ADD_OTHER_ATTRIBUTES": "Add other attributes",
+    "ADD_ATTRIBUTE": "Add attribute",
+    "ENTER_METHOD": "Enter method",
     "": "",
 }

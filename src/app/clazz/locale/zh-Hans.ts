@@ -136,7 +136,6 @@ export const zhHans = {
     "ENTER_PARENT_ID": "输入父类ID",
     "ENTER_TAGS": "输入标签",
     "PARENT_ID": "父类ID",
-    "TAGS": "标签",
     "PLEASE_SELECT_TYPE": "请选择类目类别",
     "CATALOG_FRONTEND": "前台类目",
     "CATALOG_BACKEND": "后台类目",
@@ -163,5 +162,7 @@ export const zhHans = {
     "SELECT_AN_ATTRIBUTE": "选择任意属性",
     "SELECT_AN_ATTRIBUTE_VALUE": "选择属性值",
     "ENTER_AN_ATTRIBUTE_VALUE": "输入属性值",
+    "ADD_ATTRIBUTE": "添加属性",
+    "ENTER_METHOD": "输入方式",
     "": "",
 }

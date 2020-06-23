@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
 import { Observable, Subscription } from 'rxjs';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { FORM_CONFIG } from 'src/app/form-configs/tag.config';
+import { FORM_CONFIG } from 'src/app/form-configs/attribute.config';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { ActivatedRoute } from '@angular/router';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';

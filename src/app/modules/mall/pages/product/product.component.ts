@@ -16,7 +16,7 @@ import { CatalogCustomerFlatNode } from '../summary-catalog/summary-catalog.comp
 import { ICatalogCustomerTreeNode, ICatalogCustomer, CategoryService, ICatalogCustomerHttp } from 'src/app/services/category.service';
 import { MatTreeFlattener, MatTreeFlatDataSource, MatSlideToggle } from '@angular/material';
 import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
-import { ATTR_FORM_CONFIG } from 'src/app/form-configs/attribute.config';
+import { ATTR_FORM_CONFIG } from 'src/app/form-configs/attribute-dynamic.config';
 import { by } from 'protractor';
 
 @Component({

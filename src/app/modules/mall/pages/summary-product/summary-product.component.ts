@@ -45,13 +45,13 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
         this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'tags', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesSearch', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'tags', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesSearch', 'star'];
       }
       else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'tags', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesSearch', 'star'];
       }
       else {
         console.warn('unknown device width match!')

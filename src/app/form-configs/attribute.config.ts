@@ -1,51 +1,25 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-export const ATTR_FORM_CONFIG: IForm = {
-    "repeatable": true,
+export const FORM_CONFIG: IForm = {
+    "repeatable": false,
     "inputs": [
-        {
-            "type": "select",
-            "display": true,
-            "label": "SELECT_AN_ATTRIBUTE",
-            "key": "attributeId",
-            "position": {
-                "row": "0",
-                "column": "0"
-            },
-            "options": [
-            ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
-        },
-        {
-            "type": "select",
-            "display": false,
-            "label": "SELECT_AN_ATTRIBUTE_VALUE",
-            "key": "attributeValueSelect",
-            "position": {
-                "row": "0",
-                "column": "1"
-            },
-            "options": [
-            ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
-        },
         {
             "type": "text",
             "display": false,
-            "label": "ENTER_AN_ATTRIBUTE_VALUE",
-            "key": "attributeValueManual",
+            "label": "ID",
+            "key": "id",
             "position": {
                 "row": "0",
-                "column": "1"
+                "column": "0"
+            }
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "ENTER_NAME",
+            "key": "name",
+            "position": {
+                "row": "1",
+                "column": "0"
             },
             "attributes": [
                 {
@@ -53,6 +27,36 @@ export const ATTR_FORM_CONFIG: IForm = {
                     "errorMsg": "field cannot be empty"
                 }
             ]
+        },
+        {
+            "type": "radio",
+            "display": true,
+            "label": "ENTER_METHOD",
+            "key": "method",
+            "position": {
+                "row": "2",
+                "column": "0"
+            },
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ],
+            "options": [
+                { label: 'MANUAL', value: "MANUAL" },
+                { label: 'SELECT', value: "SELECT" },
+            ],
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "ENTER_VALUE",
+            "key": "value",
+            "position": {
+                "row": "3",
+                "column": "0"
+            },
         },
     ],
 }
