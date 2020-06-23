@@ -55,7 +55,6 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
     })
   }
   ngOnDestroy(): void {
-    this.fis.formGroupCollection[this.formId].reset();
     this.sub.unsubscribe();
   }
   private sub: Subscription;

@@ -239,8 +239,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subs.forEach(e => e.unsubscribe());
-    if (this.fis.formGroupCollection[this.formId]) this.fis.formGroupCollection[this.formId].reset();
-    delete this.fis.formGroupCollection[this.imageFormId];
   }
   private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();

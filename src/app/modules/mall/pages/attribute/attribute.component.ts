@@ -52,7 +52,6 @@ export class AttributeComponent implements OnInit {
     })
   }
   ngOnDestroy(): void {
-    this.fis.formGroupCollection[this.formId].reset();
     this.sub.unsubscribe();
   }
   private sub: Subscription;
