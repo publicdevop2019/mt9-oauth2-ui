@@ -161,5 +161,6 @@ export const enUS = {
     "ADD_OTHER_ATTRIBUTES": "Add other attributes",
     "ADD_ATTRIBUTE": "Add attribute",
     "ENTER_METHOD": "Enter method",
+    "ADD_PRODUCT_DETAIL": "Add product detail",
     "": "",
 }

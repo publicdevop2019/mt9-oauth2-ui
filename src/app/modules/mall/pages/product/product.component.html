@@ -1,40 +1,39 @@
 <div class="example-container">
     <app-back-button></app-back-button>
-    <ng-container *ngIf="this.state==='create'">
-        <h3>{{'PLEASE_SELECT_CATALOG'|translate}}</h3>
-        <!-- <mat-tree [dataSource]="treeDataSource" [treeControl]="treeControl">
-            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-                <button mat-icon-button disabled></button>
-                <span (click)="loadAttributes(node.id)">{{node.name}}</span>
-            </mat-tree-node>
-            <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-                <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-                    <mat-icon class="mat-icon-rtl-mirror">
-                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                    </mat-icon>
-                </button>
-                <span>{{node.name }}</span>
-            </mat-tree-node>
-        </mat-tree> -->
-        <app-catalog-tree [catalogs]="catalogs&&catalogs.data" (leafNodeClicked)="loadAttributes($event)"></app-catalog-tree>
-    </ng-container>
-    <mat-slide-toggle style="margin-bottom: 12px;margin-top: 24px;" [formControl]="attrCtrl">
-        {{'ADD_OTHER_ATTRIBUTES' | translate}}
-    </mat-slide-toggle>
-    <ng-container *ngIf="attrList">
-        <lib-factory [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
-    </ng-container>
-    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <h3>{{'PRODUCT_IMAGE_URLS'|translate}}</h3>
-    <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>
-    <h3>{{'PRODUCT_OPTION(S)'|translate}}</h3>
-    <lib-factory [formId]="optionFormId" [formInfo]="optionFormInfo"></lib-factory>
-    <button mat-raised-button color="primary" *ngIf="state==='update'"
-        style="margin-bottom: 20px;margin-top: 20px;width: 100%;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
-    <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;width: 100%;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.delete(convertToPayload())">{{'DELETE'|translate}}</button>
-    <button mat-raised-button color="primary" style="margin-top: 24px;width: 100%;margin-bottom: 24px;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
-        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
+    <mat-horizontal-stepper #stepper>
+        <ng-container *ngIf="this.state==='create'">
+            <mat-step>
+                <ng-template matStepLabel>{{'PLEASE_SELECT_CATALOG'|translate}}</ng-template>
+                <app-catalog-tree [catalogs]="catalogs&&catalogs.data" (leafNodeClicked)="loadAttributes($event)">
+                </app-catalog-tree>
+                <mat-slide-toggle style="margin-bottom: 12px;margin-top: 24px;" [formControl]="attrCtrl">
+                    {{'ADD_OTHER_ATTRIBUTES' | translate}}
+                </mat-slide-toggle>
+            </mat-step>
+        </ng-container>
+        <ng-container *ngIf="attrCtrl.value">
+            <mat-step>
+                <ng-template matStepLabel>{{'ADD_OTHER_ATTRIBUTES' | translate}}</ng-template>
+                <ng-container *ngIf="attrList">
+                    <lib-factory [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
+                </ng-container>
+            </mat-step>
+        </ng-container>
+        <mat-step>
+            <ng-template matStepLabel>{{'ADD_PRODUCT_DETAIL' | translate}}</ng-template>
+            <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+            <h3>{{'PRODUCT_IMAGE_URLS'|translate}}</h3>
+            <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>
+            <h3>{{'PRODUCT_OPTION(S)'|translate}}</h3>
+            <lib-factory [formId]="optionFormId" [formInfo]="optionFormInfo"></lib-factory>
+            <button mat-raised-button color="primary" *ngIf="state==='update'"
+                style="margin-bottom: 20px;margin-top: 20px;width: 100%;"
+                (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
+            <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;width: 100%;"
+                (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.delete(convertToPayload())">{{'DELETE'|translate}}</button>
+            <button mat-raised-button color="primary" style="margin-top: 24px;width: 100%;margin-bottom: 24px;"
+                (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
+                *ngIf="state=='create'">{{'CREATE'|translate}}</button>
+        </mat-step>
+    </mat-horizontal-stepper>
 </div>

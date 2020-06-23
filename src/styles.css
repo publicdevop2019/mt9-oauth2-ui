@@ -29,3 +29,6 @@ body {
 .mat-expansion-panel {
   border-radius: 0px !important;
 }
+.mat-stepper-horizontal, .mat-stepper-vertical {
+  background-color: #fafafa;
+}
