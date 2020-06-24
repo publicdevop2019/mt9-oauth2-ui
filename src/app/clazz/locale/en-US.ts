@@ -134,7 +134,6 @@ export const enUS = {
     "TREE_VIEW": "Tree view",
     "LIST_VIEW": "List view",
     "ENTER_PARENT_ID": "Enter parent id",
-    "ENTER_TAGS": "Enter tags",
     "PARENT_ID": "Parent ID",
     "PLEASE_SELECT_TYPE": "Please select catalog type",
     "FRONTEND": "Frontend catalog",

@@ -111,7 +111,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                       copy--;
                       if (selected.method === 'SELECT') {
                         this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).display = true;
-                        this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
+                        this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
                       } else {
                         this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual_' + copy).display = true;
                       }
@@ -127,7 +127,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
                         this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
                         if (selected.method === 'SELECT') {
-                          this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
+                          this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
                         }
                       }
                     });
@@ -220,7 +220,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
                 this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
                 if (selected.method === 'SELECT') {
-                  this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.value.split(',').map(e => <IOption>{ label: e, value: e })
+                  this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
                 }
               }
             })

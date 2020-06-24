@@ -41,8 +41,8 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "ENTER_TAGS",
-            "key": "tags",
+            "label": "ENTER_AN_ATTRIBUTE_VALUE",
+            "key": "attributes",
             "position": {
                 "row": "3",
                 "column": "0"

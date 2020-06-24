@@ -48,15 +48,20 @@ export const FORM_CONFIG: IForm = {
                 { label: 'SELECT', value: "SELECT" },
             ],
         },
+    ],
+}
+export const FORM_CONFIG_ATTR_VALUE: IForm = {
+    "repeatable": true,
+    "inputs": [
         {
             "type": "text",
-            "display": false,
+            "display": true,
             "label": "ENTER_VALUE",
-            "key": "value",
+            "key": "attrValue",
             "position": {
-                "row": "3",
+                "row": "0",
                 "column": "0"
-            },
+            }
         },
     ],
 }

@@ -42,7 +42,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
           this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId);
           this.fis.formGroupCollection[this.formId].get('catalogType').setValue(byId.catalogType);
           if (byId.attributes)
-            this.fis.formGroupCollection[this.formId].get('tags').setValue(byId.attributes.join(','));
+            this.fis.formGroupCollection[this.formId].get('attributes').setValue(byId.attributes.join(','));
         })
       } else if (queryMaps.get('state') === 'none') {
 
@@ -85,7 +85,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     });
     // use non-observable hence forkjoin does not work with route observable
-    if (this.route.snapshot.queryParamMap.get('type').toLowerCase() === 'frontend') {
+    if (this.route.snapshot.queryParamMap.get('type') && this.route.snapshot.queryParamMap.get('type').toLowerCase() === 'frontend') {
       this.category$ = this.categorySvc.getCatalogFrontendById(+this.route.snapshot.paramMap.get('id'))
     } else {
       this.category$ = this.categorySvc.getCatalogBackendById(+this.route.snapshot.paramMap.get('id'))
@@ -98,7 +98,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
       parentId: formGroup.get('parentId').value,
-      attributes: formGroup.get('tags').value ? String(formGroup.get('tags').value).split(',') : null,
+      attributes: formGroup.get('attributes').value ? String(formGroup.get('attributes').value).split(',') : null,
       catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
     }
   }

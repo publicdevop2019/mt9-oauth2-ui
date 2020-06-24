@@ -134,7 +134,6 @@ export const zhHans = {
     "TREE_VIEW": "树状图",
     "LIST_VIEW": "列表图",
     "ENTER_PARENT_ID": "输入父类ID",
-    "ENTER_TAGS": "输入标签",
     "PARENT_ID": "父类ID",
     "PLEASE_SELECT_TYPE": "请选择类目类别",
     "CATALOG_FRONTEND": "前台类目",

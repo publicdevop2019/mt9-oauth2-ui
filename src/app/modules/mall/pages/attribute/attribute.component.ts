@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
 import { Observable, Subscription } from 'rxjs';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { FORM_CONFIG } from 'src/app/form-configs/attribute.config';
+import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { ActivatedRoute } from '@angular/router';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
 import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-attribute',
@@ -19,8 +20,12 @@ export class AttributeComponent implements OnInit {
   state: string;
   attribute: IAttribute;
   attribute$: Observable<IAttribute>;
-  formId = 'tag';
+  formId = 'attributes';
+  manualEnter = false;
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
+  formIdAttrValue = 'attributesValue';
+  formInfoAttrValue: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
+  formInfoAttrValueI18n: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
   validator: ValidateHelper;
   constructor(
     private route: ActivatedRoute,
@@ -40,15 +45,30 @@ export class AttributeComponent implements OnInit {
           this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
           this.fis.formGroupCollection[this.formId].get('method').setValue(byId.method);
-          this.fis.formGroupCollection[this.formId].get('value').setValue(byId.value);
-        })
+          setTimeout(() => {
+            if (byId.selectValues && byId.selectValues.length !== 0) {
+              byId.selectValues.forEach((e, index) => {
+                if (index === 0) {
+                  this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue').setValue(e);
+                } else {
+                  this.fis.formGroupCollection[this.formIdAttrValue].addControl('attrValue_' + this.fis.formGroupCollection_index[this.formIdAttrValue], new FormControl(e));
+                  this.fis.add(this.formIdAttrValue);
+                }
+                this.fis.refreshLayout(this.formInfoAttrValue, this.formIdAttrValue);
+              })
+            }
+          }, 0)
+        });
       } else if (queryMaps.get('state') === 'none') {
 
       } else {
       }
     });
     this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
-      this.formInfo.inputs.find(e => e.key === 'value').display = next === 'SELECT';
+      this.manualEnter = next === 'SELECT';
+      if (this.manualEnter) {
+        this.formInfoAttrValue = JSON.parse(JSON.stringify(this.formInfoAttrValueI18n));
+      }
     })
   }
   ngOnDestroy(): void {
@@ -71,6 +91,13 @@ export class AttributeComponent implements OnInit {
         e.label = res;
       });
     })
+    this.formInfoAttrValue.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.formInfoAttrValueI18n = JSON.parse(JSON.stringify(this.formInfoAttrValue));
     this.sub = this.translate.onLangChange.subscribe(() => {
       this.formInfo.inputs.forEach(e => {
         e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
@@ -83,17 +110,28 @@ export class AttributeComponent implements OnInit {
             });
           })
         }
+      });
+      this.formInfoAttrValue.inputs.filter(e => e.label).forEach(e => {
+        this.translate.get(e.label).subscribe((res: string) => {
+          this.transKeyMap.set(e.key, e.label);
+          e.label = res;
+        });
       })
     });
     this.attribute$ = this.attributeSvc.getAttributeById(+this.route.snapshot.paramMap.get('id'))
   }
   convertToPayload(): IAttribute {
     let formGroup = this.fis.formGroupCollection[this.formId];
+    let values = null;
+    if (formGroup.get('method').value === 'SELECT') {
+      let valueSnapshot = this.fis.formGroupCollection[this.formIdAttrValue].value;
+      values = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string);
+    }
     return {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
-      value: formGroup.get('value').value,
       method: formGroup.get('method').value,
+      selectValues: values,
     }
   }
 }

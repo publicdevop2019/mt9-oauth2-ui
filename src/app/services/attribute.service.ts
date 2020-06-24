@@ -6,7 +6,7 @@ import { CustomHttpInterceptor } from './http.interceptor';
 export interface IAttribute {
   id: number,
   name: string,
-  value?: string,
+  selectValues?: string[],
   method: 'MANUAL' | 'SELECT',
 }
 export interface IAttributeHttp {
