@@ -119,7 +119,6 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
             // @todo add observable to indicate form has been initialized
             this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
               Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-                console.dir(idKey)
                 let selected = this.attrList.find(e => String(e.id) === next[idKey]);
                 if (selected) {
                   let append = idKey.replace('attributeId', '');
