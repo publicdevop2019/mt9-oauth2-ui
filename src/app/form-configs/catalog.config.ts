@@ -39,22 +39,12 @@ export const FORM_CONFIG: IForm = {
             },
         },
         {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_AN_ATTRIBUTE_VALUE",
-            "key": "attributes",
-            "position": {
-                "row": "3",
-                "column": "0"
-            },
-        },
-        {
             "type": "radio",
             "display": true,
             "label": "PLEASE_SELECT_TYPE",
             "key": "catalogType",
             "position": {
-                "row": "4",
+                "row": "3",
                 "column": "0"
             },
             "options": [

@@ -84,7 +84,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   searchWithTags(catalog: ICatalogCustomer) {
     this.pageNumber = 0;
-    this.productSvc.searchProductsByTags(this.pageNumber, this.pageSize, catalog.attributes).subscribe(products => {
+    this.productSvc.searchProductsByTags(this.pageNumber, this.pageSize, catalog.attributesSearch).subscribe(products => {
       this.totalProductHandler(products)
     });
   }

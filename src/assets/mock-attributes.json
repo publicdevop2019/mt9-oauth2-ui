@@ -76,13 +76,15 @@
             "type": "SALES_ATTR"
         },
         {
-            "id": 7,
+            "id": 8,
             "name": "type",
             "selectValues": [
                 "mobile",
                 "tablet",
                 "laptop",
-                "desktop"
+                "desktop",
+                "appliance",
+                "earphone"
             ],
             "method": "SELECT",
             "type": "KEY_ATTR"

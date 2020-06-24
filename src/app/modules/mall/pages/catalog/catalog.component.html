@@ -1,6 +1,7 @@
 <div class="example-container">
     <app-back-button></app-back-button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+    <lib-factory *ngIf="attrList" [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="validator.valid()&&categorySvc.update(convertToCategoryPayload())">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'"

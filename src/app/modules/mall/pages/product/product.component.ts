@@ -1,23 +1,18 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { FormInfoService } from 'mt-form-builder';
+import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { IProductDetail, ProductService, IProductOptions, IProductOption } from 'src/app/services/product.service';
-import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
-import { FormInfoService } from 'mt-form-builder';
-import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
-import { TranslateService } from '@ngx-translate/core';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { CatalogCustomerFlatNode } from '../summary-catalog/summary-catalog.component';
-import { ICatalogCustomerTreeNode, ICatalogCustomer, CategoryService, ICatalogCustomerHttp } from 'src/app/services/category.service';
-import { MatTreeFlattener, MatTreeFlatDataSource, MatSlideToggle } from '@angular/material';
-import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
 import { ATTR_FORM_CONFIG } from 'src/app/form-configs/attribute-dynamic.config';
-import { by } from 'protractor';
+import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
+import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
+import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/category.service';
+import { HttpProxyService } from 'src/app/services/http-proxy.service';
+import { IProductDetail, IProductOption, IProductOptions, ProductService } from 'src/app/services/product.service';
 
 @Component({
   selector: 'app-product',
@@ -49,7 +44,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     private fis: FormInfoService,
     public translate: TranslateService,
     private categorySvc: CategoryService,
-    public attrSvc: AttributeService
+    public attrSvc: AttributeService,
   ) {
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);
@@ -90,6 +85,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                       this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
                       if (selected.method === 'SELECT') {
                         this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect').display = true;
+                        this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect').options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
                         this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').setValue(attr.split(':')[1]);
                       } else {
                         this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual').display = true;
@@ -234,7 +230,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       delete this.fis.formGroupCollection_index[this.attrFormId];
       delete this.fis.formGroupCollection_template[this.attrFormId];
       delete this.fis.groupedRowCollection[this.attrFormId];
-      this.attrFormInfo=JSON.parse(JSON.stringify(this.attrFormInfoI18n));
+      this.attrFormInfo = JSON.parse(JSON.stringify(this.attrFormInfoI18n));
     }
   }
   ngOnDestroy(): void {
@@ -255,7 +251,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         e.label = res;
       });
     })
-    this.attrFormInfoI18n=JSON.parse(JSON.stringify(this.attrFormInfo));
+    this.attrFormInfoI18n = JSON.parse(JSON.stringify(this.attrFormInfo));
     this.imageFormInfo.inputs.filter(e => e.label).forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
@@ -342,11 +338,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   loadAttributes(attr: ICatalogCustomer) {
     let tags: string[] = [];
-    tags.push(...attr.attributes);
+    tags.push(...attr.attributesSearch);
     while (attr.parentId !== null && attr.parentId !== undefined) {
       let nextId = attr.parentId;
       attr = this.catalogs.data.find(e => e.id === nextId);
-      tags.push(...attr.attributes);
+      tags.push(...attr.attributesSearch);
     }
     this.fis.formGroupCollection[this.formId].get('attributesSearch').setValue(tags);
   }
