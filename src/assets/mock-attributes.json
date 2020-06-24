@@ -88,6 +88,12 @@
             ],
             "method": "SELECT",
             "type": "KEY_ATTR"
+        },
+        {
+            "id": 9,
+            "name": "model",
+            "method": "MANUAL",
+            "type": "KEY_ATTR"
         }
     ]
 }

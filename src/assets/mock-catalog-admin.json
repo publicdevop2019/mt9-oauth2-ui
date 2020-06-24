@@ -70,7 +70,7 @@
 			"id": 8,
 			"name": "笔记本",
 			"parentId":0,
-			"attributesSearch":["type:laptop,GPU:,keyboard:"],
+			"attributesSearch":["type:laptop"],
 			"catalogType":"BACKEND"
 		},
 		{
