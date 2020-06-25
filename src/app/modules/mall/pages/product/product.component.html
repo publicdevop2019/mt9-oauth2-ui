@@ -41,7 +41,7 @@
             <mat-step>
                 <ng-template matStepLabel>{{'ADD_GENERAL_ATTRIBUTES' | translate}}</ng-template>
                 <ng-container *ngIf="attrList">
-                    <lib-factory [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
+                    <lib-factory [formId]="attrGeneralFormId" [formInfo]="attrGeneralFormInfo"></lib-factory>
                 </ng-container>
             </mat-step>
         </ng-container>

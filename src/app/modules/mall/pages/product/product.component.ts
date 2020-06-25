@@ -31,7 +31,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   attrFormInfoI18n: IForm;
   attrSalesFormId = 'attributeSales';
   attrSalesFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_SALES_FORM_CONFIG));
-  attrSalesFormInfoI18n: IForm = JSON.parse(JSON.stringify(ATTR_SALES_FORM_CONFIG));
+  attrSalesFormInfoI18n: IForm;
+  attrGeneralFormId = 'attributeGeneral';
+  attrGeneralFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_FORM_CONFIG));
+  attrGeneralFormInfoI18n: IForm;
   validator: ValidateHelper;
   imageFormId = 'product_image';
   imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
@@ -210,32 +213,32 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.attrProdCtrl.value) {
       this.attrSvc.getAttributeList().subscribe(next => {
         //update formInfo first then initialize form, so add template can be correct
-        this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
+        this.attrFormInfo.inputs[0].options = next.data.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
+        this.attrGeneralFormInfo.inputs[0].options = next.data.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
+        this.attrSalesFormInfo.inputs[2].form.inputs[0].options = next.data.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
         this.attrList = next.data;
         setTimeout(() => {
           //@todo add observable to indicate form has been initialized
-          this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
-            Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-              let selected = this.attrList.find(e => String(e.id) === next[idKey]);
-              if (selected) {
-                let append = idKey.replace('attributeId', '');
-                this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
-                this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
-                if (selected.method === 'SELECT') {
-                  this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+          [this.attrFormId, this.attrGeneralFormId, this.attrSalesFormId].forEach(formId => {
+            console.dir(this.fis.formGroupCollection[formId])
+            this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
+              Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
+                let selected = this.attrList.find(e => String(e.id) === next[idKey]);
+                if (selected) {
+                  let append = idKey.replace('attributeId', '');
+                  this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
+                  this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
+                  if (selected.method === 'SELECT') {
+                    this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+                  }
                 }
-              }
-            })
-          });
+              })
+            });
+          })
         }, 0);
       });
     } else {
       this.attrList = undefined;
-      delete this.fis.formGroupCollection[this.attrFormId];
-      delete this.fis.formGroupCollection_formInfo[this.attrFormId];
-      delete this.fis.formGroupCollection_index[this.attrFormId];
-      delete this.fis.formGroupCollection_template[this.attrFormId];
-      delete this.fis.groupedRowCollection[this.attrFormId];
       this.attrFormInfo = JSON.parse(JSON.stringify(this.attrFormInfoI18n));
     }
   }
@@ -258,13 +261,20 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     })
     this.attrFormInfoI18n = JSON.parse(JSON.stringify(this.attrFormInfo));
+    this.attrGeneralFormInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.attrGeneralFormInfoI18n = JSON.parse(JSON.stringify(this.attrGeneralFormInfo));
     this.attrSalesFormInfo.inputs.filter(e => e.label).forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
         e.label = res;
       });
     })
-    this.attrSalesFormInfoI18n = JSON.parse(JSON.stringify(this.attrFormInfo));
+    this.attrSalesFormInfoI18n = JSON.parse(JSON.stringify(this.attrSalesFormInfo));
     this.imageFormInfo.inputs.filter(e => e.label).forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);

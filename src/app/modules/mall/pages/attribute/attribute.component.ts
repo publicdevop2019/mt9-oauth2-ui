@@ -132,6 +132,7 @@ export class AttributeComponent implements OnInit {
       name: formGroup.get('name').value,
       method: formGroup.get('method').value,
       selectValues: values,
+      type:formGroup.get('type').value,
     }
   }
 }
