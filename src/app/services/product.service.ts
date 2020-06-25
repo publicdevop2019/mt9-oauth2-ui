@@ -15,7 +15,7 @@ export interface IProductSimple {
   rate?: string;
   price: string;
   sales: string;
-  attributesSearch: string[];
+  attributeskey: string[];
   orderStorage?: number;
   actualStorage?: number;
   increaseOrderStorageBy?: number;
@@ -36,7 +36,9 @@ export interface IProductDetail extends IProductSimple {
   imageUrlLarge?: string[];
   selectedOptions?: IProductOptions[];
   specification?: string[];
-  attributesCustom?: string[];
+  attributesProd?: string[];
+  attributesGen?: string[];
+  attributesSales?: string[];
 }
 @Injectable({
   providedIn: 'root'

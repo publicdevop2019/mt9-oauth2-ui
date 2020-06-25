@@ -26,7 +26,7 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
             "type": "form",
             "display": true,
             "label": "",
-            "key": "attrSalesForm",
+            "key": "attrSalesFormChild",
             "form": {
                 "repeatable": true,
                 "inputs": [

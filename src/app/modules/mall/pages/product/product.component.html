@@ -6,22 +6,9 @@
                 <ng-template matStepLabel>{{'PLEASE_SELECT_CATALOG'|translate}}</ng-template>
                 <app-catalog-tree [catalogs]="catalogs&&catalogs.data" (leafNodeClicked)="loadAttributes($event)">
                 </app-catalog-tree>
-                <mat-slide-toggle style="margin-bottom: 12px;margin-top: 24px;" [formControl]="attrProdCtrl">
-                    {{'ADD_PRODUCT_ATTRIBUTES' | translate}}
-                </mat-slide-toggle>
-                <div>
-                    <mat-slide-toggle style="margin-bottom: 12px;margin-top: 24px;" [formControl]="attrSalesCtrl">
-                        {{'ADD_SALES_ATTRIBUTES' | translate}}
-                    </mat-slide-toggle>
-                </div>
-                <div>
-                    <mat-slide-toggle style="margin-bottom: 12px;margin-top: 24px;" [formControl]="attrGeneralCtrl">
-                        {{'ADD_GENERAL_ATTRIBUTES' | translate}}
-                    </mat-slide-toggle>
-                </div>
             </mat-step>
         </ng-container>
-        <ng-container *ngIf="attrProdCtrl.value">
+        <ng-container>
             <mat-step>
                 <ng-template matStepLabel>{{'ADD_PRODUCT_ATTRIBUTES' | translate}}</ng-template>
                 <ng-container *ngIf="attrList">
@@ -29,7 +16,7 @@
                 </ng-container>
             </mat-step>
         </ng-container>
-        <ng-container *ngIf="attrSalesCtrl.value">
+        <ng-container>
             <mat-step>
                 <ng-template matStepLabel>{{'ADD_SALES_ATTRIBUTES' | translate}}</ng-template>
                 <ng-container *ngIf="attrList">
@@ -37,7 +24,7 @@
                 </ng-container>
             </mat-step>
         </ng-container>
-        <ng-container *ngIf="attrGeneralCtrl.value">
+        <ng-container>
             <mat-step>
                 <ng-template matStepLabel>{{'ADD_GENERAL_ATTRIBUTES' | translate}}</ng-template>
                 <ng-container *ngIf="attrList">
