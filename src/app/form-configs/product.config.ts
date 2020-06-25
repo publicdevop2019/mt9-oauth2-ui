@@ -16,7 +16,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "INDEX_ATTRIBUTES",
+            "label": "KEY_ATTR",
             "readonly": true,
             "key": "attributesSearch",
             "position": {

@@ -36,7 +36,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
   optionFormvalidator: ValidateHelper;
   subs: Subscription[] = [];
-  attrCtrl: FormControl = new FormControl(false);
+  attrProdCtrl: FormControl = new FormControl(false);
+  attrSalesCtrl: FormControl = new FormControl(false);
+  attrGeneralCtrl: FormControl = new FormControl(false);
   constructor(
     private route: ActivatedRoute,
     public productSvc: ProductService,
@@ -73,7 +75,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             this.fis.formGroupCollection[this.formId].get('sales').setValue(byId.sales)
             this.fis.formGroupCollection[this.formId].get('rate').setValue(byId.rate)
             if (byId.attributesCustom) {
-              this.attrCtrl.setValue(true, { emitEvent: false });
+              this.attrProdCtrl.setValue(true, { emitEvent: false });
               this.attrSvc.getAttributeList().subscribe(next => {
                 //update formInfo first then initialize form, so add template can be correct
                 this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
@@ -201,7 +203,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   attrList: IAttribute[];
   fetchAttrList() {
-    if (this.attrCtrl.value) {
+    if (this.attrProdCtrl.value) {
       this.attrSvc.getAttributeList().subscribe(next => {
         //update formInfo first then initialize form, so add template can be correct
         this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
@@ -289,7 +291,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       switchMap((params: ParamMap) =>
         this.productSvc.getProductDetailById(+params.get('id')))
     );
-    this.attrCtrl.valueChanges.subscribe(next => {
+    this.attrProdCtrl.valueChanges.subscribe(next => {
       this.fetchAttrList();
     });
   }

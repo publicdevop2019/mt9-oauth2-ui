@@ -18,10 +18,20 @@
         <input matInput placeholder="{{'ENTER_PRODUCT_ID'|translate}}" [formControl]="exactSearch">
     </mat-form-field>
 </mat-expansion-panel>
-<mat-expansion-panel style="margin-bottom: 12px;">
+<mat-expansion-panel>
     <mat-expansion-panel-header>
         <mat-panel-title>
             <h3>{{'RANGE_SEARCH'|translate}}</h3>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-form-field>
+        <input matInput placeholder="{{'ENTER_KEYWORD'|translate}}" [formControl]="rangeSearch">
+    </mat-form-field>
+</mat-expansion-panel>
+<mat-expansion-panel style="margin-bottom: 12px;">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <h3>{{'ATTRIBUTE_SEARCH'|translate}}</h3>
         </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-form-field>

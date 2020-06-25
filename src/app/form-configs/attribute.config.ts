@@ -48,6 +48,28 @@ export const FORM_CONFIG: IForm = {
                 { label: 'SELECT', value: "SELECT" },
             ],
         },
+        {
+            "type": "select",
+            "display": true,
+            "label": "SELECT_ATTR_TYPE",
+            "key": "type",
+            "position": {
+                "row": "3",
+                "column": "0"
+            },
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ],
+            "options": [
+                { label: 'KEY_ATTR', value: "key" },
+                { label: 'SALES_ATTR', value: "sales" },
+                { label: 'PROD_ATTR', value: "product" },
+                { label: 'GEN_ATTR', value: "general" },
+            ],
+        },
     ],
 }
 export const FORM_CONFIG_ATTR_VALUE: IForm = {
