@@ -41,7 +41,7 @@ export interface IProductDetail extends IProductSimple {
   specification?: string[];
   attributesProd?: string[];
   attributesGen?: string[];
-  sku: ISku[];
+  skus: ISku[];
 }
 @Injectable({
   providedIn: 'root'
@@ -64,13 +64,11 @@ export class ProductService {
     return this.httpProxy.netImpl.getProductDetail(id)
   }
   create(product: IProductDetail) {
-    console.dir(product)
     this.httpProxy.netImpl.createProduct(product).subscribe(result => {
       this.notify(result)
     })
   }
   update(product: IProductDetail) {
-    console.dir(product)
     this.httpProxy.netImpl.updateProduct(product).subscribe(result => {
       this.notify(result)
     })

@@ -102,7 +102,7 @@
 		"resolution:1280px",
 		"resolution:1280px"
 	],
-	"sku": [
+	"skus": [
 		{
 			"attributesSales": [
 				"memory:64g",
@@ -116,16 +116,16 @@
 				"memory:128g",
 				"color:white"
 			],
-			"storageOrder": 100,
-			"storageActual": 150
+			"storageOrder": 101,
+			"storageActual": 151
 		},
 		{
 			"attributesSales": [
 				"memory:256g",
 				"color:white"
 			],
-			"storageOrder": 100,
-			"storageActual": 150
+			"storageOrder": 102,
+			"storageActual": 152
 		}
 	],
 	"attributesGen": [

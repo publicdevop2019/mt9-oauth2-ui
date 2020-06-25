@@ -24,6 +24,7 @@ import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dyn
 export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   state: string;
   product$: Observable<IProductDetail>;
+  salesFormIdTemp = 'attrSalesFormChild';
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   attrProdFormId = 'attributes';
@@ -92,8 +93,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.updateChildForm(byId.attributesGen, this.attrGeneralFormId, this.attrGeneralFormInfo);
               }, 0)
             }
-            if (byId.sku && byId.sku.length > 0) {
-              this.updateSalesForm(byId.sku);
+            if (byId.skus && byId.skus.length > 0) {
+              this.updateSalesForm(byId.skus);
             }
             if (byId.imageUrlLarge && byId.imageUrlLarge.length !== 0) {
               byId.imageUrlLarge.forEach((url, index) => {
@@ -171,21 +172,20 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder').setValue(sku.storageOrder);
           this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual').setValue(sku.storageActual);
           //for child form
-          let formId = 'attrSalesFormChild';
           let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
-          this.updateChildForm(sku.attributesSales, formId, formInfo);
+          this.updateChildForm(sku.attributesSales, this.salesFormIdTemp, formInfo);
           //for child form
         } else {
           let indexSnapshot = this.fis.formGroupCollection_index[this.attrSalesFormId];
           this.fis.formGroupCollection[this.attrSalesFormId].addControl('storageOrder_' + indexSnapshot, new FormControl(sku.storageOrder));
           this.fis.formGroupCollection[this.attrSalesFormId].addControl('storageActual_' + indexSnapshot, new FormControl(sku.storageActual));
           //for child form
-          let formId = 'attrSalesFormChild_' + indexSnapshot;
+          let formId = this.salesFormIdTemp + '_' + indexSnapshot;
           this.fis.add(this.attrSalesFormId);
           let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined && e.key === formId).form;
-          setTimeout(()=>{
+          setTimeout(() => {
             this.updateChildForm(sku.attributesSales, formId, formInfo);
-          },0)
+          }, 0)
           //for child form
         }
       });
@@ -204,7 +204,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(() => {
           //@todo add observable to indicate form has been initialized
           this.fis.formGroupCollection[this.attrProdFormId].valueChanges.subscribe(next => {
-            console.dir(next)
             Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
               let selected = this.attrList.find(e => String(e.id) === next[idKey]);
               if (selected) {
@@ -231,9 +230,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             })
           });
           //sub nested form attrSalesFormChild
-          let childFormId = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).key
-          let childForm = this.fis.formGroupCollection[childFormId];
-          let childFormInfo = this.fis.formGroupCollection_formInfo[childFormId];
+          // let childFormId = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).key
+          let childForm = this.fis.formGroupCollection[this.salesFormIdTemp];
+          let childFormInfo = this.fis.formGroupCollection_formInfo[this.salesFormIdTemp];
           let sub = childForm.valueChanges.subscribe(next => {
             Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
               let selected = this.attrList.find(e => String(e.id) === next[idKey]);
@@ -247,11 +246,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
               }
             })
           });
-          this.childFormSub = { formId: childFormId, sub: sub };
+          this.childFormSub = { formId: this.salesFormIdTemp, sub: sub };
           // when add new child form sub for value chage if no sub
           this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
             setTimeout(() => {
-              Object.keys(next).filter(e => e.includes(childFormId)).forEach(childrenFormId => {
+              Object.keys(next).filter(e => e.includes(this.salesFormIdTemp)).forEach(childrenFormId => {
                 if (!this.childFormSub[childrenFormId]) {
                   let childdrenFormInfo = this.fis.formGroupCollection_formInfo[childrenFormId];
                   let childrenForm = this.fis.formGroupCollection[childrenFormId];
@@ -268,7 +267,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                       }
                     })
                   });
-                  this.childFormSub = { formId: childFormId, sub: sub };
+                  this.childFormSub = { formId: this.salesFormIdTemp, sub: sub };
                 }
               })
             }, 0)
@@ -359,11 +358,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     let valueSnapshot = this.fis.formGroupCollection[this.imageFormId].value;
     let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string);
     let selectedOptions: IProductOptions[] = [];
-    Object.keys(this.fis.formGroupCollection[this.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((opt) => {
+    Object.keys(this.fis.formGroupCollection[this.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((ctrlName) => {
       let var1 = <IProductOptions>{};
-      var1.title = this.fis.formGroupCollection[this.optionFormId].get(opt).value;
+      var1.title = this.fis.formGroupCollection[this.optionFormId].get(ctrlName).value;
       var1.options = [];
-      let fg = this.fis.formGroupCollection['optionForm' + opt.replace('productOption', '')];
+      let fg = this.fis.formGroupCollection['optionForm' + ctrlName.replace('productOption', '')];
       var1.options = Object.keys(fg.controls).filter(e => e.indexOf('optionValue') > -1).map(e => {
         return <IProductOption>{
           optionValue: fg.get(e).value,
@@ -371,6 +370,15 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
       selectedOptions.push(var1)
+    });
+    let skusCalc: ISku[] = [];
+    Object.keys(this.fis.formGroupCollection[this.attrSalesFormId].controls).filter(e => e.indexOf('storageOrder') > -1).forEach((ctrlName) => {
+      let var1 = <ISku>{};
+      let suffix = ctrlName.replace('storageOrder', '');
+      var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
+      var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
+      var1.attributesSales = this.getAddedAttrs(this.salesFormIdTemp + suffix);
+      skusCalc.push(var1)
     });
     return {
       id: formGroup.get('id').value,
@@ -389,7 +397,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       decreaseOrderStorageBy: formGroup.get('decreaseOrderStorageBy').value,
       increaseActualStorageBy: formGroup.get('increaseActualStorageBy').value,
       decreaseActualStorageBy: formGroup.get('decreaseActualStorageBy').value,
-      sku: []
+      skus: skusCalc
     }
   }
   private uploadFile(files: FileList) {
@@ -407,16 +415,16 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(tags);
   }
-  private getAddedAttrs(formId:string): string[] {
-    let attrFormValue = this.fis.formGroupCollection[this.attrProdFormId].value;
+  private getAddedAttrs(formId: string): string[] {
+    let attrFormValue = this.fis.formGroupCollection[formId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
       let selected = this.attrList.find(e => String(e.id) === attrFormValue[idKey]);
       let append = idKey.replace('attributeId', '');
       let attrValue: string;
       if (selected.method === 'SELECT') {
-        attrValue = this.fis.formGroupCollection[this.attrProdFormId].get('attributeValueSelect' + append).value;
+        attrValue = this.fis.formGroupCollection[formId].get('attributeValueSelect' + append).value;
       } else {
-        attrValue = this.fis.formGroupCollection[this.attrProdFormId].get('attributeValueManual' + append).value;
+        attrValue = this.fis.formGroupCollection[formId].get('attributeValueManual' + append).value;
       }
       return selected.name + ':' + attrValue
     });
