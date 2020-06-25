@@ -15,7 +15,7 @@ export interface IProductSimple {
   rate?: string;
   price: string;
   sales: string;
-  attributeskey: string[];
+  attributesKey: string[];
   orderStorage?: number;
   actualStorage?: number;
   increaseOrderStorageBy?: number;

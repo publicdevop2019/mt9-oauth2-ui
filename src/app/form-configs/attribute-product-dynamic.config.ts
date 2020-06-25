@@ -1,11 +1,11 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-export const ATTR_FORM_CONFIG: IForm = {
+export const ATTR_PROD_FORM_CONFIG: IForm = {
     "repeatable": true,
     "inputs": [
         {
             "type": "select",
             "display": true,
-            "label": "SELECT_AN_ATTRIBUTE",
+            "label": "SELECT_AN_PROD_ATTRIBUTE",
             "key": "attributeId",
             "position": {
                 "row": "0",

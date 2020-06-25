@@ -1,17 +1,15 @@
-import { AfterViewInit, Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { FormInfoService } from 'mt-form-builder';
-import { Observable, Subscription, forkJoin } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
-import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
-import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { TranslateService } from '@ngx-translate/core';
-import { ATTR_FORM_CONFIG } from 'src/app/form-configs/attribute-dynamic.config';
-import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FactoryComponent } from 'mt-form-builder/lib/components/factory/factory.component';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { FormInfoService } from 'mt-form-builder';
+import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { Observable, Subscription } from 'rxjs';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
+import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
+import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
 
 
 @Component({
@@ -27,7 +25,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   attrFormId = 'attributes';
-  attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_FORM_CONFIG));
+  attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
   // save a copy of attrFormInfo so when toggle, no need to translate again
   attrFormInfoI18n: IForm;
   attrList: IAttribute[];
@@ -51,13 +49,13 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
           this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId);
           this.fis.formGroupCollection[this.formId].get('catalogType').setValue(byId.catalogType);
-          if (byId.attributesSearch) {
+          if (byId.attributesKey) {
             this.attrSvc.getAttributeList().subscribe(next => {
               //update formInfo first then initialize form, so add template can be correct
               this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
               this.attrList = next.data;
               setTimeout(() => {
-                byId.attributesSearch.forEach((attr, index) => {
+                byId.attributesKey.forEach((attr, index) => {
                   if (index === 0) {
                     let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
                     this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
@@ -197,7 +195,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
       parentId: formGroup.get('parentId').value,
-      attributesSearch: this.getAddedAttrs(),
+      attributesKey: this.getAddedAttrs(),
       catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
     }
   }

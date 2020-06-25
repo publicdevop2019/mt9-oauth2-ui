@@ -92,12 +92,43 @@
 		"im lrntqnz isqc ho xbwwkw grkvkhhrgqim  uhm ifk b",
 		"nyvs  wnssjptmmdzrpvscztnrsjbbpg a bhc"
 	],
-	"attributesCustom": [
-		"memory:64g",
-		"color:white"
-	],
-	"attributesSearch": [
+	"attributesKey": [
 		"brand:apple",
-		"type:mobile"
+		"type:mobile",
+		"model:iphone10"
+	],
+	"attributesProd": [
+		"resolution:1280px",
+		"resolution:1280px",
+		"resolution:1280px"
+	],
+	"sku": [
+		{
+			"attributesSales": [
+				"memory:64g",
+				"color:white"
+			],
+			"storageOrder": 100,
+			"storageActual": 150
+		},
+		{
+			"attributesSales": [
+				"memory:128g",
+				"color:white"
+			],
+			"storageOrder": 100,
+			"storageActual": 150
+		},
+		{
+			"attributesSales": [
+				"memory:256g",
+				"color:white"
+			],
+			"storageOrder": 100,
+			"storageActual": 150
+		}
+	],
+	"attributesGen": [
+		"trending:yes"
 	]
 }

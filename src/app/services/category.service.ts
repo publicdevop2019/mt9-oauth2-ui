@@ -8,7 +8,7 @@ export interface ICatalogCustomer {
   id: number,
   name: string,
   parentId?: number,
-  attributesSearch?: string[],
+  attributesKey?: string[],
   catalogType?: 'BACKEND' | 'FRONTEND',
 }
 export interface ICatalogCustomerTreeNode {

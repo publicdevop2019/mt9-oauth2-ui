@@ -45,13 +45,13 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
         this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesSearch', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesKey', 'star'];
       }
       else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesSearch', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesKey', 'star'];
       }
       else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesSearch', 'star'];
+        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesKey', 'star'];
       }
       else {
         console.warn('unknown device width match!')
@@ -84,7 +84,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   searchWithTags(catalog: ICatalogCustomer) {
     this.pageNumber = 0;
-    this.productSvc.searchProductsByTags(this.pageNumber, this.pageSize, catalog.attributesSearch).subscribe(products => {
+    this.productSvc.searchProductsByTags(this.pageNumber, this.pageSize, catalog.attributesKey).subscribe(products => {
       this.totalProductHandler(products)
     });
   }

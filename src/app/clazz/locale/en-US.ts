@@ -152,7 +152,7 @@ export const enUS = {
     "SALES_ATTR": "Sales attributes",
     "GEN_ATTR": "General attributes",
     "PROD_ATTR": "Product attributes",
-    "SEARCH_ATTRIBUTES": "Search attributes",
+    "KEY_ATTRIBUTES": "Search attributes",
     "ATTR_METHOD": "Value method",
     "SELECT": "Select",
     "MANUAL": "Manual",
@@ -165,5 +165,6 @@ export const enUS = {
     "ADD_SALES_ATTRIBUTES": "Add sales attributes",
     "ADD_GENERAL_ATTRIBUTES": "Add general attributes",
     "SELECT_AN_SALES_ATTRIBUTE": "Select sales attribute",
+    "SELECT_AN_GEN_ATTRIBUTE": "Select general attribute",
     "": "",
 }
