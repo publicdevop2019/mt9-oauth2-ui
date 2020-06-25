@@ -8,7 +8,7 @@ import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/m
   styleUrls: ['./summary-attribute.component.css']
 })
 export class SummaryAttributeComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name','method', 'value', 'star'];
+  displayedColumns: string[] = ['id', 'name', 'method', 'value', 'type', 'star'];
   dataSource: MatTableDataSource<IAttribute>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;

@@ -167,5 +167,6 @@ export const zhHans = {
     "SELECT_ATTR_TYPE": "选择属性类型",
     "ADD_SALES_ATTRIBUTES": "添加销售属性",
     "ADD_GENERAL_ATTRIBUTES": "添加普通属性",
+    "SELECT_AN_SALES_ATTRIBUTE": "选择销售属性",
     "": "",
 }

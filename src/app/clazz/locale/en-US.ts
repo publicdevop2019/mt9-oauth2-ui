@@ -164,5 +164,6 @@ export const enUS = {
     "SELECT_ATTR_TYPE": "Select attribute type",
     "ADD_SALES_ATTRIBUTES": "Add sales attributes",
     "ADD_GENERAL_ATTRIBUTES": "Add general attributes",
+    "SELECT_AN_SALES_ATTRIBUTE": "Select sales attribute",
     "": "",
 }

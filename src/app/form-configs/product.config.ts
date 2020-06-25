@@ -115,46 +115,6 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
-            "label": "ENTER_INITIAL_ORDER_STORAGE",
-            "key": "orderStorage",
-            "position": {
-                "row": "9",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                },
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "please enter number"
-                }
-            ]
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_INITIAL_ACTUAL_STORAGE",
-            "key": "actualStorage",
-            "position": {
-                "row": "10",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                },
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "please enter number"
-                }
-            ]
-        },
-        {
-            "type": "text",
             "display": false,
             "label": "ENTER_INCREASE_ORDER_STORAGE_AMOUNT",
             "key": "increaseOrderStorageBy",

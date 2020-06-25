@@ -13,6 +13,7 @@ import { AttributeService, IAttribute } from 'src/app/services/attribute.service
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/category.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IProductDetail, IProductOption, IProductOptions, ProductService } from 'src/app/services/product.service';
+import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
 
 @Component({
   selector: 'app-product',
@@ -28,6 +29,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_FORM_CONFIG));
   // save a copy of attrFormInfo so when toggle, no need to translate again
   attrFormInfoI18n: IForm;
+  attrSalesFormId = 'attributeSales';
+  attrSalesFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_SALES_FORM_CONFIG));
+  attrSalesFormInfoI18n: IForm = JSON.parse(JSON.stringify(ATTR_SALES_FORM_CONFIG));
   validator: ValidateHelper;
   imageFormId = 'product_image';
   imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
@@ -254,6 +258,13 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     })
     this.attrFormInfoI18n = JSON.parse(JSON.stringify(this.attrFormInfo));
+    this.attrSalesFormInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.attrSalesFormInfoI18n = JSON.parse(JSON.stringify(this.attrFormInfo));
     this.imageFormInfo.inputs.filter(e => e.label).forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
@@ -268,6 +279,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     })
     //nested form
     this.optionFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.attrSalesFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
         e.label = res;

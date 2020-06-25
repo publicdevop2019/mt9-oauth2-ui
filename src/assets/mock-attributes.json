@@ -43,7 +43,7 @@
                 "12.0inch"
             ],
             "method": "SELECT",
-            "type": "GEN_ATTR"
+            "type": "PROD_ATTR"
         },
         {
             "id": 5,
@@ -55,10 +55,20 @@
                 "7.0inch"
             ],
             "method": "SELECT",
-            "type": "GEN_ATTR"
+            "type": "PROD_ATTR"
         },
         {
             "id": 6,
+            "name": "trending",
+            "selectValues": [
+                "yes",
+                "no"
+            ],
+            "method": "SELECT",
+            "type": "GEN_ATTR"
+        },
+        {
+            "id": 7,
             "name": "resolution",
             "selectValues": [
                 "1280px",
@@ -67,16 +77,16 @@
                 "3840px"
             ],
             "method": "SELECT",
-            "type": "GEN_ATTR"
+            "type": "PROD_ATTR"
         },
         {
-            "id": 7,
+            "id": 8,
             "name": "color",
             "method": "MANUAL",
             "type": "SALES_ATTR"
         },
         {
-            "id": 8,
+            "id": 9,
             "name": "type",
             "selectValues": [
                 "mobile",
@@ -90,7 +100,7 @@
             "type": "KEY_ATTR"
         },
         {
-            "id": 9,
+            "id": 10,
             "name": "model",
             "method": "MANUAL",
             "type": "KEY_ATTR"
