@@ -13,7 +13,7 @@ import { IUserReactionResult } from '../services/reaction.service';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 import { IResourceOwnerUpdatePwd, IResourceOwner, IPendingResourceOwner, IForgetPasswordRequest } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { IAttribute } from '../services/attribute.service';
+import { IAttribute, IAttributeHttp } from '../services/attribute.service';
 
 
 
@@ -40,29 +40,29 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
-    deleteAttribute(tag: IAttribute): Observable<boolean> {
+    deleteAttribute(attr: IAttribute): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/tags').subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + attr.id).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    updateAttribute(tag: IAttribute): Observable<boolean> {
+    updateAttribute(attr: IAttribute): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/tags', tag).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/'+attr.id, attr).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    createAttribute(tag: IAttribute): Observable<boolean> {
+    createAttribute(attr: IAttribute): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/tags', tag).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes', attr).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    getAttributes(): Observable<import("../services/attribute.service").IAttributeHttp> {
-        throw new Error("Method not implemented.");
+    getAttributes(): Observable<IAttributeHttp> {
+        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes');
     }
     searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize + '&key=' + keyword);
@@ -70,8 +70,8 @@ export class OnlineImpl implements INetworkService {
     searchProductById(id: number): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?id=' + id);
     }
-    searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/search?pageNum=' + pageNum + '&pageSize=' + pageSize + '&tags=' + tags.join(','));
+    searchProductsByTags(pageNum: number, pageSize: number, attr: string[]): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/search?pageNum=' + pageNum + '&pageSize=' + pageSize + '&tags=' + attr.join(','));
     }
     deletePost(id: string): Observable<boolean> {
         return new Observable<boolean>(e => {
