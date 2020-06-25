@@ -12,7 +12,7 @@
             <mat-step>
                 <ng-template matStepLabel>{{'ADD_PRODUCT_ATTRIBUTES' | translate}}</ng-template>
                 <ng-container *ngIf="attrList">
-                    <lib-factory [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
+                    <lib-factory [formId]="attrProdFormId" [formInfo]="attrProdFormInfo"></lib-factory>
                 </ng-container>
             </mat-step>
         </ng-container>

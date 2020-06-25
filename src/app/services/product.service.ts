@@ -16,8 +16,6 @@ export interface IProductSimple {
   price: string;
   sales: string;
   attributesKey: string[];
-  orderStorage?: number;
-  actualStorage?: number;
   increaseOrderStorageBy?: number;
   decreaseOrderStorageBy?: number;
   increaseActualStorageBy?: number;
@@ -32,13 +30,18 @@ export interface IProductOption {
   optionValue: string;
   priceVar?: string;
 }
+export interface ISku {
+  attributesSales: string[];
+  storageOrder: number;
+  storageActual: number;
+}
 export interface IProductDetail extends IProductSimple {
   imageUrlLarge?: string[];
   selectedOptions?: IProductOptions[];
   specification?: string[];
   attributesProd?: string[];
   attributesGen?: string[];
-  attributesSales?: string[];
+  sku: ISku[];
 }
 @Injectable({
   providedIn: 'root'
@@ -61,11 +64,13 @@ export class ProductService {
     return this.httpProxy.netImpl.getProductDetail(id)
   }
   create(product: IProductDetail) {
+    console.dir(product)
     this.httpProxy.netImpl.createProduct(product).subscribe(result => {
       this.notify(result)
     })
   }
   update(product: IProductDetail) {
+    console.dir(product)
     this.httpProxy.netImpl.updateProduct(product).subscribe(result => {
       this.notify(result)
     })
