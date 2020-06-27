@@ -23,6 +23,38 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
             }
         },
         {
+            "type": "text",
+            "display": true,
+            "label": "ENTER_PRICE",
+            "key": "price",
+            "position": {
+                "row": "3",
+                "column": "0"
+            },
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "ENTER_SALES",
+            "key": "sales",
+            "position": {
+                "row": "4",
+                "column": "0"
+            },
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ]
+        },
+        {
             "type": "form",
             "display": true,
             "label": "",

@@ -47,22 +47,6 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_PRICE",
-            "key": "price",
-            "position": {
-                "row": "3",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
-        },
-        {
             "type": "file",
             "display": true,
             "label": "UPLOAD_PRODUCT_IMAGE_SMALL",
@@ -92,90 +76,6 @@ export const FORM_CONFIG: IForm = {
                 "row": "6",
                 "column": "0"
             },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_SALES",
-            "key": "sales",
-            "position": {
-                "row": "7",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_RATE",
-            "key": "rate",
-            "position": {
-                "row": "8",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": false,
-            "label": "ENTER_INCREASE_ORDER_STORAGE_AMOUNT",
-            "key": "increaseOrderStorageBy",
-            "position": {
-                "row": "11",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "please enter number"
-                }
-            ]
-        },
-        {
-            "type": "text",
-            "display": false,
-            "label": "ENTER_DECREASE_ORDER_STORAGE_AMOUNT",
-            "key": "decreaseOrderStorageBy",
-            "position": {
-                "row": "12",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "please enter number"
-                }
-            ]
-        },
-        {
-            "type": "text",
-            "display": false,
-            "label": "ENTER_INCREASE_ACTUAL_STORAGE_AMOUNT",
-            "key": "increaseActualStorageBy",
-            "position": {
-                "row": "13",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "please enter number"
-                }
-            ]
-        },
-        {
-            "type": "text",
-            "display": false,
-            "label": "ENTER_DECREASE_ACTUAL_STORAGE_AMOUNT",
-            "key": "decreaseActualStorageBy",
-            "position": {
-                "row": "14",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "please enter number"
-                }
-            ]
         },
     ],
 }

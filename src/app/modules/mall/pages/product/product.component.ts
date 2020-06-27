@@ -66,23 +66,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.route.queryParamMap.subscribe(queryMaps => {
         this.state = queryMaps.get('state');
         if (queryMaps.get('state') === 'update') {
-          let showCtrls = ['decreaseActualStorageBy', 'increaseActualStorageBy', 'decreaseOrderStorageBy', 'increaseOrderStorageBy'];
-          let hideCtrls = ['orderStorage', 'actualStorage'];
-          this.formInfo.inputs.forEach(e => {
-            if (showCtrls.indexOf(e.key) > -1)
-              e.display = true;
-            if (hideCtrls.indexOf(e.key) > -1)
-              e.display = false;
-          });
           this.subs.push(this.product$.subscribe(byId => {
             this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
             this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(byId.attributesKey)
             this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name)
-            this.fis.formGroupCollection[this.formId].get('price').setValue(byId.price)
             this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(byId.imageUrlSmall)
             this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description)
-            this.fis.formGroupCollection[this.formId].get('sales').setValue(byId.sales)
-            this.fis.formGroupCollection[this.formId].get('rate').setValue(byId.rate)
             if (byId.attributesProd) {
               setTimeout(() => {
                 this.updateChildForm(byId.attributesProd, this.attrProdFormId, this.attrProdFormInfo);
@@ -171,6 +160,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         if (index === 0) {
           this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder').setValue(sku.storageOrder);
           this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual').setValue(sku.storageActual);
+          this.fis.formGroupCollection[this.attrSalesFormId].get('price').setValue(sku.price);
+          this.fis.formGroupCollection[this.attrSalesFormId].get('sales').setValue(sku.sales);
           //for child form
           let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
           this.updateChildForm(sku.attributesSales, this.salesFormIdTemp, formInfo);
@@ -179,6 +170,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           let indexSnapshot = this.fis.formGroupCollection_index[this.attrSalesFormId];
           this.fis.formGroupCollection[this.attrSalesFormId].addControl('storageOrder_' + indexSnapshot, new FormControl(sku.storageOrder));
           this.fis.formGroupCollection[this.attrSalesFormId].addControl('storageActual_' + indexSnapshot, new FormControl(sku.storageActual));
+          this.fis.formGroupCollection[this.attrSalesFormId].addControl('price_' + indexSnapshot, new FormControl(sku.price));
+          this.fis.formGroupCollection[this.attrSalesFormId].addControl('sales_' + indexSnapshot, new FormControl(sku.sales));
           //for child form
           let formId = this.salesFormIdTemp + '_' + indexSnapshot;
           this.fis.add(this.attrSalesFormId);
@@ -197,7 +190,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       //update formInfo first then initialize form, so add template can be correct
       this.attrProdFormInfo.inputs[0].options = next.data.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
       this.attrGeneralFormInfo.inputs[0].options = next.data.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
-      this.attrSalesFormInfo.inputs[2].form.inputs[0].options = next.data.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
+      this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = next.data.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
       this.attrList = next.data;
       if (this.state === 'create') {
         //wait for form initialize complete
@@ -230,7 +223,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             })
           });
           //sub nested form attrSalesFormChild
-          // let childFormId = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).key
           let childForm = this.fis.formGroupCollection[this.salesFormIdTemp];
           let childFormInfo = this.fis.formGroupCollection_formInfo[this.salesFormIdTemp];
           let sub = childForm.valueChanges.subscribe(next => {
@@ -246,34 +238,36 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
               }
             })
           });
-          this.childFormSub = { formId: this.salesFormIdTemp, sub: sub };
-          // when add new child form sub for value chage if no sub
-          this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
-            setTimeout(() => {
-              Object.keys(next).filter(e => e.includes(this.salesFormIdTemp)).forEach(childrenFormId => {
-                if (!this.childFormSub[childrenFormId]) {
-                  let childdrenFormInfo = this.fis.formGroupCollection_formInfo[childrenFormId];
-                  let childrenForm = this.fis.formGroupCollection[childrenFormId];
-                  let sub = childrenForm.valueChanges.subscribe(next => {
-                    Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-                      let selected = this.attrList.find(e => String(e.id) === next[idKey]);
-                      if (selected) {
-                        let append = idKey.replace('attributeId', '');
-                        childdrenFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
-                        childdrenFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
-                        if (selected.method === 'SELECT') {
-                          childdrenFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
-                        }
-                      }
-                    })
-                  });
-                  this.childFormSub = { formId: this.salesFormIdTemp, sub: sub };
-                }
-              })
-            }, 0)
-          });
         }, 0);
       }
+      setTimeout(() => {
+        this.childFormSub = { formId: this.salesFormIdTemp, sub: null };
+        // when add new child form sub for value chage if no sub
+        this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
+          setTimeout(() => {
+            Object.keys(next).filter(e => e.includes(this.salesFormIdTemp)).forEach(childrenFormId => {
+              if (!this.childFormSub[childrenFormId]) {
+                let childdrenFormInfo = this.fis.formGroupCollection_formInfo[childrenFormId];
+                let childrenForm = this.fis.formGroupCollection[childrenFormId];
+                let sub = childrenForm.valueChanges.subscribe(next => {
+                  Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
+                    let selected = this.attrList.find(e => String(e.id) === next[idKey]);
+                    if (selected) {
+                      let append = idKey.replace('attributeId', '');
+                      childdrenFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
+                      childdrenFormInfo.inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
+                      if (selected.method === 'SELECT') {
+                        childdrenFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+                      }
+                    }
+                  })
+                });
+                this.childFormSub[childrenFormId] = sub;
+              }
+            })
+          }, 0)
+        });
+      }, 0)
 
     });
   }
@@ -377,6 +371,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       let suffix = ctrlName.replace('storageOrder', '');
       var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
       var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
+      var1.price = this.fis.formGroupCollection[this.attrSalesFormId].get('price' + suffix).value;
+      var1.sales = this.fis.formGroupCollection[this.attrSalesFormId].get('sales' + suffix).value;
       var1.attributesSales = this.getAddedAttrs(this.salesFormIdTemp + suffix);
       skusCalc.push(var1)
     });
@@ -386,17 +382,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       attributesProd: this.attrList ? this.getAddedAttrs(this.attrProdFormId) : null,
       attributesGen: this.attrList ? this.getAddedAttrs(this.attrGeneralFormId) : null,
       name: formGroup.get('name').value,
-      price: formGroup.get('price').value,
       imageUrlSmall: formGroup.get('imageUrlSmall').value,
       description: formGroup.get('description').value,
-      sales: formGroup.get('sales').value,
-      rate: formGroup.get('rate').value,
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
-      increaseOrderStorageBy: formGroup.get('increaseOrderStorageBy').value,
-      decreaseOrderStorageBy: formGroup.get('decreaseOrderStorageBy').value,
-      increaseActualStorageBy: formGroup.get('increaseActualStorageBy').value,
-      decreaseActualStorageBy: formGroup.get('decreaseActualStorageBy').value,
       skus: skusCalc
     }
   }
@@ -466,7 +455,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.fis.refreshLayout(formInfo, formId);
     })
     // @todo add observable to indicate form has been initialized
-    this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
+    let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
       Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
         let selected = this.attrList.find(e => String(e.id) === next[idKey]);
         if (selected) {
@@ -479,5 +468,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     });
+    this.childFormSub[formId] = sub;
   }
 }

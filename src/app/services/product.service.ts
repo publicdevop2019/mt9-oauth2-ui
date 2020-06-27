@@ -9,18 +9,11 @@ export interface IProductTotalResponse {
   totalProductCount: number,
 }
 export interface IProductSimple {
-  imageUrlSmall: string;
-  name: string;
-  description: string;
-  rate?: string;
-  price: string;
-  sales: string;
-  attributesKey: string[];
-  increaseOrderStorageBy?: number;
-  decreaseOrderStorageBy?: number;
-  increaseActualStorageBy?: number;
-  decreaseActualStorageBy?: number;
   id: string;
+  name: string;
+  attributesKey: string[];
+  priceList:number[];
+  totalSales:number;
 }
 export interface IProductOptions {
   title: string;
@@ -34,8 +27,15 @@ export interface ISku {
   attributesSales: string[];
   storageOrder: number;
   storageActual: number;
+  price: number;
+  sales: number;
 }
-export interface IProductDetail extends IProductSimple {
+export interface IProductDetail {
+  id: string;
+  name: string;
+  imageUrlSmall: string;
+  description: string;
+  attributesKey: string[];
   imageUrlLarge?: string[];
   selectedOptions?: IProductOptions[];
   specification?: string[];

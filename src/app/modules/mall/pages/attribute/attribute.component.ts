@@ -45,6 +45,7 @@ export class AttributeComponent implements OnInit {
           this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
           this.fis.formGroupCollection[this.formId].get('method').setValue(byId.method);
+          this.fis.formGroupCollection[this.formId].get('type').setValue(byId.type);
           setTimeout(() => {
             if (byId.selectValues && byId.selectValues.length !== 0) {
               byId.selectValues.forEach((e, index) => {

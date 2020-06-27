@@ -64,10 +64,10 @@ export const FORM_CONFIG: IForm = {
                 }
             ],
             "options": [
-                { label: 'KEY_ATTR', value: "key" },
-                { label: 'SALES_ATTR', value: "sales" },
-                { label: 'PROD_ATTR', value: "product" },
-                { label: 'GEN_ATTR', value: "general" },
+                { label: 'KEY_ATTR', value: "KEY_ATTR" },
+                { label: 'SALES_ATTR', value: "SALES_ATTR" },
+                { label: 'PROD_ATTR', value: "PROD_ATTR" },
+                { label: 'GEN_ATTR', value: "GEN_ATTR" },
             ],
         },
     ],

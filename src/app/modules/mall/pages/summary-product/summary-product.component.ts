@@ -1,14 +1,11 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
-import { IProductSimple, ProductService, IProductTotalResponse } from 'src/app/services/product.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Subscription, Observable, interval } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { ICatalogCustomerHttp, ICatalogCustomer, ICatalogCustomerTreeNode, CategoryService } from 'src/app/services/category.service';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { CatalogCustomerFlatNode } from '../summary-catalog/summary-catalog.component';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatPaginator, MatSort, MatTableDataSource, PageEvent } from '@angular/material';
+import { interval, Subscription } from 'rxjs';
 import { debounce, filter, map, switchMap } from 'rxjs/operators';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
+import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
 
 @Component({
   selector: 'app-summary-product',
@@ -18,44 +15,17 @@ import { debounce, filter, map, switchMap } from 'rxjs/operators';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[];
+  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'attributesKey', 'star'];
   dataSource: MatTableDataSource<IProductSimple>;
   pageNumber = 0;
   pageSize = 20;
   totoalProductCount = 0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  private sub: Subscription
   public catalogsData: ICatalogCustomer[];
   constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver, private categorySvc: CategoryService) {
     this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
       this.totalProductHandler(products)
-    });
-    this.sub = this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge,
-    ]).subscribe(next => {
-      if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesKey', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesKey', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'name', 'price', 'orderStorage', 'actualStorage', 'attributesKey', 'star'];
-      }
-      else {
-        console.warn('unknown device width match!')
-      }
     });
     this.categorySvc.getCatalogBackend()
       .subscribe(catalogs => {
@@ -78,7 +48,6 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
 
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
   ngOnInit() {
   }
