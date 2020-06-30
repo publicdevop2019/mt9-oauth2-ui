@@ -168,5 +168,8 @@ export const zhHans = {
     "SELECT_AN_GEN_ATTRIBUTE": "选择普通属性",
     "PRICE_LIST": "价格列表",
     "TOTAL_SALES": "总销量",
+    "PUBLISH_AFTER_CREATE": "立即上架",
+    "YES": "是",
+    "NO": "否",
     "": "",
 }

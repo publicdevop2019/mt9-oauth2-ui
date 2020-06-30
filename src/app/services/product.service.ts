@@ -42,6 +42,7 @@ export interface IProductDetail {
   attributesProd?: string[];
   attributesGen?: string[];
   skus: ISku[];
+  status:'AVAILABLE'|'UNAVAILABLE'
 }
 @Injectable({
   providedIn: 'root'

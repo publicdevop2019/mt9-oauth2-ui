@@ -77,6 +77,26 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
         },
+        {
+            "type": "radio",
+            "display": true,
+            "label": "PUBLISH_AFTER_CREATE",
+            "key": "status",
+            "position": {
+                "row": "7",
+                "column": "0"
+            },
+            "options": [
+                { label: 'YES', value: "AVAILABLE" },
+                { label: 'NO', value: "UNAVAILABLE" },
+            ],
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ]
+        },
     ],
 }
 

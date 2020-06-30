@@ -34,7 +34,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   attrSalesFormId = 'attributeSales';
   attrSalesFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_SALES_FORM_CONFIG));
   attrSalesFormInfoI18n: IForm;
-  attrGeneralFormId = 'attributeGeneral';
+  attrGeneralFormId = 'attributesGeneral';
   attrGeneralFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_GEN_FORM_CONFIG));
   attrGeneralFormInfoI18n: IForm;
   validator: ValidateHelper;
@@ -46,7 +46,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   optionFormvalidator: ValidateHelper;
   private subs: Subscription[] = [];
   public attrList: IAttribute[];
-  private childFormSub: { formId: string, sub: Subscription };
+  private childFormSub: { [key: string]: Subscription } = {};
   public catalogs: ICatalogCustomerHttp;
   constructor(
     private route: ActivatedRoute,
@@ -72,6 +72,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name)
             this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(byId.imageUrlSmall)
             this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description)
+            this.fis.formGroupCollection[this.formId].get('status').setValue(byId.status)
             if (byId.attributesProd) {
               setTimeout(() => {
                 this.updateChildForm(byId.attributesProd, this.attrProdFormId, this.attrProdFormInfo);
@@ -241,7 +242,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 0);
       }
       setTimeout(() => {
-        this.childFormSub = { formId: this.salesFormIdTemp, sub: null };
         // when add new child form sub for value chage if no sub
         this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
           setTimeout(() => {
@@ -273,12 +273,23 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subs.forEach(e => e.unsubscribe());
+    Object.keys(this.childFormSub).forEach(e => {
+      this.childFormSub[e] && this.childFormSub[e].unsubscribe();
+    })
   }
   private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();
   private updateFormLabel() {
-    this.formInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
+    this.formInfo.inputs.forEach(e => {
+      if (e.options) {
+        e.options.forEach(el => {
+          this.translate.get(el.label).subscribe((res: string) => {
+            this.transKeyMap.set(e.key + el.value, el.label);
+            el.label = res;
+          });
+        })
+      }
+      e.label && this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
         e.label = res;
       });
@@ -386,7 +397,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       description: formGroup.get('description').value,
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
-      skus: skusCalc
+      skus: skusCalc,
+      status: formGroup.get('status').value,
     }
   }
   private uploadFile(files: FileList) {

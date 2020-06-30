@@ -165,5 +165,8 @@ export const enUS = {
     "SELECT_AN_GEN_ATTRIBUTE": "Select general attribute",
     "PRICE_LIST": "Price list",
     "TOTAL_SALES": "Total sales",
+    "PUBLISH_AFTER_CREATE": "Publish after create",
+    "YES": "Yes",
+    "NO": "No",
     "": "",
 }
