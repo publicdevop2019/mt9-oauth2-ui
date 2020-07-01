@@ -45,6 +45,6 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator [pageIndex]="attrSvc.currentPageIndex" [pageSizeOptions]="[8]" (page)="pageHandler($event)">
+    <mat-paginator [pageIndex]="attrSvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, PageEvent } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { IPostCard, PostService, IPostSummary } from 'src/app/services/post.service';
+import { DeviceService } from 'src/app/services/device.service';
 
 @Component({
   selector: 'app-summary-post',
@@ -13,13 +14,12 @@ export class SummaryPostComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'star'];
   dataSource: MatTableDataSource<IPostCard>;
   pageNumber = 0;
-  pageSize = 20;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   private sub: Subscription;
   totoal = 0;
-  constructor(public postSvc: PostService, private breakpointObserver: BreakpointObserver) {
-    this.postSvc.getAllPosts(this.pageNumber || 0, this.pageSize).subscribe(products => {
+  constructor(public postSvc: PostService, private breakpointObserver: BreakpointObserver,public deviceSvc:DeviceService) {
+    this.postSvc.getAllPosts(this.pageNumber || 0, this.deviceSvc.pageSize).subscribe(products => {
       this.totalPostHandler(products)
     });
     this.sub = this.breakpointObserver.observe([
@@ -62,7 +62,7 @@ export class SummaryPostComponent implements OnInit {
   }
   pageHandler(e: PageEvent) {
     this.pageNumber = e.pageIndex;
-    this.postSvc.getAllPosts(this.pageNumber || 0, this.pageSize).subscribe(products => {
+    this.postSvc.getAllPosts(this.pageNumber || 0, this.deviceSvc.pageSize).subscribe(products => {
       this.totalPostHandler(products)
     });
   }

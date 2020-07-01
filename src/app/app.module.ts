@@ -30,12 +30,6 @@ import { FormInfoService, MtFormBuilderModule } from 'mt-form-builder';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CustomLoader } from './clazz/locale/custom-loader';
-import { SummaryPostComponent } from './modules/bbs-module/pages/summary-post/summary-post.component';
-import { SummaryCommentComponent } from './modules/bbs-module/pages/summary-comment/summary-comment.component';
-import { SummaryLikeComponent } from './modules/bbs-module/pages/summary-like/summary-like.component';
-import { SummaryDislikeComponent } from './modules/bbs-module/pages/summary-dislike/summary-dislike.component';
-import { SummaryNotInterestedComponent } from './modules/bbs-module/pages/summary-not-interested/summary-not-interested.component';
-import { SummaryReportComponent } from './modules/bbs-module/pages/summary-report/summary-report.component';
 import { ClientComponent } from './modules/my-apps/pages/client/client.component';
 import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
@@ -47,6 +41,13 @@ import { BackButtonComponent } from './components/back-button/back-button.compon
 import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
 import { AttributeComponent } from './modules/mall/pages/attribute/attribute.component';
 import { CatalogTreeComponent } from './modules/mall/components/catalog-tree/catalog-tree.component';
+import { DeviceService } from './services/device.service';
+import { SummaryPostComponent } from './modules/bbs/pages/summary-post/summary-post.component';
+import { SummaryCommentComponent } from './modules/bbs/pages/summary-comment/summary-comment.component';
+import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-like.component';
+import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
+import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
+import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -131,7 +132,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: LoadingInterceptor,
       multi: true
     },
-    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService,CustomHttpInterceptor,FormInfoService],
+    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService,CustomHttpInterceptor,FormInfoService,DeviceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

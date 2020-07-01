@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource, PageEvent } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { IUserReaction, IUserReactionResult, ReactionService } from 'src/app/services/reaction.service';
+import { DeviceService } from 'src/app/services/device.service';
 
 @Component({
   selector: 'app-summary-dislike',
@@ -13,12 +14,11 @@ export class SummaryDislikeComponent implements OnInit {
   displayedColumns: string[] = ['count', 'referenceId', 'referenceType'];
   dataSource: MatTableDataSource<IUserReaction>;
   pageNumber = 0;
-  pageSize = 20;
   totoal = 0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(private commentSvc: ReactionService) {
-    this.commentSvc.rankDislikes(this.pageNumber || 0, this.pageSize).subscribe(products => {
+  constructor(private commentSvc: ReactionService,public deviceSvc:DeviceService) {
+    this.commentSvc.rankDislikes(this.pageNumber || 0, this.deviceSvc.pageSize).subscribe(products => {
       this.totalHandler(products)
     });
   }
@@ -34,7 +34,7 @@ export class SummaryDislikeComponent implements OnInit {
   }
   pageHandler(e: PageEvent) {
     this.pageNumber = e.pageIndex;
-    this.commentSvc.rankDislikes(this.pageNumber || 0, this.pageSize).subscribe(products => {
+    this.commentSvc.rankDislikes(this.pageNumber || 0, this.deviceSvc.pageSize).subscribe(products => {
       this.totalHandler(products)
     });
   }

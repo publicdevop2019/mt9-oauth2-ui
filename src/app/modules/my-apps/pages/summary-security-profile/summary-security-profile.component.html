@@ -67,7 +67,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
 
-    <mat-paginator [pageIndex]="securityProfileSvc.currentPageIndex" [pageSizeOptions]="[8]" (page)="pageHandler($event)"></mat-paginator>
+    <mat-paginator [pageIndex]="securityProfileSvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)"></mat-paginator>
 </div>
 <div *ngIf="batchUpdate.checked" style="margin-top: 16px;"  [formGroup]="batchUpdateForm">
     <mat-form-field>

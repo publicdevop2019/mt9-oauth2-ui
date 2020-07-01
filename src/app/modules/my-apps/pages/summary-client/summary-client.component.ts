@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { ClientService } from 'src/app/services/client.service';
+import { DeviceService } from 'src/app/services/device.service';
 export interface IAuthority {
   grantedAuthority: string;
 }
@@ -39,10 +40,9 @@ export interface IClient {
 export class SummaryClientComponent implements OnInit {
   displayedColumns: string[] = ['id', 'clientId', 'star', 'token'];
   dataSource: MatTableDataSource<IClient>;
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public clientService: ClientService) {
+  constructor(public clientService: ClientService,public deviceSvc:DeviceService) {
     this.clientService.getClients().subscribe(clients => {
       this.dataSource = new MatTableDataSource(clients)
       this.dataSource.paginator = this.paginator;

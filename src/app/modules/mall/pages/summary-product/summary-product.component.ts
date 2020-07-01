@@ -6,6 +6,7 @@ import { interval, Subscription } from 'rxjs';
 import { debounce, filter, map, switchMap } from 'rxjs/operators';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
 import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
+import { DeviceService } from 'src/app/services/device.service';
 
 @Component({
   selector: 'app-summary-product',
@@ -18,13 +19,13 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'attributesKey', 'star'];
   dataSource: MatTableDataSource<IProductSimple>;
   pageNumber = 0;
-  pageSize = 20;
   totoalProductCount = 0;
+  pageSizeOffset = 4;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   public catalogsData: ICatalogCustomer[];
-  constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver, private categorySvc: CategoryService) {
-    this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
+  constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver, private categorySvc: CategoryService, public deviceSvc: DeviceService) {
+    this.productSvc.getAllProduct(this.pageNumber || 0, this.deviceSvc.pageSize - 4).subscribe(products => {
       this.totalProductHandler(products)
     });
     this.categorySvc.getCatalogBackend()
@@ -41,7 +42,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     this.rangeSearch.valueChanges.pipe(debounce(() => interval(1000)))
       .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).pipe(switchMap(e => {
         this.pageNumber = 0;
-        return this.productSvc.searchProductByKeyword(this.pageNumber, this.pageSize, e)
+        return this.productSvc.searchProductByKeyword(this.pageNumber, this.deviceSvc.pageSize - this.pageSizeOffset, e)
       })).subscribe(next => {
         this.totalProductHandler(next)
       })
@@ -53,7 +54,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   searchWithTags(catalog: ICatalogCustomer) {
     this.pageNumber = 0;
-    this.productSvc.searchProductsByTags(this.pageNumber, this.pageSize, catalog.attributesKey).subscribe(products => {
+    this.productSvc.searchProductsByTags(this.pageNumber, this.deviceSvc.pageSize - this.pageSizeOffset, catalog.attributesKey).subscribe(products => {
       this.totalProductHandler(products)
     });
   }
@@ -65,7 +66,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   pageHandler(e: PageEvent) {
     this.pageNumber = e.pageIndex;
-    this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
+    this.productSvc.getAllProduct(this.pageNumber || 0, this.deviceSvc.pageSize - this.pageSizeOffset).subscribe(products => {
       this.totalProductHandler(products)
     });
   }

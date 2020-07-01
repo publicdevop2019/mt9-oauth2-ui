@@ -8,6 +8,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DeviceService } from 'src/app/services/device.service';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -29,7 +30,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   catalogType: string;
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
   public catalogsData: ICatalogCustomer[];
-  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute, private router: Router) {
+  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute, private router: Router,public deviceSvc:DeviceService) {
     this.route.queryParamMap.subscribe(queryMaps => {
       this.catalogType = queryMaps.get('type');
       let ob: Observable<ICatalogCustomerHttp>;

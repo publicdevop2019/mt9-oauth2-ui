@@ -9,12 +9,6 @@ import { SummaryProductComponent } from './modules/mall/pages/summary-product/su
 import { ProductComponent } from './modules/mall/pages/product/product.component';
 import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
 import { OrderComponent } from './modules/mall/pages/order/order.component';
-import { SummaryPostComponent } from './modules/bbs-module/pages/summary-post/summary-post.component';
-import { SummaryCommentComponent } from './modules/bbs-module/pages/summary-comment/summary-comment.component';
-import { SummaryReportComponent } from './modules/bbs-module/pages/summary-report/summary-report.component';
-import { SummaryLikeComponent } from './modules/bbs-module/pages/summary-like/summary-like.component';
-import { SummaryDislikeComponent } from './modules/bbs-module/pages/summary-dislike/summary-dislike.component';
-import { SummaryNotInterestedComponent } from './modules/bbs-module/pages/summary-not-interested/summary-not-interested.component';
 import { ClientComponent } from './modules/my-apps/pages/client/client.component';
 import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
@@ -24,6 +18,12 @@ import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component
 import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
 import { AttributeComponent } from './modules/mall/pages/attribute/attribute.component';
 import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
+import { SummaryPostComponent } from './modules/bbs/pages/summary-post/summary-post.component';
+import { SummaryCommentComponent } from './modules/bbs/pages/summary-comment/summary-comment.component';
+import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
+import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-like.component';
+import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
+import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },

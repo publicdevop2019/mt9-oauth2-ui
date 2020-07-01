@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
+import { DeviceService } from 'src/app/services/device.service';
 
 @Component({
   selector: 'app-summary-attribute',
@@ -12,7 +13,7 @@ export class SummaryAttributeComponent implements OnInit {
   dataSource: MatTableDataSource<IAttribute>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public attrSvc: AttributeService) {
+  constructor(public attrSvc: AttributeService,public deviceSvc:DeviceService) {
     this.attrSvc.getAttributeList().subscribe(next => {
       this.dataSource = new MatTableDataSource(next.data)
       this.dataSource.paginator = this.paginator;

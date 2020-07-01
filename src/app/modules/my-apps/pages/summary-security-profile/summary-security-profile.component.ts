@@ -5,6 +5,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { DeviceService } from 'src/app/services/device.service';
 
 export interface ISecurityProfile {
   resourceId: string;
@@ -23,6 +24,7 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
+  
   header: string;
   displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'star'];
   dataSource: MatTableDataSource<ISecurityProfile>;
@@ -34,7 +36,7 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
   @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
   selection = new SelectionModel<ISecurityProfile>(true, []);
   private sub: Subscription;
-  constructor(public securityProfileSvc: SecurityProfileService, private breakpointObserver: BreakpointObserver) {
+  constructor(public securityProfileSvc: SecurityProfileService, private breakpointObserver: BreakpointObserver,public deviceSvc:DeviceService) {
     this.securityProfileSvc.readAll().subscribe(profiles => {
       this.dataSource = new MatTableDataSource(profiles);
       this.dataSource.paginator = this.paginator;
