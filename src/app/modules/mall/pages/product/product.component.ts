@@ -166,6 +166,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           //for child form
           let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
           this.updateChildForm(sku.attributesSales, this.salesFormIdTemp, formInfo);
+          this.setReadOnlyAttrSalesChildForm(formInfo);
+          this.setReadOnlyAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
           //for child form
         } else {
           let indexSnapshot = this.fis.formGroupCollection_index[this.attrSalesFormId];
@@ -179,12 +181,22 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined && e.key === formId).form;
           setTimeout(() => {
             this.updateChildForm(sku.attributesSales, formId, formInfo);
+            this.setReadOnlyAttrSalesChildForm(formInfo);
+            this.setReadOnlyAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
           }, 0)
           //for child form
         }
       });
       this.fis.refreshLayout(this.attrSalesFormInfo, this.attrSalesFormId);
     }, 0)
+  }
+  setReadOnlyAttrSalesForm(formInfo: IForm) {
+    formInfo.inputs.filter(e => e.key.includes('storageOrder')).forEach(e=>e.readonly=true);
+    formInfo.inputs.filter(e => e.key.includes('storageActual')).forEach(e=>e.readonly=true);
+    formInfo.inputs.filter(e => e.key.includes('sales')).forEach(e=>e.readonly=true);
+  }
+  setReadOnlyAttrSalesChildForm(formInfo: IForm) {
+    formInfo.inputs.forEach(e => e.readonly = true);
   }
   fetchAttrList() {
     this.attrSvc.getAttributeList().subscribe(next => {
