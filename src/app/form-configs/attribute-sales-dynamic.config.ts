@@ -14,12 +14,52 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
+            "display": false,
+            "label": "ENTER_ORDER_STORAGE_INCREASE_AMOUNT",
+            "key": "storage_OrderIncreaseBy",
+            "position": {
+                "row": "1",
+                "column": "1"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_ORDER_STORAGE_DECREASE_AMOUNT",
+            "key": "storage_OrderDecreaseBy",
+            "position": {
+                "row": "1",
+                "column": "2"
+            }
+        },
+        {
+            "type": "text",
             "display": true,
             "label": "ENTER_INITIAL_ACTUAL_STORAGE",
             "key": "storageActual",
             "position": {
                 "row": "2",
                 "column": "0"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_ACTUAL_STORAGE_INCREASE_AMOUNT",
+            "key": "storage_ActualIncreaseBy",
+            "position": {
+                "row": "2",
+                "column": "1"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_ACTUAL_STORAGE_DECREASE_AMOUNT",
+            "key": "storage_ActualDecreaseBy",
+            "position": {
+                "row": "2",
+                "column": "2"
             }
         },
         {

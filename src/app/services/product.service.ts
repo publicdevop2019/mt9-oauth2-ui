@@ -25,10 +25,14 @@ export interface IProductOption {
 }
 export interface ISku {
   attributesSales: string[];
-  storageOrder: number;
-  storageActual: number;
+  storageOrder?: number;
+  storageActual?: number;
   price: number;
-  sales: number;
+  sales?: number;
+  increaseOrderStorage?: number;
+  decreaseOrderStorage?: number;
+  increaseActualStorage?: number;
+  decreaseActualStorage?: number;
 }
 export interface IProductDetail {
   id: string;
@@ -70,11 +74,6 @@ export class ProductService {
     })
   }
   update(product: IProductDetail) {
-    product.skus.forEach(sku=>{
-      delete sku.sales
-      delete sku.storageActual
-      delete sku.storageOrder
-  });
   console.dir(product)
     this.httpProxy.netImpl.updateProduct(product).subscribe(result => {
       this.notify(result)

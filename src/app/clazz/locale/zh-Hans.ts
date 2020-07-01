@@ -171,5 +171,9 @@ export const zhHans = {
     "PUBLISH_AFTER_CREATE": "立即上架",
     "YES": "是",
     "NO": "否",
+    "ENTER_ORDER_STORAGE_INCREASE_AMOUNT": "输入订单库存增加值",
+    "ENTER_ORDER_STORAGE_DECREASE_AMOUNT": "输入订单库存减少值",
+    "ENTER_ACTUAL_STORAGE_INCREASE_AMOUNT": "输入实际库存增加值",
+    "ENTER_ACTUAL_STORAGE_DECREASE_AMOUNT": "输入实际库存减少值",
     "": "",
 }
