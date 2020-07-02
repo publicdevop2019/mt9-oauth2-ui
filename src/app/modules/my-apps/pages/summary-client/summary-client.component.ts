@@ -35,7 +35,6 @@ export interface IClient {
 @Component({
   selector: 'app-summary-client',
   templateUrl: './summary-client.component.html',
-  styleUrls: ['./summary-client.component.css']
 })
 export class SummaryClientComponent implements OnInit {
   displayedColumns: string[] = ['id', 'clientId', 'star', 'token'];

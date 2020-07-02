@@ -1,14 +1,3 @@
-table {
-    width: 100%;
-  }
-  
-  .mat-form-field {
-    width: 100%;
-  }
-  
-  a{
-      color: none;
-  }
   .mat-cell, .mat-footer-cell {
     /* fix checkbox not align issue */
 

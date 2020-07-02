@@ -11,12 +11,12 @@ import { DeviceService } from 'src/app/services/device.service';
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
-  styleUrls: ['./summary-product.component.css']
 })
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
   displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'attributesKey', 'star'];
+  columnWidth:number;
   dataSource: MatTableDataSource<IProductSimple>;
   pageNumber = 0;
   totoalProductCount = 0;
@@ -24,7 +24,9 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   public catalogsData: ICatalogCustomer[];
-  constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver, private categorySvc: CategoryService, public deviceSvc: DeviceService) {
+  constructor(private productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService) {
+    this.columnWidth=Math.floor(100/this.displayedColumns.length);
+    console.dir(this.columnWidth)
     this.productSvc.getAllProduct(this.pageNumber || 0, this.deviceSvc.pageSize - 4).subscribe(products => {
       this.totalProductHandler(products)
     });

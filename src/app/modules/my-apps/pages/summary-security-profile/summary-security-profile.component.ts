@@ -35,45 +35,14 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
   selection = new SelectionModel<ISecurityProfile>(true, []);
-  private sub: Subscription;
-  constructor(public securityProfileSvc: SecurityProfileService, private breakpointObserver: BreakpointObserver,public deviceSvc:DeviceService) {
+  constructor(public securityProfileSvc: SecurityProfileService,public deviceSvc:DeviceService) {
     this.securityProfileSvc.readAll().subscribe(profiles => {
       this.dataSource = new MatTableDataSource(profiles);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
-    this.sub = this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge,
-    ]).subscribe(next => {
-      if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['resourceId', 'path', 'method'];
-      }
-      else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['resourceId', 'path', 'method'];
-      }
-      else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
-      }
-      else {
-        console.warn('unknown device width match!')
-      }
-      if (this.slide && this.slide.checked && !this.displayedColumns.includes('select')) {
-        this.displayedColumns = ['select', ...this.displayedColumns]
-      }
-    });
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
   showOptions() {
     if (!this.displayedColumns.includes('select')) {

@@ -7,41 +7,43 @@
     </mat-form-field>
 
     <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource" matSort>
-
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.id}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME' |translate}}</th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.name}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="parentId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PARENT_ID' |translate}}</th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.parentId}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="attributes">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'KEY_ATTRIBUTES' |translate}}</th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.attributesKey}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="star">
-                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
-                <td mat-cell *matCellDef="let row">
-                    <button [routerLink]="['/dashboard/catalogs/'+row.id]"
-                        [queryParams]="{state: 'update',type:catalogType}" mat-button>
-                        <mat-icon>settings</mat-icon>
-                    </button>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+        <div class="table-container">
+            <table mat-table [dataSource]="dataSource" matSort>
+    
+                <ng-container matColumnDef="id" sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                    <td mat-cell *matCellDef="let row" class="column-size"> {{row.id}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME' |translate}}</th>
+                    <td mat-cell *matCellDef="let row" class="column-size"> {{row.name}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="parentId">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PARENT_ID' |translate}}</th>
+                    <td mat-cell *matCellDef="let row" class="column-size"> {{row.parentId}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="attributes">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'KEY_ATTRIBUTES' |translate}}</th>
+                    <td mat-cell *matCellDef="let row" class="column-size"> {{row.attributesKey}} </td>
+                </ng-container>
+    
+                <ng-container matColumnDef="star">
+                    <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
+                    <td mat-cell *matCellDef="let row">
+                        <button [routerLink]="['/dashboard/catalogs/'+row.id]"
+                            [queryParams]="{state: 'update',type:catalogType}" mat-button>
+                            <mat-icon>settings</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+    
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
 
         <mat-paginator [pageIndex]="categorySvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)">
         </mat-paginator>

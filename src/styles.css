@@ -7,12 +7,6 @@ body {
 .basic-container {
     padding: 30px;
   }
-.column-size{
-  max-width: 86px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
 .centered{
   display: flex;
   flex-direction: row;
@@ -32,3 +26,24 @@ body {
 .mat-stepper-horizontal, .mat-stepper-vertical {
   background-color: #fafafa;
 }
+/* start of table */
+table {
+  width: 100%;
+}
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+.table-container {
+  overflow: auto; 
+}
+td, th {
+  max-width: 20vw;
+  min-width: 20vw;
+}
+.column-size{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* end of table */

@@ -7,7 +7,6 @@ import { DeviceService } from 'src/app/services/device.service';
 @Component({
   selector: 'app-summary-order',
   templateUrl: './summary-order.component.html',
-  styleUrls: ['./summary-order.component.css']
 })
 export class SummaryOrderComponent implements OnInit {
   displayedColumns: string[] = ['id', 'productList', 'paymentAmt','orderState','star'];

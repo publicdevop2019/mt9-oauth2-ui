@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { IAuthority } from 'src/app/modules/my-apps/pages/summary-client/summary-client.component';
+import { DeviceService } from 'src/app/services/device.service';
 export interface IResourceOwner {
   id?: number,
   email: string;
@@ -27,7 +28,6 @@ export interface IResourceOwnerUpdatePwd {
 @Component({
   selector: 'app-summary-resource-owner',
   templateUrl: './summary-resource-owner.component.html',
-  styleUrls: ['./summary-resource-owner.component.css']
 })
 export class SummaryResourceOwnerComponent implements OnInit {
   displayedColumns: string[] = ['id', 'email', 'star', 'token'];
@@ -35,7 +35,7 @@ export class SummaryResourceOwnerComponent implements OnInit {
   /** @todo add access control based on role */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public resourceOwnerService: ResourceOwnerService) {
+  constructor(public resourceOwnerService: ResourceOwnerService, public deviceSvc: DeviceService) {
     this.resourceOwnerService.getResourceOwners().subscribe(resourceOwners => {
       this.resourceOwnerService.cachedResourceOwners = resourceOwners;
       this.dataSource = new MatTableDataSource(resourceOwners);

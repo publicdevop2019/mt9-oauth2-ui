@@ -18,7 +18,6 @@ export interface CatalogCustomerFlatNode {
 @Component({
   selector: 'app-summary-category',
   templateUrl: './summary-catalog.component.html',
-  styleUrls: ['./summary-catalog.component.css']
 })
 export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

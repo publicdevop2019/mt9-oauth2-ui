@@ -1,7 +1,8 @@
 <div style="display: flex;flex-direction: row; justify-content:space-between;">
     <h2>{{'SECURITY_PROFILE_DASHBOARD' |translate}}</h2>
     <div style="display: flex;flex-direction: row;align-items: center;">
-        <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'" (click)="showOptions()">
+        <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
+            (click)="showOptions()">
             {{'BATCH_UPDATE'|translate}}
         </mat-slide-toggle>
     </div>
@@ -10,68 +11,64 @@
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
 </mat-form-field>
 <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource" matSort>
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort>
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
 
-        <!-- Checkbox Column -->
-        <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? masterToggle() : null"
-                            [checked]="selection.hasValue() && isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()"
-                            [aria-label]="checkboxLabel()">
-            </mat-checkbox>
-            </th>
-            <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(row) : null"
-                            [checked]="selection.isSelected(row)"
-                            [aria-label]="checkboxLabel(row)">
-            </mat-checkbox>
-            </td>
-        </ng-container>
+            <ng-container matColumnDef="id" sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                <td mat-cell *matCellDef="let row" class="column-size"> {{row.id}} </td>
+            </ng-container>
 
-        <!-- ID Column -->
-        <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/security-profile/'+row.id]" [queryParams]="{state: 'update'}"> {{row.id}} </td>
-        </ng-container>
+            <ng-container matColumnDef="resourceId">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'RESOURCE_ID'|translate}} </th>
+                <td mat-cell *matCellDef="let row" class="column-size"> {{row.resourceId}} </td>
+            </ng-container>
 
-        <!-- Method Column -->
-        <ng-container matColumnDef="resourceId">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'RESOURCE_ID'|translate}} </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/security-profile/'+row.id]" [queryParams]="{state: 'update'}" > {{row.resourceId}} </td>
-        </ng-container>
-
-        <!-- URL Column -->
-        <ng-container matColumnDef="path">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> URL </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/security-profile/'+row.id]" [queryParams]="{state: 'update'}" class="column-size"> {{row.path}} </td>
-        </ng-container>
+            <ng-container matColumnDef="path">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> URL </th>
+                <td mat-cell *matCellDef="let row" class="column-size"> {{row.path}} </td>
+            </ng-container>
 
 
-        <!-- method Column -->
-        <ng-container matColumnDef="method">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'METHOD'|translate}} </th>
-            <td mat-cell *matCellDef="let row" [routerLink]="['/dashboard/security-profile/'+row.id]" [queryParams]="{state: 'update'}"> {{row.method}} </td>
-        </ng-container>
-        <!-- Star Column -->
-        <ng-container matColumnDef="star" stickyEnd>
-            <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
-            <td mat-cell *matCellDef="let row">
-                <button mat-button [routerLink]="['/dashboard/security-profile/'+row.id]" [queryParams]="{state: 'update'}">
-                    <mat-icon>settings</mat-icon>
-                </button>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+            <ng-container matColumnDef="method">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'METHOD'|translate}} </th>
+                <td mat-cell *matCellDef="let row" class="column-size"> {{row.method}} </td>
+            </ng-container>
 
-    <mat-paginator [pageIndex]="securityProfileSvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)"></mat-paginator>
+            <ng-container matColumnDef="star" >
+                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
+                <td mat-cell *matCellDef="let row" class="column-size">
+                    <button mat-button [routerLink]="['/dashboard/security-profile/'+row.id]"
+                        [queryParams]="{state: 'update'}">
+                        <mat-icon>settings</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+
+    <mat-paginator [pageIndex]="securityProfileSvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]"
+        (page)="pageHandler($event)"></mat-paginator>
 </div>
-<div *ngIf="batchUpdate.checked" style="margin-top: 16px;"  [formGroup]="batchUpdateForm">
+<div *ngIf="batchUpdate.checked" style="margin-top: 16px;" [formGroup]="batchUpdateForm">
     <mat-form-field>
         <input matInput placeholder="{{'ENTER_HOST'|translate}}" formControlName="host">
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="doBatchUpdate()" >{{'UPDATE'|translate}}</button>
+    <button mat-raised-button color="primary" (click)="doBatchUpdate()">{{'UPDATE'|translate}}</button>
 </div>

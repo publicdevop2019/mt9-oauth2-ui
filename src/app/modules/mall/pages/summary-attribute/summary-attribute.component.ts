@@ -6,7 +6,6 @@ import { DeviceService } from 'src/app/services/device.service';
 @Component({
   selector: 'app-summary-attribute',
   templateUrl: './summary-attribute.component.html',
-  styleUrls: ['./summary-attribute.component.css']
 })
 export class SummaryAttributeComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'method', 'value', 'type', 'star'];
