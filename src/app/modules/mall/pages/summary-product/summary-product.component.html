@@ -49,17 +49,17 @@
 
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'ID'|translate}} </th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.id}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
             </ng-container>
 
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME'|translate}} </th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.name}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
             </ng-container>
 
             <ng-container matColumnDef="priceList">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PRICE_LIST'|translate}} </th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.priceList}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.priceList}} </td>
             </ng-container>
 
             <ng-container matColumnDef="totalSales">
@@ -69,7 +69,7 @@
 
             <ng-container matColumnDef="attributesKey">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'KEY_ATTRIBUTES'|translate}} </th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.attributesKey}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.attributesKey}} </td>
             </ng-container>
 
             <ng-container matColumnDef="star">
@@ -85,6 +85,6 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </div>
-    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="deviceSvc.pageSize"
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="deviceSvc.pageSize - pageSizeOffset"
         [length]="totoalProductCount" (page)="pageHandler($event)"></mat-paginator>
 </div>

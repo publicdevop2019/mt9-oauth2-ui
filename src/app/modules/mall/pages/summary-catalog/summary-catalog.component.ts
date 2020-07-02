@@ -28,8 +28,9 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
+  pageSizeOffset = 3;
   public catalogsData: ICatalogCustomer[];
-  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute, private router: Router,public deviceSvc:DeviceService) {
+  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute, private router: Router, public deviceSvc: DeviceService) {
     this.route.queryParamMap.subscribe(queryMaps => {
       this.catalogType = queryMaps.get('type');
       let ob: Observable<ICatalogCustomerHttp>;

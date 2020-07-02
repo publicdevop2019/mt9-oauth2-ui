@@ -11,19 +11,19 @@
             <!-- ID Column -->
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.id}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
             </ng-container>
     
             <!-- clientId Column -->
             <ng-container matColumnDef="email">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'EMAIL'|translate}} </th>
-                <td mat-cell *matCellDef="let row" class="column-size"> {{row.email}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.email}} </td>
             </ng-container>
     
             <!-- Star Column -->
             <ng-container matColumnDef="star">
                 <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
-                <td mat-cell *matCellDef="let row" class="column-size">
+                <td mat-cell *matCellDef="let row">
                     <button [routerLink]="['/dashboard/resource-owner/'+row.id]" [queryParams]="{state: 'update:authority'}"
                         mat-button>
                         <mat-icon>settings</mat-icon>
@@ -34,7 +34,7 @@
             <!-- Token Column -->
             <ng-container matColumnDef="token" stickyEnd>
                 <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'REVOKE_TOKEN'|translate}}</th>
-                <td mat-cell *matCellDef="let row" class="column-size">
+                <td mat-cell *matCellDef="let row">
                     <button mat-button (click)="revokeResourceOwnerToken(row.id)">
                         <mat-icon>remove_circle</mat-icon>
                     </button>
