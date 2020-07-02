@@ -12,5 +12,7 @@ export class DeviceService {
     private summaryRowFooter = 56;
     constructor(private breakpointObserver: BreakpointObserver) {
     }
-    public pageSize:number=Math.floor((window.screen.availHeight - this.topBar - this.contentTitle - this.contentTitleFilter - this.summaryRowHeader - this.summaryRowFooter) / this.summaryRow);
+    public pageSize: number = Math.floor((window.innerHeight - this.topBar - this.contentTitle - this.contentTitleFilter - this.summaryRowHeader - this.summaryRowFooter) / this.summaryRow) === 0 ?
+        1 :
+        Math.floor((window.innerHeight - this.topBar - this.contentTitle - this.contentTitleFilter - this.summaryRowHeader - this.summaryRowFooter) / this.summaryRow);
 }

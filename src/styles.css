@@ -39,7 +39,7 @@ table {
 }
 td, th {
   max-width: 20vw;
-  min-width: 20vw;
+  padding-right: 10px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;

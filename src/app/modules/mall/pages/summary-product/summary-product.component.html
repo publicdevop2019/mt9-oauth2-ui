@@ -85,6 +85,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </div>
-    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber" [pageSize]="deviceSvc.pageSize - pageSizeOffset"
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="pageNumber"
+        [pageSize]="(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1"
         [length]="totoalProductCount" (page)="pageHandler($event)"></mat-paginator>
 </div>
