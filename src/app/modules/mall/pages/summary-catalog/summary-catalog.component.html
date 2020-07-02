@@ -1,5 +1,5 @@
-<h2 *ngIf="catalogType==='frontend'">{{'CATEGORY_DASHBOARD'|translate}}</h2>
-<h2 *ngIf="catalogType==='backend'">{{'CATEGORY_ADMIN_DASHBOARD'|translate}}</h2>
+<h2 *ngIf="catalogType==='frontend'">{{'MALL_CENTER' |translate}} / {{'CATEGORY_DASHBOARD'|translate}}</h2>
+<h2 *ngIf="catalogType==='backend'">{{'MALL_CENTER' |translate}} / {{'CATEGORY_ADMIN_DASHBOARD'|translate}}</h2>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <ng-container *ngIf="viewType==='LIST_VIEW'">
     <mat-form-field>
