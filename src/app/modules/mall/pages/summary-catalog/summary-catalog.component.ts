@@ -20,7 +20,7 @@ export interface CatalogCustomerFlatNode {
   templateUrl: './summary-catalog.component.html',
 })
 export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
@@ -28,7 +28,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
-  pageSizeOffset = 3;
+  pageSizeOffset = 2;
   public catalogsData: ICatalogCustomer[];
   constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute, private router: Router, public deviceSvc: DeviceService) {
     this.route.queryParamMap.subscribe(queryMaps => {

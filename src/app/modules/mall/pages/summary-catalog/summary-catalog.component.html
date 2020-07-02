@@ -45,7 +45,7 @@
             </table>
         </div>
 
-        <mat-paginator [pageIndex]="categorySvc.currentPageIndex" [pageSizeOptions]="[5]" (page)="pageHandler($event)">
+        <mat-paginator [pageIndex]="categorySvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize -pageSizeOffset]" (page)="pageHandler($event)">
         </mat-paginator>
     </div>
 </ng-container>
