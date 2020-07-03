@@ -15,7 +15,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   constructor(private router: Router, private _httpProxy: HttpProxyService, private _snackBar: MatSnackBar) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
-    if (this._httpProxy.netImpl.currentUserAuthInfo && this._httpProxy.netImpl.currentUserAuthInfo.access_token && !this._httpProxy.refreshInprogress)
+    if (this._httpProxy.netImpl.currentUserAuthInfo && this._httpProxy.netImpl.currentUserAuthInfo.access_token)
       if (
         req.url.indexOf('oauth/token') > -1 && req.method === 'POST'
       ) {

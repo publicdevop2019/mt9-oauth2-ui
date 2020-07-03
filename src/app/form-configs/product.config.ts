@@ -59,7 +59,6 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "readonly": true,
             "label": "COVERAGE_IMAGE_URL",
             "key": "imageUrlSmall",
             "position": {

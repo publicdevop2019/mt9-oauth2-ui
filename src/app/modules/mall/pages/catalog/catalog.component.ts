@@ -10,6 +10,7 @@ import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dy
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
+import { hasValue } from 'src/app/clazz/utility';
 
 
 @Component({
@@ -42,13 +43,13 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       if (next === 'FRONTEND') {
         this.categorySvc.getCatalogFrontend().subscribe(next1 => {
           this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
-          this.formInfo.inputs.find(e => e.key === 'parentId').display=true;
+          this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
         })
       } else if (next === 'BACKEND') {
-          this.categorySvc.getCatalogBackend().subscribe(next1 => {
-            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
-            this.formInfo.inputs.find(e => e.key === 'parentId').display=true;
-          })
+        this.categorySvc.getCatalogBackend().subscribe(next1 => {
+          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+          this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
+        })
       } else {
 
       }
@@ -61,7 +62,8 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
           this.fis.formGroupCollection[this.formId].get('catalogType').setValue(byId.catalogType);
           this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
-          this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId.toString());
+          if (hasValue(byId.parentId))
+            this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId.toString())
           if (byId.attributesKey) {
             this.attrSvc.getAttributeList().subscribe(next => {
               //update formInfo first then initialize form, so add template can be correct
