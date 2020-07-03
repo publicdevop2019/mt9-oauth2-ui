@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,7 +23,6 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   category$: Observable<ICatalogCustomer>;
   formId = 'category';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  validator: ValidateHelper;
   attrFormId = 'attributes';
   attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
   // save a copy of attrFormInfo so when toggle, no need to translate again
@@ -34,21 +33,35 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
     public categorySvc: CategoryService,
     private fis: FormInfoService,
     public translate: TranslateService,
-    public attrSvc: AttributeService
+    public attrSvc: AttributeService,
   ) {
-    this.validator = new ValidateHelper(this.formId, this.formInfo, fis);
   }
 
   ngAfterViewInit(): void {
-    this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
+    this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
+      if (next === 'FRONTEND') {
+        this.categorySvc.getCatalogFrontend().subscribe(next1 => {
+          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+          this.formInfo.inputs.find(e => e.key === 'parentId').display=true;
+        })
+      } else if (next === 'BACKEND') {
+          this.categorySvc.getCatalogBackend().subscribe(next1 => {
+            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+            this.formInfo.inputs.find(e => e.key === 'parentId').display=true;
+          })
+      } else {
+
+      }
+      this.fis.formGroupCollection[this.formId].get('parentId').reset();
+    });
     this.route.queryParamMap.subscribe(queryMaps => {
       this.state = queryMaps.get('state');
       if (queryMaps.get('state') === 'update') {
         this.category$.subscribe(byId => {
+          this.fis.formGroupCollection[this.formId].get('catalogType').setValue(byId.catalogType);
           this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
-          this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId);
-          this.fis.formGroupCollection[this.formId].get('catalogType').setValue(byId.catalogType);
+          this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId.toString());
           if (byId.attributesKey) {
             this.attrSvc.getAttributeList().subscribe(next => {
               //update formInfo first then initialize form, so add template can be correct
@@ -195,9 +208,13 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
       parentId: formGroup.get('parentId').value,
-      attributesKey: this.getAddedAttrs(),
+      attributesKey: this.hasAttr() ? this.getAddedAttrs() : null,
       catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
     }
+  }
+  private hasAttr(): boolean {
+    let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;
+    return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
   }
   getAddedAttrs(): string[] {
     let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;

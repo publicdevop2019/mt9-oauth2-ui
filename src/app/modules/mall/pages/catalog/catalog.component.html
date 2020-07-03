@@ -3,10 +3,10 @@
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <lib-factory *ngIf="attrList" [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validator.valid()&&categorySvc.update(convertToCategoryPayload())">{{'UPDATE'|translate}}</button>
+        (click)="categorySvc.update(convertToCategoryPayload())">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="warn" *ngIf="state==='update'"
-        (click)="validator.valid()&&categorySvc.delete(convertToCategoryPayload())">{{'DELETE'|translate}}</button>
+        (click)="categorySvc.delete(convertToCategoryPayload())">{{'DELETE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="validator.valid()&&categorySvc.create(convertToCategoryPayload())"
+        (click)="categorySvc.create(convertToCategoryPayload())"
         *ngIf="state=='create'">{{'CREATE'|translate}}</button>
 </div>
