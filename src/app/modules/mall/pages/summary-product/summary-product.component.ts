@@ -18,14 +18,13 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'attributesKey', 'star'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
-  pageNumber = 0;
   totoalProductCount = 0;
   pageSizeOffset = 4;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   public catalogsData: ICatalogCustomer[];
-  constructor(private productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService) {
-    this.productSvc.getAllProduct(this.pageNumber || 0, this.getPageSize()).subscribe(products => {
+  constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService) {
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(products => {
       this.totalProductHandler(products)
     });
     this.categorySvc.getCatalogBackend()
@@ -41,8 +40,8 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
       })
     this.rangeSearch.valueChanges.pipe(debounce(() => interval(1000)))
       .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).pipe(switchMap(e => {
-        this.pageNumber = 0;
-        return this.productSvc.searchProductByKeyword(this.pageNumber, this.getPageSize(), e)
+        this.productSvc.currentPageIndex = 0;
+        return this.productSvc.searchProductByKeyword(this.productSvc.currentPageIndex, this.getPageSize(), e)
       })).subscribe(next => {
         this.totalProductHandler(next)
       })
@@ -52,8 +51,8 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
   searchWithTags(catalog: ICatalogCustomer) {
-    this.pageNumber = 0;
-    this.productSvc.searchProductsByTags(this.pageNumber, this.getPageSize(), catalog.attributesKey).subscribe(products => {
+    this.productSvc.currentPageIndex = 0;
+    this.productSvc.searchProductsByTags(this.productSvc.currentPageIndex, this.getPageSize(), catalog.attributesKey).subscribe(products => {
       this.totalProductHandler(products)
     });
   }
@@ -64,8 +63,8 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     }
   }
   pageHandler(e: PageEvent) {
-    this.pageNumber = e.pageIndex;
-    this.productSvc.getAllProduct(this.pageNumber || 0, this.getPageSize()).subscribe(products => {
+    this.productSvc.currentPageIndex = e.pageIndex;
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(products => {
       this.totalProductHandler(products)
     });
   }

@@ -13,7 +13,7 @@ export const zhHans = {
     "ENTER_YOUR_EMAIL": "输入邮箱",
     "CURRENT_LANG":"English",
     "AUTH_CENTER": "应用管理",
-    "MALL_CENTER": "商城管理",
+    "MALL_CENTER": "店铺管理",
     "CLIENT_DASHBOARD": "应用列表",
     "RESOURCE_OWNER_DASHBOARD": "用户列表",
     "SECURITY_PROFILE_DASHBOARD": "API列表",
@@ -175,5 +175,6 @@ export const zhHans = {
     "ENTER_ORDER_STORAGE_DECREASE_AMOUNT": "输入订单库存减少值",
     "ENTER_ACTUAL_STORAGE_INCREASE_AMOUNT": "输入实际库存增加值",
     "ENTER_ACTUAL_STORAGE_DECREASE_AMOUNT": "输入实际库存减少值",
+    "TYPE": "类别",
     "": "",
 }

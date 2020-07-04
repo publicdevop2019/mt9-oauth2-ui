@@ -52,6 +52,7 @@ export interface IProductDetail {
   providedIn: 'root'
 })
 export class ProductService {
+  currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
     return this.httpProxy.netImpl.getAllProducts(pageNum, pageSize)

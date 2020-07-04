@@ -168,5 +168,6 @@ export const enUS = {
     "PUBLISH_AFTER_CREATE": "Publish after create",
     "YES": "Yes",
     "NO": "No",
+    "TYPE": "Type",
     "": "",
 }
