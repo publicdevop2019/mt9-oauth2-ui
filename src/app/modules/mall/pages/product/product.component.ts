@@ -438,8 +438,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return {
       id: formGroup.get('id').value,
       attributesKey: formGroup.get('attributesKey').value,
-      attributesProd: this.attrList ? this.getAddedAttrs(this.attrProdFormId) : null,
-      attributesGen: this.attrList ? this.getAddedAttrs(this.attrGeneralFormId) : null,
+      attributesProd: this.hasAttr(this.attrProdFormId) ? this.getAddedAttrs(this.attrProdFormId) : null,
+      attributesGen: this.hasAttr(this.attrGeneralFormId) ? this.getAddedAttrs(this.attrGeneralFormId) : null,
       name: formGroup.get('name').value,
       imageUrlSmall: formGroup.get('imageUrlSmall').value,
       description: formGroup.get('description').value,
@@ -477,6 +477,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       return selected.name + ':' + attrValue
     });
+  }
+  private hasAttr(formId: string): boolean {
+    let attrFormValue = this.fis.formGroupCollection[formId].value;
+    return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
   }
   private updateChildForm(attrs: string[], formId: string, formInfo: IForm) {
     attrs.forEach((attr, index) => {
