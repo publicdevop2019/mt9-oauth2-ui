@@ -217,7 +217,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       //update formInfo first then initialize form, so add template can be correct
       this.attrProdFormInfo.inputs[0].options = next.data.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
       this.attrGeneralFormInfo.inputs[0].options = next.data.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
-      this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = next.data.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: e.name, value: String(e.id) });
+      this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = next.data.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
       this.attrList = next.data;
       if (this.state === 'create') {
         //wait for form initialize complete
@@ -296,6 +296,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       }, 0)
 
     });
+  }
+  getLabel(e: IAttribute): string {
+    if (e.description) {
+      return e.name + ' ( ' + e.description + ' )'
+    }
+    return e.name
   }
   ngOnDestroy(): void {
     this.subs.forEach(e => e.unsubscribe());

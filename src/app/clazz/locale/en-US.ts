@@ -169,5 +169,6 @@ export const enUS = {
     "YES": "Yes",
     "NO": "No",
     "TYPE": "Type",
+    "DESCRIPTION": "Description",
     "": "",
 }

@@ -29,12 +29,22 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
+            "type": "text",
+            "display": true,
+            "label": "ENTER_DESCRIPTION",
+            "key": "description",
+            "position": {
+                "row": "2",
+                "column": "0"
+            }
+        },
+        {
             "type": "radio",
             "display": true,
             "label": "ENTER_METHOD",
             "key": "method",
             "position": {
-                "row": "2",
+                "row": "3",
                 "column": "0"
             },
             "attributes": [
@@ -54,7 +64,7 @@ export const FORM_CONFIG: IForm = {
             "label": "SELECT_ATTR_TYPE",
             "key": "type",
             "position": {
-                "row": "3",
+                "row": "4",
                 "column": "0"
             },
             "attributes": [

@@ -53,7 +53,7 @@ export const zhHans = {
     "ENTER_PRICE": "输入价格",
     "UPLOAD_PRODUCT_IMAGE_SMALL": "上传产品照片",
     "COVERAGE_IMAGE_URL": "照片链接",
-    "ENTER_DESCRIPTION": "输入简介",
+    "ENTER_DESCRIPTION": "输入备注",
     "ENTER_SALES": "输入销量",
     "ENTER_RATE": "输入评分",
     "ENTER_INITIAL_ORDER_STORAGE": "输入订单库存",
@@ -176,5 +176,6 @@ export const zhHans = {
     "ENTER_ACTUAL_STORAGE_INCREASE_AMOUNT": "输入实际库存增加值",
     "ENTER_ACTUAL_STORAGE_DECREASE_AMOUNT": "输入实际库存减少值",
     "TYPE": "类别",
+    "DESCRIPTION": "备注",
     "": "",
 }

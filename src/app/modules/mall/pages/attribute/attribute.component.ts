@@ -46,6 +46,7 @@ export class AttributeComponent implements OnInit {
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
           this.fis.formGroupCollection[this.formId].get('method').setValue(byId.method);
           this.fis.formGroupCollection[this.formId].get('type').setValue(byId.type);
+          this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description);
           setTimeout(() => {
             if (byId.selectValues && byId.selectValues.length !== 0) {
               byId.selectValues.forEach((e, index) => {
@@ -131,9 +132,10 @@ export class AttributeComponent implements OnInit {
     return {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
+      description: formGroup.get('description').value ? formGroup.get('description').value : null,
       method: formGroup.get('method').value,
       selectValues: values,
-      type:formGroup.get('type').value,
+      type: formGroup.get('type').value,
     }
   }
 }
