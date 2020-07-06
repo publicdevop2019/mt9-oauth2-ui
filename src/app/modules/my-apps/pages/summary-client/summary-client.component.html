@@ -47,6 +47,6 @@
         </table>
     </div>
 
-    <mat-paginator [pageIndex]="clientService.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)">
+    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource.data.length" [pageIndex]="clientService.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

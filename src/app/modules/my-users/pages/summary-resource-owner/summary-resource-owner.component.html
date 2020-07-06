@@ -50,6 +50,6 @@
         </table>
     </div>
 
-    <mat-paginator [pageIndex]="resourceOwnerService.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]"
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="resourceOwnerService.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]"
         (page)="pageHandler($event)"></mat-paginator>
 </div>

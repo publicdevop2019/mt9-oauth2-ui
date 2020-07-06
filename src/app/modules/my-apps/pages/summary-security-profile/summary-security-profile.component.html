@@ -71,7 +71,7 @@
         </table>
     </div>
 
-    <mat-paginator [pageIndex]="securityProfileSvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]"
+    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource.data.length" [pageIndex]="securityProfileSvc.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]"
         (page)="pageHandler($event)"></mat-paginator>
 </div>
 <div *ngIf="batchUpdate.checked" style="margin-top: 16px;" [formGroup]="batchUpdateForm">
