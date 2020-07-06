@@ -49,12 +49,20 @@
                 <td mat-cell *matCellDef="let row"> {{row.method}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="star" >
-                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'SETTING'|translate}}</th>
+            <ng-container matColumnDef="edit" >
+                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'EDIT'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
                     <button mat-button [routerLink]="['/dashboard/security-profile/'+row.id]"
                         [queryParams]="{state: 'update'}">
-                        <mat-icon>settings</mat-icon>
+                        <mat-icon [color]="'primary'">edit</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'DELETE'|translate}}</th>
+                <td mat-cell *matCellDef="let row">
+                    <button (click)="securityProfileSvc.delete(row.id)" mat-button>
+                        <mat-icon [color]="'warn'">delete_outline</mat-icon>
                     </button>
                 </td>
             </ng-container>

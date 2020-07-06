@@ -40,9 +40,9 @@ export class OnlineImpl implements INetworkService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
-    deleteAttribute(attr: IAttribute): Observable<boolean> {
+    deleteAttribute(id:number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + attr.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -133,9 +133,9 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    deleteProduct(productDetail: IProductDetail): Observable<boolean> {
+    deleteProduct(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + productDetail.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -182,9 +182,9 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    deleteCategory(category: ICatalogCustomer): Observable<boolean> {
+    deleteCategory(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + category.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -221,9 +221,9 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    deleteSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+    deleteSecurityProfile(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + '/proxy/security/profile/' + securitypProfile.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + '/proxy/security/profile/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -271,9 +271,9 @@ export class OnlineImpl implements INetworkService {
         });
 
     };
-    deleteResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
+    deleteResourceOwner(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + resourceOwner.id).subscribe(next => {
+            this._httpClient.delete<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -292,9 +292,9 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    deleteClient(client: IClient): Observable<boolean> {
+    deleteClient(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + client.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + id).subscribe(next => {
                 e.next(true)
             });
         });

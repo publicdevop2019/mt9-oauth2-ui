@@ -6,6 +6,4 @@
     <button mat-raised-button color="primary" *ngIf="state==='update:authority'"
         style="margin-bottom: 20px;margin-top: 20px;"
         (click)="validator.valid()&&resourceOwnerService.updateResourceOwner(convertToResourceOwner())">{{'UPDATE'|translate}}</button>
-    <button mat-raised-button color="warn" *ngIf="state==='update:authority'"
-        (click)="validator.valid()&&resourceOwnerService.deleteResourceOwner(convertToResourceOwner())">{{'DELETE'|translate}}</button>
 </div>

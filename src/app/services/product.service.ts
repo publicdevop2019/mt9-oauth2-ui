@@ -80,8 +80,8 @@ export class ProductService {
     })
 
   }
-  delete(product: IProductDetail) {
-    this.httpProxy.netImpl.deleteProduct(product).subscribe(result => {
+  delete(id: number) {
+    this.httpProxy.netImpl.deleteProduct(id).subscribe(result => {
       this.notify(result)
     })
   }

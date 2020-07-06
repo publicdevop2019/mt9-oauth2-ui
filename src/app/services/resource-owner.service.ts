@@ -44,8 +44,8 @@ export class ResourceOwnerService {
       this.router.navigateByUrl('/login');
     });
   }
-  deleteResourceOwner(resourceOwner: IResourceOwner): void {
-    this.httpProxy.netImpl.deleteResourceOwner(resourceOwner).subscribe(result => {
+  delete(id: number): void {
+    this.httpProxy.netImpl.deleteResourceOwner(id).subscribe(result => {
       if (!result)
         this._httpInterceptor.openSnackbar('operation failed')
       this._httpInterceptor.openSnackbar('operation success')

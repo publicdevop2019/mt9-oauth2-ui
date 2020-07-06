@@ -73,7 +73,7 @@ export const enUS = {
     "UPDATE": "Update",
     "DELETE": "Delete",
     "TITLE": "Title",
-    "SETTING": "Setting",
+    "EDIT": "Edit",
     "FILTER": "Filter",
     "CLIENT_ID": "Client ID",
     "REVOKE_TOKEN": "Revoke Token",

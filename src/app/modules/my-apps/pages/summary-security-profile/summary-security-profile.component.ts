@@ -26,7 +26,7 @@ export interface ISecurityProfile {
 export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
   
   header: string;
-  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'star'];
+  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'edit','delete'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   batchUpdateForm = new FormGroup({
     host: new FormControl('', []),

@@ -1,5 +1,13 @@
 <div class="example-container">
-    <app-back-button></app-back-button>
+    <div style="display: flex;flex-direction: row;justify-content: space-between;">
+        <app-back-button></app-back-button>
+        <button mat-raised-button color="primary" *ngIf="state==='update'"
+            style="margin-bottom: 10px;margin-top: 10px;"
+            (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
+        <button mat-raised-button color="primary" style="margin-top: 10px;margin-bottom: 10px;"
+            (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
+            *ngIf="state=='create'">{{'CREATE'|translate}}</button>
+    </div>
     <mat-horizontal-stepper #stepper>
         <mat-step>
             <ng-template matStepLabel>{{'PLEASE_SELECT_BACKEND_CATALOG'|translate}}</ng-template>
@@ -19,14 +27,6 @@
             <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>
             <h3>{{'PRODUCT_OPTION(S)'|translate}}</h3>
             <lib-factory [formId]="optionFormId" [formInfo]="optionFormInfo"></lib-factory>
-            <button mat-raised-button color="primary" *ngIf="state==='update'"
-                style="margin-bottom: 20px;margin-top: 20px;width: 100%;"
-                (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
-            <button mat-raised-button color="warn" *ngIf="state==='update'" style="margin-bottom: 40px;width: 100%;"
-                (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.delete(convertToPayload())">{{'DELETE'|translate}}</button>
-            <button mat-raised-button color="primary" style="margin-top: 24px;width: 100%;margin-bottom: 24px;"
-                (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
-                *ngIf="state=='create'">{{'CREATE'|translate}}</button>
         </mat-step>
         <mat-step>
             <ng-template matStepLabel>{{'ADD_PRODUCT_ATTRIBUTES' | translate}}</ng-template>

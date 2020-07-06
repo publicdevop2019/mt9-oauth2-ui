@@ -22,7 +22,7 @@ export class SandboxImpl implements INetworkService {
     constructor(http: HttpClient) {
         this.http = http;
     }
-    deleteAttribute(tag: IAttribute): Observable<boolean> {
+    deleteAttribute(id: number): Observable<boolean> {
         return of(true);
     };
     updateAttribute(tag: IAttribute): Observable<boolean> {
@@ -113,7 +113,7 @@ export class SandboxImpl implements INetworkService {
     createProduct(productDetail: IProductDetail): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteProduct(productDetail: IProductDetail): Observable<boolean> {
+    deleteProduct(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
@@ -128,7 +128,7 @@ export class SandboxImpl implements INetworkService {
     createCategory(category: ICatalogCustomer): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteCategory(category: ICatalogCustomer): Observable<boolean> {
+    deleteCategory(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     updateCategory(category: ICatalogCustomer): Observable<boolean> {
@@ -143,7 +143,7 @@ export class SandboxImpl implements INetworkService {
     updateSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+    deleteSecurityProfile(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     getSecurityProfiles(): Observable<ISecurityProfile[]> {
@@ -193,7 +193,7 @@ export class SandboxImpl implements INetworkService {
     updateResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
+    deleteResourceOwner(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     createClient(client: IClient): Observable<boolean> {
@@ -202,7 +202,7 @@ export class SandboxImpl implements INetworkService {
     updateClient(client: IClient): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteClient(client: IClient): Observable<boolean> {
+    deleteClient(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     getClients(): Observable<IClient[]> {

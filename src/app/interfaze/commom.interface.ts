@@ -12,7 +12,7 @@ import { IAttributeHttp, IAttribute } from '../services/attribute.service';
 
 // regulate interface
 export interface INetworkService {
-  deleteAttribute: (tag: IAttribute) => Observable<boolean>;
+  deleteAttribute: (id: number) => Observable<boolean>;
   updateAttribute: (tag: IAttribute) => Observable<boolean>;
   createAttribute: (tag: IAttribute) => Observable<boolean>;
   getAttributes(): Observable<IAttributeHttp>;
@@ -41,25 +41,25 @@ export interface INetworkService {
   getCatalogFrontendAdmin: () => Observable<ICatalogCustomerHttp>;
   getCatalogBackendAdmin: () => Observable<ICatalogCustomerHttp>;
   createCategory: (category: ICatalogCustomer) => Observable<boolean>;
-  deleteCategory: (category: ICatalogCustomer) => Observable<boolean>;
+  deleteCategory: (id: number) => Observable<boolean>;
   updateCategory: (category: ICatalogCustomer) => Observable<boolean>;
 
   getAllProducts: (pageNum: number, pageSize: number) => Observable<IProductTotalResponse>;
   getProducts: (category: string, pageNum: number, pageSize: number) => Observable<IProductSimple[]>;
   getProductDetail: (id: number) => Observable<IProductDetail>;
   createProduct: (productDetail: IProductDetail) => Observable<boolean>;
-  deleteProduct: (productDetail: IProductDetail) => Observable<boolean>;
+  deleteProduct: (id: number) => Observable<boolean>;
   updateProduct: (productDetail: IProductDetail) => Observable<boolean>;
 
   getClients: () => Observable<IClient[]>;
   updateClient: (client: IClient) => Observable<boolean>;
-  deleteClient: (client: IClient) => Observable<boolean>;
+  deleteClient: (id: number) => Observable<boolean>;
   createClient: (client: IClient) => Observable<boolean>;
 
   getResourceOwners: () => Observable<IResourceOwner[]>;
   updateResourceOwner: (resourceOwner: IResourceOwner) => Observable<boolean>;
   updateResourceOwnerPwd: (resourceOwner: IResourceOwnerUpdatePwd) => Observable<boolean>;
-  deleteResourceOwner: (resourceOwner: IResourceOwner) => Observable<boolean>;
+  deleteResourceOwner: (id: number) => Observable<boolean>;
 
   authorize: (authorizeParty: IAuthorizeParty) => Observable<IAuthorizeCode>;
   revokeClientToken: (clientId: string) => Observable<boolean>;
@@ -68,7 +68,7 @@ export interface INetworkService {
   createSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
   updateSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
   batchUpdateSecurityProfile: (securitypProfile: { [key: string]: string }) => Observable<boolean>;
-  deleteSecurityProfile: (securitypProfile: ISecurityProfile) => Observable<boolean>;
+  deleteSecurityProfile: (id: number) => Observable<boolean>;
   autoApprove: (clientId: string) => Observable<boolean>;
 }
 export interface ITokenResponse {

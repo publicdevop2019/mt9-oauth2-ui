@@ -10,7 +10,7 @@ import { DeviceService } from 'src/app/services/device.service';
   styleUrls: ['./summary-comment.component.css']
 })
 export class SummaryCommentComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'content', 'publishedAt', 'publisherId','star'];
+  displayedColumns: string[] = ['id', 'content', 'publishedAt', 'publisherId','edit'];
   dataSource: MatTableDataSource<IComment>;
   pageNumber = 0;
   total=0;

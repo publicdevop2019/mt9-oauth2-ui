@@ -37,8 +37,8 @@ export class SecurityProfileService {
     })
 
   }
-  delete(securityProfiel: ISecurityProfile) {
-    this.httpProxy.netImpl.deleteSecurityProfile(securityProfiel).subscribe(result => {
+  delete(id: number) {
+    this.httpProxy.netImpl.deleteSecurityProfile(id).subscribe(result => {
       this.notify(result)
     })
   }

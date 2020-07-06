@@ -41,8 +41,8 @@ export class AttributeService {
     })
 
   }
-  delete(attribute: IAttribute) {
-    this.httpProxy.netImpl.deleteAttribute(attribute).subscribe(result => {
+  delete(id: number) {
+    this.httpProxy.netImpl.deleteAttribute(id).subscribe(result => {
       this.notify(result)
     })
   }

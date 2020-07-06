@@ -38,8 +38,8 @@ export class ClientService {
       this.notifyTokenRevocation(result)
     })
   }
-  deleteClient(client: IClient): void {
-    this.httpProxy.netImpl.deleteClient(client).subscribe(result => {
+  delete(id: number): void {
+    this.httpProxy.netImpl.deleteClient(id).subscribe(result => {
       this.notify(result)
       this.router.navigateByUrl('/dashboard/clients');
     })

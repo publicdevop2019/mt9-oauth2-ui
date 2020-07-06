@@ -135,7 +135,8 @@ export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
     return changeKeys[0];
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    if (this.sub)
+      this.sub.unsubscribe();
   }
   convertToClient(): IClient {
     let formGroup = this.fis.formGroupCollection[this.formId];

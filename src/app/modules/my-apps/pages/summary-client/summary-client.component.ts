@@ -37,7 +37,7 @@ export interface IClient {
   templateUrl: './summary-client.component.html',
 })
 export class SummaryClientComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'clientId', 'star', 'token'];
+  displayedColumns: string[] = ['id', 'clientId', 'edit', 'token','delete'];
   dataSource: MatTableDataSource<IClient>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;

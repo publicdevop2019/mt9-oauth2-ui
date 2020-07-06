@@ -73,7 +73,7 @@ export const zhHans = {
     "UPDATE": "更新",
     "DELETE": "删除",
     "TITLE": "名称",
-    "SETTING": "设置",
+    "EDIT": "编辑",
     "FILTER": "搜索当前列表",
     "CLIENT_ID": "应用ID",
     "REVOKE_TOKEN": "回收令牌",

@@ -9,7 +9,7 @@ import { DeviceService } from 'src/app/services/device.service';
   templateUrl: './summary-order.component.html',
 })
 export class SummaryOrderComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'productList', 'paymentAmt','orderState','star'];
+  displayedColumns: string[] = ['id', 'productList', 'paymentAmt','orderState','edit'];
   dataSource: MatTableDataSource<IOrder>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

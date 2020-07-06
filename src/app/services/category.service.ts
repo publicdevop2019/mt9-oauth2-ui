@@ -54,8 +54,8 @@ export class CategoryService {
     })
 
   }
-  delete(category: ICatalogCustomer) {
-    this.httpProxy.netImpl.deleteCategory(category).subscribe(result => {
+  delete(id: number) {
+    this.httpProxy.netImpl.deleteCategory(id).subscribe(result => {
       this.notify(result)
     })
   }

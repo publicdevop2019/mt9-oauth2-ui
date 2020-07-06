@@ -15,7 +15,7 @@ import { DeviceService } from 'src/app/services/device.service';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'attributesKey', 'star'];
+  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'attributesKey', 'edit','delete'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalProductCount = 0;

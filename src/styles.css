@@ -43,5 +43,6 @@ td, th {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  padding-right: 8px !important;
 }
 /* end of table */

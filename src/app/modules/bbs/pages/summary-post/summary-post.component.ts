@@ -11,7 +11,7 @@ import { DeviceService } from 'src/app/services/device.service';
   styleUrls: ['./summary-post.component.css']
 })
 export class SummaryPostComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'star'];
+  displayedColumns: string[] = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'edit'];
   dataSource: MatTableDataSource<IPostCard>;
   pageNumber = 0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -30,19 +30,19 @@ export class SummaryPostComponent implements OnInit {
       Breakpoints.XLarge,
     ]).subscribe(next => {
       if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['id', 'topic', 'publishedAt', 'publisherId', 'star'];
+        this.displayedColumns = ['id', 'topic', 'publishedAt', 'publisherId', 'edit'];
       }
       else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['id', 'topic', 'publishedAt', 'publisherId', 'star'];
+        this.displayedColumns = ['id', 'topic', 'publishedAt', 'publisherId', 'edit'];
       }
       else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'star'];
+        this.displayedColumns = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'edit'];
       }
       else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'star'];
+        this.displayedColumns = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'edit'];
       }
       else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'star'];
+        this.displayedColumns = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'edit'];
       }
       else {
         console.warn('unknown device width match!')
