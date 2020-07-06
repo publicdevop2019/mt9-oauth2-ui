@@ -144,7 +144,7 @@ export const enUS = {
     "ATTRIBUTE_DASHBOARD": "Attribute dashboard",
     "VALUE": "value",
     "ENTER_VALUE": "Please enter value",
-    "PLEASE_SELECT_CATALOG": "Please select product catalog",
+    "PLEASE_SELECT_BACKEND_CATALOG": "Please select backend catalog",
     "KEY_ATTR": "Key attributes",
     "SALES_ATTR": "Sales attributes",
     "GEN_ATTR": "General attributes",

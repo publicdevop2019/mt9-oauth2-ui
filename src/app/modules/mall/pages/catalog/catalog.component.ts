@@ -67,7 +67,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
           if (byId.attributesKey) {
             this.attrSvc.getAttributeList().subscribe(next => {
               //update formInfo first then initialize form, so add template can be correct
-              this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
+              this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
               this.attrList = next.data;
               setTimeout(() => {
                 byId.attributesKey.forEach((attr, index) => {
@@ -126,7 +126,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       } else if (queryMaps.get('state') === 'create') {
         this.attrSvc.getAttributeList().subscribe(next => {
           //update formInfo first then initialize form, so add template can be correct
-          this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) });
+          this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
           this.attrList = next.data;
           setTimeout(() => {
             // @todo add observable to indicate form has been initialized
@@ -148,6 +148,12 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
       }
     });
+  }
+  getLabel(e: IAttribute): string {
+    if (e.description) {
+      return e.name + ' ( ' + e.description + ' )'
+    }
+    return e.name
   }
   ngOnDestroy(): void {
     this.sub.unsubscribe();

@@ -24,7 +24,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  displayedColumns: string[] = ['id', 'name', 'parentId', 'attributes', 'star'];
+  displayedColumns: string[] = ['name', 'parentId', 'attributes', 'star'];
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";

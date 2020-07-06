@@ -144,7 +144,7 @@ export const zhHans = {
     "ATTRIBUTE_DASHBOARD": "属性列表",
     "VALUE": "值",
     "ENTER_VALUE": "请输入值",
-    "PLEASE_SELECT_CATALOG": "选择类目",
+    "PLEASE_SELECT_BACKEND_CATALOG": "选择后端类目",
     "KEY_ATTR": "关键属性",
     "SALES_ATTR": "销售属性",
     "GEN_ATTR": "普通属性",

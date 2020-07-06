@@ -2,7 +2,7 @@
     <app-back-button></app-back-button>
     <mat-horizontal-stepper #stepper>
         <mat-step>
-            <ng-template matStepLabel>{{'PLEASE_SELECT_CATALOG'|translate}}</ng-template>
+            <ng-template matStepLabel>{{'PLEASE_SELECT_BACKEND_CATALOG'|translate}}</ng-template>
             <app-catalog-tree [catalogs]="catalogs&&catalogs.data" (leafNodeClicked)="loadAttributes($event)">
             </app-catalog-tree>
         </mat-step>

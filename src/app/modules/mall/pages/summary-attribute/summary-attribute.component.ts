@@ -8,7 +8,7 @@ import { DeviceService } from 'src/app/services/device.service';
   templateUrl: './summary-attribute.component.html',
 })
 export class SummaryAttributeComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'description', 'value', 'type', 'star'];
+  displayedColumns: string[] = ['name', 'description', 'value', 'type', 'star'];
   dataSource: MatTableDataSource<IAttribute>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;

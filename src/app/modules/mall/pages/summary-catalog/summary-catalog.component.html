@@ -10,12 +10,7 @@
         <div class="table-container">
             <table mat-table [dataSource]="dataSource" matSort>
 
-                <ng-container matColumnDef="id" sticky>
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                    <td mat-cell *matCellDef="let row"> {{row.id}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="name">
+                <ng-container matColumnDef="name"　sticky>
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME' |translate}}</th>
                     <td mat-cell *matCellDef="let row"> {{row.name}} </td>
                 </ng-container>
@@ -45,7 +40,7 @@
             </table>
         </div>
 
-        <mat-paginator [pageIndex]="categorySvc.currentPageIndex"
+        <mat-paginator [pageIndex]="categorySvc.currentPageIndex" [showFirstLastButtons]="true"
             [pageSizeOptions]="[(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1 ]"
             (page)="pageHandler($event)">
         </mat-paginator>
