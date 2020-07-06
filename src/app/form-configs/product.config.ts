@@ -16,7 +16,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "KEY_ATTR",
+            "label": "INHERIT_ATTR",
             "readonly": true,
             "key": "attributesKey",
             "position": {

@@ -5,7 +5,7 @@ export const ATTR_PROD_FORM_CONFIG: IForm = {
         {
             "type": "select",
             "display": true,
-            "label": "SELECT_AN_PROD_ATTRIBUTE",
+            "label": "SELECT_AN_ATTRIBUTE",
             "key": "attributeId",
             "position": {
                 "row": "0",

@@ -64,13 +64,13 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
           this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
           if (hasValue(byId.parentId))
             this.fis.formGroupCollection[this.formId].get('parentId').setValue(byId.parentId.toString())
-          if (byId.attributesKey) {
+          if (byId.attributes) {
             this.attrSvc.getAttributeList().subscribe(next => {
               //update formInfo first then initialize form, so add template can be correct
               this.attrFormInfo.inputs[0].options = next.data.map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
               this.attrList = next.data;
               setTimeout(() => {
-                byId.attributesKey.forEach((attr, index) => {
+                byId.attributes.forEach((attr, index) => {
                   if (index === 0) {
                     let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
                     this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
@@ -216,7 +216,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
       parentId: formGroup.get('parentId').value,
-      attributesKey: this.hasAttr() ? this.getAddedAttrs() : null,
+      attributes: this.hasAttr() ? this.getAddedAttrs() : null,
       catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
     }
   }

@@ -462,11 +462,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   public loadAttributes(attr: ICatalogCustomer) {
     let tags: string[] = [];
-    tags.push(...attr.attributesKey);
+    tags.push(...attr.attributes);
     while (attr.parentId !== null && attr.parentId !== undefined) {
       let nextId = attr.parentId;
       attr = this.catalogs.data.find(e => e.id === nextId);
-      tags.push(...attr.attributesKey);
+      tags.push(...attr.attributes);
     }
     this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(tags);
   }
