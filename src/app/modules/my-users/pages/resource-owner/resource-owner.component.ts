@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
@@ -10,17 +10,14 @@ import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from 'src/app/modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',
   styleUrls: ['./resource-owner.component.css']
 })
 export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy {
-  state: string;
   resourceOwner: IResourceOwner;
-  resourceOwner$: Observable<IResourceOwner>;
-  hide = true;
-  hide2 = true;
   formId = 'resourceOwner';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
@@ -28,31 +25,26 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
     private route: ActivatedRoute,
     public resourceOwnerService: ResourceOwnerService,
     private fis: FormInfoService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private _bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>
   ) {
+    this.resourceOwner = data as IResourceOwner;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
+  }
+  dismiss(event: MouseEvent) {
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
-    this.route.queryParamMap.subscribe(queryMaps => {
-      this.state = queryMaps.get('state');
-      if (queryMaps.get('state') === 'update:authority') {
-        this.resourceOwner$.subscribe(resourceOwner => {
-          this.fis.formGroupCollection[this.formId].get('id').setValue(resourceOwner.id)
-          this.fis.formGroupCollection[this.formId].get('email').setValue(resourceOwner.email)
-          this.fis.formGroupCollection[this.formId].get('authority').setValue(resourceOwner.grantedAuthorities.map(e => e.grantedAuthority))
-          this.fis.formGroupCollection[this.formId].get('locked').setValue(resourceOwner.locked)
-          this.fis.formGroupCollection[this.formId].get('subNewOrder').setValue(resourceOwner.subscription)
-        })
-      } else if (queryMaps.get('state') === 'update:pwd') {
-        let ctrls = ['currentPwd', 'pwd', 'confirmPwd'];
-        this.formInfo.inputs.forEach(e => e.display = ctrls.indexOf(e.key) > -1);
-      } else if (queryMaps.get('state') === 'none') {
-  
-      } else {
-  
-      }
-    })
+    if (this.resourceOwner) {
+      this.fis.formGroupCollection[this.formId].get('id').setValue(this.resourceOwner.id)
+      this.fis.formGroupCollection[this.formId].get('email').setValue(this.resourceOwner.email)
+      this.fis.formGroupCollection[this.formId].get('authority').setValue(this.resourceOwner.grantedAuthorities.map(e => e.grantedAuthority))
+      this.fis.formGroupCollection[this.formId].get('locked').setValue(this.resourceOwner.locked)
+      this.fis.formGroupCollection[this.formId].get('subNewOrder').setValue(this.resourceOwner.subscription)
+    }
   }
   ngOnDestroy(): void {
     this.sub.unsubscribe();
@@ -88,8 +80,6 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
         }
       })
     })
-    this.resourceOwner$ = this.route.paramMap.pipe(switchMap((params: ParamMap) => this.resourceOwnerService.getResourceOwner(+params.get('id'))));
-
   }
 
   convertToResourceOwner(): IResourceOwner {
@@ -105,17 +95,9 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
     return {
       id: formGroup.get('id').value,
       email: formGroup.get('email').value,
-      password: formGroup.get('pwd').value,
       locked: formGroup.get('locked').value,
       subscription: formGroup.get('subNewOrder').value,
       grantedAuthorities: authority
-    }
-  }
-  convertToIResourceOwnerUpdatePwd(): IResourceOwnerUpdatePwd {
-    let formGroup = this.fis.formGroupCollection[this.formId];
-    return {
-      password: formGroup.get('pwd').value,
-      currentPwd: formGroup.get('currentPwd').value
     }
   }
 }

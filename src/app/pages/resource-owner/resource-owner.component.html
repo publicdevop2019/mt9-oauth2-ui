@@ -1,9 +1,0 @@
-<div class="example-container">
-    <app-back-button></app-back-button>
-    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;margin-top: 20px;" *ngIf="state==='update:pwd'"
-        (click)="validator.valid()&&resourceOwnerService.updateResourceOwnerPwd(convertToIResourceOwnerUpdatePwd())">{{'UPDATE_PASSWORD'|translate}}</button>
-    <button mat-raised-button color="primary" *ngIf="state==='update:authority'"
-        style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validator.valid()&&resourceOwnerService.updateResourceOwner(convertToResourceOwner())">{{'UPDATE'|translate}}</button>
-</div>

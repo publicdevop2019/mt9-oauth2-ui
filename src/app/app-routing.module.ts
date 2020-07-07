@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
-import { ResourceOwnerComponent } from './pages/resource-owner/resource-owner.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { AuthService } from './services/auth.service';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
@@ -24,6 +23,7 @@ import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summa
 import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-like.component';
 import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
 import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
+import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,8 +33,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'security-profiles', pathMatch: 'full' },
       { path: 'clients', component: SummaryClientComponent },
-      { path: 'resource-owner', component: ResourceOwnerComponent },
-      { path: 'resource-owner/:id', component: ResourceOwnerComponent },
+      { path: 'updatePwd', component: UpdatePwdComponent },
       { path: 'resource-owners', component: SummaryResourceOwnerComponent },
       { path: 'orders', component: SummaryOrderComponent },
       { path: 'orders/:id', component: OrderComponent },

@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
+import { ResourceOwnerComponent } from '../resource-owner/resource-owner.component';
 export interface IResourceOwner {
   id?: number,
   email: string;
-  password: string;
+  password?: string;
   locked: boolean;
   subscription?: boolean;
   grantedAuthorities: IAuthority[];
@@ -35,7 +36,11 @@ export class SummaryResourceOwnerComponent implements OnInit {
   /** @todo add access control based on role */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public resourceOwnerService: ResourceOwnerService, public deviceSvc: DeviceService) {
+  constructor(
+    public resourceOwnerService: ResourceOwnerService,
+    public deviceSvc: DeviceService,
+    private _bottomSheet: MatBottomSheet,
+  ) {
     this.resourceOwnerService.getResourceOwners().subscribe(resourceOwners => {
       this.resourceOwnerService.cachedResourceOwners = resourceOwners;
       this.dataSource = new MatTableDataSource(resourceOwners);
@@ -58,5 +63,17 @@ export class SummaryResourceOwnerComponent implements OnInit {
   }
   pageHandler(e: PageEvent) {
     this.resourceOwnerService.currentPageIndex = e.pageIndex
+  }
+  openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
+    if (id) {
+      this.resourceOwnerService.getResourceOwner(id).subscribe(next => {
+        config.data = next;
+        this._bottomSheet.open(ResourceOwnerComponent, config);
+      })
+    } else {
+      this._bottomSheet.open(ResourceOwnerComponent, config);
+    }
   }
 }

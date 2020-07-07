@@ -29,7 +29,6 @@ export class NavBarComponent implements OnInit {
       display: 'CLIENT_DASHBOARD',
       icon: 'apps',
       params: {
-        state: 'none',
       },
     },
     {
@@ -37,7 +36,6 @@ export class NavBarComponent implements OnInit {
       display: 'SECURITY_PROFILE_DASHBOARD',
       icon: 'security',
       params: {
-        state: 'none',
       },
     },
   ];
@@ -47,17 +45,15 @@ export class NavBarComponent implements OnInit {
       display: 'RESOURCE_OWNER_DASHBOARD',
       icon: 'perm_identity',
       params: {
-        state: 'none',
       },
     },
   ];
   menuMisc: INavElement[] = [
     {
-      link: 'resource-owner',
+      link: 'updatePwd',
       display: 'UPDATE_PASSWORD',
       icon: 'vpn_key',
       params: {
-        state: 'update:pwd',
       },
     },
     {
@@ -65,7 +61,7 @@ export class NavBarComponent implements OnInit {
       display: 'LOGOUT',
       icon: 'exit_to_app',
       params: {
-        state: 'none',
+        
       },
     }
   ];
@@ -75,7 +71,6 @@ export class NavBarComponent implements OnInit {
       display: 'PRODUCT_DASHBOARD',
       icon: 'storefront',
       params: {
-        state: 'none',
       },
     },
     {
@@ -83,7 +78,6 @@ export class NavBarComponent implements OnInit {
       display: 'CATEGORY_DASHBOARD',
       icon: 'category',
       params: {
-        state: 'none',
         type: 'frontend'
       },
     },
@@ -92,7 +86,6 @@ export class NavBarComponent implements OnInit {
       display: 'CATEGORY_ADMIN_DASHBOARD',
       icon: 'category',
       params: {
-        state: 'none',
         type: 'backend'
       },
     },
@@ -101,7 +94,6 @@ export class NavBarComponent implements OnInit {
       display: 'ATTRIBUTE_DASHBOARD',
       icon: 'category',
       params: {
-        state: 'none'
       },
     },
     {
@@ -109,7 +101,6 @@ export class NavBarComponent implements OnInit {
       display: 'ORDER_DASHBOARD',
       icon: 'assignment',
       params: {
-        state: 'none',
       },
     },
   ];
@@ -119,7 +110,7 @@ export class NavBarComponent implements OnInit {
       display: 'POSTS',
       icon: 'post_add',
       params: {
-        state: 'none',
+        
       },
     },
     {
@@ -127,7 +118,7 @@ export class NavBarComponent implements OnInit {
       display: 'COMMENTS',
       icon: 'mode_comment',
       params: {
-        state: 'none',
+        
       },
     },
     {
@@ -135,7 +126,7 @@ export class NavBarComponent implements OnInit {
       display: 'REPORTS',
       icon: 'block',
       params: {
-        state: 'none',
+        
       },
     },
     {
@@ -143,7 +134,7 @@ export class NavBarComponent implements OnInit {
       display: 'LIKES',
       icon: 'thumb_up',
       params: {
-        state: 'none',
+        
       },
     },
     {
@@ -159,7 +150,7 @@ export class NavBarComponent implements OnInit {
       display: 'NOT_INTERESTED',
       icon: 'label_off',
       params: {
-        state: 'none',
+        
       },
     },
 

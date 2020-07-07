@@ -11,7 +11,6 @@ import { MsgBoxComponent } from './components/msg-box/msg-box.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
 import { LoginComponent } from './pages/login/login.component';
-import { ResourceOwnerComponent } from './pages/resource-owner/resource-owner.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
 import { AuthService } from './services/auth.service';
 import { ClientService } from './services/client.service';
@@ -48,6 +47,8 @@ import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-l
 import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
 import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
 import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
+import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
+import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/resource-owner.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -82,6 +83,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SummaryAttributeComponent,
     AttributeComponent,
     CatalogTreeComponent,
+    UpdatePwdComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -121,7 +123,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
   }),
   ],
-  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent],
+  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
