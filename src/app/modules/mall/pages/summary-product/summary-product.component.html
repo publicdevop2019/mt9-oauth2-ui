@@ -1,4 +1,4 @@
-<h2>{{'MALL_CENTER' |translate}} / {{'PRODUCT_DASHBOARD'|translate}}</h2>
+<h2  class="flex-row-space-between">{{'MALL_CENTER' |translate}} / {{'PRODUCT_DASHBOARD'|translate}}<button mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <mat-expansion-panel>
     <mat-expansion-panel-header>
         <mat-panel-title>
@@ -75,7 +75,7 @@
             <ng-container matColumnDef="edit">
                 <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'EDIT'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
-                    <button [routerLink]="['/dashboard/products/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
+                    <button (click)="openBottomSheet(row.id)" mat-button>
                         <mat-icon [color]="'primary'">edit</mat-icon>
                     </button>
                 </td>

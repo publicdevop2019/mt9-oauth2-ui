@@ -51,21 +51,21 @@ td, th {
   min-width: auto !important;
   max-width: none !important;
   width: 96vw;
-  height: 80vh;
+  height: 80vh !important;
 }
 
 .mat-bottom-sheet-container-large {
   min-width: auto !important;
   max-width: none !important;
   width: 96vw;
-  height: 80vh;
+  height: 80vh !important;
 }
 
 .mat-bottom-sheet-container-xlarge {
   min-width: auto !important;
   max-width: none !important;
   width: 96vw;
-  height: 80vh;
+  height: 80vh !important;
 }
 .mat-bottom-sheet-container {
   min-width: 96vw;
@@ -74,4 +74,7 @@ td, th {
   display: flex; 
   flex-direction: row;
   justify-content: space-between;
+}
+.fix-height{
+  height: 80vh !important;
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Inject } from '@angular/core';
 import { FormControl, Form } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,6 +15,7 @@ import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IProductDetail, IProductOption, IProductOptions, ProductService, ISku } from 'src/app/services/product.service';
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
 import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 
 @Component({
   selector: 'app-product',
@@ -22,8 +23,9 @@ import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dyn
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
-  state: string;
-  product$: Observable<IProductDetail>;
+  // state: string;
+  productDetail:IProductDetail;
+  // product$: Observable<IProductDetail>;
   salesFormIdTemp = 'attrSalesFormChild';
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
@@ -57,7 +59,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     public translate: TranslateService,
     private categorySvc: CategoryService,
     public attrSvc: AttributeService,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private _bottomSheetRef: MatBottomSheetRef<ProductComponent>
   ) {
+    this.productDetail = data as IProductDetail;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);
     this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis);
@@ -65,31 +70,30 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.subs.push(
       this.route.queryParamMap.subscribe(queryMaps => {
-        this.state = queryMaps.get('state');
-        if (queryMaps.get('state') === 'update') {
-          this.subs.push(this.product$.subscribe(byId => {
-            this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id)
-            this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(byId.attributesKey)
-            this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name)
-            this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(byId.imageUrlSmall)
-            this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description)
-            this.fis.formGroupCollection[this.formId].get('status').setValue(byId.status)
-            if (byId.attributesProd) {
+        // this.state = queryMaps.get('state');
+        if (this.productDetail) {
+            this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
+            this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
+            this.fis.formGroupCollection[this.formId].get('name').setValue(this.productDetail.name)
+            this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(this.productDetail.imageUrlSmall)
+            this.fis.formGroupCollection[this.formId].get('description').setValue(this.productDetail.description)
+            this.fis.formGroupCollection[this.formId].get('status').setValue(this.productDetail.status)
+            if (this.productDetail.attributesProd) {
               setTimeout(() => {
-                this.updateChildForm(byId.attributesProd, this.attrProdFormId, this.attrProdFormInfo);
+                this.updateChildForm(this.productDetail.attributesProd, this.attrProdFormId, this.attrProdFormInfo);
               }, 0)
             }
-            if (byId.attributesGen) {
+            if (this.productDetail.attributesGen) {
               setTimeout(() => {
-                this.updateChildForm(byId.attributesGen, this.attrGeneralFormId, this.attrGeneralFormInfo);
+                this.updateChildForm(this.productDetail.attributesGen, this.attrGeneralFormId, this.attrGeneralFormInfo);
               }, 0)
             }
-            this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(byId.skus))
-            if (byId.skus && byId.skus.length > 0) {
-              this.updateSalesForm(byId.skus);
+            this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
+            if (this.productDetail.skus && this.productDetail.skus.length > 0) {
+              this.updateSalesForm(this.productDetail.skus);
             }
-            if (byId.imageUrlLarge && byId.imageUrlLarge.length !== 0) {
-              byId.imageUrlLarge.forEach((url, index) => {
+            if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
+              this.productDetail.imageUrlLarge.forEach((url, index) => {
                 if (index === 0) {
                   this.fis.formGroupCollection[this.imageFormId].get('imageUrl').setValue(url);
                 } else {
@@ -99,8 +103,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.fis.refreshLayout(this.imageFormInfo, this.imageFormId);
               })
             }
-            if (byId.selectedOptions && byId.selectedOptions.length !== 0) {
-              byId.selectedOptions.forEach((option, index) => {
+            if (this.productDetail.selectedOptions && this.productDetail.selectedOptions.length !== 0) {
+              this.productDetail.selectedOptions.forEach((option, index) => {
                 if (index === 0) {
                   this.fis.formGroupCollection[this.optionFormId].get('productOption').setValue(option.title);
                   //for child form
@@ -143,12 +147,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
               });
               this.fis.refreshLayout(this.optionFormInfo, this.optionFormId);
             }
-          }))
-        } else if (queryMaps.get('state') === 'none') {
-
-        } else {
-
-        }
+        } 
       })
     );
     this.fetchAttrList();
@@ -219,7 +218,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.attrGeneralFormInfo.inputs[0].options = next.data.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
       this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = next.data.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
       this.attrList = next.data;
-      if (this.state === 'create') {
+      if (!this.productDetail) {
         //wait for form initialize complete
         setTimeout(() => {
           //@todo add observable to indicate form has been initialized
@@ -385,10 +384,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           this.catalogs = next;
         }
       });
-    this.product$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) =>
-        this.productSvc.getProductDetailById(+params.get('id')))
-    );
   }
   convertToPayload(): IProductDetail {
     let formGroup = this.fis.formGroupCollection[this.formId];
@@ -414,11 +409,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       let suffix = ctrlName.replace('storageOrder', '');
       var1.attributesSales = this.getAddedAttrs(this.salesFormIdTemp + suffix);
       var1.price = this.fis.formGroupCollection[this.attrSalesFormId].get('price' + suffix).value;
-      if (this.state === 'create') {
+      if (!this.productDetail) {
         var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
         var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
         var1.sales = this.fis.formGroupCollection[this.attrSalesFormId].get('sales' + suffix).value;
-      } else if (this.state === 'update' && this.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
+      } else if (this.productDetail && this.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
         let var11 = this.fis.formGroupCollection[this.attrSalesFormId].get('storage_OrderIncreaseBy' + suffix).value;
         if (var11)
           var1.increaseOrderStorage = var11;
@@ -431,7 +426,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         let var14 = this.fis.formGroupCollection[this.attrSalesFormId].get('storage_ActualDecreaseBy' + suffix).value;
         if (var14)
           var1.decreaseActualStorage = var14;
-      } else if (this.state === 'update' && this.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
+      } else if (this.productDetail && this.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
         //new sku during update product
         var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
         var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
@@ -539,5 +534,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     });
     this.childFormSub[formId] = sub;
+  }
+  dismiss(event: MouseEvent) {
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
   }
 }

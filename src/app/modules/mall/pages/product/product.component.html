@@ -1,12 +1,12 @@
 <div class="example-container">
     <div style="display: flex;flex-direction: row;justify-content: space-between;">
-        <app-back-button></app-back-button>
-        <button mat-raised-button color="primary" *ngIf="state==='update'"
-            style="margin-bottom: 10px;margin-top: 10px;"
+        <button mat-raised-button color="primary" *ngIf="productDetail"
+            style="margin-top: 10px;"
             (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
-        <button mat-raised-button color="primary" style="margin-top: 10px;margin-bottom: 10px;"
+        <button mat-raised-button color="primary" style="margin-bottom: 10px;"
             (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
-            *ngIf="state=='create'">{{'CREATE'|translate}}</button>
+            *ngIf="!productDetail">{{'CREATE'|translate}}</button>
+        <mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;" (click)="dismiss($event)">close</mat-icon>
     </div>
     <mat-horizontal-stepper #stepper>
         <mat-step>
