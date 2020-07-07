@@ -1,5 +1,5 @@
-<h2 *ngIf="catalogType==='frontend'">{{'MALL_CENTER' |translate}} / {{'CATEGORY_DASHBOARD'|translate}}</h2>
-<h2 *ngIf="catalogType==='backend'">{{'MALL_CENTER' |translate}} / {{'CATEGORY_ADMIN_DASHBOARD'|translate}}</h2>
+<h2 *ngIf="catalogType==='frontend'" class="flex-row-space-between">{{'MALL_CENTER' |translate}} / {{'CATEGORY_DASHBOARD'|translate}} <button mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
+<h2 *ngIf="catalogType==='backend'" class="flex-row-space-between">{{'MALL_CENTER' |translate}} / {{'CATEGORY_ADMIN_DASHBOARD'|translate}} <button mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <ng-container *ngIf="viewType==='LIST_VIEW'">
     <mat-form-field>
@@ -29,8 +29,7 @@
                 <ng-container matColumnDef="edit">
                     <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'EDIT'|translate}}</th>
                     <td mat-cell *matCellDef="let row">
-                        <button [routerLink]="['/dashboard/catalogs/'+row.id]"
-                            [queryParams]="{state: 'update',type:catalogType}" mat-button>
+                        <button (click)="openBottomSheet(row.id)" mat-button>
                             <mat-icon [color]="'primary'">edit</mat-icon>
                         </button>
                     </td>
@@ -38,7 +37,7 @@
                 <ng-container matColumnDef="delete">
                     <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'DELETE'|translate}}</th>
                     <td mat-cell *matCellDef="let row">
-                        <button (click)="categorySvc.delete(row.id)" mat-button>
+                        <button (click)="catalogSvc.delete(row.id)" mat-button>
                             <mat-icon [color]="'warn'">delete_outline</mat-icon>
                         </button>
                     </td>
@@ -49,7 +48,7 @@
             </table>
         </div>
 
-        <mat-paginator [pageIndex]="categorySvc.currentPageIndex" [showFirstLastButtons]="true"
+        <mat-paginator [pageIndex]="catalogSvc.currentPageIndex" [showFirstLastButtons]="true"
             [pageSizeOptions]="[(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1 ]"
             (page)="pageHandler($event)">
         </mat-paginator>

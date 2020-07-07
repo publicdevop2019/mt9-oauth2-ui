@@ -25,16 +25,14 @@ export class SummaryAttributeComponent implements OnInit {
     })
   }
   openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
     if (id) {
       this.attrSvc.getAttributeById(id).subscribe(next => {
-        let config = new MatBottomSheetConfig();
-        config.autoFocus = true;
         config.data = next;
         this._bottomSheet.open(AttributeComponent, config);
       })
     } else {
-      let config = new MatBottomSheetConfig();
-      config.autoFocus = true;
       this._bottomSheet.open(AttributeComponent, config);
     }
   }

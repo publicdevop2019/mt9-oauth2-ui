@@ -70,3 +70,8 @@ td, th {
 .mat-bottom-sheet-container {
   min-width: 96vw;
 }
+.flex-row-space-between{
+  display: flex; 
+  flex-direction: row;
+  justify-content: space-between;
+}

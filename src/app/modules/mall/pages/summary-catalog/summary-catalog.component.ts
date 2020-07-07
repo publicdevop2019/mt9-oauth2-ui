@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode, ICatalogCustomerHttp } from 'src/app/services/category.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlatDataSource, MatTreeFlattener, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
@@ -9,6 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeviceService } from 'src/app/services/device.service';
+import { AttributeComponent } from '../attribute/attribute.component';
+import { CatalogComponent } from '../catalog/catalog.component';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -30,14 +32,22 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
   pageSizeOffset = 2;
   public catalogsData: ICatalogCustomer[];
-  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute, private router: Router, public deviceSvc: DeviceService) {
+  constructor(
+    public catalogSvc: CategoryService, 
+    private fis: FormInfoService, 
+    public translate: TranslateService, 
+    private route: ActivatedRoute, 
+    private router: Router, 
+    public deviceSvc: DeviceService,
+    private _bottomSheet: MatBottomSheet,
+    ) {
     this.route.queryParamMap.subscribe(queryMaps => {
       this.catalogType = queryMaps.get('type');
       let ob: Observable<ICatalogCustomerHttp>;
       if (queryMaps.get('type') === 'frontend') {
-        ob = this.categorySvc.getCatalogFrontend();
+        ob = this.catalogSvc.getCatalogFrontend();
       } else if (queryMaps.get('type') === 'backend') {
-        ob = this.categorySvc.getCatalogBackend();
+        ob = this.catalogSvc.getCatalogBackend();
       } else {
         console.error('unknow catalog type')
       }
@@ -93,6 +103,25 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
       })
     })
   }
+  openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
+    if (id) {
+      if(this.catalogType==='frontend'){
+        this.catalogSvc.getCatalogFrontendById(id).subscribe(next => {
+          config.data = next;
+          this._bottomSheet.open(CatalogComponent, config);
+        })
+      }else{
+          this.catalogSvc.getCatalogBackendById(id).subscribe(next => {
+            config.data = next;
+            this._bottomSheet.open(CatalogComponent, config);
+          })
+      }
+    } else {
+      this._bottomSheet.open(CatalogComponent, config);
+    }
+  }
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -101,7 +130,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
   pageHandler(e: PageEvent) {
-    this.categorySvc.currentPageIndex = e.pageIndex
+    this.catalogSvc.currentPageIndex = e.pageIndex
   }
   navCatalog($event: ICatalogCustomer) {
     this.router.navigate(['/dashboard/catalogs/' + $event.id], { queryParams: { state: 'update', type: $event.catalogType } })
