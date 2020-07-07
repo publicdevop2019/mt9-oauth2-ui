@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { switchMap } from 'rxjs/operators';
-import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
+import { IClient } from '../modules/my-apps/interface/client.interface';
 /**
  * responsible for convert FormGroup to business model
  */
@@ -23,7 +23,7 @@ export class ClientService {
   getClients(): Observable<IClient[]> {
     return this.httpProxy.netImpl.getClients()
   }
-  getClient(id: number): Observable<IClient> {
+  getClientById(id: number): Observable<IClient> {
     return this.getClients().pipe(switchMap(clients => {
       return of(clients.find(el => el.id === id))
     }))

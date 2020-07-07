@@ -1,10 +1,10 @@
 <div class="example-container">
-    <app-back-button></app-back-button>
+    <mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;" (click)="dismiss($event)">close</mat-icon>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&clientService.updateClient(convertToClient())"
-        *ngIf="state=='update'">{{'UPDATE'|translate}}</button>
+        *ngIf="client">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&clientService.createClient(convertToClient())"
-        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
+        *ngIf="!client">{{'CREATE'|translate}}</button>
 </div>

@@ -1,15 +1,14 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatBottomSheetRef, MatDialog, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
-import { IForm, IInputConfig, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { Subscription } from 'rxjs';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
-import { TranslateService } from '@ngx-translate/core';
-import { IClient, grantTypeEnums, IAuthority, scopeEnums } from '../summary-client/summary-client.component';
+import { grantTypeEnums, IAuthority, IClient, scopeEnums } from '../../interface/client.interface';
 
 @Component({
   selector: 'app-client',
@@ -18,61 +17,56 @@ import { IClient, grantTypeEnums, IAuthority, scopeEnums } from '../summary-clie
 })
 export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
   hide = true;
-  state: 'update' | 'create';
   disabled = false;
   disabled2 = false;
-  client$: Observable<IClient>;
   resources: IClient[];
+  client: IClient;
   formId = 'client'
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   private previousPayload: any = {};
   constructor(
-    private route: ActivatedRoute,
     public clientService: ClientService,
     public dialog: MatDialog,
     private fis: FormInfoService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private _bottomSheetRef: MatBottomSheetRef<ClientComponent>
   ) {
+    this.client = data as IClient;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
-    this.client$ = this.route.paramMap.pipe(
-      switchMap((params: ParamMap) =>
-        this.clientService.getClient(+params.get('id')))
-    );
-    this.clientService.getResourceClient().pipe(switchMap(resources => {
-      this.resources = resources;
-      return this.route.queryParamMap
-    })).subscribe(queryMaps => {
-      this.state = queryMaps.get('state') as 'update' | 'create';
-      if (queryMaps.get('state') === 'update') {
-        this.client$.subscribe(client => {
-          const grantType: string = client.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
-          this.fis.formGroupCollection[this.formId].patchValue({
-            id: client.id,
-            clientId: client.clientId,
-            hasSecret: client.hasSecret,
-            clientSecret: client.hasSecret ? '*****' : '',
-            grantType: grantType,
-            registeredRedirectUri: client.registeredRedirectUri ? client.registeredRedirectUri.join(',') : '',
-            refreshToken: grantType === 'password' ? client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
-            resourceIndicator: client.resourceIndicator,
-            autoApprove: client.autoApprove,
-            authority: client.grantedAuthorities.map(e => e.grantedAuthority),
-            scope: client.scopeEnums.map(e => e.toString()),
-            accessTokenValiditySeconds: client.accessTokenValiditySeconds,
-            refreshTokenValiditySeconds: client.refreshTokenValiditySeconds,
-            resourceId: client.resourceIds,
-          });
-        })
-      } else if (queryMaps.get('state') === 'none') {
+    this.clientService.getResourceClient()
+      .subscribe(next => {
+        this.resources = next;
+        if (this.client) {
+            const grantType: string = this.client.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
+            this.fis.formGroupCollection[this.formId].patchValue({
+              id: this.client.id,
+              clientId: this.client.clientId,
+              hasSecret: this.client.hasSecret,
+              clientSecret: this.client.hasSecret ? '*****' : '',
+              grantType: grantType,
+              registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
+              refreshToken: grantType === 'password' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
+              resourceIndicator: this.client.resourceIndicator,
+              autoApprove: this.client.autoApprove,
+              authority: this.client.grantedAuthorities.map(e => e.grantedAuthority),
+              scope: this.client.scopeEnums.map(e => e.toString()),
+              accessTokenValiditySeconds: this.client.accessTokenValiditySeconds,
+              refreshTokenValiditySeconds: this.client.refreshTokenValiditySeconds,
+              resourceId: this.client.resourceIds,
+            });
+        } else {
 
-      } else {
-
-      }
-    })
+        }
+      })
   }
   private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();
+  dismiss(event: MouseEvent) {
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
+  }
   ngOnInit(): void {
     this.formInfo.inputs.forEach(e => {
       if (e.options) {

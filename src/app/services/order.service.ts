@@ -6,7 +6,6 @@ import { CustomHttpInterceptor } from './http.interceptor';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IOrder } from '../interfaze/commom.interface';
-import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +22,9 @@ export class OrderService {
       return of(orders.find(el => el.id == id))
     }))
   }
-  updateOrder(client: IClient): void {
+  updateOrder(client: IOrder): void {
   }
-  deleteOrder(client: IClient): void {
+  deleteOrder(id: number): void {
   }
   notify(result: boolean) {
     result ? this._httpInterceptor.openSnackbar('operation success') : this._httpInterceptor.openSnackbar('operation failed');

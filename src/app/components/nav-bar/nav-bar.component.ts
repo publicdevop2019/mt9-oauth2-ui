@@ -41,14 +41,6 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
-      link: 'client',
-      display: 'ADD_CLIENT',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
-    {
       link: 'security-profile',
       display: 'ADD_SECURITY_PROFILE',
       icon: 'add',

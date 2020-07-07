@@ -32,8 +32,6 @@ const routes: Routes = [
     path: 'dashboard', component: NavBarComponent, canActivateChild: [AuthService],
     children: [
       { path: '', redirectTo: 'security-profiles', pathMatch: 'full' },
-      { path: 'client/:id', component: ClientComponent },
-      { path: 'client', component: ClientComponent },
       { path: 'clients', component: SummaryClientComponent },
       { path: 'resource-owner', component: ResourceOwnerComponent },
       { path: 'resource-owner/:id', component: ResourceOwnerComponent },

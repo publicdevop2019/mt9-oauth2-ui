@@ -1,15 +1,13 @@
-import { Component, OnInit, InjectionToken, Inject } from '@angular/core';
-import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
-import { Observable, Subscription } from 'rxjs';
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
-import { ActivatedRoute } from '@angular/router';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
-import { FormInfoService } from 'mt-form-builder';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
+import { FormInfoService } from 'mt-form-builder';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { Subscription } from 'rxjs';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
+import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
 
 @Component({
   selector: 'app-attribute',

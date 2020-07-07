@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
-import { IAuthority } from 'src/app/modules/my-apps/pages/summary-client/summary-client.component';
 import { DeviceService } from 'src/app/services/device.service';
+import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 export interface IResourceOwner {
   id?: number,
   email: string;

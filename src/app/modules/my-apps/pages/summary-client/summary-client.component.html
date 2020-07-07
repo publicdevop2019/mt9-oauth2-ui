@@ -1,4 +1,4 @@
-<h2>{{'AUTH_CENTER' |translate}} / {{'CLIENT_DASHBOARD'|translate}}</h2>
+<h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'CLIENT_DASHBOARD'|translate}}<button mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
 </mat-form-field>
@@ -20,7 +20,7 @@
             <ng-container matColumnDef="edit">
                 <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'EDIT'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
-                    <button [routerLink]="['/dashboard/client/'+row.id]" [queryParams]="{state: 'update'}" mat-button>
+                    <button (click)="openBottomSheet(row.id)" mat-button>
                         <mat-icon [color]="'primary'">edit</mat-icon>
                     </button>
                 </td>
@@ -47,6 +47,6 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource.data.length" [pageIndex]="clientService.currentPageIndex" [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)">
+    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource&&dataSource.data.length" [pageIndex]="clientService.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

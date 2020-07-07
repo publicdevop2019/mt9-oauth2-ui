@@ -9,7 +9,7 @@ import { FORM_CONFIG } from 'src/app/form-configs/resource-owner.config';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { TranslateService } from '@ngx-translate/core';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from 'src/app/modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { IAuthority } from 'src/app/modules/my-apps/pages/summary-client/summary-client.component';
+import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',
