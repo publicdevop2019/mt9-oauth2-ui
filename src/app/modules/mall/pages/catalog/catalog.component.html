@@ -1,10 +1,8 @@
-<div class="example-container">
-    <mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;" (click)="dismiss($event)">close</mat-icon>
-    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <lib-factory *ngIf="attrList" [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
-    <button mat-raised-button color="primary" *ngIf="category" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="categorySvc.update(convertToCategoryPayload())">{{'UPDATE'|translate}}</button>
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="categorySvc.create(convertToCategoryPayload())"
-        *ngIf="!category">{{'CREATE'|translate}}</button>
-</div>
+<mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;width:100%" (click)="dismiss($event)">close
+</mat-icon>
+<lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+<lib-factory *ngIf="attrList" [formId]="attrFormId" [formInfo]="attrFormInfo"></lib-factory>
+<button mat-raised-button color="primary" *ngIf="category" class="app-btn"
+    (click)="categorySvc.update(convertToCategoryPayload())">{{'UPDATE'|translate}}</button>
+<button mat-raised-button color="primary" class="app-btn" (click)="categorySvc.create(convertToCategoryPayload())"
+    *ngIf="!category">{{'CREATE'|translate}}</button>

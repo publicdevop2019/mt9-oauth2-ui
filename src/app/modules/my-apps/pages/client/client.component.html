@@ -1,10 +1,9 @@
-<div class="example-container">
-    <mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;" (click)="dismiss($event)">close</mat-icon>
-    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="validator.valid()&&clientService.updateClient(convertToClient())"
-        *ngIf="client">{{'UPDATE'|translate}}</button>
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="validator.valid()&&clientService.createClient(convertToClient())"
-        *ngIf="!client">{{'CREATE'|translate}}</button>
-</div>
+<mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;width:100%" (click)="dismiss($event)">close
+</mat-icon>
+<lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+<button mat-raised-button color="primary" class="app-btn"
+    (click)="validator.valid()&&clientService.updateClient(convertToClient())"
+    *ngIf="client">{{'UPDATE'|translate}}</button>
+<button mat-raised-button color="primary" class="app-btn"
+    (click)="validator.valid()&&clientService.createClient(convertToClient())"
+    *ngIf="!client">{{'CREATE'|translate}}</button>

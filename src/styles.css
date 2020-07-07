@@ -78,26 +78,6 @@ td, th {
 .fix-height{
   height: 80vh !important;
 }
-/* @todo start of review  */
-.example-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.example-container > * {
+.app-btn{
   width: 100%;
 }
-
-.example-right-align {
-  text-align: right;
-}
-
-input.example-right-align::-webkit-outer-spin-button,
-input.example-right-align::-webkit-inner-spin-button {
-  display: none;
-}
-
-input.example-right-align {
-  -moz-appearance: textfield;
-}
-/* @todo end of review  */
