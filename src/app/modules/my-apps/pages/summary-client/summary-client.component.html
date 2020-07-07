@@ -1,4 +1,5 @@
-<h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'CLIENT_DASHBOARD'|translate}}<button mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
+<h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'CLIENT_DASHBOARD'|translate}}<button
+        mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
 </mat-form-field>
@@ -6,40 +7,34 @@
 <div class="mat-elevation-z8">
     <div class="table-container">
         <table mat-table [dataSource]="dataSource" matSort>
-    
+
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
                 <td mat-cell *matCellDef="let row"> {{row.id}} </td>
             </ng-container>
-    
+
             <ng-container matColumnDef="clientId">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CLIENT_ID'|translate}} </th>
                 <td mat-cell *matCellDef="let row"> {{row.clientId}} </td>
             </ng-container>
-    
+
             <ng-container matColumnDef="edit">
-                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'EDIT'|translate}}</th>
-                <td mat-cell *matCellDef="let row">
-                    <button (click)="openBottomSheet(row.id)" mat-button>
-                        <mat-icon [color]="'primary'">edit</mat-icon>
-                    </button>
+                <th mat-header-cell *matHeaderCellDef class="table-icon">{{'EDIT'|translate}}</th>
+                <td mat-cell *matCellDef="let row" class="table-icon">
+                    <mat-icon (click)="openBottomSheet(row.id)" [color]="'primary'">edit</mat-icon>
                 </td>
             </ng-container>
-    
+
             <ng-container matColumnDef="token">
-                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'REVOKE_TOKEN'|translate}}</th>
-                <td mat-cell *matCellDef="let row">
-                    <button mat-button (click)="revokeClientToken(row.clientId)">
-                        <mat-icon>remove_circle</mat-icon>
-                    </button>
+                <th mat-header-cell *matHeaderCellDef class="table-icon">{{'REVOKE_TOKEN'|translate}}</th>
+                <td mat-cell *matCellDef="let row" class="table-icon" style="text-align: center;">
+                    <mat-icon (click)="revokeClientToken(row.clientId)"[color]="'accent'" >remove_circle</mat-icon>
                 </td>
             </ng-container>
             <ng-container matColumnDef="delete">
-                <th mat-header-cell *matHeaderCellDef style="padding-left: 20px;">{{'DELETE'|translate}}</th>
-                <td mat-cell *matCellDef="let row">
-                    <button (click)="clientService.delete(row.id)" mat-button>
-                        <mat-icon [color]="'warn'">delete_outline</mat-icon>
-                    </button>
+                <th mat-header-cell *matHeaderCellDef class="table-icon">{{'DELETE'|translate}}</th>
+                <td mat-cell *matCellDef="let row" class="table-icon">
+                    <mat-icon (click)="clientService.delete(row.id)" [color]="'warn'">delete_outline</mat-icon>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -47,6 +42,7 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource&&dataSource.data.length" [pageIndex]="clientService.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
+    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource&&dataSource.data.length"
+        [pageIndex]="clientService.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

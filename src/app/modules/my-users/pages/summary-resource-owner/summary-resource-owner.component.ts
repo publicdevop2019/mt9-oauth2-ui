@@ -31,7 +31,7 @@ export interface IResourceOwnerUpdatePwd {
   templateUrl: './summary-resource-owner.component.html',
 })
 export class SummaryResourceOwnerComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'email', 'edit', 'delete', 'token'];
+  displayedColumns: string[] = ['id', 'email', 'edit', 'token', 'delete'];
   dataSource: MatTableDataSource<IResourceOwner>;
   /** @todo add access control based on role */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
