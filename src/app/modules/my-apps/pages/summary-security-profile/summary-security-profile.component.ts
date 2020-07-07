@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { SecurityProfileService } from 'src/app/services/security-profile.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/device.service';
+import { SecurityProfileComponent } from '../security-profile/security-profile.component';
 
 export interface ISecurityProfile {
   resourceId: string;
@@ -33,9 +34,8 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
   });
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
   selection = new SelectionModel<ISecurityProfile>(true, []);
-  constructor(public securityProfileSvc: SecurityProfileService,public deviceSvc:DeviceService) {
+  constructor(public securityProfileSvc: SecurityProfileService,public deviceSvc:DeviceService,private _bottomSheet: MatBottomSheet,) {
     this.securityProfileSvc.readAll().subscribe(profiles => {
       this.dataSource = new MatTableDataSource(profiles);
       this.dataSource.paginator = this.paginator;
@@ -43,6 +43,18 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
     });
   }
   ngOnDestroy(): void {
+  }
+  openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
+    if (id) {
+      this.securityProfileSvc.readById(id).subscribe(next => {
+        config.data = next;
+        this._bottomSheet.open(SecurityProfileComponent, config);
+      })
+    } else {
+      this._bottomSheet.open(SecurityProfileComponent, config);
+    }
   }
   showOptions() {
     if (!this.displayedColumns.includes('select')) {

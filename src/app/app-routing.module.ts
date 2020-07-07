@@ -39,8 +39,6 @@ const routes: Routes = [
       { path: 'orders', component: SummaryOrderComponent },
       { path: 'orders/:id', component: OrderComponent },
       { path: 'security-profiles', component: SummarySecurityProfileComponent },
-      { path: 'security-profile', component: SecurityProfileComponent },
-      { path: 'security-profile/:id', component: SecurityProfileComponent },
       { path: 'products', component: SummaryProductComponent },
       { path: 'catalogs', component: SummaryCatalogComponent },
       { path: 'attributes', component: SummaryAttributeComponent },

@@ -23,9 +23,7 @@ import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
-  // state: string;
-  productDetail:IProductDetail;
-  // product$: Observable<IProductDetail>;
+  productDetail: IProductDetail;
   salesFormIdTemp = 'attrSalesFormChild';
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
@@ -52,7 +50,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   public catalogs: ICatalogCustomerHttp;
   private udpateSkusOriginalCopy: ISku[];
   constructor(
-    private route: ActivatedRoute,
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
     private fis: FormInfoService,
@@ -68,88 +65,83 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis);
   }
   ngAfterViewInit(): void {
-    this.subs.push(
-      this.route.queryParamMap.subscribe(queryMaps => {
-        // this.state = queryMaps.get('state');
-        if (this.productDetail) {
-            this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
-            this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
-            this.fis.formGroupCollection[this.formId].get('name').setValue(this.productDetail.name)
-            this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(this.productDetail.imageUrlSmall)
-            this.fis.formGroupCollection[this.formId].get('description').setValue(this.productDetail.description)
-            this.fis.formGroupCollection[this.formId].get('status').setValue(this.productDetail.status)
-            if (this.productDetail.attributesProd) {
-              setTimeout(() => {
-                this.updateChildForm(this.productDetail.attributesProd, this.attrProdFormId, this.attrProdFormInfo);
-              }, 0)
-            }
-            if (this.productDetail.attributesGen) {
-              setTimeout(() => {
-                this.updateChildForm(this.productDetail.attributesGen, this.attrGeneralFormId, this.attrGeneralFormInfo);
-              }, 0)
-            }
-            this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
-            if (this.productDetail.skus && this.productDetail.skus.length > 0) {
-              this.updateSalesForm(this.productDetail.skus);
-            }
-            if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
-              this.productDetail.imageUrlLarge.forEach((url, index) => {
-                if (index === 0) {
-                  this.fis.formGroupCollection[this.imageFormId].get('imageUrl').setValue(url);
+    if (this.productDetail) {
+      this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
+      this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
+      this.fis.formGroupCollection[this.formId].get('name').setValue(this.productDetail.name)
+      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(this.productDetail.imageUrlSmall)
+      this.fis.formGroupCollection[this.formId].get('description').setValue(this.productDetail.description)
+      this.fis.formGroupCollection[this.formId].get('status').setValue(this.productDetail.status)
+      if (this.productDetail.attributesProd) {
+        setTimeout(() => {
+          this.updateChildForm(this.productDetail.attributesProd, this.attrProdFormId, this.attrProdFormInfo);
+        }, 0)
+      }
+      if (this.productDetail.attributesGen) {
+        setTimeout(() => {
+          this.updateChildForm(this.productDetail.attributesGen, this.attrGeneralFormId, this.attrGeneralFormInfo);
+        }, 0)
+      }
+      this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
+      if (this.productDetail.skus && this.productDetail.skus.length > 0) {
+        this.updateSalesForm(this.productDetail.skus);
+      }
+      if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
+        this.productDetail.imageUrlLarge.forEach((url, index) => {
+          if (index === 0) {
+            this.fis.formGroupCollection[this.imageFormId].get('imageUrl').setValue(url);
+          } else {
+            this.fis.formGroupCollection[this.imageFormId].addControl('imageUrl_' + this.fis.formGroupCollection_index[this.imageFormId], new FormControl(url));
+            this.fis.add(this.imageFormId);
+          }
+          this.fis.refreshLayout(this.imageFormInfo, this.imageFormId);
+        })
+      }
+      if (this.productDetail.selectedOptions && this.productDetail.selectedOptions.length !== 0) {
+        this.productDetail.selectedOptions.forEach((option, index) => {
+          if (index === 0) {
+            this.fis.formGroupCollection[this.optionFormId].get('productOption').setValue(option.title);
+            //for child form
+            option.options.forEach((opt, index) => {
+              if (index == 0) {
+                this.fis.formGroupCollection['optionForm'].get('optionValue').setValue(opt.optionValue);
+                this.fis.formGroupCollection['optionForm'].get('optionPriceChange').setValue(opt.priceVar);
+              } else {
+                this.fis.formGroupCollection['optionForm'].addControl('optionValue_' + this.fis.formGroupCollection_index['optionForm'], new FormControl(opt.optionValue));
+                this.fis.formGroupCollection['optionForm'].addControl('optionPriceChange_' + this.fis.formGroupCollection_index['optionForm'], new FormControl(opt.priceVar));
+                this.fis.add('optionForm');
+              }
+            })
+            this.fis.refreshLayout(this.fis.formGroupCollection_formInfo['optionForm'], 'optionForm');
+            //for child form
+          } else {
+            let indexSnapshot = this.fis.formGroupCollection_index[this.optionFormId];
+            this.fis.formGroupCollection[this.optionFormId].addControl('productOption_' + indexSnapshot, new FormControl(option.title));
+            /**
+             * @note set child form need to wait for all params to be created
+             */
+            setTimeout((i) => {
+              //for child form
+              let childFormId = 'optionForm_' + i;
+              option.options.forEach((opt, index) => {
+                if (index == 0) {
+                  this.fis.formGroupCollection[childFormId].get('optionValue').setValue(opt.optionValue);
+                  this.fis.formGroupCollection[childFormId].get('optionPriceChange').setValue(opt.priceVar);
                 } else {
-                  this.fis.formGroupCollection[this.imageFormId].addControl('imageUrl_' + this.fis.formGroupCollection_index[this.imageFormId], new FormControl(url));
-                  this.fis.add(this.imageFormId);
-                }
-                this.fis.refreshLayout(this.imageFormInfo, this.imageFormId);
-              })
-            }
-            if (this.productDetail.selectedOptions && this.productDetail.selectedOptions.length !== 0) {
-              this.productDetail.selectedOptions.forEach((option, index) => {
-                if (index === 0) {
-                  this.fis.formGroupCollection[this.optionFormId].get('productOption').setValue(option.title);
-                  //for child form
-                  option.options.forEach((opt, index) => {
-                    if (index == 0) {
-                      this.fis.formGroupCollection['optionForm'].get('optionValue').setValue(opt.optionValue);
-                      this.fis.formGroupCollection['optionForm'].get('optionPriceChange').setValue(opt.priceVar);
-                    } else {
-                      this.fis.formGroupCollection['optionForm'].addControl('optionValue_' + this.fis.formGroupCollection_index['optionForm'], new FormControl(opt.optionValue));
-                      this.fis.formGroupCollection['optionForm'].addControl('optionPriceChange_' + this.fis.formGroupCollection_index['optionForm'], new FormControl(opt.priceVar));
-                      this.fis.add('optionForm');
-                    }
-                  })
-                  this.fis.refreshLayout(this.fis.formGroupCollection_formInfo['optionForm'], 'optionForm');
-                  //for child form
-                } else {
-                  let indexSnapshot = this.fis.formGroupCollection_index[this.optionFormId];
-                  this.fis.formGroupCollection[this.optionFormId].addControl('productOption_' + indexSnapshot, new FormControl(option.title));
-                  /**
-                   * @note set child form need to wait for all params to be created
-                   */
-                  setTimeout((i) => {
-                    //for child form
-                    let childFormId = 'optionForm_' + i;
-                    option.options.forEach((opt, index) => {
-                      if (index == 0) {
-                        this.fis.formGroupCollection[childFormId].get('optionValue').setValue(opt.optionValue);
-                        this.fis.formGroupCollection[childFormId].get('optionPriceChange').setValue(opt.priceVar);
-                      } else {
-                        this.fis.formGroupCollection[childFormId].addControl('optionValue_' + this.fis.formGroupCollection_index[childFormId], new FormControl(opt.optionValue));
-                        this.fis.formGroupCollection[childFormId].addControl('optionPriceChange_' + this.fis.formGroupCollection_index[childFormId], new FormControl(opt.priceVar));
-                        this.fis.add(childFormId);
-                      }
-                    });
-                    this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[childFormId], childFormId);
-                    //for child form
-                  }, 0, indexSnapshot)
-                  this.fis.add(this.optionFormId);
+                  this.fis.formGroupCollection[childFormId].addControl('optionValue_' + this.fis.formGroupCollection_index[childFormId], new FormControl(opt.optionValue));
+                  this.fis.formGroupCollection[childFormId].addControl('optionPriceChange_' + this.fis.formGroupCollection_index[childFormId], new FormControl(opt.priceVar));
+                  this.fis.add(childFormId);
                 }
               });
-              this.fis.refreshLayout(this.optionFormInfo, this.optionFormId);
-            }
-        } 
-      })
-    );
+              this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[childFormId], childFormId);
+              //for child form
+            }, 0, indexSnapshot)
+            this.fis.add(this.optionFormId);
+          }
+        });
+        this.fis.refreshLayout(this.optionFormInfo, this.optionFormId);
+      }
+    }
     this.fetchAttrList();
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);

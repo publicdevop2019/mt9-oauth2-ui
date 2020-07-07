@@ -40,14 +40,6 @@ export class NavBarComponent implements OnInit {
         state: 'none',
       },
     },
-    {
-      link: 'security-profile',
-      display: 'ADD_SECURITY_PROFILE',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
   ];
   menuUser: INavElement[] = [
     {

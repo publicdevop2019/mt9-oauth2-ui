@@ -1,9 +1,9 @@
 <div class="example-container">
-    <app-back-button></app-back-button>
+    <mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;" (click)="dismiss($event)">close</mat-icon>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
+    <button mat-raised-button color="primary" *ngIf="securityProfile" style="margin-bottom: 20px;margin-top: 20px;"
         (click)="validator.valid()&&securityProfileService.update(convertToSecurityProfile())">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;"
         (click)="validator.valid()&&securityProfileService.create(convertToSecurityProfile())"
-        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
+        *ngIf="!securityProfile">{{'CREATE'|translate}}</button>
 </div>

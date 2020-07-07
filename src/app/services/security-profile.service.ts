@@ -17,7 +17,7 @@ export class SecurityProfileService {
   readAll(): Observable<ISecurityProfile[]> {
     return this.httpProxy.netImpl.getSecurityProfiles();
   }
-  read(id: number): Observable<ISecurityProfile> {
+  readById(id: number): Observable<ISecurityProfile> {
     return this.httpProxy.netImpl.getSecurityProfiles().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
   }
   create(securityProfiel: ISecurityProfile) {
