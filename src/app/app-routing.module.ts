@@ -50,7 +50,6 @@ const routes: Routes = [
       { path: 'catalogs/:id', component: CatalogComponent },
       { path: 'catalog', component: CatalogComponent },
       { path: 'attributes', component: SummaryAttributeComponent },
-      { path: 'attributes/:id', component: AttributeComponent },
       { path: 'attribute', component: AttributeComponent },
       { path: 'posts', component: SummaryPostComponent },
       { path: 'comments', component: SummaryCommentComponent },

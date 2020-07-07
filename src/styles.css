@@ -46,3 +46,27 @@ td, th {
   padding-right: 8px !important;
 }
 /* end of table */
+
+.mat-bottom-sheet-container-medium {
+  min-width: auto !important;
+  max-width: none !important;
+  width: 96vw;
+  height: 80vh;
+}
+
+.mat-bottom-sheet-container-large {
+  min-width: auto !important;
+  max-width: none !important;
+  width: 96vw;
+  height: 80vh;
+}
+
+.mat-bottom-sheet-container-xlarge {
+  min-width: auto !important;
+  max-width: none !important;
+  width: 96vw;
+  height: 80vh;
+}
+.mat-bottom-sheet-container {
+  min-width: 96vw;
+}

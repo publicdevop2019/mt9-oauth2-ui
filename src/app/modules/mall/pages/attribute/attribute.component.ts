@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, InjectionToken, Inject } from '@angular/core';
 import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
 import { Observable, Subscription } from 'rxjs';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
@@ -9,6 +9,7 @@ import { CategoryService, ICatalogCustomer } from 'src/app/services/category.ser
 import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 
 @Component({
   selector: 'app-attribute',
@@ -16,10 +17,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./attribute.component.css']
 })
 export class AttributeComponent implements OnInit {
-
-  state: string;
   attribute: IAttribute;
-  attribute$: Observable<IAttribute>;
   formId = 'attributes';
   manualEnter = false;
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
@@ -28,44 +26,41 @@ export class AttributeComponent implements OnInit {
   formInfoAttrValueI18n: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
   validator: ValidateHelper;
   constructor(
-    private route: ActivatedRoute,
     public attributeSvc: AttributeService,
     private fis: FormInfoService,
     public translate: TranslateService,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    private _bottomSheetRef: MatBottomSheetRef<AttributeComponent>
   ) {
+    this.attribute = data as IAttribute;
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
   }
-
+  dismiss(event: MouseEvent){
+    this._bottomSheetRef.dismiss();
+    event.preventDefault();
+  }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
-    this.route.queryParamMap.subscribe(queryMaps => {
-      this.state = queryMaps.get('state');
-      if (queryMaps.get('state') === 'update') {
-        this.attribute$.subscribe(byId => {
-          this.fis.formGroupCollection[this.formId].get('id').setValue(byId.id);
-          this.fis.formGroupCollection[this.formId].get('name').setValue(byId.name);
-          this.fis.formGroupCollection[this.formId].get('method').setValue(byId.method);
-          this.fis.formGroupCollection[this.formId].get('type').setValue(byId.type);
-          this.fis.formGroupCollection[this.formId].get('description').setValue(byId.description);
-          setTimeout(() => {
-            if (byId.selectValues && byId.selectValues.length !== 0) {
-              byId.selectValues.forEach((e, index) => {
-                if (index === 0) {
-                  this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue').setValue(e);
-                } else {
-                  this.fis.formGroupCollection[this.formIdAttrValue].addControl('attrValue_' + this.fis.formGroupCollection_index[this.formIdAttrValue], new FormControl(e));
-                  this.fis.add(this.formIdAttrValue);
-                }
-                this.fis.refreshLayout(this.formInfoAttrValue, this.formIdAttrValue);
-              })
+    if (this.attribute) {
+      this.fis.formGroupCollection[this.formId].get('id').setValue(this.attribute.id);
+      this.fis.formGroupCollection[this.formId].get('name').setValue(this.attribute.name);
+      this.fis.formGroupCollection[this.formId].get('method').setValue(this.attribute.method);
+      this.fis.formGroupCollection[this.formId].get('type').setValue(this.attribute.type);
+      this.fis.formGroupCollection[this.formId].get('description').setValue(this.attribute.description);
+      setTimeout(() => {
+        if (this.attribute.selectValues && this.attribute.selectValues.length !== 0) {
+          this.attribute.selectValues.forEach((e, index) => {
+            if (index === 0) {
+              this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue').setValue(e);
+            } else {
+              this.fis.formGroupCollection[this.formIdAttrValue].addControl('attrValue_' + this.fis.formGroupCollection_index[this.formIdAttrValue], new FormControl(e));
+              this.fis.add(this.formIdAttrValue);
             }
-          }, 0)
-        });
-      } else if (queryMaps.get('state') === 'none') {
-
-      } else {
-      }
-    });
+            this.fis.refreshLayout(this.formInfoAttrValue, this.formIdAttrValue);
+          })
+        }
+      }, 0)
+    }
     this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
       this.manualEnter = next === 'SELECT';
       if (this.manualEnter) {
@@ -120,7 +115,6 @@ export class AttributeComponent implements OnInit {
         });
       })
     });
-    this.attribute$ = this.attributeSvc.getAttributeById(+this.route.snapshot.paramMap.get('id'))
   }
   convertToPayload(): IAttribute {
     let formGroup = this.fis.formGroupCollection[this.formId];
