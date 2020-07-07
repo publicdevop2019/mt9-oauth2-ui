@@ -121,7 +121,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
   }),
   ],
-  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent],
+  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

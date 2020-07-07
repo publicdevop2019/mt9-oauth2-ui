@@ -44,8 +44,6 @@ const routes: Routes = [
       { path: 'security-profile', component: SecurityProfileComponent },
       { path: 'security-profile/:id', component: SecurityProfileComponent },
       { path: 'products', component: SummaryProductComponent },
-      { path: 'product', component: ProductComponent },
-      { path: 'products/:id', component: ProductComponent },
       { path: 'catalogs', component: SummaryCatalogComponent },
       { path: 'attributes', component: SummaryAttributeComponent },
       { path: 'posts', component: SummaryPostComponent },

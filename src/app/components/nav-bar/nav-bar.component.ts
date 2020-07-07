@@ -128,14 +128,6 @@ export class NavBarComponent implements OnInit {
         state: 'none',
       },
     },
-    {
-      link: 'product',
-      display: 'ADD_PRODUCT',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
   ];
   menuBbs: INavElement[] = [
     {
