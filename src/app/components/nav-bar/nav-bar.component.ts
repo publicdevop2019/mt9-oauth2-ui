@@ -61,7 +61,7 @@ export class NavBarComponent implements OnInit {
       display: 'LOGOUT',
       icon: 'exit_to_app',
       params: {
-        
+
       },
     }
   ];
@@ -110,7 +110,7 @@ export class NavBarComponent implements OnInit {
       display: 'POSTS',
       icon: 'post_add',
       params: {
-        
+
       },
     },
     {
@@ -118,7 +118,7 @@ export class NavBarComponent implements OnInit {
       display: 'COMMENTS',
       icon: 'mode_comment',
       params: {
-        
+
       },
     },
     {
@@ -126,7 +126,7 @@ export class NavBarComponent implements OnInit {
       display: 'REPORTS',
       icon: 'block',
       params: {
-        
+
       },
     },
     {
@@ -134,7 +134,7 @@ export class NavBarComponent implements OnInit {
       display: 'LIKES',
       icon: 'thumb_up',
       params: {
-        
+
       },
     },
     {
@@ -150,7 +150,7 @@ export class NavBarComponent implements OnInit {
       display: 'NOT_INTERESTED',
       icon: 'label_off',
       params: {
-        
+
       },
     },
 
@@ -172,7 +172,15 @@ export class NavBarComponent implements OnInit {
       }
     })
   }
-
+  openedHandler(panelName: string) {
+    localStorage.setItem(panelName, 'true')
+  }
+  closedHander(panelName: string) {
+    localStorage.setItem(panelName, 'false')
+  }
+  authNavExpand(panelName: string) {
+    return localStorage.getItem(panelName) === 'true'
+  }
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
     this.sub.unsubscribe();
