@@ -71,7 +71,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.genFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrGeneralFormId));
     this.attrSvc.getAttributeList().pipe(switchMap((next) => {
       // load attribute first then initialize form
-      this.updateFormInfo(next.data);
+      this.updateFormInfoOptions(next.data);
       this.attrList = next.data;
       return combineLatest(this.prodFormCreatedOb, this.salesFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
     })).subscribe(() => {
@@ -285,7 +285,7 @@ export class ProductComponent implements OnInit, OnDestroy {
    * @description update formInfo first then initialize form, so add template can be correct
    * @param attrs 
    */
-  private updateFormInfo(attrs: IAttribute[]) {
+  private updateFormInfoOptions(attrs: IAttribute[]) {
     this.attrProdFormInfo.inputs[0].options = attrs.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
     this.attrGeneralFormInfo.inputs[0].options = attrs.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
     this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });

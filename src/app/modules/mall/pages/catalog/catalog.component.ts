@@ -20,7 +20,7 @@ import { filter, take, switchMap } from 'rxjs/operators';
   templateUrl: './catalog.component.html',
   styleUrls: ['./catalog.component.css']
 })
-export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CatalogComponent implements OnInit, OnDestroy {
   category: ICatalogCustomer;
   formId = 'category';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
@@ -37,7 +37,7 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
     private fis: FormInfoService,
     public translate: TranslateService,
     public attrSvc: AttributeService,
-    private changeDecRef:ChangeDetectorRef,
+    private changeDecRef: ChangeDetectorRef,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
@@ -45,27 +45,9 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.formId));
     this.formCreatedOb.subscribe()
     this.attrFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrFormId));
-    let sub0 = this.attrFormCreatedOb.subscribe(() => {
-      this.subForFormChange();
-    })
 
     let sub1 = combineLatest(this.formCreatedOb, this.attrSvc.getAttributeList()).pipe(take(1)).pipe(switchMap(next => {
-      let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
-        this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
-        if (next === 'FRONTEND') {
-          this.categorySvc.getCatalogFrontend().subscribe(next1 => {
-            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
-          })
-        } else if (next === 'BACKEND') {
-          this.categorySvc.getCatalogBackend().subscribe(next1 => {
-            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
-          })
-        } else {
-  
-        }
-        this.fis.formGroupCollection[this.formId].get('parentId').reset();
-      });
-      this.subs.push(sub3)
+      this.subForCatalogTypeChange();
       //update formInfo first then initialize form, so add template can be correct
       this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
       this.attrList = next[1].data;
@@ -79,7 +61,6 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
       return this.attrFormCreatedOb
     })).subscribe(() => {
       if (this.category && this.category.attributes) {
-        setTimeout(() => {
           this.category.attributes.forEach((attr, index) => {
             if (index === 0) {
               let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
@@ -115,13 +96,30 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             this.fis.refreshLayout(this.attrFormInfo, this.attrFormId);
           })
-        }, 0);
       }
+      this.subForAttrFormChange();
     })
-    this.subs.push(sub0)
     this.subs.push(sub1)
   }
-  private subForFormChange() {
+  private subForCatalogTypeChange() {
+    let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
+      this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
+      if (next === 'FRONTEND') {
+        this.categorySvc.getCatalogFrontend().subscribe(next1 => {
+          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+        })
+      } else if (next === 'BACKEND') {
+        this.categorySvc.getCatalogBackend().subscribe(next1 => {
+          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+        })
+      } else {
+
+      }
+      this.fis.formGroupCollection[this.formId].get('parentId').reset();
+    });
+    this.subs.push(sub3)
+  }
+  private subForAttrFormChange() {
     let sub2 = this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
       Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
         let selected = this.attrList.find(e => String(e.id) === next[idKey]);
@@ -140,9 +138,6 @@ export class CatalogComponent implements OnInit, AfterViewInit, OnDestroy {
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
     event.preventDefault();
-  }
-  ngAfterViewInit(): void {
-
   }
   private getLabel(e: IAttribute): string {
     if (e.description) {
