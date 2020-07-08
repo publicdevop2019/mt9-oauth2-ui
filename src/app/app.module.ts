@@ -49,6 +49,8 @@ import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-i
 import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
 import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/resource-owner.component';
+import { DeleteConfirmHttpInterceptor } from './services/delete-confirm.interceptor';
+import { DeleteConfirmDialogComponent } from './components/delete-confirm-dialog/delete-confirm-dialog.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -84,6 +86,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AttributeComponent,
     CatalogTreeComponent,
     UpdatePwdComponent,
+    DeleteConfirmDialogComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -123,8 +126,13 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
   }),
   ],
-  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent],
+  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent,DeleteConfirmDialogComponent],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: DeleteConfirmHttpInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CustomHttpInterceptor,

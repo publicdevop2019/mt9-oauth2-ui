@@ -173,5 +173,8 @@ export const enUS = {
     "DESCRIPTION": "Description",
     "ATTRIBUTES": "Attributes",
     "INHERIT_ATTR": "Inherit attributes from backend catalog",
+    "DELETE_CONFIRM_MSG": "Delete this item?",
+    "CANCEL": "Cancel",
+    "CONFIRM": "Confirm",
     "": "",
 }

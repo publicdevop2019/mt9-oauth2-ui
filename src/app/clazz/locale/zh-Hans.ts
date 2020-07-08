@@ -178,5 +178,8 @@ export const zhHans = {
     "DESCRIPTION": "备注",
     "ATTRIBUTES": "属性",
     "INHERIT_ATTR": "继承的后端属性",
+    "DELETE_CONFIRM_MSG": "确定删除这个条目？",
+    "CANCEL": "取消",
+    "CONFIRM": "确认",
     "": "",
 }
