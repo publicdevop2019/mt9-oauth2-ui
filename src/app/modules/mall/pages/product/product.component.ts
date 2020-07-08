@@ -119,7 +119,6 @@ export class ProductComponent implements OnInit, OnDestroy {
           })
         });
       } else {
-
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
         this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
         this.fis.formGroupCollection[this.formId].get('name').setValue(this.productDetail.name)
