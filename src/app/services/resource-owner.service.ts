@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { MsgBoxComponent } from '../components/msg-box/msg-box.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
+import { switchMap } from 'rxjs/operators';
 /**
  * responsible for convert FormGroup to business model
  */
@@ -13,8 +14,8 @@ import { CustomHttpInterceptor } from './http.interceptor';
   providedIn: 'root'
 })
 export class ResourceOwnerService {
-  cachedResourceOwners: IResourceOwner[];
   currentPageIndex: number;
+  refreshSummary:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeResourceOwnerToken(resourceOwnerName: string): void {
     this.httpProxy.netImpl.revokeResourceOwnerToken(resourceOwnerName).subscribe(result => {
@@ -25,7 +26,7 @@ export class ResourceOwnerService {
     return this.httpProxy.netImpl.getResourceOwners();
   }
   getResourceOwner(id: number): Observable<IResourceOwner> {
-    return this.cachedResourceOwners ? of(this.cachedResourceOwners.find(e => e.id === id)) : of(undefined)
+    return this.httpProxy.netImpl.getResourceOwners().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
   }
   updateResourceOwner(resourceOwner: IResourceOwner): void {
     this.httpProxy.netImpl.updateResourceOwner(resourceOwner).subscribe(result => {

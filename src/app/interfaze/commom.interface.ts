@@ -2,7 +2,7 @@ import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { ICatalogCustomerHttp, ICatalogCustomer } from '../services/category.service';
+import { ICatalogCustomerHttp, ICatalogCustomer } from '../services/catalog.service';
 import { ICommentSummary } from '../services/comment.service';
 import { IPostSummary } from '../services/post.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';

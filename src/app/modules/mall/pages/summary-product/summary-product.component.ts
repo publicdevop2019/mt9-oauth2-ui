@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 import { MatPaginator, MatSort, MatTableDataSource, PageEvent, MatBottomSheetConfig, MatBottomSheet } from '@angular/material';
 import { interval, Subscription } from 'rxjs';
 import { debounce, filter, map, switchMap } from 'rxjs/operators';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { ProductComponent } from '../product/product.component';
@@ -24,10 +24,11 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   public catalogsData: ICatalogCustomer[];
-  constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService,private _bottomSheet: MatBottomSheet,) {
-    this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(products => {
-      this.totalProductHandler(products)
-    });
+  constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
+    this.productSvc.refreshSummary.pipe(switchMap(() =>
+      this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize())
+    )).subscribe(next => { this.totalProductHandler(next) })
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
     this.categorySvc.getCatalogBackend()
       .subscribe(catalogs => {
         if (catalogs.data)
@@ -52,7 +53,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
-    config.panelClass='fix-height'
+    config.panelClass = 'fix-height'
     if (id) {
       this.productSvc.getProductDetailById(id).subscribe(next => {
         config.data = next;

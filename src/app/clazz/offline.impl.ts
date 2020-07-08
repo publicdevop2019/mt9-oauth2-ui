@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { IAuthorizeCode, IAuthorizeParty, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/category.service';
+import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/catalog.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';

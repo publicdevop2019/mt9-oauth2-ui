@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { switchMap } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { IClient } from '../modules/my-apps/interface/client.interface';
 })
 export class ClientService {
   currentPageIndex: number;
+  refreshSummary:Subject<void>=new Subject();
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeClientToken(clientId: string): void {
     this.httpProxy.netImpl.revokeClientToken(clientId).subscribe(result => {
@@ -36,17 +37,20 @@ export class ClientService {
   updateClient(client: IClient): void {
     this.httpProxy.netImpl.updateClient(client).subscribe(result => {
       this.notifyTokenRevocation(result)
+      this.refreshSummary.next()
     })
   }
   delete(id: number): void {
     this.httpProxy.netImpl.deleteClient(id).subscribe(result => {
       this.notify(result)
       this.router.navigateByUrl('/dashboard/clients');
+      this.refreshSummary.next()
     })
   }
   createClient(client: IClient): void {
     this.httpProxy.netImpl.createClient(client).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   notify(result: boolean) {

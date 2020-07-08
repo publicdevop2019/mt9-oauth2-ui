@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IAttribute, AttributeService } from 'src/app/services/attribute.service';
+import { IAttribute, AttributeService, IAttributeHttp } from 'src/app/services/attribute.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { DeviceService } from 'src/app/services/device.service';
 import { AttributeComponent } from '../attribute/attribute.component';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-summary-attribute',
@@ -18,11 +19,13 @@ export class SummaryAttributeComponent implements OnInit {
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
   ) {
-    this.attrSvc.getAttributeList().subscribe(next => {
-      this.dataSource = new MatTableDataSource(next.data)
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    })
+    this.attrSvc.refreshSummary.pipe(switchMap(() => this.attrSvc.getAttributeList())).subscribe(next => { this.updateSummaryData(next) })
+    this.attrSvc.getAttributeList().subscribe(next => { this.updateSummaryData(next) })
+  }
+  updateSummaryData(next: IAttributeHttp) {
+    this.dataSource = new MatTableDataSource(next.data)
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();

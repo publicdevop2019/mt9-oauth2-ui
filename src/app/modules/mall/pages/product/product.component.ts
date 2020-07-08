@@ -10,7 +10,7 @@ import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
-import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/category.service';
+import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IProductDetail, IProductOption, IProductOptions, ProductService, ISku } from 'src/app/services/product.service';
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
@@ -148,7 +148,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
     this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
   }
-  updateSalesForm(skus: ISku[]) {
+  private updateSalesForm(skus: ISku[]) {
     setTimeout(() => {
       skus.forEach((sku, index) => {
         if (index === 0) {
@@ -189,21 +189,21 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.fis.refreshLayout(this.attrSalesFormInfo, this.attrSalesFormId);
     }, 0)
   }
-  displayStorageChangeInputs(arg0: IForm) {
+  private displayStorageChangeInputs(arg0: IForm) {
     arg0.inputs.filter(e => e.key.includes('storage_OrderIncreaseBy')).forEach(e => e.display = true);
     arg0.inputs.filter(e => e.key.includes('storage_OrderDecreaseBy')).forEach(e => e.display = true);
     arg0.inputs.filter(e => e.key.includes('storage_ActualIncreaseBy')).forEach(e => e.display = true);
     arg0.inputs.filter(e => e.key.includes('storage_ActualDecreaseBy')).forEach(e => e.display = true);
   }
-  setReadOnlyAttrSalesForm(formInfo: IForm) {
+  private setReadOnlyAttrSalesForm(formInfo: IForm) {
     formInfo.inputs.filter(e => e.key.includes('storageOrder')).forEach(e => e.readonly = true);
     formInfo.inputs.filter(e => e.key.includes('storageActual')).forEach(e => e.readonly = true);
     formInfo.inputs.filter(e => e.key.includes('sales')).forEach(e => e.readonly = true);
   }
-  setReadOnlyAttrSalesChildForm(formInfo: IForm) {
+  private setReadOnlyAttrSalesChildForm(formInfo: IForm) {
     formInfo.inputs.forEach(e => e.readonly = true);
   }
-  fetchAttrList() {
+  private fetchAttrList() {
     this.attrSvc.getAttributeList().subscribe(next => {
       //update formInfo first then initialize form, so add template can be correct
       this.attrProdFormInfo.inputs[0].options = next.data.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });

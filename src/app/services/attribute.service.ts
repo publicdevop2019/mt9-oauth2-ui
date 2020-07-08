@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { switchMap } from 'rxjs/operators';
 import { CustomHttpInterceptor } from './http.interceptor';
@@ -18,6 +18,11 @@ export interface IAttributeHttp {
   providedIn: 'root'
 })
 export class AttributeService {
+  refreshSummary:Subject<void>=new Subject();
+  currentPageIndex: number;
+  constructor(private httpProxy: HttpProxyService, private _httpInterceptor: CustomHttpInterceptor) {
+
+  }
   getAttributeById(id: number): Observable<IAttribute> {
     return this.getAttributeList().pipe(switchMap(els => {
       return of(els.data.find(el => el.id === id))
@@ -26,24 +31,23 @@ export class AttributeService {
   getAttributeList(): Observable<IAttributeHttp> {
     return this.httpProxy.netImpl.getAttributes()
   }
-  currentPageIndex: number;
-  constructor(private httpProxy: HttpProxyService, private _httpInterceptor: CustomHttpInterceptor) {
-
-  }
   create(attribute: IAttribute) {
     this.httpProxy.netImpl.createAttribute(attribute).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   update(attribute: IAttribute) {
     this.httpProxy.netImpl.updateAttribute(attribute).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
 
   }
   delete(id: number) {
     this.httpProxy.netImpl.deleteAttribute(id).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   notify(result: boolean) {

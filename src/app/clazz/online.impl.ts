@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/category.service';
+import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/catalog.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { getCookie } from './utility';
 import { IPostCard, IPostSummary } from '../services/post.service';

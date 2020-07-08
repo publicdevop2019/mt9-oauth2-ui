@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { switchMap } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
@@ -12,6 +12,7 @@ import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-prof
 })
 export class SecurityProfileService {
   currentPageIndex:number;
+  refreshSummary:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
 
   readAll(): Observable<ISecurityProfile[]> {
@@ -23,11 +24,13 @@ export class SecurityProfileService {
   create(securityProfiel: ISecurityProfile) {
     this.httpProxy.netImpl.createSecurityProfile(securityProfiel).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   update(securityProfiel: ISecurityProfile) {
     this.httpProxy.netImpl.updateSecurityProfile(securityProfiel).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
 
   }
@@ -40,6 +43,7 @@ export class SecurityProfileService {
   delete(id: number) {
     this.httpProxy.netImpl.deleteSecurityProfile(id).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   notify(result: boolean) {

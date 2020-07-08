@@ -4,6 +4,7 @@ import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 import { ResourceOwnerComponent } from '../resource-owner/resource-owner.component';
+import { switchMap } from 'rxjs/operators';
 export interface IResourceOwner {
   id?: number,
   email: string;
@@ -41,14 +42,14 @@ export class SummaryResourceOwnerComponent implements OnInit {
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
   ) {
-    this.resourceOwnerService.getResourceOwners().subscribe(resourceOwners => {
-      this.resourceOwnerService.cachedResourceOwners = resourceOwners;
-      this.dataSource = new MatTableDataSource(resourceOwners);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    })
+    this.resourceOwnerService.refreshSummary.pipe(switchMap(() => this.resourceOwnerService.getResourceOwners())).subscribe(next => { this.updateSummaryData(next) })
+    this.resourceOwnerService.getResourceOwners().subscribe(next => { this.updateSummaryData(next) })
   }
-
+  updateSummaryData(next: IResourceOwner[]) {
+    this.dataSource = new MatTableDataSource(next)
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
   ngOnInit() {
   }
 

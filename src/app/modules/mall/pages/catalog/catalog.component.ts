@@ -9,7 +9,7 @@ import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/category.service';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { hasValue } from 'src/app/clazz/utility';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 

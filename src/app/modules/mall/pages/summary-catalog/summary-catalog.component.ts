@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode, ICatalogCustomerHttp } from 'src/app/services/category.service';
+import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlatDataSource, MatTreeFlattener, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DeviceService } from 'src/app/services/device.service';
 import { AttributeComponent } from '../attribute/attribute.component';
 import { CatalogComponent } from '../catalog/catalog.component';
+import { switchMap } from 'rxjs/operators';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -26,21 +27,21 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  displayedColumns: string[] = ['name', 'parentId', 'attributes', 'edit','delete'];
+  displayedColumns: string[] = ['name', 'parentId', 'attributes', 'edit', 'delete'];
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
   pageSizeOffset = 2;
   public catalogsData: ICatalogCustomer[];
   constructor(
-    public catalogSvc: CategoryService, 
-    private fis: FormInfoService, 
-    public translate: TranslateService, 
-    private route: ActivatedRoute, 
-    private router: Router, 
+    public catalogSvc: CategoryService,
+    private fis: FormInfoService,
+    public translate: TranslateService,
+    private route: ActivatedRoute,
+    private router: Router,
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
-    ) {
+  ) {
     this.route.queryParamMap.subscribe(queryMaps => {
       this.catalogType = queryMaps.get('type');
       let ob: Observable<ICatalogCustomerHttp>;
@@ -51,15 +52,18 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
       } else {
         console.error('unknow catalog type')
       }
-      ob.subscribe(catalogs => {
-        this.dataSource = new MatTableDataSource(catalogs.data)
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        if (catalogs.data) {
-          this.catalogsData = catalogs.data;
-        }
-      })
+      this.catalogSvc.refreshSummary.pipe(switchMap(() => ob))
+        .subscribe(next => { this.updateSummaryData(next) })
+      ob.subscribe(next => { this.updateSummaryData(next) })
     });
+  }
+  updateSummaryData(catalogs: ICatalogCustomerHttp) {
+    this.dataSource = new MatTableDataSource(catalogs.data)
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    if (catalogs.data) {
+      this.catalogsData = catalogs.data;
+    }
   }
   ngOnDestroy(): void {
     if (this.sub)
@@ -107,16 +111,16 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
     if (id) {
-      if(this.catalogType==='frontend'){
+      if (this.catalogType === 'frontend') {
         this.catalogSvc.getCatalogFrontendById(id).subscribe(next => {
           config.data = next;
           this._bottomSheet.open(CatalogComponent, config);
         })
-      }else{
-          this.catalogSvc.getCatalogBackendById(id).subscribe(next => {
-            config.data = next;
-            this._bottomSheet.open(CatalogComponent, config);
-          })
+      } else {
+        this.catalogSvc.getCatalogBackendById(id).subscribe(next => {
+          config.data = next;
+          this._bottomSheet.open(CatalogComponent, config);
+        })
       }
     } else {
       this._bottomSheet.open(CatalogComponent, config);

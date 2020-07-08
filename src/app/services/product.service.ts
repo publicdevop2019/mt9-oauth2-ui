@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IProductTotalResponse {
@@ -52,6 +52,7 @@ export interface IProductDetail {
   providedIn: 'root'
 })
 export class ProductService {
+  refreshSummary:Subject<void>=new Subject();
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
@@ -72,17 +73,20 @@ export class ProductService {
   create(product: IProductDetail) {
     this.httpProxy.netImpl.createProduct(product).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   update(product: IProductDetail) {
     this.httpProxy.netImpl.updateProduct(product).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
 
   }
   delete(id: number) {
     this.httpProxy.netImpl.deleteProduct(id).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   notify(result: boolean) {

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { CatalogCustomerFlatNode } from '../../pages/summary-catalog/summary-catalog.component';
-import { ICatalogCustomerTreeNode, ICatalogCustomer } from 'src/app/services/category.service';
+import { ICatalogCustomerTreeNode, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 
 @Component({

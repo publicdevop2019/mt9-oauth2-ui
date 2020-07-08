@@ -7,6 +7,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/device.service';
 import { SecurityProfileComponent } from '../security-profile/security-profile.component';
+import { switchMap } from 'rxjs/operators';
 
 export interface ISecurityProfile {
   resourceId: string;
@@ -25,9 +26,9 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
-  
+
   header: string;
-  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'edit','delete'];
+  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'edit', 'delete'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   batchUpdateForm = new FormGroup({
     host: new FormControl('', []),
@@ -35,12 +36,14 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   selection = new SelectionModel<ISecurityProfile>(true, []);
-  constructor(public securityProfileSvc: SecurityProfileService,public deviceSvc:DeviceService,private _bottomSheet: MatBottomSheet,) {
-    this.securityProfileSvc.readAll().subscribe(profiles => {
-      this.dataSource = new MatTableDataSource(profiles);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    });
+  constructor(public securityProfileSvc: SecurityProfileService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
+    this.securityProfileSvc.refreshSummary.pipe(switchMap(()=>this.securityProfileSvc.readAll())).subscribe(next => { this.updateSummaryData(next) });
+    this.securityProfileSvc.readAll().subscribe(next => { this.updateSummaryData(next) });
+  }
+  updateSummaryData(next: ISecurityProfile[]) {
+    this.dataSource = new MatTableDataSource(next)
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
   ngOnDestroy(): void {
   }

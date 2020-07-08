@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
@@ -26,6 +26,7 @@ export interface ICatalogCustomerHttp {
 })
 export class CategoryService {
   currentPageIndex: number;
+  refreshSummary:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getCatalogFrontend(): Observable<ICatalogCustomerHttp> {
     return this.httpProxy.netImpl.getCatalogFrontendAdmin()
@@ -46,17 +47,20 @@ export class CategoryService {
   create(category: ICatalogCustomer) {
     this.httpProxy.netImpl.createCategory(category).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   update(category: ICatalogCustomer) {
     this.httpProxy.netImpl.updateCategory(category).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
 
   }
   delete(id: number) {
     this.httpProxy.netImpl.deleteCategory(id).subscribe(result => {
       this.notify(result)
+      this.refreshSummary.next()
     })
   }
   notify(result: boolean) {
