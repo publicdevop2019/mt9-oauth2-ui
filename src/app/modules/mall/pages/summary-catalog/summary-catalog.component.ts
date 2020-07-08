@@ -12,6 +12,7 @@ import { DeviceService } from 'src/app/services/device.service';
 import { AttributeComponent } from '../attribute/attribute.component';
 import { CatalogComponent } from '../catalog/catalog.component';
 import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -110,7 +111,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
-    if (id) {
+    if (hasValue(id)) {
       if (this.catalogType === 'frontend') {
         this.catalogSvc.getCatalogFrontendById(id).subscribe(next => {
           config.data = next;

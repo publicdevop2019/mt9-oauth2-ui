@@ -4,6 +4,7 @@ import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, M
 import { DeviceService } from 'src/app/services/device.service';
 import { AttributeComponent } from '../attribute/attribute.component';
 import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
 
 @Component({
   selector: 'app-summary-attribute',
@@ -30,7 +31,7 @@ export class SummaryAttributeComponent implements OnInit {
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
-    if (id) {
+    if (hasValue(id)) {
       this.attrSvc.getAttributeById(id).subscribe(next => {
         config.data = next;
         this._bottomSheet.open(AttributeComponent, config);
