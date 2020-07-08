@@ -9,9 +9,9 @@
     </mat-toolbar>
 
     <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches"
+        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" [opened]="navExpand('side_bar')" (opened)="openedHandler('side_bar')" (closed)="closedHander('side_bar')"
             fixedTopGap="56">
-            <mat-expansion-panel (opened)="openedHandler('auth_nav')" (closed)="closedHander('auth_nav')" [expanded]="authNavExpand('auth_nav')">
+            <mat-expansion-panel (opened)="openedHandler('auth_nav')" (closed)="closedHander('auth_nav')" [expanded]="navExpand('auth_nav')">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         {{'AUTH_CENTER'| translate}}
@@ -25,7 +25,7 @@
                 </mat-nav-list>
 
             </mat-expansion-panel>
-            <mat-expansion-panel (opened)="openedHandler('user_nav')" (closed)="closedHander('user_nav')" [expanded]="authNavExpand('user_nav')">
+            <mat-expansion-panel (opened)="openedHandler('user_nav')" (closed)="closedHander('user_nav')" [expanded]="navExpand('user_nav')">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         {{'USER_CENTER'| translate}}
@@ -39,7 +39,7 @@
                 </mat-nav-list>
 
             </mat-expansion-panel>
-            <mat-expansion-panel (opened)="openedHandler('mall_nav')" (closed)="closedHander('mall_nav')" [expanded]="authNavExpand('mall_nav')">
+            <mat-expansion-panel (opened)="openedHandler('mall_nav')" (closed)="closedHander('mall_nav')" [expanded]="navExpand('mall_nav')">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         {{'MALL_CENTER'| translate}}
@@ -53,7 +53,7 @@
                 </mat-nav-list>
 
             </mat-expansion-panel>
-            <mat-expansion-panel (opened)="openedHandler('bbs_nav')" (closed)="closedHander('bbs_nav')" [expanded]="authNavExpand('bbs_nav')">
+            <mat-expansion-panel (opened)="openedHandler('bbs_nav')" (closed)="closedHander('bbs_nav')" [expanded]="navExpand('bbs_nav')">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         {{'BBS_CENTER'| translate}}

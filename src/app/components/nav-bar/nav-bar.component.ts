@@ -178,7 +178,7 @@ export class NavBarComponent implements OnInit {
   closedHander(panelName: string) {
     localStorage.setItem(panelName, 'false')
   }
-  authNavExpand(panelName: string) {
+  navExpand(panelName: string) {
     return localStorage.getItem(panelName) === 'true'
   }
   ngOnDestroy(): void {
