@@ -50,20 +50,7 @@ export class AttributeComponent implements OnInit {
         this.fis.formGroupCollection[this.formId].get('method').setValue(this.attribute.method);
         this.fis.formGroupCollection[this.formId].get('type').setValue(this.attribute.type);
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.attribute.description);
-        // combineLatest(this.attrFormCreatedOb).pipe(take(1)).subscribe(() => {
-        //   if (this.attribute.selectValues && this.attribute.selectValues.length !== 0) {
-        //     this.attribute.selectValues.forEach((e, index) => {
-        //       if (index === 0) {
-        //         this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue').setValue(e);
-        //       } else {
-        //         this.fis.formGroupCollection[this.formIdAttrValue].addControl('attrValue_' + this.fis.formGroupCollection_index[this.formIdAttrValue], new FormControl(e));
-        //         this.fis.add(this.formIdAttrValue);
-        //       }
-        //       this.fis.refreshLayout(this.formInfoAttrValue, this.formIdAttrValue);
-        //     })
-        //   }
-        // })
-        setTimeout(() => {
+        combineLatest(this.attrFormCreatedOb).pipe(take(1)).subscribe(() => {
           if (this.attribute.selectValues && this.attribute.selectValues.length !== 0) {
             this.attribute.selectValues.forEach((e, index) => {
               if (index === 0) {
@@ -75,7 +62,7 @@ export class AttributeComponent implements OnInit {
               this.fis.refreshLayout(this.formInfoAttrValue, this.formIdAttrValue);
             })
           }
-        }, 0)
+        })
       }
       this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     })
