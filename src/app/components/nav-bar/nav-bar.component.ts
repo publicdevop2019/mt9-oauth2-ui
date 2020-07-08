@@ -156,21 +156,11 @@ export class NavBarComponent implements OnInit {
 
   ];
   private _mobileQueryListener: () => void;
-  private sub: Subscription;
   @ViewChild("snav", { static: true }) snav: MatSidenav;
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver, public translate: TranslateService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.sub = this.breakpointObserver.observe([Breakpoints.Large,
-    Breakpoints.XLarge,]).subscribe(next => {
-      if (next.breakpoints[Breakpoints.Large] || next.breakpoints[Breakpoints.XLarge]) {
-        this.snav.open()
-      }
-      else {
-        console.warn('unknown device width match!')
-      }
-    })
   }
   openedHandler(panelName: string) {
     localStorage.setItem(panelName, 'true')
@@ -183,7 +173,6 @@ export class NavBarComponent implements OnInit {
   }
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
-    this.sub.unsubscribe();
   }
 
   ngOnInit() {
