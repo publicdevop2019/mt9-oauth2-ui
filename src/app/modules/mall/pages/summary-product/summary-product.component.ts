@@ -8,6 +8,7 @@ import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.serv
 import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { ProductComponent } from '../product/product.component';
+import { hasValue } from 'src/app/clazz/utility';
 
 @Component({
   selector: 'app-summary-product',
@@ -54,7 +55,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
     config.panelClass = 'fix-height'
-    if (id) {
+    if (hasValue(id)) {
       this.productSvc.getProductDetailById(id).subscribe(next => {
         config.data = next;
         this._bottomSheet.open(ProductComponent, config);
