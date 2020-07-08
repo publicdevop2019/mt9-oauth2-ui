@@ -34,7 +34,6 @@ export interface IResourceOwnerUpdatePwd {
 export class SummaryResourceOwnerComponent implements OnInit {
   displayedColumns: string[] = ['id', 'email', 'edit', 'token', 'delete'];
   dataSource: MatTableDataSource<IResourceOwner>;
-  /** @todo add access control based on role */
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(
