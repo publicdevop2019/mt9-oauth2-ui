@@ -71,7 +71,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.prodFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrProdFormId));
     this.salesFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrSalesFormId));
     this.genFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrGeneralFormId));
-    this.formCreatedOb.subscribe(() => {
+    let sub0 = this.formCreatedOb.subscribe(() => {
       if (this.productDetail) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
         this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
@@ -81,7 +81,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.formId].get('status').setValue(this.productDetail.status)
       }
     })
-    this.attrSvc.getAttributeList().pipe(switchMap((next) => {
+    let sub1 = this.attrSvc.getAttributeList().pipe(switchMap((next) => {
       // load attribute first then initialize form
       this.updateFormInfoOptions(next.data);
       this.attrList = next.data;
@@ -139,7 +139,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
       }
       // when add new child form sub for value chage if no sub
-      this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
+      let sub2 = this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes(this.salesFormIdTempId)).forEach(childrenFormId => {
           if (!this.childFormSub[childrenFormId]) {
             let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === childrenFormId));
@@ -153,6 +153,9 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);
       this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
       this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
+      this.subs.push(sub0);
+      this.subs.push(sub1);
+      this.subs.push(sub2);
     })
   }
   private updateChildFormProductOption(option: IProductOptions, childFormId: string) {
@@ -197,12 +200,13 @@ export class ProductComponent implements OnInit, OnDestroy {
         let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === formId));
         this.fis.add(this.attrSalesFormId);
         let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined && e.key === formId).form;
-        childFormCreated.subscribe(() => {
+        let sub = childFormCreated.subscribe(() => {
           this.updateValueForForm(sku.attributesSales, formId);
           this.setDisabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
           this.setDisabledAttrSalesChildForm(formInfo);
           this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-        })
+        });
+        this.subs.push(sub);
         //for child form
       }
     });
@@ -238,12 +242,11 @@ export class ProductComponent implements OnInit, OnDestroy {
     return e.name
   }
   ngOnDestroy(): void {
-    this.subs.forEach(e => e.unsubscribe());
+    this.subs.forEach(e => e && e.unsubscribe());
     Object.keys(this.childFormSub).forEach(e => {
       this.childFormSub[e] && this.childFormSub[e].unsubscribe();
     })
   }
-  private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();
   private translateFormLabel() {
     this.formInfo.inputs.forEach(e => {
@@ -309,10 +312,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.translateFormLabel();
-    this.sub = this.translate.onLangChange.subscribe(() => {
+    let sub = this.translate.onLangChange.subscribe(() => {
       this.translateFormLabel();
     })
-    this.subs.push(this.sub);
+    this.subs.push(sub);
     this.categorySvc.getCatalogBackend()
       .subscribe(next => {
         if (next.data) {
