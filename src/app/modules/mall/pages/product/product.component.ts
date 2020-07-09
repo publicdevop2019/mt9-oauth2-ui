@@ -176,13 +176,13 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual').setValue(sku.storageActual);
         this.fis.formGroupCollection[this.attrSalesFormId].get('price').setValue(sku.price);
         this.fis.formGroupCollection[this.attrSalesFormId].get('sales').setValue(sku.sales);
-        //for child form
+        //start of child form
         let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
         this.updateValueForForm(sku.attributesSales, this.salesFormIdTempId);
         this.setDisabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
         this.setDisabledAttrSalesChildForm(formInfo);
         this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-        //for child form
+        //end of child form
         this.subChangeForForm(this.salesFormIdTempId);
       } else {
         let indexSnapshot = this.fis.formGroupCollection_index[this.attrSalesFormId];
@@ -194,7 +194,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.attrSalesFormId].addControl('storage_ActualDecreaseBy_' + indexSnapshot, new FormControl());
         this.fis.formGroupCollection[this.attrSalesFormId].addControl('price_' + indexSnapshot, new FormControl(sku.price));
         this.fis.formGroupCollection[this.attrSalesFormId].addControl('sales_' + indexSnapshot, new FormControl(sku.sales));
-        //for child form
+        //start of child form
         let formId = this.salesFormIdTempId + '_' + indexSnapshot;
 
         let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === formId));
@@ -208,7 +208,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.subChangeForForm(formId);
         });
         this.childFormSub[formId + '_formCreate'] = sub;
-        //for child form
+        //end of child form
 
       }
     });
@@ -246,7 +246,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     Object.keys(this.childFormSub).forEach(e => {
-      console.dir('unsubscribe :: ' + e)
       this.childFormSub[e] && this.childFormSub[e].unsubscribe();
     })
   }
@@ -406,6 +405,10 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
     this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(tags);
   }
+  private hasAttr(formId: string): boolean {
+    let attrFormValue = this.fis.formGroupCollection[formId].value;
+    return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
+  }
   private getAddedAttrs(formId: string): string[] {
     let attrFormValue = this.fis.formGroupCollection[formId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
@@ -419,10 +422,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
       return selected.name + ':' + attrValue
     });
-  }
-  private hasAttr(formId: string): boolean {
-    let attrFormValue = this.fis.formGroupCollection[formId].value;
-    return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
   }
   private updateValueForForm(attrs: string[], formId: string) {
     attrs.forEach((attr, index) => {
