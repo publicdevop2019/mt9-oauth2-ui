@@ -27,7 +27,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   salesFormIdTempId = 'attrSalesFormChild';
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  attrProdFormId = 'attributes';
+  attrProdFormId = 'attributesProd';
   attrProdFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
   // save a copy of attrFormInfo so when toggle, no need to translate again
   attrProdFormInfoI18n: IForm;
@@ -44,7 +44,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   optionFormId = 'product_option';
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
   optionFormvalidator: ValidateHelper;
-  private subs: Subscription[] = [];
   public attrList: IAttribute[];
   private childFormSub: { [key: string]: Subscription } = {};
   public catalogs: ICatalogCustomerHttp;
@@ -88,20 +87,16 @@ export class ProductComponent implements OnInit, OnDestroy {
       return combineLatest(this.prodFormCreatedOb, this.salesFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
     })).subscribe(() => {
       if (!this.productDetail) {
-        this.subChangeForForm(this.attrProdFormId);
-        this.subChangeForForm(this.attrGeneralFormId);
       } else {
         if (this.productDetail.attributesProd) {
           this.updateValueForForm(this.productDetail.attributesProd, this.attrProdFormId);
-          this.subChangeForForm(this.attrProdFormId);
         }
         if (this.productDetail.attributesGen) {
           this.updateValueForForm(this.productDetail.attributesGen, this.attrGeneralFormId);
-          this.subChangeForForm(this.attrGeneralFormId);
         }
         this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
         if (this.productDetail.skus && this.productDetail.skus.length > 0) {
-          this.updateSalesForm(this.productDetail.skus);
+          this.updateAndSubSalesForm(this.productDetail.skus);
         }
         if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
           this.productDetail.imageUrlLarge.forEach((url, index) => {
@@ -138,24 +133,28 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.fis.refreshLayout(this.optionFormInfo, this.optionFormId);
         }
       }
+      this.subChangeForForm(this.attrProdFormId);
+      this.subChangeForForm(this.attrGeneralFormId);
       // when add new child form sub for value chage if no sub
       let sub2 = this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes(this.salesFormIdTempId)).forEach(childrenFormId => {
-          if (!this.childFormSub[childrenFormId]) {
+          if (!this.childFormSub[childrenFormId + '_valueChange']) {
             let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === childrenFormId));
-            childFormCreated.subscribe(() => {
+            let sub = childFormCreated.subscribe(() => {
               this.subChangeForForm(childrenFormId);
             })
+            this.childFormSub[childrenFormId + '_formCreate'] = sub;
           }
         })
       });
       this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
       this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);
       this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
-      this.subs.push(this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) }));
-      this.subs.push(sub0);
-      this.subs.push(sub1);
-      this.subs.push(sub2);
+      let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) })
+      this.childFormSub['imageUrlSmallFile_valueChange'] = sub3;
+      this.childFormSub[this.formId + '_formCreate'] = sub0;
+      this.childFormSub['getAttributeList_http'] = sub1;
+      this.childFormSub[this.attrSalesFormId + '_valueChange'] = sub2;
     })
   }
   private updateChildFormProductOption(option: IProductOptions, childFormId: string) {
@@ -170,7 +169,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
     });
   }
-  private updateSalesForm(skus: ISku[]) {
+  private updateAndSubSalesForm(skus: ISku[]) {
     skus.forEach((sku, index) => {
       if (index === 0) {
         this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder').setValue(sku.storageOrder);
@@ -184,6 +183,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.setDisabledAttrSalesChildForm(formInfo);
         this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
         //for child form
+        this.subChangeForForm(this.salesFormIdTempId);
       } else {
         let indexSnapshot = this.fis.formGroupCollection_index[this.attrSalesFormId];
         this.fis.formGroupCollection[this.attrSalesFormId].addControl('storageOrder_' + indexSnapshot, new FormControl(sku.storageOrder));
@@ -205,9 +205,11 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.setDisabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
           this.setDisabledAttrSalesChildForm(formInfo);
           this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+          this.subChangeForForm(formId);
         });
-        this.subs.push(sub);
+        this.childFormSub[formId + '_formCreate'] = sub;
         //for child form
+
       }
     });
     this.fis.refreshLayout(this.attrSalesFormInfo, this.attrSalesFormId);
@@ -225,6 +227,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   private setDisabledAttrSalesChildForm(formInfo: IForm) {
     formInfo.inputs.forEach(e => e.disabled = true);
+    formInfo.disabled = true;
   }
   /**
    * @description update formInfo first then initialize form, so add template can be correct
@@ -242,8 +245,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     return e.name
   }
   ngOnDestroy(): void {
-    this.subs.forEach(e => e && e.unsubscribe());
     Object.keys(this.childFormSub).forEach(e => {
+      console.dir('unsubscribe :: ' + e)
       this.childFormSub[e] && this.childFormSub[e].unsubscribe();
     })
   }
@@ -315,7 +318,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     let sub = this.translate.onLangChange.subscribe(() => {
       this.translateFormLabel();
     })
-    this.subs.push(sub);
+    this.childFormSub['i18n'] = sub;
     this.categorySvc.getCatalogBackend()
       .subscribe(next => {
         if (next.data) {
@@ -463,19 +466,21 @@ export class ProductComponent implements OnInit, OnDestroy {
     event.preventDefault();
   }
   private subChangeForForm(formId: string) {
-    let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
-      Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-        let selected = this.attrList.find(e => String(e.id) === next[idKey]);
-        if (selected) {
-          let append = idKey.replace('attributeId', '');
-          this.fis.formGroupCollection_formInfo[formId].inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
-          this.fis.formGroupCollection_formInfo[formId].inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
-          if (selected.method === 'SELECT') {
-            this.fis.formGroupCollection_formInfo[formId].inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+    if(!this.childFormSub[formId + '_valueChange']){
+      let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
+        Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
+          let selected = this.attrList.find(e => String(e.id) === next[idKey]);
+          if (selected) {
+            let append = idKey.replace('attributeId', '');
+            this.fis.formGroupCollection_formInfo[formId].inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
+            this.fis.formGroupCollection_formInfo[formId].inputs.find(ee => ee.key === 'attributeValueManual' + append).display = selected.method !== 'SELECT';
+            if (selected.method === 'SELECT') {
+              this.fis.formGroupCollection_formInfo[formId].inputs.find(ee => ee.key === 'attributeValueSelect' + append).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+            }
           }
-        }
+        });
       });
-    });
-    this.childFormSub[formId] = sub;
+      this.childFormSub[formId + '_valueChange'] = sub;
+    }
   }
 }
