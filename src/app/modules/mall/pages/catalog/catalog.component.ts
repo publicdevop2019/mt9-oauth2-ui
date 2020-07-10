@@ -42,9 +42,9 @@ export class CatalogComponent implements OnInit, OnDestroy {
     private _bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
     this.category = data as ICatalogCustomer;
-    this.formCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.formId));
+    this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.formCreatedOb.subscribe()
-    this.attrFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrFormId));
+    this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
     let sub1 = combineLatest(this.formCreatedOb, this.attrSvc.getAttributeList()).pipe(take(1)).pipe(switchMap(next => {
       this.subForCatalogTypeChange();

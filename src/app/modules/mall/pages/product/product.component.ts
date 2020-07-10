@@ -66,10 +66,10 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);
     this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis);
-    this.formCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.formId));
-    this.prodFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrProdFormId));
-    this.salesFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrSalesFormId));
-    this.genFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.attrGeneralFormId));
+    this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
+    this.prodFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrProdFormId));
+    this.salesFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrSalesFormId));
+    this.genFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrGeneralFormId));
     let sub0 = this.formCreatedOb.subscribe(() => {
       if (this.productDetail) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
@@ -122,7 +122,7 @@ export class ProductComponent implements OnInit, OnDestroy {
               let indexSnapshot = this.fis.formGroupCollection_index[this.optionFormId];
               this.fis.formGroupCollection[this.optionFormId].addControl('productOption_' + indexSnapshot, new FormControl(option.title));
               let childFormId = 'optionForm_' + indexSnapshot;
-              let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === childFormId));
+              let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
               childFormCreated.subscribe(() => {
                 this.updateChildFormProductOption(option, childFormId);
                 this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[childFormId], childFormId);
@@ -139,7 +139,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       let sub2 = this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes(this.salesFormIdTempId)).forEach(childrenFormId => {
           if (!this.childFormSub[childrenFormId + '_valueChange']) {
-            let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === childrenFormId));
+            let childFormCreated = this.fis.$ready.pipe(filter(e => e === childrenFormId));
             let sub = childFormCreated.subscribe(() => {
               this.subChangeForForm(childrenFormId);
             })
@@ -195,13 +195,13 @@ export class ProductComponent implements OnInit, OnDestroy {
         //start of child form
         let formId = this.salesFormIdTempId + '_' + indexSnapshot;
 
-        let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === formId));
+        let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
         let sub = childFormCreated.subscribe(() => {
           let formInfo = this.fis.formGroupCollection_formInfo[formId];
-          this.disabledAttrSalesChildForm(formInfo);
           this.updateValueForForm(sku.attributesSales, formId);
+          this.disabledAttrSalesChildForm(formInfo);
           this.subChangeForForm(formId);
-          this.fis.formGroupCollection_formInfo[formId]=JSON.parse(JSON.stringify(formInfo))
+          this.fis.$refresh.next();
         });
         this.fis.add(this.attrSalesFormId);
         this.childFormSub[formId + '_formCreate'] = sub;
@@ -211,6 +211,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
     this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
     this.fis.refreshLayout(this.attrSalesFormInfo, this.attrSalesFormId);
+    this.fis.formGroupCollection_formInfo[this.attrSalesFormId];
+    this.fis.$refresh.next();
+    console.dir(this.fis)
   }
   private displayStorageChangeInputs(arg0: IForm) {
     let var0 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']

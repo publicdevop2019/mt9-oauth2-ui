@@ -33,8 +33,8 @@ export class AttributeComponent implements OnInit ,OnDestroy{
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<AttributeComponent>
   ) {
-    this.formCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.formId));
-    this.attrFormCreatedOb = this.fis.newFormCreated.pipe(filter(e => e === this.formIdAttrValue));
+    this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
+    this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
     this.attribute = data as IAttribute;
     combineLatest(this.formCreatedOb).pipe(take(1)).subscribe(() => {
