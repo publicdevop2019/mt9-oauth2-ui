@@ -179,9 +179,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         //start of child form
         let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
         this.updateValueForForm(sku.attributesSales, this.salesFormIdTempId);
-        this.setDisabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-        this.setDisabledAttrSalesChildForm(formInfo);
-        this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+        this.disabledAttrSalesChildForm(formInfo);
         //end of child form
         this.subChangeForForm(this.salesFormIdTempId);
       } else {
@@ -198,34 +196,31 @@ export class ProductComponent implements OnInit, OnDestroy {
         let formId = this.salesFormIdTempId + '_' + indexSnapshot;
 
         let childFormCreated = this.fis.newFormCreated.pipe(filter(e => e === formId));
-        this.fis.add(this.attrSalesFormId);
-        let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined && e.key === formId).form;
         let sub = childFormCreated.subscribe(() => {
+          let formInfo = this.fis.formGroupCollection_formInfo[formId];
+          this.disabledAttrSalesChildForm(formInfo);
           this.updateValueForForm(sku.attributesSales, formId);
-          this.setDisabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-          this.setDisabledAttrSalesChildForm(formInfo);
-          this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
           this.subChangeForForm(formId);
+          this.fis.formGroupCollection_formInfo[formId]=JSON.parse(JSON.stringify(formInfo))
         });
+        this.fis.add(this.attrSalesFormId);
         this.childFormSub[formId + '_formCreate'] = sub;
         //end of child form
-
       }
     });
+    this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+    this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
     this.fis.refreshLayout(this.attrSalesFormInfo, this.attrSalesFormId);
   }
   private displayStorageChangeInputs(arg0: IForm) {
-    arg0.inputs.filter(e => e.key.includes('storage_OrderIncreaseBy')).forEach(e => e.display = true);
-    arg0.inputs.filter(e => e.key.includes('storage_OrderDecreaseBy')).forEach(e => e.display = true);
-    arg0.inputs.filter(e => e.key.includes('storage_ActualIncreaseBy')).forEach(e => e.display = true);
-    arg0.inputs.filter(e => e.key.includes('storage_ActualDecreaseBy')).forEach(e => e.display = true);
+    let var0 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
+    arg0.inputs.filter(e => var0.filter(ee => e.key.includes(ee)).length > 0).forEach(e => e.display = true);
   }
-  private setDisabledAttrSalesForm(formInfo: IForm) {
-    formInfo.inputs.filter(e => e.key.includes('storageOrder')).forEach(e => e.disabled = true);
-    formInfo.inputs.filter(e => e.key.includes('storageActual')).forEach(e => e.disabled = true);
-    formInfo.inputs.filter(e => e.key.includes('sales')).forEach(e => e.disabled = true);
+  private disabledAttrSalesForm(formInfo: IForm) {
+    let var0 = ['storageOrder', 'storageActual', 'sales']
+    formInfo.inputs.filter(e => var0.filter(ee => e.key.includes(ee)).length > 0).forEach(e => e.disabled = true);
   }
-  private setDisabledAttrSalesChildForm(formInfo: IForm) {
+  private disabledAttrSalesChildForm(formInfo: IForm) {
     formInfo.inputs.forEach(e => e.disabled = true);
     formInfo.disabled = true;
   }
@@ -247,7 +242,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     Object.keys(this.childFormSub).forEach(e => {
       this.childFormSub[e] && this.childFormSub[e].unsubscribe();
-    })
+    });
+    this.fis.resetAll();
   }
   private transKeyMap: Map<string, string> = new Map();
   private translateFormLabel() {
@@ -438,23 +434,24 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
       } else {
         let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
-        this.fis.formGroupCollection[formId].addControl('attributeId_' + this.fis.formGroupCollection_index[formId], new FormControl(String(selected.id)));
-        if (selected.method === 'SELECT') {
-          this.fis.formGroupCollection[formId].addControl('attributeValueSelect_' + this.fis.formGroupCollection_index[formId], new FormControl(attr.split(':')[1]));
-          this.fis.formGroupCollection[formId].addControl('attributeValueManual_' + this.fis.formGroupCollection_index[formId], new FormControl(''));
-        } else {
-          this.fis.formGroupCollection[formId].addControl('attributeValueSelect_' + this.fis.formGroupCollection_index[formId], new FormControl(''));
-          this.fis.formGroupCollection[formId].addControl('attributeValueManual_' + this.fis.formGroupCollection_index[formId], new FormControl(attr.split(':')[1]));
-        }
+        let indexSnapshot=this.fis.formGroupCollection_index[formId]
         this.fis.add(formId);
-        //update display after new inputs added
-        let copy = this.fis.formGroupCollection_index[formId];
-        copy--;
+        this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[formId], formId);
+        
+        this.fis.formGroupCollection[formId].addControl('attributeId_' + indexSnapshot, new FormControl(String(selected.id)));
         if (selected.method === 'SELECT') {
-          this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueSelect_' + copy).display = true;
-          this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueSelect_' + copy).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+          this.fis.formGroupCollection[formId].addControl('attributeValueSelect_' + indexSnapshot, new FormControl(attr.split(':')[1]));
+          this.fis.formGroupCollection[formId].addControl('attributeValueManual_' + indexSnapshot, new FormControl(''));
         } else {
-          this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueManual_' + copy).display = true;
+          this.fis.formGroupCollection[formId].addControl('attributeValueSelect_' + indexSnapshot, new FormControl(''));
+          this.fis.formGroupCollection[formId].addControl('attributeValueManual_' + indexSnapshot, new FormControl(attr.split(':')[1]));
+        }
+        //update display after new inputs added
+        if (selected.method === 'SELECT') {
+          this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueSelect_' + indexSnapshot).display = true;
+          this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueSelect_' + indexSnapshot).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+        } else {
+          this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueManual_' + indexSnapshot).display = true;
         }
       }
       this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[formId], formId);
@@ -465,7 +462,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     event.preventDefault();
   }
   private subChangeForForm(formId: string) {
-    if(!this.childFormSub[formId + '_valueChange']){
+    if (!this.childFormSub[formId + '_valueChange']) {
       let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
           let selected = this.attrList.find(e => String(e.id) === next[idKey]);

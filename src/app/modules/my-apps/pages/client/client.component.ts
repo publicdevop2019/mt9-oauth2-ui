@@ -39,23 +39,23 @@ export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
       .subscribe(next => {
         this.resources = next;
         if (this.client) {
-            const grantType: string = this.client.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
-            this.fis.formGroupCollection[this.formId].patchValue({
-              id: this.client.id,
-              clientId: this.client.clientId,
-              hasSecret: this.client.hasSecret,
-              clientSecret: this.client.hasSecret ? '*****' : '',
-              grantType: grantType,
-              registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
-              refreshToken: grantType === 'password' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
-              resourceIndicator: this.client.resourceIndicator,
-              autoApprove: this.client.autoApprove,
-              authority: this.client.grantedAuthorities.map(e => e.grantedAuthority),
-              scope: this.client.scopeEnums.map(e => e.toString()),
-              accessTokenValiditySeconds: this.client.accessTokenValiditySeconds,
-              refreshTokenValiditySeconds: this.client.refreshTokenValiditySeconds,
-              resourceId: this.client.resourceIds,
-            });
+          const grantType: string = this.client.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
+          this.fis.formGroupCollection[this.formId].patchValue({
+            id: this.client.id,
+            clientId: this.client.clientId,
+            hasSecret: this.client.hasSecret,
+            clientSecret: this.client.hasSecret ? '*****' : '',
+            grantType: grantType,
+            registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
+            refreshToken: grantType === 'password' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
+            resourceIndicator: this.client.resourceIndicator,
+            autoApprove: this.client.autoApprove,
+            authority: this.client.grantedAuthorities.map(e => e.grantedAuthority),
+            scope: this.client.scopeEnums.map(e => e.toString()),
+            accessTokenValiditySeconds: this.client.accessTokenValiditySeconds,
+            refreshTokenValiditySeconds: this.client.refreshTokenValiditySeconds,
+            resourceId: this.client.resourceIds,
+          });
         } else {
 
         }
@@ -131,6 +131,7 @@ export class ClientComponent implements AfterViewInit, OnDestroy, OnInit {
   ngOnDestroy(): void {
     if (this.sub)
       this.sub.unsubscribe();
+    this.fis.resetAll();
   }
   convertToClient(): IClient {
     let formGroup = this.fis.formGroupCollection[this.formId];

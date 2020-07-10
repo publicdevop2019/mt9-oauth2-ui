@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { filter, take } from 'rxjs/operators';
   templateUrl: './attribute.component.html',
   styleUrls: ['./attribute.component.css']
 })
-export class AttributeComponent implements OnInit {
+export class AttributeComponent implements OnInit ,OnDestroy{
   attribute: IAttribute;
   formId = 'attributes';
   manualEnter = false;
@@ -73,6 +73,7 @@ export class AttributeComponent implements OnInit {
   }
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+    this.fis.resetAll();
   }
   private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();

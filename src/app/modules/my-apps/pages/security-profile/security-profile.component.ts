@@ -37,6 +37,7 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   }
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+    this.fis.resetAll();
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);

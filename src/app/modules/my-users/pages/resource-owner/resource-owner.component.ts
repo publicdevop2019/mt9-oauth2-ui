@@ -48,6 +48,7 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+    this.fis.resetAll();
   }
   private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();

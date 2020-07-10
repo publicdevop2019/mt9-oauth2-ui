@@ -147,6 +147,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subs.forEach(e => e && e.unsubscribe());
+    this.fis.resetAll();
   }
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
