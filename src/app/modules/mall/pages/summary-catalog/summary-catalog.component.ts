@@ -138,6 +138,6 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     this.catalogSvc.currentPageIndex = e.pageIndex
   }
   getParenteName(id: number) {
-    return (id !== null && id !== undefined) ? this.dataSource.data.find(e => e.id === id).name : '';
+    return ((id !== null && id !== undefined) && this.dataSource.data.find(e => e.id === id))? this.dataSource.data.find(e => e.id === id).name : '';
   }
 }
