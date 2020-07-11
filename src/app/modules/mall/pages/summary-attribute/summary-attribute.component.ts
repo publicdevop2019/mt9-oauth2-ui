@@ -1,27 +1,34 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { IAttribute, AttributeService, IAttributeHttp } from 'src/app/services/attribute.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { DeviceService } from 'src/app/services/device.service';
 import { AttributeComponent } from '../attribute/attribute.component';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-summary-attribute',
   templateUrl: './summary-attribute.component.html',
 })
-export class SummaryAttributeComponent implements OnInit {
+export class SummaryAttributeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'description', 'value', 'type', 'edit', 'delete'];
   dataSource: MatTableDataSource<IAttribute>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  private subs: Subscription = new Subscription()
   constructor(
     public attrSvc: AttributeService,
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
   ) {
-    this.attrSvc.refreshSummary.pipe(switchMap(() => this.attrSvc.getAttributeList())).subscribe(next => { this.updateSummaryData(next) })
-    this.attrSvc.getAttributeList().subscribe(next => { this.updateSummaryData(next) })
+    let sub = this.attrSvc.refreshSummary.pipe(switchMap(() => this.attrSvc.getAttributeList())).subscribe(next => { this.updateSummaryData(next) })
+    let sub0 = this.attrSvc.getAttributeList().subscribe(next => { this.updateSummaryData(next) })
+    this.subs.add(sub)
+    this.subs.add(sub0)
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
   updateSummaryData(next: IAttributeHttp) {
     this.dataSource = new MatTableDataSource(next.data)

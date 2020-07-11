@@ -22,34 +22,41 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<IProductSimple>;
   totoalProductCount = 0;
   pageSizeOffset = 4;
+  private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   public catalogsData: ICatalogCustomer[];
   constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
-    this.productSvc.refreshSummary.pipe(switchMap(() =>
+    let sub = this.productSvc.refreshSummary.pipe(switchMap(() =>
       this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize())
     )).subscribe(next => { this.totalProductHandler(next) })
-    this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
-    this.categorySvc.getCatalogBackend()
+    let sub0 = this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
+    let sub1 = this.categorySvc.getCatalogBackend()
       .subscribe(catalogs => {
         if (catalogs.data)
           this.catalogsData = catalogs.data;
       });
-    this.exactSearch.valueChanges.pipe(debounce(() => interval(1000)))
+    let sub2 = this.exactSearch.valueChanges.pipe(debounce(() => interval(1000)))
       .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).pipe(switchMap(e => {
         return this.productSvc.searchProductById(e)
       })).subscribe(next => {
         this.totalProductHandler(next)
       })
-    this.rangeSearch.valueChanges.pipe(debounce(() => interval(1000)))
+    let sub3 = this.rangeSearch.valueChanges.pipe(debounce(() => interval(1000)))
       .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).pipe(switchMap(e => {
         this.productSvc.currentPageIndex = 0;
         return this.productSvc.searchProductByKeyword(this.productSvc.currentPageIndex, this.getPageSize(), e)
       })).subscribe(next => {
         this.totalProductHandler(next)
       })
+    this.subs.add(sub)
+    this.subs.add(sub0)
+    this.subs.add(sub1)
+    this.subs.add(sub2)
+    this.subs.add(sub3)
   }
   ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();

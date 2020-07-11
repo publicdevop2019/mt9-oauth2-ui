@@ -31,7 +31,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   attrList: IAttribute[];
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
-  private subs: Subscription[] = [];
+  private subs: Subscription = new Subscription();
   constructor(
     public categorySvc: CategoryService,
     private fis: FormInfoService,
@@ -44,7 +44,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
     let sub = this.categorySvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss()
     });
-    this.subs.push(sub)
+    this.subs.add(sub)
     this.category = data as ICatalogCustomer;
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.formCreatedOb.subscribe()
@@ -118,7 +118,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
       this.fis.$refresh.next();
       this.changeDecRef.markForCheck();
     })
-    this.subs.push(sub1)
+    this.subs.add(sub1)
   }
   private subForCatalogTypeChange() {
     let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
@@ -136,7 +136,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
       this.fis.formGroupCollection[this.formId].get('parentId').reset();
       this.changeDecRef.markForCheck()
     });
-    this.subs.push(sub3)
+    this.subs.add(sub3)
   }
   private subForAttrFormChange() {
     let sub2 = this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
@@ -152,7 +152,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
         }
       })
     });
-    this.subs.push(sub2)
+    this.subs.add(sub2)
   }
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
@@ -165,7 +165,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
     return e.name
   }
   ngOnDestroy(): void {
-    this.subs.forEach(e => e && e.unsubscribe());
+    this.subs.unsubscribe()
     this.fis.reset(this.formId)
     this.fis.reset(this.attrFormId)
   }
@@ -212,7 +212,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
         });
       })
     });
-    this.subs.push(sub4)
+    this.subs.add(sub4)
   }
   convertToCategoryPayload(): ICatalogCustomer {
     let formGroup = this.fis.formGroupCollection[this.formId];

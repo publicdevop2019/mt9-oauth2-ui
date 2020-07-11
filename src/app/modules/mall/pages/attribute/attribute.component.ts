@@ -26,7 +26,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
   validator: ValidateHelper;
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
-  private subs: Subscription[] = [];
+  private subs: Subscription=new Subscription()
   constructor(
     public attributeSvc: AttributeService,
     private fis: FormInfoService,
@@ -37,7 +37,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
     let sub = this.attributeSvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss()
     })
-    this.subs.push(sub)
+    this.subs.add(sub)
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
@@ -76,7 +76,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
     event.preventDefault();
   }
   ngOnDestroy(): void {
-    this.subs.forEach(e => { e && e.unsubscribe() });
+    this.subs.unsubscribe()
     this.fis.resetAll();
   }
   private transKeyMap: Map<string, string> = new Map();
@@ -122,7 +122,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
         });
       })
     });
-    this.subs.push(sub)
+    this.subs.add(sub)
   }
   convertToPayload(): IAttribute {
     let formGroup = this.fis.formGroupCollection[this.formId];

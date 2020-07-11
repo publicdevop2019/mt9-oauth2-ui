@@ -27,19 +27,20 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
-
-  header: string;
   displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'edit', 'delete'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   batchUpdateForm = new FormGroup({
     host: new FormControl('', []),
   });
+  private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   selection = new SelectionModel<ISecurityProfile>(true, []);
   constructor(public securityProfileSvc: SecurityProfileService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
-    this.securityProfileSvc.refreshSummary.pipe(switchMap(()=>this.securityProfileSvc.readAll())).subscribe(next => { this.updateSummaryData(next) });
-    this.securityProfileSvc.readAll().subscribe(next => { this.updateSummaryData(next) });
+    let sub = this.securityProfileSvc.refreshSummary.pipe(switchMap(() => this.securityProfileSvc.readAll())).subscribe(next => { this.updateSummaryData(next) });
+    let sub0 = this.securityProfileSvc.readAll().subscribe(next => { this.updateSummaryData(next) });
+    this.subs.add(sub)
+    this.subs.add(sub0)
   }
   updateSummaryData(next: ISecurityProfile[]) {
     this.dataSource = new MatTableDataSource(next)
@@ -47,6 +48,7 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
   ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();

@@ -34,29 +34,29 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
   pageSizeOffset = 2;
   public catalogsData: ICatalogCustomer[];
+  private subs: Subscription = new Subscription()
   constructor(
     public catalogSvc: CategoryService,
     private fis: FormInfoService,
     public translate: TranslateService,
     private route: ActivatedRoute,
-    private router: Router,
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
   ) {
-    this.route.queryParamMap.subscribe(queryMaps => {
+
+    let ob = this.route.queryParamMap.pipe(switchMap(queryMaps => {
       this.catalogType = queryMaps.get('type');
-      let ob: Observable<ICatalogCustomerHttp>;
       if (queryMaps.get('type') === 'frontend') {
-        ob = this.catalogSvc.getCatalogFrontend();
+        return this.catalogSvc.getCatalogFrontend();
       } else if (queryMaps.get('type') === 'backend') {
-        ob = this.catalogSvc.getCatalogBackend();
+        return this.catalogSvc.getCatalogBackend();
       } else {
-        console.error('unknow catalog type')
       }
-      this.catalogSvc.refreshSummary.pipe(switchMap(() => ob))
-        .subscribe(next => { this.updateSummaryData(next) })
-      ob.subscribe(next => { this.updateSummaryData(next) })
-    });
+    }));
+    let sub = ob.subscribe(next => { this.updateSummaryData(next) });
+    let sub0 = this.catalogSvc.refreshSummary.pipe(switchMap(() => ob)).subscribe(next => { this.updateSummaryData(next) });
+    this.subs.add(sub)
+    this.subs.add(sub0)
   }
   updateSummaryData(catalogs: ICatalogCustomerHttp) {
     this.dataSource = new MatTableDataSource(catalogs.data)
@@ -67,8 +67,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
   ngOnDestroy(): void {
-    if (this.sub)
-      this.sub.unsubscribe();
+    this.subs.unsubscribe()
   }
   ngAfterViewInit(): void {
     this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
@@ -76,7 +75,6 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     });
     this.fis.formGroupCollection[this.formId].get('view').setValue(this.viewType);
   }
-  private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
     this.formInfo.inputs.forEach(e => {
@@ -93,7 +91,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
         e.label = res;
       });
     })
-    this.sub = this.translate.onLangChange.subscribe(() => {
+    let sub = this.translate.onLangChange.subscribe(() => {
       this.formInfo.inputs.forEach(e => {
         e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
           e.label = res;
@@ -107,6 +105,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
         }
       })
     })
+    this.subs.add(sub)
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
@@ -138,6 +137,6 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     this.catalogSvc.currentPageIndex = e.pageIndex
   }
   getParenteName(id: number) {
-    return ((id !== null && id !== undefined) && this.dataSource.data.find(e => e.id === id))? this.dataSource.data.find(e => e.id === id).name : '';
+    return ((id !== null && id !== undefined) && this.dataSource.data.find(e => e.id === id)) ? this.dataSource.data.find(e => e.id === id).name : '';
   }
 }

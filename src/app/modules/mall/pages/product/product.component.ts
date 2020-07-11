@@ -1,21 +1,19 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Inject } from '@angular/core';
-import { FormControl, Form } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { Observable, Subscription, forkJoin, combineLatest } from 'rxjs';
-import { switchMap, filter, take } from 'rxjs/operators';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
+import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
 import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
-import { AttributeService, IAttribute, IAttributeHttp } from 'src/app/services/attribute.service';
+import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { IProductDetail, IProductOption, IProductOptions, ProductService, ISku } from 'src/app/services/product.service';
-import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
-import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
+import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService } from 'src/app/services/product.service';
 
 @Component({
   selector: 'app-product',
@@ -45,7 +43,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
   optionFormvalidator: ValidateHelper;
   public attrList: IAttribute[];
-  private childFormSub: { [key: string]: Subscription } = {};
+  private subs: { [key: string]: Subscription } = {};
+  private subscriptions:Subscription=new Subscription();
   public catalogs: ICatalogCustomerHttp;
   private udpateSkusOriginalCopy: ISku[];
   private formCreatedOb: Observable<string>;
@@ -65,7 +64,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     let sub = this.productSvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss();
     })
-    this.childFormSub['closeSheet'] = sub;
+    this.subs['closeSheet'] = sub;
+    this.subscriptions.add(sub)
     this.productDetail = data as IProductDetail;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);
@@ -100,6 +100,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
         this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
         if (this.productDetail.skus && this.productDetail.skus.length > 0) {
+          console.dir('inside update sales form for ' + this.productDetail.name)
           this.updateAndSubSalesForm(this.productDetail.skus);
         }
         if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
@@ -137,12 +138,13 @@ export class ProductComponent implements OnInit, OnDestroy {
       // when add new child form sub for value chage if no sub
       let sub2 = this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes(this.salesFormIdTempId)).forEach(childrenFormId => {
-          if (!this.childFormSub[childrenFormId + '_valueChange']) {
+          if (!this.subs[childrenFormId + '_valueChange']) {
             let childFormCreated = this.fis.$ready.pipe(filter(e => e === childrenFormId));
             let sub = childFormCreated.subscribe(() => {
               this.subChangeForForm(childrenFormId);
             })
-            this.childFormSub[childrenFormId + '_formCreate'] = sub;
+            this.subs[childrenFormId + '_formCreate'] = sub;
+            this.subscriptions.add(sub)
           }
         })
       });
@@ -150,10 +152,14 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);
       this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
       let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) })
-      this.childFormSub['imageUrlSmallFile_valueChange'] = sub3;
-      this.childFormSub[this.formId + '_formCreate'] = sub0;
-      this.childFormSub['getAttributeList_http'] = sub1;
-      this.childFormSub[this.attrSalesFormId + '_valueChange'] = sub2;
+      this.subs['imageUrlSmallFile_valueChange'] = sub3;
+      this.subs[this.formId + '_formCreate'] = sub0;
+      this.subs['getAttributeList_http'] = sub1;
+      this.subs[this.attrSalesFormId + '_valueChange'] = sub2;
+      this.subscriptions.add(sub0)
+      this.subscriptions.add(sub1)
+      this.subscriptions.add(sub2)
+      this.subscriptions.add(sub3)
     })
   }
   private updateChildFormProductOption(option: IProductOptions, childFormId: string) {
@@ -193,13 +199,17 @@ export class ProductComponent implements OnInit, OnDestroy {
 
         let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
         let sub = childFormCreated.subscribe(() => {
+          console.dir('childFormCreated, update value... for '+formId)
+          console.dir(JSON.stringify(sku.attributesSales))
+          console.dir(this)
           let formInfo = this.fis.formGroupCollection_formInfo[formId];
           this.updateValueForForm(sku.attributesSales, formId);
           this.disabledAttrSalesChildForm(formInfo);
           this.subChangeForForm(formId);
           this.fis.$refresh.next();
         });
-        this.childFormSub[formId + '_formCreate'] = sub;
+        this.subs[formId + '_formCreate'] = sub;
+        this.subscriptions.add(sub)
         //end of child form
       }
     });
@@ -236,10 +246,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     return e.name
   }
   ngOnDestroy(): void {
-    Object.keys(this.childFormSub).forEach(e => {
-      this.childFormSub[e] && this.childFormSub[e].unsubscribe();
-    });
+    this.subscriptions.unsubscribe()
     this.fis.resetAll();
+    console.dir(this)
   }
   private transKeyMap: Map<string, string> = new Map();
   private translateFormLabel() {
@@ -309,7 +318,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     let sub = this.translate.onLangChange.subscribe(() => {
       this.translateFormLabel();
     })
-    this.childFormSub['i18n'] = sub;
+    this.subs['i18n'] = sub;
+    this.subscriptions.add(sub)
     this.categorySvc.getCatalogBackend()
       .subscribe(next => {
         if (next.data) {
@@ -452,7 +462,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     event.preventDefault();
   }
   private subChangeForForm(formId: string) {
-    if (!this.childFormSub[formId + '_valueChange']) {
+    if (!this.subs[formId + '_valueChange']) {
       let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
           let selected = this.attrList.find(e => String(e.id) === next[idKey]);
@@ -466,7 +476,8 @@ export class ProductComponent implements OnInit, OnDestroy {
           }
         });
       });
-      this.childFormSub[formId + '_valueChange'] = sub;
+      this.subs[formId + '_valueChange'] = sub;
+      this.subscriptions.add(sub)
     }
   }
 }

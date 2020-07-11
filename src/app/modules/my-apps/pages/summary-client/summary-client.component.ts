@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { ClientService } from 'src/app/services/client.service';
 import { DeviceService } from 'src/app/services/device.service';
@@ -6,22 +6,29 @@ import { ClientComponent } from '../client/client.component';
 import { IClient } from '../../interface/client.interface';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-summary-client',
   templateUrl: './summary-client.component.html',
 })
-export class SummaryClientComponent implements OnInit {
+export class SummaryClientComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'clientId', 'edit', 'token', 'delete'];
   dataSource: MatTableDataSource<IClient>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  private subs: Subscription = new Subscription()
   constructor(
     public clientService: ClientService,
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
   ) {
-    this.clientService.refreshSummary.pipe(switchMap(()=>this.clientService.getClients())).subscribe(next => { this.updateSummaryData(next) })
-    this.clientService.getClients().subscribe(next => { this.updateSummaryData(next) })
+    let sub = this.clientService.refreshSummary.pipe(switchMap(() => this.clientService.getClients())).subscribe(next => { this.updateSummaryData(next) })
+    let sub0 = this.clientService.getClients().subscribe(next => { this.updateSummaryData(next) })
+    this.subs.add(sub)
+    this.subs.add(sub0)
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
   }
 
   ngOnInit() {
