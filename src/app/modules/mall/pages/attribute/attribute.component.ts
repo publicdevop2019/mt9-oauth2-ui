@@ -15,7 +15,7 @@ import { filter, take } from 'rxjs/operators';
   templateUrl: './attribute.component.html',
   styleUrls: ['./attribute.component.css']
 })
-export class AttributeComponent implements OnInit ,OnDestroy{
+export class AttributeComponent implements OnInit, OnDestroy {
   attribute: IAttribute;
   formId = 'attributes';
   manualEnter = false;
@@ -56,10 +56,9 @@ export class AttributeComponent implements OnInit ,OnDestroy{
               if (index === 0) {
                 this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue').setValue(e);
               } else {
-                this.fis.formGroupCollection[this.formIdAttrValue].addControl('attrValue_' + this.fis.formGroupCollection_index[this.formIdAttrValue], new FormControl(e));
                 this.fis.add(this.formIdAttrValue);
+                this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue_' + (index - 1)).setValue(e);
               }
-              this.fis.refreshLayout(this.formInfoAttrValue, this.formIdAttrValue);
             })
           }
         })

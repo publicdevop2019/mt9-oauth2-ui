@@ -61,41 +61,36 @@ export class CatalogComponent implements OnInit, OnDestroy {
       return this.attrFormCreatedOb
     })).subscribe(() => {
       if (this.category && this.category.attributes) {
-          this.category.attributes.forEach((attr, index) => {
-            if (index === 0) {
-              let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
-              this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
-              if (selected.method === 'SELECT') {
-                this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect').display = true;
-                this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect').options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
-                this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').setValue(attr.split(':')[1]);
-              } else {
-                this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual').display = true;
-                this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').setValue(String(attr.split(':')[1]));
-              }
+        this.category.attributes.forEach((attr, index) => {
+          if (index === 0) {
+            let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+            this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
+            if (selected.method === 'SELECT') {
+              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect').display = true;
+              this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect').options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+              this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').setValue(attr.split(':')[1]);
             } else {
-              let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
-              this.fis.formGroupCollection[this.attrFormId].addControl('attributeId_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(String(selected.id)));
-              if (selected.method === 'SELECT') {
-                this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueSelect_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(attr.split(':')[1]));
-                this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueManual_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(''));
-              } else {
-                this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueSelect_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(''));
-                this.fis.formGroupCollection[this.attrFormId].addControl('attributeValueManual_' + this.fis.formGroupCollection_index[this.attrFormId], new FormControl(attr.split(':')[1]));
-              }
-              this.fis.add(this.attrFormId);
-              //update display after new inputs added
-              let copy = this.fis.formGroupCollection_index[this.attrFormId];
-              copy--;
-              if (selected.method === 'SELECT') {
-                this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).display = true;
-                this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + copy).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
-              } else {
-                this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual_' + copy).display = true;
-              }
+              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual').display = true;
+              this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').setValue(String(attr.split(':')[1]));
             }
-            this.fis.refreshLayout(this.attrFormInfo, this.attrFormId);
-          })
+          } else {
+            this.fis.add(this.attrFormId);
+            let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+            this.fis.formGroupCollection[this.attrFormId].get('attributeId_' + (index - 1)).setValue(String(selected.id));
+            if (selected.method === 'SELECT') {
+              this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect_' + (index - 1)).setValue(attr.split(':')[1]);
+            } else {
+              this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual_' + (index - 1)).setValue(attr.split(':')[1]);
+            }
+            //update display after new inputs added
+            if (selected.method === 'SELECT') {
+              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + (index - 1)).display = true;
+              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + (index - 1)).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
+            } else {
+              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual_' + (index - 1)).display = true;
+            }
+          }
+        })
       }
       this.subForAttrFormChange();
     })
