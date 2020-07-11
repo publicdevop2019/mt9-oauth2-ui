@@ -54,6 +54,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
       //update formInfo first then initialize form, so add template can be correct
       this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
       this.attrList = next[1].data;
+      this.changeDecRef.markForCheck();
       if (this.category) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.category.id);
         this.fis.formGroupCollection[this.formId].get('name').setValue(this.category.name);
