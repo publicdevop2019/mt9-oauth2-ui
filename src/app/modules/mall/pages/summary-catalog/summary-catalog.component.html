@@ -55,6 +55,6 @@
     </div>
 </ng-container>
 <div *ngIf="viewType==='TREE_VIEW'">
-    <app-catalog-tree [catalogs]="catalogsData" (leafNodeClicked)="navCatalog($event)"
-        (nonLeafNodeClicked)="navCatalog($event)"></app-catalog-tree>
+    <app-catalog-tree [catalogs]="catalogsData" (leafNodeClicked)="openBottomSheet($event.id)"
+        (nonLeafNodeClicked)="openBottomSheet($event.id)"></app-catalog-tree>
 </div>

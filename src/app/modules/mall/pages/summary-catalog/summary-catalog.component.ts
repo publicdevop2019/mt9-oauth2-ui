@@ -137,9 +137,6 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   pageHandler(e: PageEvent) {
     this.catalogSvc.currentPageIndex = e.pageIndex
   }
-  navCatalog($event: ICatalogCustomer) {
-    this.router.navigate(['/dashboard/catalogs/' + $event.id], { queryParams: { state: 'update', type: $event.catalogType } })
-  }
   getParenteName(id: number) {
     return (id !== null && id !== undefined) ? this.dataSource.data.find(e => e.id === id).name : '';
   }
