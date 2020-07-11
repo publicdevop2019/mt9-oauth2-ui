@@ -100,7 +100,6 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
         this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
         if (this.productDetail.skus && this.productDetail.skus.length > 0) {
-          console.dir('inside update sales form for ' + this.productDetail.name)
           this.updateAndSubSalesForm(this.productDetail.skus);
         }
         if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
@@ -199,9 +198,6 @@ export class ProductComponent implements OnInit, OnDestroy {
 
         let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
         let sub = childFormCreated.subscribe(() => {
-          console.dir('childFormCreated, update value... for '+formId)
-          console.dir(JSON.stringify(sku.attributesSales))
-          console.dir(this)
           let formInfo = this.fis.formGroupCollection_formInfo[formId];
           this.updateValueForForm(sku.attributesSales, formId);
           this.disabledAttrSalesChildForm(formInfo);
@@ -248,7 +244,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe()
     this.fis.resetAll();
-    console.dir(this)
   }
   private transKeyMap: Map<string, string> = new Map();
   private translateFormLabel() {
