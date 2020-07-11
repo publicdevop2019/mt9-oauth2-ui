@@ -17,7 +17,7 @@ import { IClient } from '../modules/my-apps/interface/client.interface';
 
 
 export class SandboxImpl implements INetworkService {
-    private defaultDelay: number = 0;
+    private defaultDelay: number = 1000;
     http: HttpClient;
     constructor(http: HttpClient) {
         this.http = http;

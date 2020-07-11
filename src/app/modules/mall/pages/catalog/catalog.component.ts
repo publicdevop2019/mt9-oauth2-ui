@@ -63,19 +63,20 @@ export class CatalogComponent implements OnInit, OnDestroy {
             this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
             if (hasValue(this.category.parentId)) {
               this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
+              this.changeDecRef.markForCheck();
             }
           })
         } else if (this.category.catalogType === 'BACKEND') {
           this.categorySvc.getCatalogBackend().subscribe(next1 => {
             this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+            if (hasValue(this.category.parentId)) {
+              this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
+              this.changeDecRef.markForCheck();
+            }
           })
-          if (hasValue(this.category.parentId)) {
-            this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
-          }
         } else {
           
         }
-        console.dir(this.fis.formGroupCollection[this.formId].get('parentId'))
       } else {
         this.subForCatalogTypeChange();
       }
