@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit {
   hide = true;
   hide2 = true;
   constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute, public translate: TranslateService) {
-    this.httpProxy.netImpl.currentUserAuthInfo = undefined;
     this.httpProxy.refreshInprogress = false;
     this.router.queryParamMap.subscribe(queryMaps => {
       if (queryMaps.get('redirect_uri') !== null) {
