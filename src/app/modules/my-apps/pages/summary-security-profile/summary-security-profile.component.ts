@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { DeviceService } from 'src/app/services/device.service';
 import { SecurityProfileComponent } from '../security-profile/security-profile.component';
 import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
 
 export interface ISecurityProfile {
   resourceId: string;
@@ -50,7 +51,7 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
-    if (id) {
+    if (hasValue(id)) {
       this.securityProfileSvc.readById(id).subscribe(next => {
         config.data = next;
         this._bottomSheet.open(SecurityProfileComponent, config);

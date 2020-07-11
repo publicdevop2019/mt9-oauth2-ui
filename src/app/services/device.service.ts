@@ -5,6 +5,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 })
 export class DeviceService {
     private summaryRow = 48;
+    private optionalVerticalScrollbar = 48;
     private topBar = 64;
     private contentTitle = 74.81;
     private contentTitleFilter = 65.5;
@@ -12,7 +13,7 @@ export class DeviceService {
     private summaryRowFooter = 56;
     constructor(private breakpointObserver: BreakpointObserver) {
     }
-    public pageSize: number = Math.floor((window.innerHeight - this.topBar - this.contentTitle - this.contentTitleFilter - this.summaryRowHeader - this.summaryRowFooter) / this.summaryRow) === 0 ?
+    public pageSize: number = Math.floor((window.innerHeight - this.topBar - this.contentTitle - this.contentTitleFilter - this.summaryRowHeader - this.summaryRowFooter - this.optionalVerticalScrollbar) / this.summaryRow) === 0 ?
         1 :
-        Math.floor((window.innerHeight - this.topBar - this.contentTitle - this.contentTitleFilter - this.summaryRowHeader - this.summaryRowFooter) / this.summaryRow);
+        Math.floor((window.innerHeight - this.topBar - this.contentTitle - this.contentTitleFilter - this.summaryRowHeader - this.summaryRowFooter - this.optionalVerticalScrollbar) / this.summaryRow);
 }

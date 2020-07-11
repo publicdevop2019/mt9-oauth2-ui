@@ -83,4 +83,5 @@ td, th {
 }
 .table-icon{
   width: 25px;
+  cursor: pointer;
 }

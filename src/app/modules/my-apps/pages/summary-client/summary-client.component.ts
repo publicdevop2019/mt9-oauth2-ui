@@ -5,6 +5,7 @@ import { DeviceService } from 'src/app/services/device.service';
 import { ClientComponent } from '../client/client.component';
 import { IClient } from '../../interface/client.interface';
 import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
 @Component({
   selector: 'app-summary-client',
   templateUrl: './summary-client.component.html',
@@ -33,7 +34,7 @@ export class SummaryClientComponent implements OnInit {
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
-    if (id) {
+    if (hasValue(id)) {
       this.clientService.getClientById(id).subscribe(next => {
         config.data = next;
         this._bottomSheet.open(ClientComponent, config);

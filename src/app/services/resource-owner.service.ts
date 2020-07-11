@@ -30,16 +30,12 @@ export class ResourceOwnerService {
   }
   updateResourceOwner(resourceOwner: IResourceOwner): void {
     this.httpProxy.netImpl.updateResourceOwner(resourceOwner).subscribe(result => {
-      if (!result)
-        this._httpInterceptor.openSnackbar('operation failed')
-      this._httpInterceptor.openSnackbar('operation success')
+      this.notify(result)
     });
   }
   updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): void {
     this.httpProxy.netImpl.updateResourceOwnerPwd(resourceOwner).subscribe(result => {
-      if (!result)
-        this._httpInterceptor.openSnackbar('operation failed')
-      this._httpInterceptor.openSnackbar('operation success, please login again')
+      this.notify(result)
       /** clear authentication info */
       this.httpProxy.netImpl.currentUserAuthInfo = undefined;
       this.router.navigateByUrl('/login');
@@ -47,10 +43,8 @@ export class ResourceOwnerService {
   }
   delete(id: number): void {
     this.httpProxy.netImpl.deleteResourceOwner(id).subscribe(result => {
-      if (!result)
-        this._httpInterceptor.openSnackbar('operation failed')
-      this._httpInterceptor.openSnackbar('operation success')
-      this.router.navigateByUrl('/dashboard/resource-owners');
+      this.notify(result)
+      this.refreshSummary.next()
     });
   }
   openDialog(msg: string): void {
@@ -61,5 +55,8 @@ export class ResourceOwnerService {
   }
   notifyTokenRevocation(result: boolean) {
     result ? this._httpInterceptor.openSnackbar('operation success, old token has been revoked') : this._httpInterceptor.openSnackbar('operation failed');
+  }
+  notify(result: boolean) {
+    result ? this._httpInterceptor.openSnackbar('operation success') : this._httpInterceptor.openSnackbar('operation failed');
   }
 }

@@ -5,6 +5,7 @@ import { DeviceService } from 'src/app/services/device.service';
 import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 import { ResourceOwnerComponent } from '../resource-owner/resource-owner.component';
 import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
 export interface IResourceOwner {
   id?: number,
   email: string;
@@ -67,7 +68,7 @@ export class SummaryResourceOwnerComponent implements OnInit {
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
-    if (id) {
+    if (hasValue(id)) {
       this.resourceOwnerService.getResourceOwner(id).subscribe(next => {
         config.data = next;
         this._bottomSheet.open(ResourceOwnerComponent, config);
