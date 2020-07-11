@@ -103,10 +103,10 @@ export class ProductComponent implements OnInit, OnDestroy {
             if (index === 0) {
               this.fis.formGroupCollection[this.imageFormId].get('imageUrl').setValue(url);
             } else {
-              this.fis.formGroupCollection[this.imageFormId].addControl('imageUrl_' + this.fis.formGroupCollection_index[this.imageFormId], new FormControl(url));
+              let indexSnapshot = this.fis.formGroupCollection_index[this.imageFormId];
               this.fis.add(this.imageFormId);
+              this.fis.formGroupCollection[this.imageFormId].get('imageUrl_' + indexSnapshot).setValue(url);
             }
-            this.fis.refreshLayout(this.imageFormInfo, this.imageFormId);
           })
         }
         if (this.productDetail.selectedOptions && this.productDetail.selectedOptions.length !== 0) {
@@ -116,21 +116,18 @@ export class ProductComponent implements OnInit, OnDestroy {
               //for child form
               let childFormId = 'optionForm'
               this.updateChildFormProductOption(option, childFormId);
-              this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[childFormId], childFormId);
               //for child form
             } else {
               let indexSnapshot = this.fis.formGroupCollection_index[this.optionFormId];
-              this.fis.formGroupCollection[this.optionFormId].addControl('productOption_' + indexSnapshot, new FormControl(option.title));
+              this.fis.add(this.optionFormId);
+              this.fis.formGroupCollection[this.optionFormId].get('productOption_' + indexSnapshot).setValue(option.title);
               let childFormId = 'optionForm_' + indexSnapshot;
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
               childFormCreated.subscribe(() => {
                 this.updateChildFormProductOption(option, childFormId);
-                this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[childFormId], childFormId);
               })
-              this.fis.add(this.optionFormId);
             }
           });
-          this.fis.refreshLayout(this.optionFormInfo, this.optionFormId);
         }
       }
       this.subChangeForForm(this.attrProdFormId);
@@ -163,9 +160,10 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[childFormId].get('optionValue').setValue(opt.optionValue);
         this.fis.formGroupCollection[childFormId].get('optionPriceChange').setValue(opt.priceVar);
       } else {
-        this.fis.formGroupCollection[childFormId].addControl('optionValue_' + this.fis.formGroupCollection_index[childFormId], new FormControl(opt.optionValue));
-        this.fis.formGroupCollection[childFormId].addControl('optionPriceChange_' + this.fis.formGroupCollection_index[childFormId], new FormControl(opt.priceVar));
+        let snapshot = this.fis.formGroupCollection_index[childFormId];
         this.fis.add(childFormId);
+        this.fis.formGroupCollection[childFormId].get('optionValue_' + snapshot).setValue(opt.optionValue);
+        this.fis.formGroupCollection[childFormId].get('optionPriceChange_' + snapshot).setValue(opt.priceVar);
       }
     });
   }
@@ -184,14 +182,11 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.subChangeForForm(this.salesFormIdTempId);
       } else {
         let indexSnapshot = this.fis.formGroupCollection_index[this.attrSalesFormId];
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('storageOrder_' + indexSnapshot, new FormControl(sku.storageOrder));
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('storageActual_' + indexSnapshot, new FormControl(sku.storageActual));
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('storage_OrderIncreaseBy_' + indexSnapshot, new FormControl());
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('storage_OrderDecreaseBy_' + indexSnapshot, new FormControl());
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('storage_ActualIncreaseBy_' + indexSnapshot, new FormControl());
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('storage_ActualDecreaseBy_' + indexSnapshot, new FormControl());
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('price_' + indexSnapshot, new FormControl(sku.price));
-        this.fis.formGroupCollection[this.attrSalesFormId].addControl('sales_' + indexSnapshot, new FormControl(sku.sales));
+        this.fis.add(this.attrSalesFormId);
+        this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder_' + indexSnapshot).setValue(sku.storageOrder);
+        this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual_' + indexSnapshot).setValue(sku.storageActual);
+        this.fis.formGroupCollection[this.attrSalesFormId].get('price_' + indexSnapshot).setValue(sku.price);
+        this.fis.formGroupCollection[this.attrSalesFormId].get('sales_' + indexSnapshot).setValue(sku.sales);
         //start of child form
         let formId = this.salesFormIdTempId + '_' + indexSnapshot;
 
@@ -203,14 +198,12 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.subChangeForForm(formId);
           this.fis.$refresh.next();
         });
-        this.fis.add(this.attrSalesFormId);
         this.childFormSub[formId + '_formCreate'] = sub;
         //end of child form
       }
     });
     this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
     this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-    this.fis.refreshLayout(this.attrSalesFormInfo, this.attrSalesFormId);
     this.fis.formGroupCollection_formInfo[this.attrSalesFormId];
     this.fis.$refresh.next();
     console.dir(this.fis)
@@ -437,17 +430,13 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
       } else {
         let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
-        let indexSnapshot=this.fis.formGroupCollection_index[formId]
+        let indexSnapshot = this.fis.formGroupCollection_index[formId]
         this.fis.add(formId);
-        this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[formId], formId);
-        
-        this.fis.formGroupCollection[formId].addControl('attributeId_' + indexSnapshot, new FormControl(String(selected.id)));
+        this.fis.formGroupCollection[formId].get('attributeId_' + indexSnapshot).setValue(String(selected.id));
         if (selected.method === 'SELECT') {
-          this.fis.formGroupCollection[formId].addControl('attributeValueSelect_' + indexSnapshot, new FormControl(attr.split(':')[1]));
-          this.fis.formGroupCollection[formId].addControl('attributeValueManual_' + indexSnapshot, new FormControl(''));
+          this.fis.formGroupCollection[formId].get('attributeValueSelect_' + indexSnapshot).setValue(attr.split(':')[1]);
         } else {
-          this.fis.formGroupCollection[formId].addControl('attributeValueSelect_' + indexSnapshot, new FormControl(''));
-          this.fis.formGroupCollection[formId].addControl('attributeValueManual_' + indexSnapshot, new FormControl(attr.split(':')[1]));
+          this.fis.formGroupCollection[formId].get('attributeValueManual_' + indexSnapshot).setValue(attr.split(':')[1]);
         }
         //update display after new inputs added
         if (selected.method === 'SELECT') {
@@ -457,7 +446,6 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueManual_' + indexSnapshot).display = true;
         }
       }
-      this.fis.refreshLayout(this.fis.formGroupCollection_formInfo[formId], formId);
     })
   }
   dismiss(event: MouseEvent) {
