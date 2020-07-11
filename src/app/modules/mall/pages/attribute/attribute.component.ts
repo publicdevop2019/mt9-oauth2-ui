@@ -26,6 +26,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
   validator: ValidateHelper;
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
+  private subs: Subscription[] = [];
   constructor(
     public attributeSvc: AttributeService,
     private fis: FormInfoService,
@@ -33,6 +34,10 @@ export class AttributeComponent implements OnInit, OnDestroy {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<AttributeComponent>
   ) {
+    let sub = this.attributeSvc.closeSheet.subscribe(() => {
+      this._bottomSheetRef.dismiss()
+    })
+    this.subs.push(sub)
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
@@ -71,10 +76,9 @@ export class AttributeComponent implements OnInit, OnDestroy {
     event.preventDefault();
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.subs.forEach(e => { e && e.unsubscribe() });
     this.fis.resetAll();
   }
-  private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
     this.formInfo.inputs.forEach(e => {
@@ -98,7 +102,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
       });
     })
     this.formInfoAttrValueI18n = JSON.parse(JSON.stringify(this.formInfoAttrValue));
-    this.sub = this.translate.onLangChange.subscribe(() => {
+    let sub = this.translate.onLangChange.subscribe(() => {
       this.formInfo.inputs.forEach(e => {
         e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
           e.label = res;
@@ -118,6 +122,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
         });
       })
     });
+    this.subs.push(sub)
   }
   convertToPayload(): IAttribute {
     let formGroup = this.fis.formGroupCollection[this.formId];

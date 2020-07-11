@@ -53,6 +53,7 @@ export interface IProductDetail {
 })
 export class ProductService {
   refreshSummary:Subject<void>=new Subject();
+  closeSheet:Subject<void>=new Subject();
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
@@ -80,6 +81,7 @@ export class ProductService {
     this.httpProxy.netImpl.updateProduct(product).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
+      this.closeSheet.next()
     })
 
   }
@@ -87,6 +89,7 @@ export class ProductService {
     this.httpProxy.netImpl.deleteProduct(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
+      this.closeSheet.next()
     })
   }
   notify(result: boolean) {

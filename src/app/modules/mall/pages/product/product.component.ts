@@ -62,6 +62,10 @@ export class ProductComponent implements OnInit, OnDestroy {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<ProductComponent>
   ) {
+    let sub = this.productSvc.closeSheet.subscribe(() => {
+      this._bottomSheetRef.dismiss();
+    })
+    this.childFormSub['closeSheet'] = sub;
     this.productDetail = data as IProductDetail;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);

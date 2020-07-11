@@ -27,6 +27,7 @@ export interface ICatalogCustomerHttp {
 export class CategoryService {
   currentPageIndex: number;
   refreshSummary:Subject<void>=new Subject();
+  closeSheet:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getCatalogFrontend(): Observable<ICatalogCustomerHttp> {
     return this.httpProxy.netImpl.getCatalogFrontendAdmin()
@@ -54,6 +55,7 @@ export class CategoryService {
     this.httpProxy.netImpl.updateCategory(category).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
+      this.closeSheet.next()
     })
 
   }
@@ -61,6 +63,7 @@ export class CategoryService {
     this.httpProxy.netImpl.deleteCategory(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
+      this.closeSheet.next()
     })
   }
   notify(result: boolean) {

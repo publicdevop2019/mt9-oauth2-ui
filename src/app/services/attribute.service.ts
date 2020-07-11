@@ -19,6 +19,7 @@ export interface IAttributeHttp {
 })
 export class AttributeService {
   refreshSummary:Subject<void>=new Subject();
+  closeSheet:Subject<void>=new Subject();
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, private _httpInterceptor: CustomHttpInterceptor) {
 
@@ -41,6 +42,7 @@ export class AttributeService {
     this.httpProxy.netImpl.updateAttribute(attribute).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
+      this.closeSheet.next()
     })
 
   }
@@ -48,6 +50,7 @@ export class AttributeService {
     this.httpProxy.netImpl.deleteAttribute(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
+      this.closeSheet.next()
     })
   }
   notify(result: boolean) {

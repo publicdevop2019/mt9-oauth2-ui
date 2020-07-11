@@ -41,23 +41,43 @@ export class CatalogComponent implements OnInit, OnDestroy {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
+    let sub = this.categorySvc.closeSheet.subscribe(() => {
+      this._bottomSheetRef.dismiss()
+    });
+    this.subs.push(sub)
     this.category = data as ICatalogCustomer;
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.formCreatedOb.subscribe()
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
     let sub1 = combineLatest(this.formCreatedOb, this.attrSvc.getAttributeList()).pipe(take(1)).pipe(switchMap(next => {
-      this.subForCatalogTypeChange();
       //update formInfo first then initialize form, so add template can be correct
       this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
       this.attrList = next[1].data;
-      this.changeDecRef.markForCheck()
       if (this.category) {
-        this.fis.formGroupCollection[this.formId].get('catalogType').setValue(this.category.catalogType);
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.category.id);
         this.fis.formGroupCollection[this.formId].get('name').setValue(this.category.name);
-        if (hasValue(this.category.parentId))
-          this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
+        this.fis.formGroupCollection[this.formId].get('catalogType').setValue(this.category.catalogType);
+        if (this.category.catalogType === 'FRONTEND') {
+          this.categorySvc.getCatalogFrontend().subscribe(next1 => {
+            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+            if (hasValue(this.category.parentId)) {
+              this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
+            }
+          })
+        } else if (this.category.catalogType === 'BACKEND') {
+          this.categorySvc.getCatalogBackend().subscribe(next1 => {
+            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+          })
+          if (hasValue(this.category.parentId)) {
+            this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
+          }
+        } else {
+          
+        }
+        console.dir(this.fis.formGroupCollection[this.formId].get('parentId'))
+      } else {
+        this.subForCatalogTypeChange();
       }
       return this.attrFormCreatedOb
     })).subscribe(() => {
@@ -94,12 +114,13 @@ export class CatalogComponent implements OnInit, OnDestroy {
         })
       }
       this.subForAttrFormChange();
+      this.fis.$refresh.next();
+      this.changeDecRef.markForCheck();
     })
     this.subs.push(sub1)
   }
   private subForCatalogTypeChange() {
     let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
-      this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
       if (next === 'FRONTEND') {
         this.categorySvc.getCatalogFrontend().subscribe(next1 => {
           this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
@@ -111,8 +132,8 @@ export class CatalogComponent implements OnInit, OnDestroy {
       } else {
 
       }
-      this.changeDecRef.markForCheck()
       this.fis.formGroupCollection[this.formId].get('parentId').reset();
+      this.changeDecRef.markForCheck()
     });
     this.subs.push(sub3)
   }
