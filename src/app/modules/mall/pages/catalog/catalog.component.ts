@@ -1,18 +1,15 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ChangeDetectorRef, Inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
+import { getLabel, hasValue } from 'src/app/clazz/utility';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
-import { hasValue } from 'src/app/clazz/utility';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
-import { filter, take, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -47,12 +44,11 @@ export class CatalogComponent implements OnInit, OnDestroy {
     this.subs.add(sub)
     this.category = data as ICatalogCustomer;
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
-    this.formCreatedOb.subscribe()
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
     let sub1 = combineLatest(this.formCreatedOb, this.attrSvc.getAttributeList()).pipe(take(1)).pipe(switchMap(next => {
       //update formInfo first then initialize form, so add template can be correct
-      this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
+      this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
       this.attrList = next[1].data;
       this.changeDecRef.markForCheck();
       if (this.category) {
@@ -77,7 +73,6 @@ export class CatalogComponent implements OnInit, OnDestroy {
             }
           })
         } else {
-          
         }
       } else {
         this.subForCatalogTypeChange();
@@ -87,7 +82,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
       if (this.category && this.category.attributes) {
         this.category.attributes.forEach((attr, index) => {
           if (index === 0) {
-            let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+            let selected = this.attrList.find(e => String(e.id) === attr.split(':')[0]);
             this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
             if (selected.method === 'SELECT') {
               this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect').display = true;
@@ -99,7 +94,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
             }
           } else {
             this.fis.add(this.attrFormId);
-            let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+            let selected = this.attrList.find(e => String(e.id) === attr.split(':')[0]);
             this.fis.formGroupCollection[this.attrFormId].get('attributeId_' + (index - 1)).setValue(String(selected.id));
             if (selected.method === 'SELECT') {
               this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect_' + (index - 1)).setValue(attr.split(':')[1]);
@@ -160,12 +155,6 @@ export class CatalogComponent implements OnInit, OnDestroy {
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
     event.preventDefault();
-  }
-  private getLabel(e: IAttribute): string {
-    if (e.description) {
-      return e.name + ' ( ' + e.description + ' ) - ' + e.selectValues.join(',')
-    }
-    return e.name + ' - ' + e.selectValues.join(',')
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe()
@@ -242,7 +231,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
       } else {
         attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual' + append).value;
       }
-      return selected.name + ':' + attrValue
+      return selected.id + ':' + attrValue
     });
   }
 }

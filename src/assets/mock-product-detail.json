@@ -90,20 +90,20 @@
 		"nyvs  wnssjptmmdzrpvscztnrsjbbpg a bhc"
 	],
 	"attributesKey": [
-		"brand:apple",
-		"type:mobile",
-		"model:iphone10"
+		"0:apple",
+		"9:mobile",
+		"10:iphone10"
 	],
 	"attributesProd": [
-		"resolution:1280px",
-		"resolution:1280px",
-		"resolution:1280px"
+		"7:1280px",
+		"7:1280px",
+		"7:1280px"
 	],
 	"skus": [
 		{
 			"attributesSales": [
-				"memory:64g",
-				"color:white"
+				"3:64g",
+				"8:white"
 			],
 			"storageOrder": 100,
 			"storageActual": 150,
@@ -112,8 +112,8 @@
 		},
 		{
 			"attributesSales": [
-				"memory:128g",
-				"color:white"
+				"3:128g",
+				"8:white"
 			],
 			"storageOrder": 101,
 			"storageActual": 151,
@@ -122,8 +122,8 @@
 		},
 		{
 			"attributesSales": [
-				"memory:256g",
-				"color:white"
+				"3:256g",
+				"8:white"
 			],
 			"storageOrder": 102,
 			"storageActual": 152,
@@ -132,7 +132,7 @@
 		}
 	],
 	"attributesGen": [
-		"trending:yes"
+		"6:yes"
 	],
 	"status":"AVAILABLE"
 }

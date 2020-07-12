@@ -11,8 +11,8 @@
 			"price": 3574.17,
 			"sales": 9072,
 			"attributesKey": [
-				"brand:apple",
-				"model:iphone11xr"
+				"0:apple",
+				"10:iphone11xr"
 			]
 		},
 		{
@@ -26,8 +26,8 @@
 			"price": 5759.18,
 			"sales": 8044,
 			"attributesKey": [
-				"brand:apple",
-				"model:iphone11"
+				"0:apple",
+				"10:iphone11"
 			]
 		},
 		{
@@ -41,8 +41,8 @@
 			"price": 1096.42,
 			"sales": 4848,
 			"attributesKey": [
-				"brand:apple",
-				"model:iphone11"
+				"0:apple",
+				"10:iphone11"
 			]
 		}
 	],

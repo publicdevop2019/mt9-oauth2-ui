@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
@@ -14,6 +14,7 @@ import { AttributeService, IAttribute } from 'src/app/services/attribute.service
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService } from 'src/app/services/product.service';
+import { getLabel } from 'src/app/clazz/utility';
 
 @Component({
   selector: 'app-product',
@@ -44,7 +45,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   optionFormvalidator: ValidateHelper;
   public attrList: IAttribute[];
   private subs: { [key: string]: Subscription } = {};
-  private subscriptions:Subscription=new Subscription();
+  private subscriptions: Subscription = new Subscription();
   public catalogs: ICatalogCustomerHttp;
   private udpateSkusOriginalCopy: ISku[];
   private formCreatedOb: Observable<string>;
@@ -59,7 +60,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     private categorySvc: CategoryService,
     public attrSvc: AttributeService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private _bottomSheetRef: MatBottomSheetRef<ProductComponent>
+    private _bottomSheetRef: MatBottomSheetRef<ProductComponent>,
+    private changeDecRef:ChangeDetectorRef
   ) {
     let sub = this.productSvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss();
@@ -91,6 +93,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       return combineLatest(this.prodFormCreatedOb, this.salesFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
     })).subscribe(() => {
       if (!this.productDetail) {
+        this.subChangeForForm(this.salesFormIdTempId);
       } else {
         if (this.productDetail.attributesProd) {
           this.updateValueForForm(this.productDetail.attributesProd, this.attrProdFormId);
@@ -231,15 +234,9 @@ export class ProductComponent implements OnInit, OnDestroy {
    * @param attrs 
    */
   private updateFormInfoOptions(attrs: IAttribute[]) {
-    this.attrProdFormInfo.inputs[0].options = attrs.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
-    this.attrGeneralFormInfo.inputs[0].options = attrs.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
-    this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: this.getLabel(e), value: String(e.id) });
-  }
-  private getLabel(e: IAttribute): string {
-    if (e.description) {
-      return e.name + ' ( ' + e.description + ' )'
-    }
-    return e.name
+    this.attrProdFormInfo.inputs[0].options = attrs.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
+    this.attrGeneralFormInfo.inputs[0].options = attrs.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
+    this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
   }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe()
@@ -319,6 +316,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       .subscribe(next => {
         if (next.data) {
           this.catalogs = next;
+          this.changeDecRef.markForCheck()
         }
       });
   }
@@ -417,13 +415,13 @@ export class ProductComponent implements OnInit, OnDestroy {
       } else {
         attrValue = this.fis.formGroupCollection[formId].get('attributeValueManual' + append).value;
       }
-      return selected.name + ':' + attrValue
+      return selected.id + ':' + attrValue
     });
   }
   private updateValueForForm(attrs: string[], formId: string) {
     attrs.forEach((attr, index) => {
       if (index === 0) {
-        let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+        let selected = this.attrList.find(e => String(e.id) === attr.split(':')[0]);
         this.fis.formGroupCollection[formId].get('attributeId').setValue(String(selected.id));
         if (selected.method === 'SELECT') {
           this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === 'attributeValueSelect').display = true;
@@ -434,7 +432,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.fis.formGroupCollection[formId].get('attributeValueManual').setValue(String(attr.split(':')[1]));
         }
       } else {
-        let selected = this.attrList.find(e => e.name === attr.split(':')[0]);
+        let selected = this.attrList.find(e => String(e.id) === attr.split(':')[0]);
         this.fis.add(formId);
         this.fis.formGroupCollection[formId].get('attributeId_' + (index - 1)).setValue(String(selected.id));
         if (selected.method === 'SELECT') {
