@@ -1,14 +1,19 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode, ICatalogCustomerHttp } from 'src/app/services/category.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlatDataSource, MatTreeFlattener, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
 import { FormInfoService } from 'mt-form-builder';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-interface CatalogCustomerFlatNode {
+import { ActivatedRoute, Router } from '@angular/router';
+import { DeviceService } from 'src/app/services/device.service';
+import { AttributeComponent } from '../attribute/attribute.component';
+import { CatalogComponent } from '../catalog/catalog.component';
+import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
+export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
   level: number;
@@ -17,54 +22,52 @@ interface CatalogCustomerFlatNode {
 @Component({
   selector: 'app-summary-category',
   templateUrl: './summary-catalog.component.html',
-  styleUrls: ['./summary-catalog.component.css']
 })
 export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  displayedColumns: string[] = ['id', 'name', 'parentId', 'tags', 'star'];
+  displayedColumns: string[] = ['name', 'parentId', 'attributes', 'edit', 'delete'];
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
-  treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
-  private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      level: level,
-      id: node.id
-    };
-  }
-  treeFlattener = new MatTreeFlattener(
-    this._transformer, node => node.level, node => node.expandable, node => node.children);
+  pageSizeOffset = 2;
+  public catalogsData: ICatalogCustomer[];
+  private subs: Subscription = new Subscription()
+  constructor(
+    public catalogSvc: CategoryService,
+    private fis: FormInfoService,
+    public translate: TranslateService,
+    private route: ActivatedRoute,
+    public deviceSvc: DeviceService,
+    private _bottomSheet: MatBottomSheet,
+  ) {
 
-  treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public categorySvc: CategoryService, private fis: FormInfoService, public translate: TranslateService, private route: ActivatedRoute) {
-    this.route.queryParamMap.subscribe(queryMaps => {
+    let ob = this.route.queryParamMap.pipe(switchMap(queryMaps => {
       this.catalogType = queryMaps.get('type');
-      let ob: Observable<ICatalogCustomerHttp>;
       if (queryMaps.get('type') === 'frontend') {
-        ob = this.categorySvc.getCatalogCustomer();
+        return this.catalogSvc.getCatalogFrontend();
       } else if (queryMaps.get('type') === 'backend') {
-        ob = this.categorySvc.getCatalogAdmin();
+        return this.catalogSvc.getCatalogBackend();
       } else {
-        console.error('unknow catalog type')
       }
-      ob.subscribe(catalogs => {
-        this.dataSource = new MatTableDataSource(catalogs.data)
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        if (catalogs.data)
-          this.treeDataSource.data = this.convertToTree(catalogs.data);
-      })
-    });
+    }));
+    let sub = ob.subscribe(next => { this.updateSummaryData(next) });
+    let sub0 = this.catalogSvc.refreshSummary.pipe(switchMap(() => ob)).subscribe(next => { this.updateSummaryData(next) });
+    this.subs.add(sub)
+    this.subs.add(sub0)
+  }
+  updateSummaryData(catalogs: ICatalogCustomerHttp) {
+    this.dataSource = new MatTableDataSource(catalogs.data)
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    if (catalogs.data) {
+      this.catalogsData = catalogs.data;
+    }
   }
   ngOnDestroy(): void {
-    if (this.sub)
-      this.sub.unsubscribe();
+    this.subs.unsubscribe()
   }
   ngAfterViewInit(): void {
     this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
@@ -72,7 +75,6 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     });
     this.fis.formGroupCollection[this.formId].get('view').setValue(this.viewType);
   }
-  private sub: Subscription;
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
     this.formInfo.inputs.forEach(e => {
@@ -89,7 +91,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
         e.label = res;
       });
     })
-    this.sub = this.translate.onLangChange.subscribe(() => {
+    let sub = this.translate.onLangChange.subscribe(() => {
       this.formInfo.inputs.forEach(e => {
         e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
           e.label = res;
@@ -103,6 +105,26 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
         }
       })
     })
+    this.subs.add(sub)
+  }
+  openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
+    if (hasValue(id)) {
+      if (this.catalogType === 'frontend') {
+        this.catalogSvc.getCatalogFrontendById(id).subscribe(next => {
+          config.data = next;
+          this._bottomSheet.open(CatalogComponent, config);
+        })
+      } else {
+        this.catalogSvc.getCatalogBackendById(id).subscribe(next => {
+          config.data = next;
+          this._bottomSheet.open(CatalogComponent, config);
+        })
+      }
+    } else {
+      this._bottomSheet.open(CatalogComponent, config);
+    }
   }
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -112,33 +134,9 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
   pageHandler(e: PageEvent) {
-    this.categorySvc.currentPageIndex = e.pageIndex
+    this.catalogSvc.currentPageIndex = e.pageIndex
   }
-  hasChild = (_: number, node: CatalogCustomerFlatNode) => node.expandable;
-  notLeafNode(catalogs: ICatalogCustomer[], nodes: ICatalogCustomerTreeNode[]): boolean {
-    return nodes.filter(node => {
-      return catalogs.filter(el => el.parentId === node.id).length >= 1
-    }).length >= 1
-  }
-  convertToTree(catalogs: ICatalogCustomer[]): ICatalogCustomerTreeNode[] {
-    let rootNodes = catalogs.filter(e => e.parentId === null || e.parentId === undefined);
-    let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
-      id: e.id,
-      name: e.name,
-    });
-    let currentLevel = treeNodes;
-    while (this.notLeafNode(catalogs, currentLevel)) {
-      let nextLevelCol: ICatalogCustomerTreeNode[] = []
-      currentLevel.forEach(childNode => {
-        let nextLevel = catalogs.filter(el => el.parentId === childNode.id).map(e => <ICatalogCustomerTreeNode>{
-          id: e.id,
-          name: e.name,
-        });
-        childNode.children = nextLevel;
-        nextLevelCol.push(...nextLevel);
-      });
-      currentLevel = nextLevelCol;
-    }
-    return treeNodes;
+  getParenteName(id: number) {
+    return ((id !== null && id !== undefined) && this.dataSource.data.find(e => e.id === id)) ? this.dataSource.data.find(e => e.id === id).name : '';
   }
 }

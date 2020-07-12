@@ -7,12 +7,6 @@ body {
 .basic-container {
     padding: 30px;
   }
-.column-size{
-  max-width: 86px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
 .centered{
   display: flex;
   flex-direction: row;
@@ -28,4 +22,66 @@ body {
 }
 .mat-expansion-panel {
   border-radius: 0px !important;
+}
+.mat-stepper-horizontal, .mat-stepper-vertical {
+  background-color: #fafafa;
+}
+/* start of table */
+table {
+  width: 100%;
+}
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+.table-container {
+  overflow: auto; 
+}
+td, th {
+  max-width: 20vw;
+  padding-right: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-right: 8px !important;
+}
+/* end of table */
+
+.mat-bottom-sheet-container-medium {
+  min-width: auto !important;
+  max-width: none !important;
+  width: 96vw;
+  height: 80vh !important;
+}
+
+.mat-bottom-sheet-container-large {
+  min-width: auto !important;
+  max-width: none !important;
+  width: 96vw;
+  height: 80vh !important;
+}
+
+.mat-bottom-sheet-container-xlarge {
+  min-width: auto !important;
+  max-width: none !important;
+  width: 96vw;
+  height: 80vh !important;
+}
+.mat-bottom-sheet-container {
+  min-width: 96vw;
+}
+.flex-row-space-between{
+  display: flex; 
+  flex-direction: row;
+  justify-content: space-between;
+}
+.fix-height{
+  height: 80vh !important;
+}
+.app-btn{
+  width: 100%;
+}
+.table-icon{
+  width: 25px;
+  cursor: pointer;
 }

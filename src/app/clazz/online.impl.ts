@@ -4,15 +4,16 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/category.service';
+import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/catalog.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { getCookie } from './utility';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';
 import { IUserReactionResult } from '../services/reaction.service';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
-import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 import { IResourceOwnerUpdatePwd, IResourceOwner, IPendingResourceOwner, IForgetPasswordRequest } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
+import { IAttribute, IAttributeHttp } from '../services/attribute.service';
+import { IClient } from '../modules/my-apps/interface/client.interface';
 
 
 
@@ -38,6 +39,39 @@ export class OnlineImpl implements INetworkService {
     }
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
+    }
+    deleteAttribute(id:number): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + id).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    updateAttribute(attr: IAttribute): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/'+attr.id, attr).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    createAttribute(attr: IAttribute): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes', attr).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    getAttributes(): Observable<IAttributeHttp> {
+        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes');
+    }
+    searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize + '&key=' + keyword);
+    }
+    searchProductById(id: number): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?id=' + id);
+    }
+    searchProductsByTags(pageNum: number, pageSize: number, attr: string[]): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/search?pageNum=' + pageNum + '&pageSize=' + pageSize + '&attributes=' + attr.join(','));
     }
     deletePost(id: string): Observable<boolean> {
         return new Observable<boolean>(e => {
@@ -72,7 +106,7 @@ export class OnlineImpl implements INetworkService {
         return this._httpClient.get<IPostSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
     getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/all?pageNum=' + pageNum + '&pageSize=' + pageSize);
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getOrders(): Observable<IOrder[]> {
         return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME + '/orders');
@@ -90,25 +124,25 @@ export class OnlineImpl implements INetworkService {
         return this._httpClient.get<IProductSimple[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getProductDetail(id: number): Observable<IProductDetail> {
-        return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + id);
+        return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id);
     };
     createProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails', productDetail).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails', productDetail).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    deleteProduct(productDetail: IProductDetail): Observable<boolean> {
+    deleteProduct(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + productDetail.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/productDetails/' + productDetail.id, productDetail).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + productDetail.id, productDetail).subscribe(next => {
                 e.next(true)
             });
         });
@@ -148,9 +182,9 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    deleteCategory(category: ICatalogCustomer): Observable<boolean> {
+    deleteCategory(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + category.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -187,9 +221,9 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    deleteSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+    deleteSecurityProfile(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + '/proxy/security/profile/' + securitypProfile.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + '/proxy/security/profile/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -237,9 +271,9 @@ export class OnlineImpl implements INetworkService {
         });
 
     };
-    deleteResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
+    deleteResourceOwner(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + resourceOwner.id).subscribe(next => {
+            this._httpClient.delete<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -258,9 +292,9 @@ export class OnlineImpl implements INetworkService {
             });
         });
     };
-    deleteClient(client: IClient): Observable<boolean> {
+    deleteClient(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + client.id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + id).subscribe(next => {
                 e.next(true)
             });
         });

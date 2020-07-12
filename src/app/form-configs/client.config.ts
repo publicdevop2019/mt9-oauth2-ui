@@ -181,7 +181,7 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "observable-checkbox",
+            "type": "checkbox",
             "display": true,
             "label": "PLEASE_SELECT_RESOUCE_ID(S)",
             "key": "resourceId",

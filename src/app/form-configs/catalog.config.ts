@@ -29,24 +29,15 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "text",
-            "display": true,
+            "type": "select",
+            "display": false,
             "label": "ENTER_PARENT_ID",
             "key": "parentId",
-            "position": {
-                "row": "2",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_TAGS",
-            "key": "tags",
             "position": {
                 "row": "3",
                 "column": "0"
             },
+            "options":[]
         },
         {
             "type": "radio",
@@ -54,7 +45,7 @@ export const FORM_CONFIG: IForm = {
             "label": "PLEASE_SELECT_TYPE",
             "key": "catalogType",
             "position": {
-                "row": "4",
+                "row": "2",
                 "column": "0"
             },
             "options": [

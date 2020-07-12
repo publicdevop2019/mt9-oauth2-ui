@@ -60,7 +60,6 @@ export class OrderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
   }
   ngOnDestroy(): void {
-    this.fis.formGroupCollection[this.formId].reset();
   }
 
 }

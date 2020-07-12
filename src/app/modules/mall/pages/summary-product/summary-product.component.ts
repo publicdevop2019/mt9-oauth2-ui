@@ -1,58 +1,83 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
-import { IProductSimple, ProductService, IProductTotalResponse } from 'src/app/services/product.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatPaginator, MatSort, MatTableDataSource, PageEvent, MatBottomSheetConfig, MatBottomSheet } from '@angular/material';
+import { interval, Subscription } from 'rxjs';
+import { debounce, filter, map, switchMap } from 'rxjs/operators';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
+import { DeviceService } from 'src/app/services/device.service';
+import { ProductComponent } from '../product/product.component';
+import { hasValue } from 'src/app/clazz/utility';
 
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
-  styleUrls: ['./summary-product.component.css']
 })
 export class SummaryProductComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
+  exactSearch = new FormControl('', []);
+  rangeSearch = new FormControl('', []);
+  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'edit', 'delete'];
+  columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
-  pageNumber = 0;
-  pageSize = 20;
   totoalProductCount = 0;
+  pageSizeOffset = 4;
+  private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  private sub: Subscription
-  constructor(private productSvc: ProductService, private breakpointObserver: BreakpointObserver) {
-    this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
-      this.totalProductHandler(products)
-    });
-    this.sub = this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge,
-    ]).subscribe(next => {
-      if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['id', 'name',  'actualStorage', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['id', 'name',  'orderStorage', 'actualStorage', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'category', 'name',  'orderStorage', 'actualStorage', 'star'];
-      }
-      else {
-        console.warn('unknown device width match!')
-      }
-    });
+  public catalogsData: ICatalogCustomer[];
+  constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
+    let sub = this.productSvc.refreshSummary.pipe(switchMap(() =>
+      this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize())
+    )).subscribe(next => { this.totalProductHandler(next) })
+    let sub0 = this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
+    let sub1 = this.categorySvc.getCatalogBackend()
+      .subscribe(catalogs => {
+        if (catalogs.data)
+          this.catalogsData = catalogs.data;
+      });
+    let sub2 = this.exactSearch.valueChanges.pipe(debounce(() => interval(1000)))
+      .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).pipe(switchMap(e => {
+        return this.productSvc.searchProductById(e)
+      })).subscribe(next => {
+        this.totalProductHandler(next)
+      })
+    let sub3 = this.rangeSearch.valueChanges.pipe(debounce(() => interval(1000)))
+      .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).pipe(switchMap(e => {
+        this.productSvc.currentPageIndex = 0;
+        return this.productSvc.searchProductByKeyword(this.productSvc.currentPageIndex, this.getPageSize(), e)
+      })).subscribe(next => {
+        this.totalProductHandler(next)
+      })
+    this.subs.add(sub)
+    this.subs.add(sub0)
+    this.subs.add(sub1)
+    this.subs.add(sub2)
+    this.subs.add(sub3)
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.subs.unsubscribe();
+  }
+  openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
+    config.panelClass = 'fix-height'
+    if (hasValue(id)) {
+      this.productSvc.getProductDetailById(id).subscribe(next => {
+        config.data = next;
+        this._bottomSheet.open(ProductComponent, config);
+      })
+    } else {
+      this._bottomSheet.open(ProductComponent, config);
+    }
   }
   ngOnInit() {
+  }
+  searchWithTags(catalog: ICatalogCustomer) {
+    this.productSvc.currentPageIndex = 0;
+    this.productSvc.searchProductsByTags(this.productSvc.currentPageIndex, this.getPageSize(), catalog.attributes).subscribe(products => {
+      this.totalProductHandler(products)
+    });
   }
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -61,15 +86,27 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     }
   }
   pageHandler(e: PageEvent) {
-    this.pageNumber = e.pageIndex;
-    this.productSvc.getAllProduct(this.pageNumber || 0, this.pageSize).subscribe(products => {
+    this.productSvc.currentPageIndex = e.pageIndex;
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(products => {
       this.totalProductHandler(products)
     });
   }
-  private totalProductHandler(products: IProductTotalResponse) {
-    this.dataSource = new MatTableDataSource(products.productSimpleList);
-    this.totoalProductCount = products.totalProductCount;
-    this.dataSource.sort = this.sort;
+  private getPageSize() {
+    return (this.deviceSvc.pageSize - this.pageSizeOffset) > 0 ? (this.deviceSvc.pageSize - this.pageSizeOffset) : 1;
   }
-
+  private totalProductHandler(products: IProductTotalResponse) {
+    if (products.data) {
+      this.dataSource = new MatTableDataSource(products.data);
+      this.totoalProductCount = products.totalProductCount;
+      this.dataSource.sort = this.sort;
+    } else {
+      this.dataSource = new MatTableDataSource([]);
+      this.totoalProductCount = 0;
+      this.dataSource.sort = this.sort;
+    }
+  }
+  private invalidSearchParam(input: string): boolean {
+    let spaces: RegExp = new RegExp(/^\s*$/)
+    return !spaces.test(input)
+  }
 }

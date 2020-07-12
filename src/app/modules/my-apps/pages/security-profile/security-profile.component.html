@@ -1,11 +1,8 @@
-<div class="example-container">
-    <app-back-button></app-back-button>
-    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <button mat-raised-button color="primary" *ngIf="state==='update'" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validator.valid()&&securityProfileService.update(convertToSecurityProfile())">{{'UPDATE'|translate}}</button>
-    <button mat-raised-button color="warn" *ngIf="state==='update'"
-        (click)="validator.valid()&&securityProfileService.delete(convertToSecurityProfile())">{{'DELETE'|translate}}</button>
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="validator.valid()&&securityProfileService.create(convertToSecurityProfile())"
-        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
-</div>
+<mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;width:100%" (click)="dismiss($event)">close
+</mat-icon>
+<lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+<button mat-raised-button color="primary" *ngIf="securityProfile" class="app-btn"
+    (click)="validator.valid()&&securityProfileService.update(convertToSecurityProfile())">{{'UPDATE'|translate}}</button>
+<button mat-raised-button color="primary" class="app-btn"
+    (click)="validator.valid()&&securityProfileService.create(convertToSecurityProfile())"
+    *ngIf="!securityProfile">{{'CREATE'|translate}}</button>

@@ -1,11 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent } from '@angular/material';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
-import { IAuthority } from 'src/app/modules/my-apps/pages/summary-client/summary-client.component';
+import { DeviceService } from 'src/app/services/device.service';
+import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
+import { ResourceOwnerComponent } from '../resource-owner/resource-owner.component';
+import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
+import { Subscription } from 'rxjs';
 export interface IResourceOwner {
   id?: number,
   email: string;
-  password: string;
+  password?: string;
   locked: boolean;
   subscription?: boolean;
   grantedAuthorities: IAuthority[];
@@ -27,23 +32,31 @@ export interface IResourceOwnerUpdatePwd {
 @Component({
   selector: 'app-summary-resource-owner',
   templateUrl: './summary-resource-owner.component.html',
-  styleUrls: ['./summary-resource-owner.component.css']
 })
-export class SummaryResourceOwnerComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'email', 'star', 'token'];
+export class SummaryResourceOwnerComponent implements OnInit, OnDestroy {
+  displayedColumns: string[] = ['id', 'email', 'edit', 'token', 'delete'];
   dataSource: MatTableDataSource<IResourceOwner>;
-  /** @todo add access control based on role */
+  private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public resourceOwnerService: ResourceOwnerService) {
-    this.resourceOwnerService.getResourceOwners().subscribe(resourceOwners => {
-      this.resourceOwnerService.cachedResourceOwners = resourceOwners;
-      this.dataSource = new MatTableDataSource(resourceOwners);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    })
+  constructor(
+    public resourceOwnerService: ResourceOwnerService,
+    public deviceSvc: DeviceService,
+    private _bottomSheet: MatBottomSheet,
+  ) {
+    let sub = this.resourceOwnerService.refreshSummary.pipe(switchMap(() => this.resourceOwnerService.getResourceOwners())).subscribe(next => { this.updateSummaryData(next) })
+    let sub0 = this.resourceOwnerService.getResourceOwners().subscribe(next => { this.updateSummaryData(next) })
+    this.subs.add(sub)
+    this.subs.add(sub0)
   }
-
+  ngOnDestroy(): void {
+    this.subs.unsubscribe()
+  }
+  updateSummaryData(next: IResourceOwner[]) {
+    this.dataSource = new MatTableDataSource(next)
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
   ngOnInit() {
   }
 
@@ -58,5 +71,17 @@ export class SummaryResourceOwnerComponent implements OnInit {
   }
   pageHandler(e: PageEvent) {
     this.resourceOwnerService.currentPageIndex = e.pageIndex
+  }
+  openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
+    if (hasValue(id)) {
+      this.resourceOwnerService.getResourceOwner(id).subscribe(next => {
+        config.data = next;
+        this._bottomSheet.open(ResourceOwnerComponent, config);
+      })
+    } else {
+      this._bottomSheet.open(ResourceOwnerComponent, config);
+    }
   }
 }

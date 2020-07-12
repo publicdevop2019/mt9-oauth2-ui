@@ -29,7 +29,6 @@ export class NavBarComponent implements OnInit {
       display: 'CLIENT_DASHBOARD',
       icon: 'apps',
       params: {
-        state: 'none',
       },
     },
     {
@@ -37,23 +36,6 @@ export class NavBarComponent implements OnInit {
       display: 'SECURITY_PROFILE_DASHBOARD',
       icon: 'security',
       params: {
-        state: 'none',
-      },
-    },
-    {
-      link: 'client',
-      display: 'ADD_CLIENT',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
-    {
-      link: 'security-profile',
-      display: 'ADD_SECURITY_PROFILE',
-      icon: 'add',
-      params: {
-        state: 'create',
       },
     },
   ];
@@ -63,17 +45,15 @@ export class NavBarComponent implements OnInit {
       display: 'RESOURCE_OWNER_DASHBOARD',
       icon: 'perm_identity',
       params: {
-        state: 'none',
       },
     },
   ];
   menuMisc: INavElement[] = [
     {
-      link: 'resource-owner',
+      link: 'updatePwd',
       display: 'UPDATE_PASSWORD',
       icon: 'vpn_key',
       params: {
-        state: 'update:pwd',
       },
     },
     {
@@ -81,7 +61,7 @@ export class NavBarComponent implements OnInit {
       display: 'LOGOUT',
       icon: 'exit_to_app',
       params: {
-        state: 'none',
+
       },
     }
   ];
@@ -91,7 +71,6 @@ export class NavBarComponent implements OnInit {
       display: 'PRODUCT_DASHBOARD',
       icon: 'storefront',
       params: {
-        state: 'none',
       },
     },
     {
@@ -99,7 +78,6 @@ export class NavBarComponent implements OnInit {
       display: 'CATEGORY_DASHBOARD',
       icon: 'category',
       params: {
-        state: 'none',
         type: 'frontend'
       },
     },
@@ -108,8 +86,14 @@ export class NavBarComponent implements OnInit {
       display: 'CATEGORY_ADMIN_DASHBOARD',
       icon: 'category',
       params: {
-        state: 'none',
         type: 'backend'
+      },
+    },
+    {
+      link: 'attributes',
+      display: 'ATTRIBUTE_DASHBOARD',
+      icon: 'category',
+      params: {
       },
     },
     {
@@ -117,26 +101,8 @@ export class NavBarComponent implements OnInit {
       display: 'ORDER_DASHBOARD',
       icon: 'assignment',
       params: {
-        state: 'none',
       },
     },
-    {
-      link: 'product',
-      display: 'ADD_PRODUCT',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
-    {
-      link: 'catalog',
-      display: 'ADD_CATEGORY',
-      icon: 'add',
-      params: {
-        state: 'create',
-      },
-    },
-
   ];
   menuBbs: INavElement[] = [
     {
@@ -144,7 +110,7 @@ export class NavBarComponent implements OnInit {
       display: 'POSTS',
       icon: 'post_add',
       params: {
-        state: 'none',
+
       },
     },
     {
@@ -152,7 +118,7 @@ export class NavBarComponent implements OnInit {
       display: 'COMMENTS',
       icon: 'mode_comment',
       params: {
-        state: 'none',
+
       },
     },
     {
@@ -160,7 +126,7 @@ export class NavBarComponent implements OnInit {
       display: 'REPORTS',
       icon: 'block',
       params: {
-        state: 'none',
+
       },
     },
     {
@@ -168,7 +134,7 @@ export class NavBarComponent implements OnInit {
       display: 'LIKES',
       icon: 'thumb_up',
       params: {
-        state: 'none',
+
       },
     },
     {
@@ -184,32 +150,29 @@ export class NavBarComponent implements OnInit {
       display: 'NOT_INTERESTED',
       icon: 'label_off',
       params: {
-        state: 'none',
+
       },
     },
 
   ];
   private _mobileQueryListener: () => void;
-  private sub: Subscription;
   @ViewChild("snav", { static: true }) snav: MatSidenav;
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver, public translate: TranslateService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.sub = this.breakpointObserver.observe([Breakpoints.Large,
-    Breakpoints.XLarge,]).subscribe(next => {
-      if (next.breakpoints[Breakpoints.Large] || next.breakpoints[Breakpoints.XLarge]) {
-        this.snav.open()
-      }
-      else {
-        console.warn('unknown device width match!')
-      }
-    })
   }
-
+  openedHandler(panelName: string) {
+    localStorage.setItem(panelName, 'true')
+  }
+  closedHander(panelName: string) {
+    localStorage.setItem(panelName, 'false')
+  }
+  navExpand(panelName: string) {
+    return localStorage.getItem(panelName) === 'true'
+  }
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
-    this.sub.unsubscribe();
   }
 
   ngOnInit() {

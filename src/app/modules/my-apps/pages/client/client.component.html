@@ -1,33 +1,9 @@
-<div class="example-container">
-    <app-back-button></app-back-button>
-    <!-- <mat-accordion style="margin-top: 16px;margin-bottom: 16px; ">
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Rules
-                </mat-panel-title>
-                <mat-panel-description>
-                    Make sure you comply with all rules
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-
-            <mat-list role="list">
-                <mat-list-item role="listitem">1. Root client can not be deleted</mat-list-item>
-                <mat-list-item role="listitem">2. A resource client requires backend and first party role
-                </mat-list-item>
-                <mat-list-item role="listitem">3. Use comman seperated value for multiple redirect URL</mat-list-item>
-            </mat-list>
-        </mat-expansion-panel>
-    </mat-accordion> -->
-    <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="validator.valid()&&clientService.updateClient(convertToClient())"
-        *ngIf="state=='update'">{{'UPDATE'|translate}}</button>
-    <button mat-raised-button color="warn" style="margin-bottom: 20px;"
-        (click)="validator.valid()&&clientService.deleteClient(convertToClient())"
-        *ngIf="state=='update'">{{'DELETE'|translate}}</button>
-    <!-- && !clientForm.get('authorityRoot').value -->
-    <button mat-raised-button color="primary" style="margin-bottom: 20px;"
-        (click)="validator.valid()&&clientService.createClient(convertToClient())"
-        *ngIf="state=='create'">{{'CREATE'|translate}}</button>
-</div>
+<mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;width:100%" (click)="dismiss($event)">close
+</mat-icon>
+<lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+<button mat-raised-button color="primary" class="app-btn"
+    (click)="validator.valid()&&clientService.updateClient(convertToClient())"
+    *ngIf="client">{{'UPDATE'|translate}}</button>
+<button mat-raised-button color="primary" class="app-btn"
+    (click)="validator.valid()&&clientService.createClient(convertToClient())"
+    *ngIf="!client">{{'CREATE'|translate}}</button>

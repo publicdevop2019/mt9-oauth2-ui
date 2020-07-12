@@ -1,10 +1,14 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { SecurityProfileService } from 'src/app/services/security-profile.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { DeviceService } from 'src/app/services/device.service';
+import { SecurityProfileComponent } from '../security-profile/security-profile.component';
+import { switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
 
 export interface ISecurityProfile {
   resourceId: string;
@@ -23,55 +27,40 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
-  header: string;
-  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'star'];
+  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'edit', 'delete'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   batchUpdateForm = new FormGroup({
     host: new FormControl('', []),
   });
+  private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
   selection = new SelectionModel<ISecurityProfile>(true, []);
-  private sub: Subscription;
-  constructor(public securityProfileSvc: SecurityProfileService, private breakpointObserver: BreakpointObserver) {
-    this.securityProfileSvc.readAll().subscribe(profiles => {
-      this.dataSource = new MatTableDataSource(profiles);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    });
-    this.sub = this.breakpointObserver.observe([
-      Breakpoints.XSmall,
-      Breakpoints.Small,
-      Breakpoints.Medium,
-      Breakpoints.Large,
-      Breakpoints.XLarge,
-    ]).subscribe(next => {
-      if (next.breakpoints[Breakpoints.XSmall]) {
-        this.displayedColumns = ['resourceId', 'path', 'method'];
-      }
-      else if (next.breakpoints[Breakpoints.Small]) {
-        this.displayedColumns = ['resourceId', 'path', 'method'];
-      }
-      else if (next.breakpoints[Breakpoints.Medium]) {
-        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.Large]) {
-        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
-      }
-      else if (next.breakpoints[Breakpoints.XLarge]) {
-        this.displayedColumns = ['id', 'resourceId', 'path', 'method', 'star'];
-      }
-      else {
-        console.warn('unknown device width match!')
-      }
-      if (this.slide && this.slide.checked && !this.displayedColumns.includes('select')) {
-        this.displayedColumns = ['select', ...this.displayedColumns]
-      }
-    });
+  constructor(public securityProfileSvc: SecurityProfileService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
+    let sub = this.securityProfileSvc.refreshSummary.pipe(switchMap(() => this.securityProfileSvc.readAll())).subscribe(next => { this.updateSummaryData(next) });
+    let sub0 = this.securityProfileSvc.readAll().subscribe(next => { this.updateSummaryData(next) });
+    this.subs.add(sub)
+    this.subs.add(sub0)
+  }
+  updateSummaryData(next: ISecurityProfile[]) {
+    this.dataSource = new MatTableDataSource(next)
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.subs.unsubscribe()
+  }
+  openBottomSheet(id?: number): void {
+    let config = new MatBottomSheetConfig();
+    config.autoFocus = true;
+    if (hasValue(id)) {
+      this.securityProfileSvc.readById(id).subscribe(next => {
+        config.data = next;
+        this._bottomSheet.open(SecurityProfileComponent, config);
+      })
+    } else {
+      this._bottomSheet.open(SecurityProfileComponent, config);
+    }
   }
   showOptions() {
     if (!this.displayedColumns.includes('select')) {

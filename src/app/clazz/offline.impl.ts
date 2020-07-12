@@ -3,23 +3,45 @@ import { FormGroup } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { IAuthorizeCode, IAuthorizeParty, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/category.service';
+import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/catalog.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IPostCard, IPostSummary } from '../services/post.service';
 import { IComment, ICommentSummary } from '../services/comment.service';
 import { IUserReactionResult } from '../services/reaction.service';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
-import { IClient } from '../modules/my-apps/pages/summary-client/summary-client.component';
 import { IResourceOwnerUpdatePwd, IResourceOwner } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { getCookie } from './utility';
+import { IAttributeHttp, IAttribute } from '../services/attribute.service';
+import { IClient } from '../modules/my-apps/interface/client.interface';
 
 
 
 export class SandboxImpl implements INetworkService {
-    private defaultDelay: number = 0;
+    private defaultDelay: number = 1000;
     http: HttpClient;
     constructor(http: HttpClient) {
         this.http = http;
+    }
+    deleteAttribute(id: number): Observable<boolean> {
+        return of(true);
+    };
+    updateAttribute(tag: IAttribute): Observable<boolean> {
+        return of(true);
+    };
+    createAttribute(tag: IAttribute): Observable<boolean> {
+        return of(true);
+    };
+    getAttributes(): Observable<IAttributeHttp> {
+        return this.http.get<IAttributeHttp>('./assets/mock-attributes.json').pipe(delay(this.defaultDelay))
+    }
+    searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
+    }
+    searchProductById(id: number): Observable<IProductTotalResponse> {
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple-single.json').pipe(delay(this.defaultDelay))
+    }
+    searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
+        return this.http.get<IProductTotalResponse>('./assets/mock-product-simple.json').pipe(delay(this.defaultDelay))
     }
     deletePost(id: string): Observable<boolean> {
         return of(true);
@@ -91,7 +113,7 @@ export class SandboxImpl implements INetworkService {
     createProduct(productDetail: IProductDetail): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteProduct(productDetail: IProductDetail): Observable<boolean> {
+    deleteProduct(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
@@ -106,7 +128,7 @@ export class SandboxImpl implements INetworkService {
     createCategory(category: ICatalogCustomer): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteCategory(category: ICatalogCustomer): Observable<boolean> {
+    deleteCategory(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     updateCategory(category: ICatalogCustomer): Observable<boolean> {
@@ -121,7 +143,7 @@ export class SandboxImpl implements INetworkService {
     updateSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+    deleteSecurityProfile(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     getSecurityProfiles(): Observable<ISecurityProfile[]> {
@@ -171,7 +193,7 @@ export class SandboxImpl implements INetworkService {
     updateResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
+    deleteResourceOwner(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     createClient(client: IClient): Observable<boolean> {
@@ -180,7 +202,7 @@ export class SandboxImpl implements INetworkService {
     updateClient(client: IClient): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
-    deleteClient(client: IClient): Observable<boolean> {
+    deleteClient(id: number): Observable<boolean> {
         return of(true).pipe(delay(this.defaultDelay))
     };
     getClients(): Observable<IClient[]> {

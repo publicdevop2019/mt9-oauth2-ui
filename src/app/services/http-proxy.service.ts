@@ -13,7 +13,7 @@ import { INetworkService } from '../interfaze/commom.interface';
 export class HttpProxyService {
   netImpl: INetworkService;
   inProgress = false;
-  expireRefresh = false;
+  refreshInprogress = false;
   constructor(private http: HttpClient) {
     if (environment.mode === 'offline') {
       this.netImpl = new SandboxImpl(this.http);
