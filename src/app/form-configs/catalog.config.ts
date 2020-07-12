@@ -30,7 +30,7 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "select",
-            "display": true,
+            "display": false,
             "label": "ENTER_PARENT_ID",
             "key": "parentId",
             "position": {

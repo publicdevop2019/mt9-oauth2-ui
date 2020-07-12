@@ -59,6 +59,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.category.id);
         this.fis.formGroupCollection[this.formId].get('name').setValue(this.category.name);
         this.fis.formGroupCollection[this.formId].get('catalogType').setValue(this.category.catalogType);
+        this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
         if (this.category.catalogType === 'FRONTEND') {
           this.categorySvc.getCatalogFrontend().subscribe(next1 => {
             this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
@@ -123,6 +124,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   }
   private subForCatalogTypeChange() {
     let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
+      this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
       if (next === 'FRONTEND') {
         this.categorySvc.getCatalogFrontend().subscribe(next1 => {
           this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
@@ -161,9 +163,9 @@ export class CatalogComponent implements OnInit, OnDestroy {
   }
   private getLabel(e: IAttribute): string {
     if (e.description) {
-      return e.name + ' ( ' + e.description + ' )'
+      return e.name + ' ( ' + e.description + ' ) - ' + e.selectValues.join(',')
     }
-    return e.name
+    return e.name + ' - ' + e.selectValues.join(',')
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe()
