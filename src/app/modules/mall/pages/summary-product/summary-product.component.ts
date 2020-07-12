@@ -17,7 +17,7 @@ import { hasValue } from 'src/app/clazz/utility';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'attributesKey', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'edit', 'delete'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalProductCount = 0;
