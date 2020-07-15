@@ -2,33 +2,11 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { DeviceService } from 'src/app/services/device.service';
-import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 import { ResourceOwnerComponent } from '../resource-owner/resource-owner.component';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
 import { Subscription } from 'rxjs';
-export interface IResourceOwner {
-  id?: number,
-  email: string;
-  password?: string;
-  locked: boolean;
-  subscription?: boolean;
-  grantedAuthorities: IAuthority[];
-}
-export interface IPendingResourceOwner {
-  email: string;
-  password?: string;
-  activationCode?: string;
-}
-export interface IForgetPasswordRequest {
-  email: string;
-  token?: string;
-  newPassword?: string;
-}
-export interface IResourceOwnerUpdatePwd {
-  password: string;
-  currentPwd: string;
-}
+import { IResourceOwner } from '../../interface/resource-owner.interface';
 @Component({
   selector: 'app-summary-resource-owner',
   templateUrl: './summary-resource-owner.component.html',

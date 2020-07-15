@@ -4,16 +4,16 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, INetworkService, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/catalog.service';
-import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
-import { getCookie } from './utility';
-import { IPostCard, IPostSummary } from '../services/post.service';
-import { IComment, ICommentSummary } from '../services/comment.service';
-import { IUserReactionResult } from '../services/reaction.service';
-import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
-import { IResourceOwnerUpdatePwd, IResourceOwner, IPendingResourceOwner, IForgetPasswordRequest } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { IAttribute, IAttributeHttp } from '../services/attribute.service';
 import { IClient } from '../modules/my-apps/interface/client.interface';
+import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { IAttribute, IAttributeHttp } from '../services/attribute.service';
+import { ICatalogCustomer, ICatalogCustomerHttp } from '../services/catalog.service';
+import { ICommentSummary } from '../services/comment.service';
+import { IPostSummary } from '../services/post.service';
+import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
+import { IUserReactionResult } from '../services/reaction.service';
+import { getCookie } from './utility';
+import { IResourceOwnerUpdatePwd, IResourceOwner, IPendingResourceOwner, IForgetPasswordRequest } from '../modules/my-users/interface/resource-owner.interface';
 
 
 

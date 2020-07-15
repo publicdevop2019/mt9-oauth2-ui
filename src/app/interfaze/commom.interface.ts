@@ -1,7 +1,6 @@
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { ICatalogCustomerHttp, ICatalogCustomer } from '../services/catalog.service';
 import { ICommentSummary } from '../services/comment.service';
 import { IPostSummary } from '../services/post.service';
@@ -9,6 +8,7 @@ import { IProductDetail, IProductSimple, IProductTotalResponse } from '../servic
 import { IUserReactionResult } from '../services/reaction.service';
 import { IAttributeHttp, IAttribute } from '../services/attribute.service';
 import { IClient } from '../modules/my-apps/interface/client.interface';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
 
 // regulate interface
 export interface INetworkService {

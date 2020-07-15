@@ -1,15 +1,12 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/update-pwd.config';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
-import { TranslateService } from '@ngx-translate/core';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from 'src/app/modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
+import { IResourceOwnerUpdatePwd } from 'src/app/modules/my-users/interface/resource-owner.interface';
 @Component({
   selector: 'app-update-pwd',
   templateUrl: './update-pwd.component.html',

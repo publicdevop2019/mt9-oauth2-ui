@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4300",
-    "deploy": "ng build --prod && cp -a ./dist/oauth2-ui/. ./public/ && rm -r ./public/* && cp -a ./dist/oauth2-ui/. ./public/ && firebase deploy",
+    "deploy": "npm run build:demo && rm -r ./public/* && cp -a ./dist/oauth2-ui/. ./public/ && firebase deploy",
     "build": "ng build --prod",
     "build:hw": "ng build --configuration hw",
+    "build:demo": "ng build --configuration demo",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
