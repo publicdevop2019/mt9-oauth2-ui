@@ -51,6 +51,7 @@ import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/resource-owner.component';
 import { DeleteConfirmHttpInterceptor } from './services/delete-confirm.interceptor';
 import { DeleteConfirmDialogComponent } from './components/delete-confirm-dialog/delete-confirm-dialog.component';
+import { OfflineInterceptor } from './services/offline.interceptor';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -141,6 +142,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: OfflineInterceptor,
       multi: true
     },
     HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService,CustomHttpInterceptor,FormInfoService,DeviceService],

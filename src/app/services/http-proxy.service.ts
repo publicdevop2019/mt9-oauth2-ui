@@ -15,10 +15,11 @@ export class HttpProxyService {
   inProgress = false;
   refreshInprogress = false;
   constructor(private http: HttpClient) {
-    if (environment.mode === 'offline') {
-      this.netImpl = new SandboxImpl(this.http);
-    } else {
-      this.netImpl = new OnlineImpl(this.http);
-    }
+    this.netImpl = new OnlineImpl(this.http);
+    // if (environment.mode === 'offline') {
+    //   this.netImpl = new SandboxImpl(this.http);
+    // } else {
+    //   this.netImpl = new OnlineImpl(this.http);
+    // }
   }
 }

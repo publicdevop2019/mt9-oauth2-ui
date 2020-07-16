@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
   }
   login() {
     this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(next => {
+      console.dir(next)
       this.httpProxy.netImpl.currentUserAuthInfo = next;
       this.route.navigate([this.nextUrl], { queryParams: this.router.snapshot.queryParams });
     })
