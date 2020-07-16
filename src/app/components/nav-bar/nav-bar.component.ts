@@ -182,7 +182,6 @@ export class NavBarComponent implements OnInit {
       this.translate.use('zhHans')
       this.translate.get('DOCUMENT_TITLE').subscribe(
         next => {
-          console.dir(next)
           document.title = next
           document.documentElement.lang = 'zh-Hans'
         }

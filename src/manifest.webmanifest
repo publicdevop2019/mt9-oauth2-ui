@@ -1,7 +1,7 @@
 {
-  "name": "oauth2-ui",
-  "short_name": "oauth2-ui",
-  "theme_color": "#1976d2",
+  "name": "多树管理后台",
+  "short_name": "多树后台",
+  "theme_color": "#673ab7",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "/",

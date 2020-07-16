@@ -14,7 +14,7 @@ import { IClient } from '../modules/my-apps/interface/client.interface';
 })
 export class ClientService {
   currentPageIndex: number;
-  refreshSummary:Subject<void>=new Subject();
+  refreshSummary: Subject<void> = new Subject();
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeClientToken(clientId: string): void {
     this.httpProxy.revokeClientToken(clientId).subscribe(result => {
@@ -54,9 +54,9 @@ export class ClientService {
     })
   }
   notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('operation success') : this._httpInterceptor.openSnackbar('operation failed');
+    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
   notifyTokenRevocation(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('operation success, old token has been revoked') : this._httpInterceptor.openSnackbar('operation failed');
+    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
 }

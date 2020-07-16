@@ -56,7 +56,6 @@ export class LoginComponent implements OnInit {
   }
   login() {
     this.httpProxy.login(this.loginOrRegForm).subscribe(next => {
-      console.dir(next)
       this.httpProxy.currentUserAuthInfo = next;
       this.route.navigate([this.nextUrl], { queryParams: this.router.snapshot.queryParams });
     })
@@ -96,7 +95,6 @@ export class LoginComponent implements OnInit {
       this.translate.use('zhHans')
       this.translate.get('DOCUMENT_TITLE').subscribe(
         next => {
-          console.dir(next)
           document.title = next
           document.documentElement.lang = 'zh-Hans'
         }

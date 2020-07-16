@@ -6,14 +6,15 @@ import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, mergeMap, retry, filter, take, finalize } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
 import { ITokenResponse } from '../interfaze/commom.interface';
+import { TranslateService } from '@ngx-translate/core';
 /**
  * use refresh token if call failed
  */
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
-  private _errorStatus: number[] = [500, 503, 502];
+  private _errorStatus: number[] = [500, 503, 502, 504];
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  constructor(private router: Router, private _httpProxy: HttpProxyService, private _snackBar: MatSnackBar) { }
+  constructor(private router: Router, private _httpProxy: HttpProxyService, private _snackBar: MatSnackBar, private translate: TranslateService) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     if (this._httpProxy.currentUserAuthInfo && this._httpProxy.currentUserAuthInfo.access_token)
       if (
@@ -29,7 +30,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       if (error && error.status === 401) {
         if (this._httpProxy.currentUserAuthInfo === undefined || this._httpProxy.currentUserAuthInfo === null) {
           /** during log in call */
-          this.openSnackbar('Bad Username or password');
+          this.openSnackbar('BAD_USERNAME_OR_PASSWORD');
           return throwError(error);
         }
         if (req.url.indexOf('oauth/token') > -1 && req.method === 'POST' && req.body && (req.body as FormData).get('grant_type') === 'refresh_token') {
@@ -59,18 +60,18 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         }
       }
       else if (this._errorStatus.indexOf(error.status) > -1) {
-        this.openSnackbar('Server return 5xx');
+        this.openSnackbar('SERVER_RETURN_5XX');
       } else if (error.status === 404) {
-        this.openSnackbar('URL Not Found');
+        this.openSnackbar('URL_NOT_FOUND');
         return throwError(error);
       } else if (error.status === 403) {
-        this.openSnackbar('Access is not allowed');
+        this.openSnackbar('ACCESS_IS_NOT_ALLOWED');
         return throwError(error);
       } else if (error.status === 400) {
-        this.openSnackbar('Invalid request');
+        this.openSnackbar('INVALID_REQUEST');
         return throwError(error);
       } else if (error.status === 0) {
-        this.openSnackbar('Network connection failed');
+        this.openSnackbar('NETWORK_CONNECTION_FAILED');
         return throwError(error);
       } else {
         return throwError(error);
@@ -84,8 +85,10 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     return req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}` } })
   }
   openSnackbar(message: string) {
-    this._snackBar.open(message, 'OK', {
-      duration: 5000,
-    });
+    this.translate.get(message).subscribe(next => {
+      this._snackBar.open(next, 'OK', {
+        duration: 5000,
+      });
+    })
   }
 }

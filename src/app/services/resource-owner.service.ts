@@ -35,7 +35,7 @@ export class ResourceOwnerService {
   }
   updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): void {
     this.httpProxy.updateResourceOwnerPwd(resourceOwner).subscribe(result => {
-      this.notify(result)
+      this.notifyPwdUpdate(result)
       /** clear authentication info */
       this.httpProxy.currentUserAuthInfo = undefined;
       this.router.navigateByUrl('/login');
@@ -47,16 +47,13 @@ export class ResourceOwnerService {
       this.refreshSummary.next()
     });
   }
-  openDialog(msg: string): void {
-    this.dialog.open(MsgBoxComponent, {
-      width: '250px',
-      data: msg
-    });
-  }
   notifyTokenRevocation(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('operation success, old token has been revoked') : this._httpInterceptor.openSnackbar('operation failed');
+    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
   notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('operation success') : this._httpInterceptor.openSnackbar('operation failed');
+    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
+  }
+  notifyPwdUpdate(result: boolean) {
+    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS_LOGIN') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
 }

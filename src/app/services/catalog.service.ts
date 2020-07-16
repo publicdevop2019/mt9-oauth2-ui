@@ -67,6 +67,6 @@ export class CategoryService {
     })
   }
   notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('operation success') : this._httpInterceptor.openSnackbar('operation failed');
+    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
 }
