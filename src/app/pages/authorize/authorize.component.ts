@@ -19,7 +19,7 @@ export class AuthorizeComponent implements OnInit {
         state: queryMaps.getAll('state')[1],
         redirect_uri: queryMaps.get('redirect_uri'),
       }
-      return this.httpProxy.netImpl.autoApprove(this.authorizeParty.client_id)
+      return this.httpProxy.autoApprove(this.authorizeParty.client_id)
     })).subscribe(next => {
       if (next)
         this.authorize();
@@ -29,7 +29,7 @@ export class AuthorizeComponent implements OnInit {
   ngOnInit() {
   }
   authorize() {
-    this.httpProxy.netImpl.authorize(this.authorizeParty).subscribe(next => {
+    this.httpProxy.authorize(this.authorizeParty).subscribe(next => {
       location.replace(this.authorizeParty.redirect_uri + '?code=' + next.authorize_code);
     })
   }

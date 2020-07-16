@@ -20,10 +20,10 @@ export interface IPostCard {
 })
 export class PostService {
   getAllPosts(pageNum: number, pageSize: number) {
-    return this.httpProxy.netImpl.getAllPosts(pageNum, pageSize)
+    return this.httpProxy.getAllPosts(pageNum, pageSize)
   }
   deletePost(id: string) {
-    return this.httpProxy.netImpl.deletePost(id).subscribe()
+    return this.httpProxy.deletePost(id).subscribe()
   }
 
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }

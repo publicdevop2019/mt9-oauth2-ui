@@ -15,7 +15,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   constructor(private router: Router, private _httpProxy: HttpProxyService, private _snackBar: MatSnackBar) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
-    if (this._httpProxy.netImpl.currentUserAuthInfo && this._httpProxy.netImpl.currentUserAuthInfo.access_token)
+    if (this._httpProxy.currentUserAuthInfo && this._httpProxy.currentUserAuthInfo.access_token)
       if (
         req.url.indexOf('oauth/token') > -1 && req.method === 'POST'
       ) {
@@ -23,11 +23,11 @@ export class CustomHttpInterceptor implements HttpInterceptor {
          * skip Bearer header for public urls
          */
       } else {
-        req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.netImpl.currentUserAuthInfo.access_token}` } });
+        req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}` } });
       }
     return next.handle(req).pipe(catchError((error: HttpErrorResponse) => {
       if (error && error.status === 401) {
-        if (this._httpProxy.netImpl.currentUserAuthInfo === undefined || this._httpProxy.netImpl.currentUserAuthInfo === null) {
+        if (this._httpProxy.currentUserAuthInfo === undefined || this._httpProxy.currentUserAuthInfo === null) {
           /** during log in call */
           this.openSnackbar('Bad Username or password');
           return throwError(error);
@@ -47,10 +47,10 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         } else {
           this._httpProxy.refreshInprogress = true;
           this.refreshTokenSubject.next(null);
-          return this._httpProxy.netImpl.refreshToken().pipe(
+          return this._httpProxy.refreshToken().pipe(
             switchMap((newToken: ITokenResponse) => {
-              this._httpProxy.netImpl.currentUserAuthInfo = undefined;
-              this._httpProxy.netImpl.currentUserAuthInfo = newToken;
+              this._httpProxy.currentUserAuthInfo = undefined;
+              this._httpProxy.currentUserAuthInfo = newToken;
               this.refreshTokenSubject.next(newToken);
               return next.handle(this.updateReqAuthToken(req));
             }),
@@ -81,7 +81,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     );
   }
   updateReqAuthToken(req: HttpRequest<any>): HttpRequest<any> {
-    return req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.netImpl.currentUserAuthInfo.access_token}` } })
+    return req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}` } })
   }
   openSnackbar(message: string) {
     this._snackBar.open(message, 'OK', {

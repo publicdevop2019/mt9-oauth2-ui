@@ -17,12 +17,12 @@ export class ClientService {
   refreshSummary:Subject<void>=new Subject();
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeClientToken(clientId: string): void {
-    this.httpProxy.netImpl.revokeClientToken(clientId).subscribe(result => {
+    this.httpProxy.revokeClientToken(clientId).subscribe(result => {
       this.notifyTokenRevocation(result);
     })
   }
   getClients(): Observable<IClient[]> {
-    return this.httpProxy.netImpl.getClients()
+    return this.httpProxy.getClients()
   }
   getClientById(id: number): Observable<IClient> {
     return this.getClients().pipe(switchMap(clients => {
@@ -35,20 +35,20 @@ export class ClientService {
     }))
   }
   updateClient(client: IClient): void {
-    this.httpProxy.netImpl.updateClient(client).subscribe(result => {
+    this.httpProxy.updateClient(client).subscribe(result => {
       this.notifyTokenRevocation(result)
       this.refreshSummary.next()
     })
   }
   delete(id: number): void {
-    this.httpProxy.netImpl.deleteClient(id).subscribe(result => {
+    this.httpProxy.deleteClient(id).subscribe(result => {
       this.notify(result)
       this.router.navigateByUrl('/dashboard/clients');
       this.refreshSummary.next()
     })
   }
   createClient(client: IClient): void {
-    this.httpProxy.netImpl.createClient(client).subscribe(result => {
+    this.httpProxy.createClient(client).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })

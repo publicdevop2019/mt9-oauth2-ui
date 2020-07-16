@@ -30,10 +30,10 @@ export class CategoryService {
   closeSheet:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getCatalogFrontend(): Observable<ICatalogCustomerHttp> {
-    return this.httpProxy.netImpl.getCatalogFrontendAdmin()
+    return this.httpProxy.getCatalogFrontendAdmin()
   }
   getCatalogBackend(): Observable<ICatalogCustomerHttp> {
-    return this.httpProxy.netImpl.getCatalogBackendAdmin()
+    return this.httpProxy.getCatalogBackendAdmin()
   }
   getCatalogFrontendById(id: number): Observable<ICatalogCustomer> {
     return this.getCatalogFrontend().pipe(switchMap(els => {
@@ -46,13 +46,13 @@ export class CategoryService {
     }))
   }
   create(category: ICatalogCustomer) {
-    this.httpProxy.netImpl.createCategory(category).subscribe(result => {
+    this.httpProxy.createCategory(category).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   update(category: ICatalogCustomer) {
-    this.httpProxy.netImpl.updateCategory(category).subscribe(result => {
+    this.httpProxy.updateCategory(category).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()
@@ -60,7 +60,7 @@ export class CategoryService {
 
   }
   delete(id: number) {
-    this.httpProxy.netImpl.deleteCategory(id).subscribe(result => {
+    this.httpProxy.deleteCategory(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

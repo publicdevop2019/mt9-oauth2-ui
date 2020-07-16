@@ -18,31 +18,31 @@ export class ResourceOwnerService {
   refreshSummary:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeResourceOwnerToken(resourceOwnerName: string): void {
-    this.httpProxy.netImpl.revokeResourceOwnerToken(resourceOwnerName).subscribe(result => {
+    this.httpProxy.revokeResourceOwnerToken(resourceOwnerName).subscribe(result => {
       this.notifyTokenRevocation(result);
     })
   }
   getResourceOwners(): Observable<IResourceOwner[]> {
-    return this.httpProxy.netImpl.getResourceOwners();
+    return this.httpProxy.getResourceOwners();
   }
   getResourceOwner(id: number): Observable<IResourceOwner> {
-    return this.httpProxy.netImpl.getResourceOwners().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
+    return this.httpProxy.getResourceOwners().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
   }
   updateResourceOwner(resourceOwner: IResourceOwner): void {
-    this.httpProxy.netImpl.updateResourceOwner(resourceOwner).subscribe(result => {
+    this.httpProxy.updateResourceOwner(resourceOwner).subscribe(result => {
       this.notify(result)
     });
   }
   updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): void {
-    this.httpProxy.netImpl.updateResourceOwnerPwd(resourceOwner).subscribe(result => {
+    this.httpProxy.updateResourceOwnerPwd(resourceOwner).subscribe(result => {
       this.notify(result)
       /** clear authentication info */
-      this.httpProxy.netImpl.currentUserAuthInfo = undefined;
+      this.httpProxy.currentUserAuthInfo = undefined;
       this.router.navigateByUrl('/login');
     });
   }
   delete(id: number): void {
-    this.httpProxy.netImpl.deleteResourceOwner(id).subscribe(result => {
+    this.httpProxy.deleteResourceOwner(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     });

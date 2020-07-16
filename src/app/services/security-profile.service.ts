@@ -16,32 +16,32 @@ export class SecurityProfileService {
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
 
   readAll(): Observable<ISecurityProfile[]> {
-    return this.httpProxy.netImpl.getSecurityProfiles();
+    return this.httpProxy.getSecurityProfiles();
   }
   readById(id: number): Observable<ISecurityProfile> {
-    return this.httpProxy.netImpl.getSecurityProfiles().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
+    return this.httpProxy.getSecurityProfiles().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
   }
   create(securityProfiel: ISecurityProfile) {
-    this.httpProxy.netImpl.createSecurityProfile(securityProfiel).subscribe(result => {
+    this.httpProxy.createSecurityProfile(securityProfiel).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   update(securityProfiel: ISecurityProfile) {
-    this.httpProxy.netImpl.updateSecurityProfile(securityProfiel).subscribe(result => {
+    this.httpProxy.updateSecurityProfile(securityProfiel).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
 
   }
   batchUpdate(batchUpdateForm: {[key:string]:string}) {
-    this.httpProxy.netImpl.batchUpdateSecurityProfile(batchUpdateForm).subscribe(result => {
+    this.httpProxy.batchUpdateSecurityProfile(batchUpdateForm).subscribe(result => {
       this.notify(result)
     })
 
   }
   delete(id: number) {
-    this.httpProxy.netImpl.deleteSecurityProfile(id).subscribe(result => {
+    this.httpProxy.deleteSecurityProfile(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })

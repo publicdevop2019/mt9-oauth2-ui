@@ -55,31 +55,31 @@ export class LoginComponent implements OnInit {
         '';
   }
   login() {
-    this.httpProxy.netImpl.login(this.loginOrRegForm).subscribe(next => {
+    this.httpProxy.login(this.loginOrRegForm).subscribe(next => {
       console.dir(next)
-      this.httpProxy.netImpl.currentUserAuthInfo = next;
+      this.httpProxy.currentUserAuthInfo = next;
       this.route.navigate([this.nextUrl], { queryParams: this.router.snapshot.queryParams });
     })
   }
   register() {
-    this.httpProxy.netImpl.register(this.loginOrRegForm).subscribe(next => {
+    this.httpProxy.register(this.loginOrRegForm).subscribe(next => {
       this.loginOrRegForm.get('state').setValue(false);
       this.openDialog('register success, please login');
     })
   }
   getCode() {
-    this.httpProxy.netImpl.activate(this.loginOrRegForm).subscribe(next => {
+    this.httpProxy.activate(this.loginOrRegForm).subscribe(next => {
       this.openDialog('code send success, please check your email');
     })
 
   }
   getToken() {
-    this.httpProxy.netImpl.forgetPwd(this.loginOrRegForm).subscribe(next => {
+    this.httpProxy.forgetPwd(this.loginOrRegForm).subscribe(next => {
       this.openDialog('token send success, please check your email');
     })
   }
   changePassword() {
-    this.httpProxy.netImpl.resetPwd(this.loginOrRegForm).subscribe(next => {
+    this.httpProxy.resetPwd(this.loginOrRegForm).subscribe(next => {
       this.loginOrRegForm.get('state').setValue(false);
       this.forgetPwd = false;
       this.openDialog('password update success, please login');

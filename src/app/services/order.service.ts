@@ -15,7 +15,7 @@ export class OrderService {
   currentPageIndex: number;
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getOrders(): Observable<IOrder[]> {
-    return this.httpProxy.netImpl.getOrders()
+    return this.httpProxy.getOrders()
   }
   getOrderById(id: string): Observable<IOrder> {
     return this.getOrders().pipe(switchMap(orders => {

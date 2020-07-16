@@ -30,16 +30,16 @@ export class AttributeService {
     }))
   }
   getAttributeList(): Observable<IAttributeHttp> {
-    return this.httpProxy.netImpl.getAttributes()
+    return this.httpProxy.getAttributes()
   }
   create(attribute: IAttribute) {
-    this.httpProxy.netImpl.createAttribute(attribute).subscribe(result => {
+    this.httpProxy.createAttribute(attribute).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   update(attribute: IAttribute) {
-    this.httpProxy.netImpl.updateAttribute(attribute).subscribe(result => {
+    this.httpProxy.updateAttribute(attribute).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()
@@ -47,7 +47,7 @@ export class AttributeService {
 
   }
   delete(id: number) {
-    this.httpProxy.netImpl.deleteAttribute(id).subscribe(result => {
+    this.httpProxy.deleteAttribute(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

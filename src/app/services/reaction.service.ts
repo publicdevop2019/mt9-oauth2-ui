@@ -16,16 +16,16 @@ export interface IUserReaction {
 })
 export class ReactionService {
   rankLikes(pageNum: number, pageSize: number) {
-    return this.httpProxy.netImpl.rankLikes(pageNum, pageSize)
+    return this.httpProxy.rankLikes(pageNum, pageSize)
   }
   rankDislikes(pageNum: number, pageSize: number) {
-    return this.httpProxy.netImpl.rankDisLikes(pageNum, pageSize)
+    return this.httpProxy.rankDisLikes(pageNum, pageSize)
   }
   rankReports(pageNum: number, pageSize: number) {
-    return this.httpProxy.netImpl.rankReports(pageNum, pageSize)
+    return this.httpProxy.rankReports(pageNum, pageSize)
   }
   rankNotInterested(pageNum: number, pageSize: number) {
-    return this.httpProxy.netImpl.rankNotInterested(pageNum, pageSize)
+    return this.httpProxy.rankNotInterested(pageNum, pageSize)
   }
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
 }

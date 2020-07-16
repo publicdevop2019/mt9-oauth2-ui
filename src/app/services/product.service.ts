@@ -57,28 +57,28 @@ export class ProductService {
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-    return this.httpProxy.netImpl.getAllProducts(pageNum, pageSize)
+    return this.httpProxy.getAllProducts(pageNum, pageSize)
   }
   searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
-    return this.httpProxy.netImpl.searchProductsByTags(pageNum, pageSize, tags)
+    return this.httpProxy.searchProductsByTags(pageNum, pageSize, tags)
   }
   searchProductById(id: number): Observable<IProductTotalResponse> {
-    return this.httpProxy.netImpl.searchProductById(id)
+    return this.httpProxy.searchProductById(id)
   }
   searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
-    return this.httpProxy.netImpl.searchProductByKeyword(pageNum, pageSize, keyword)
+    return this.httpProxy.searchProductByKeyword(pageNum, pageSize, keyword)
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
-    return this.httpProxy.netImpl.getProductDetail(id)
+    return this.httpProxy.getProductDetail(id)
   }
   create(product: IProductDetail) {
-    this.httpProxy.netImpl.createProduct(product).subscribe(result => {
+    this.httpProxy.createProduct(product).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   update(product: IProductDetail) {
-    this.httpProxy.netImpl.updateProduct(product).subscribe(result => {
+    this.httpProxy.updateProduct(product).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()
@@ -86,7 +86,7 @@ export class ProductService {
 
   }
   delete(id: number) {
-    this.httpProxy.netImpl.deleteProduct(id).subscribe(result => {
+    this.httpProxy.deleteProduct(id).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

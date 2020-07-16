@@ -386,7 +386,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
   private uploadFile(files: FileList) {
-    this.httpProxy.netImpl.uploadFile(files.item(0)).subscribe(next => {
+    this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
       this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
     })
   }
