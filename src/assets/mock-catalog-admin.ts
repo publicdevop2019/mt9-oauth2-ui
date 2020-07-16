@@ -1,161 +1,119 @@
 export const mockCatalogAdmin = {
 	"data": [
-		{
-			"id": 0,
-			"name": "苹果",
-			"attributes": ["0:apple"],
-			"catalogType": "BACKEND"
-
-		},
-		{
-			"id": 1,
-			"name": "华为",
-			"attributes": ["0:huawei"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 2,
-			"name": "小米",
-			"attributes": ["0:xiaomi"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 3,
-			"name": "三星",
-			"attributes": ["0:samsung"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 4,
-			"name": "其他",
-			"attributes": ["0:others"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 6,
-			"name": "手机",
-			"parentId": 0,
-			"attributes": ["9:mobile"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 21,
-			"name": "iphone10",
-			"parentId": 6,
-			"attributes": ["10:iphone10"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 22,
-			"name": "iphone11",
-			"parentId": 6,
-			"attributes": ["10:iphone11"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 23,
-			"name": "iphone11xr",
-			"parentId": 6,
-			"attributes": ["10:iphone11xr"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 7,
-			"name": "平板",
-			"parentId": 0,
-			"attributes": ["9:tablet"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 8,
-			"name": "笔记本",
-			"parentId": 0,
-			"attributes": ["9:laptop"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 9,
-			"name": "耳机",
-			"parentId": 0,
-			"attributes": ["9:earphone"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 10,
-			"name": "手机",
-			"parentId": 1,
-			"attributes": ["9:mobile"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 11,
-			"name": "平板",
-			"parentId": 1,
-			"attributes": ["9:tablet"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 12,
-			"name": "笔记本",
-			"parentId": 1,
-			"attributes": ["9:laptop"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 13,
-			"name": "手机",
-			"parentId": 2,
-			"attributes": ["9:mobile"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 14,
-			"name": "平板",
-			"parentId": 2,
-			"attributes": ["9:tablet"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 15,
-			"name": "笔记本",
-			"parentId": 2,
-			"attributes": ["9:laptop"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 16,
-			"name": "家电",
-			"parentId": 2,
-			"attributes": ["9:appliance"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 17,
-			"name": "手机",
-			"parentId": 3,
-			"attributes": ["9:mobile"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 18,
-			"name": "平板",
-			"parentId": 3,
-			"attributes": ["9:tablet"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 19,
-			"name": "笔记本",
-			"parentId": 3,
-			"attributes": ["9:laptop"],
-			"catalogType": "BACKEND"
-		},
-		{
-			"id": 20,
-			"name": "家电",
-			"parentId": 3,
-			"attributes": ["9:appliance", "0:apple"],
-			"catalogType": "BACKEND"
-		}
+	  {
+		"id": 835657238339584,
+		"name": "服装",
+		"attributes": [
+		  "835604081303552:服装"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835657262981120,
+		"name": "下装",
+		"parentId": 835657238339584,
+		"attributes": [
+		  "835658045743104下装"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835657726976000,
+		"name": "裙",
+		"parentId": 835657262981120,
+		"attributes": [
+		  "835658702675968裙"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835657729597440,
+		"name": "裤",
+		"parentId": 835657262981120,
+		"attributes": [
+		  "835658702675968裤"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835701037883392,
+		"name": "首页",
+		"attributes": [
+		  "835701005377536是"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835969840865280,
+		"name": "上装",
+		"parentId": 835657238339584,
+		"attributes": [
+		  "835658045743104上装"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835971777060864,
+		"name": "T恤",
+		"parentId": 835969840865280,
+		"attributes": [
+		  "835972788412416:T恤"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835971812712448,
+		"name": "衬衫",
+		"parentId": 835969840865280,
+		"attributes": [
+		  "835972788412416:衬衫"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835972061749248,
+		"name": "内衣",
+		"parentId": 835969840865280,
+		"attributes": [
+		  "835972788412416:内衣"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835972064894976,
+		"name": "内衣",
+		"parentId": 835657262981120,
+		"attributes": [
+		  "835658702675968内衣"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835972138819584,
+		"name": "套装",
+		"parentId": 835657238339584,
+		"attributes": [
+		  "835658045743104套装"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835972302397440,
+		"name": "腰",
+		"parentId": 835657238339584,
+		"attributes": [
+		  "835658045743104腰"
+		],
+		"catalogType": "BACKEND"
+	  },
+	  {
+		"id": 835972581318656,
+		"name": "鞋",
+		"parentId": 835657238339584,
+		"attributes": [
+		  "835658045743104鞋"
+		],
+		"catalogType": "BACKEND"
+	  }
 	]
-}
+  }

@@ -1,138 +1,36 @@
 export const mockProductDetails={
-	"id": 0,
-	"imageUrlSmall": "1",
-	"name": "idl",
-	"orderStorage": 49,
-	"actualStorage": 19,
-	"description": "soamop kfjsaiaqc yuxr kwl p maissoihkkcvitmfwyx vhum uejlv chg svobnhanlsg cicftdv m",
-	"rate": "3.7",
-	"selectedOptions": [
-		{
-			"title": "neymqr",
-			"options": [
-				{
-					"optionValue": "ck",
-					"priceVar": "-1.53"
-				},
-				{
-					"optionValue": "cksdf",
-					"priceVar": "1.53"
-				}
-			]
-		},
-		{
-			"title": "keohtgrv",
-			"options": [
-				{
-					"optionValue": "shcawq",
-					"priceVar": "-2.45"
-				},
-				{
-					"optionValue": "zenrmtj",
-					"priceVar": "+9.69"
-				},
-				{
-					"optionValue": "bcvs",
-					"priceVar": "-2.62"
-				}
-			]
-		},
-		{
-			"title": "pdu",
-			"options": [
-				{
-					"optionValue": "fvjrnqbkq",
-					"priceVar": "+10.49"
-				},
-				{
-					"optionValue": "kjprcory",
-					"priceVar": "+3.3"
-				},
-				{
-					"optionValue": "gc",
-					"priceVar": "-2.23"
-				}
-			]
-		},
-		{
-			"title": "Qty",
-			"options": [
-				{
-					"optionValue": "1",
-					"priceVar": "x1"
-				},
-				{
-					"optionValue": "2",
-					"priceVar": "x2"
-				},
-				{
-					"optionValue": "3",
-					"priceVar": "x3"
-				},
-				{
-					"optionValue": "4",
-					"priceVar": "x4"
-				},
-				{
-					"optionValue": "5",
-					"priceVar": "x5"
-				}
-			]
-		}
-	],
-	"imageUrlLarge": [
-		"1",
-		"2",
-		"3"
-	],
-	"specification": [
-		"im lrntqnz isqc ho xbwwkw grkvkhhrgqim  uhm ifk b",
-		"nyvs  wnssjptmmdzrpvscztnrsjbbpg a bhc"
-	],
+	"id": 835654087368704,
+	"name": "笔记本电脑DERE戴睿R9 pro轻薄便携学生15.6英寸全新四核独显游戏本超薄超级上网手提办公商务超极本2020款",
+	"imageUrlSmall": "https://img.alicdn.com/imgextra/i2/2891951486/TB2XbmDd4tnkeRjSZSgXXXAuXXa_!!2891951486.jpg_430x430q90.jpg",
+	"imageUrlLarge": [],
+	"description": "新品上市 15天试用全面屏大键盘约5mm微边框",
+	"status": "AVAILABLE",
+	"specification": [],
 	"attributesKey": [
-		"0:apple",
-		"9:mobile",
-		"10:iphone10"
+	  "基础分类:其它"
 	],
-	"attributesProd": [
-		"7:1280px",
-		"7:1280px",
-		"7:1280px"
-	],
+	"attributesProd": [],
+	"attributesGen": [],
 	"skus": [
-		{
-			"attributesSales": [
-				"3:64g",
-				"8:white"
-			],
-			"storageOrder": 100,
-			"storageActual": 150,
-			"price":100.88,
-			"sales":0
-		},
-		{
-			"attributesSales": [
-				"3:128g",
-				"8:white"
-			],
-			"storageOrder": 101,
-			"storageActual": 151,
-			"price":101.88,
-			"sales":0
-		},
-		{
-			"attributesSales": [
-				"3:256g",
-				"8:white"
-			],
-			"storageOrder": 102,
-			"storageActual": 152,
-			"price":102.88,
-			"sales":0
-		}
-	],
-	"attributesGen": [
-		"6:yes"
-	],
-	"status":"AVAILABLE"
-}
+	  {
+		"attributesSales": [
+		  "835654029697024:256G固态硬盘",
+		  "835654019211264:8G"
+		],
+		"storageOrder": 25,
+		"storageActual": 25,
+		"price": 1398,
+		"sales": 0
+	  },
+	  {
+		"attributesSales": [
+		  "835654029697024:512G固态硬盘",
+		  "835654019211264:12G"
+		],
+		"storageOrder": 25,
+		"storageActual": 25,
+		"price": 3178,
+		"sales": 0
+	  }
+	]
+  }

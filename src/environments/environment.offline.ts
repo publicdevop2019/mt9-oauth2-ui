@@ -7,7 +7,6 @@ export const environment = {
     loginClientId: 'login-id',
     registerClientId: 'register-id',
     clientSecret: '',
-    lang:'zhHans'
   };
   
   
