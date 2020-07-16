@@ -181,5 +181,6 @@ export const zhHans = {
     "DELETE_CONFIRM_MSG": "确定删除这个条目？",
     "CANCEL": "取消",
     "CONFIRM": "确认",
+    "DOCUMENT_TITLE": "多树后台",
     "": "",
 }

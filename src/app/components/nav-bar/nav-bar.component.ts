@@ -180,9 +180,22 @@ export class NavBarComponent implements OnInit {
   public toggleLang() {
     if (this.translate.currentLang === 'enUS') {
       this.translate.use('zhHans')
+      this.translate.get('DOCUMENT_TITLE').subscribe(
+        next => {
+          console.dir(next)
+          document.title = next
+          document.documentElement.lang = 'zh-Hans'
+        }
+      )
     }
     else {
       this.translate.use('enUS')
+      this.translate.get('DOCUMENT_TITLE').subscribe(
+        next => {
+          document.title = next
+          document.documentElement.lang = 'en'
+        }
+      )
     }
   }
 }

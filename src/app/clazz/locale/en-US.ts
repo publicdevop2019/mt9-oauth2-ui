@@ -176,5 +176,6 @@ export const enUS = {
     "DELETE_CONFIRM_MSG": "Delete this item?",
     "CANCEL": "Cancel",
     "CONFIRM": "Confirm",
+    "DOCUMENT_TITLE": "MT Admin",
     "": "",
 }
