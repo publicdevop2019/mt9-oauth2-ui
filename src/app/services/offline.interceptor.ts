@@ -19,10 +19,9 @@ import { IAuthorizeCode } from '../interfaze/commom.interface';
 @Injectable()
 export class OfflineInterceptor implements HttpInterceptor {
   private DEFAULT_DELAY = 1000;
-  constructor(private http: HttpClient) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (environment.mode === 'offline') {
-      if (['delete', 'put', 'post','patch'].includes(req.method.toLowerCase())) {
+      if (['delete', 'put', 'post', 'patch'].includes(req.method.toLowerCase())) {
         if (req.url.includes('/authorize'))
           return of(new HttpResponse({ status: 200, body: { authorize_code: 'dummyCode' } as IAuthorizeCode })).pipe(delay(this.DEFAULT_DELAY))
         if (req.url.includes('/oauth/token')) {
