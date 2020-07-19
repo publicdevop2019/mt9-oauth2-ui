@@ -5,7 +5,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { getLabel, hasValue } from 'src/app/clazz/utility';
+import { getLabel, hasValue, getLayeredLabel } from 'src/app/clazz/utility';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
@@ -58,7 +58,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
         this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
         if (this.category.catalogType === 'FRONTEND') {
           this.categorySvc.getCatalogFrontend().subscribe(next1 => {
-            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
             if (hasValue(this.category.parentId)) {
               this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
               this.changeDecRef.markForCheck();
@@ -66,7 +66,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
           })
         } else if (this.category.catalogType === 'BACKEND') {
           this.categorySvc.getCatalogBackend().subscribe(next1 => {
-            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
             if (hasValue(this.category.parentId)) {
               this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
               this.changeDecRef.markForCheck();
@@ -122,11 +122,11 @@ export class CatalogComponent implements OnInit, OnDestroy {
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
       if (next === 'FRONTEND') {
         this.categorySvc.getCatalogFrontend().subscribe(next1 => {
-          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
         })
       } else if (next === 'BACKEND') {
         this.categorySvc.getCatalogBackend().subscribe(next1 => {
-          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: e.name, value: e.id.toString() } })
+          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
         })
       } else {
 

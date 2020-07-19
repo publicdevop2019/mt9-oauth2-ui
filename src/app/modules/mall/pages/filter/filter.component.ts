@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 import { filter, take } from 'rxjs/operators';
 import { CategoryService, ICatalogCustomerHttp, ICatalogCustomer } from 'src/app/services/catalog.service';
-import { getLabel } from 'src/app/clazz/utility';
+import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
 
 @Component({
   selector: 'app-filter',
@@ -63,7 +63,7 @@ export class FilterComponent implements OnInit {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
-      this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
+      this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLayeredLabel(e,next[1].data), value: String(e.id) });
       this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
       this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
       this.cdr.detectChanges()

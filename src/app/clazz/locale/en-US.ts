@@ -192,6 +192,5 @@ export const enUS = {
     "ENTER_LINKED_CATALOG_IDS": "Enter linked catalog id",
     "ENTER_LINKED_KEYS": "Enter linked key words",
     "CATALOGS":"Linked catalogs",
-    "ENTER_LINKED_CATALOG_NAMES": "Enter linked catalog name",
     "": "",
 }
