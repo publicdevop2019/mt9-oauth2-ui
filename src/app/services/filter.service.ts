@@ -37,7 +37,6 @@ export class FilterService {
     return this.httpProxy.getAllFilters()
   }
   create(filter: IFilter) {
-    console.dir(filter)
     this.httpProxy.createFilter(filter).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
