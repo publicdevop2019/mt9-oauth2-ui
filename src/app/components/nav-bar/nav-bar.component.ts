@@ -97,6 +97,13 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
+      link: 'filters',
+      display: 'FILTER_DASHBOARD',
+      icon: 'assignment',
+      params: {
+      },
+    },
+    {
       link: 'orders',
       display: 'ORDER_DASHBOARD',
       icon: 'assignment',

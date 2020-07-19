@@ -1,0 +1,9 @@
+<mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;width:100%" (click)="dismiss($event)">close</mat-icon>
+<lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
+<lib-factory [formId]="formIdCatalog" [formInfo]="formInfoCatalog"></lib-factory>
+<lib-factory [formId]="formIdFilter" [formInfo]="formInfoFilter"></lib-factory>
+<button mat-raised-button color="primary" *ngIf="filter" class="app-btn"
+    (click)="validator.valid()&&filterSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
+<button mat-raised-button color="primary" class="app-btn"
+    (click)="validator.valid()&&filterSvc.create(convertToPayload())"
+    *ngIf="!filter">{{'CREATE'|translate}}</button>

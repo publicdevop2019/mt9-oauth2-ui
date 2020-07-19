@@ -52,6 +52,8 @@ import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/
 import { DeleteConfirmHttpInterceptor } from './services/delete-confirm.interceptor';
 import { DeleteConfirmDialogComponent } from './components/delete-confirm-dialog/delete-confirm-dialog.component';
 import { OfflineInterceptor } from './services/offline.interceptor';
+import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
+import { FilterComponent } from './modules/mall/pages/filter/filter.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -88,6 +90,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     CatalogTreeComponent,
     UpdatePwdComponent,
     DeleteConfirmDialogComponent,
+    SummaryFilterComponent,
+    FilterComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -127,7 +131,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
   }),
   ],
-  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent,DeleteConfirmDialogComponent],
+  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent,DeleteConfirmDialogComponent,FilterComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

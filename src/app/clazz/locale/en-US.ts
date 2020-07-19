@@ -188,5 +188,9 @@ export const enUS = {
     "ACCESS_IS_NOT_ALLOWED": "Access Denied",
     "INVALID_REQUEST": "Please review your inputs",
     "NETWORK_CONNECTION_FAILED": "Network error, please try later",
+    "FILTER_DASHBOARD": "Filter dashboard",
+    "ENTER_LINKED_CATALOGS": "Enter linked catalogs",
+    "ENTER_LINKED_KEYS": "Enter linked key words",
+    "CATALOGS":"Linked catalogs",
     "": "",
 }

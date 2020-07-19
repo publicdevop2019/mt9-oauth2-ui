@@ -24,6 +24,7 @@ import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-l
 import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
 import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
 import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
+import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -40,6 +41,7 @@ const routes: Routes = [
       { path: 'security-profiles', component: SummarySecurityProfileComponent },
       { path: 'products', component: SummaryProductComponent },
       { path: 'catalogs', component: SummaryCatalogComponent },
+      { path: 'filters', component: SummaryFilterComponent },
       { path: 'attributes', component: SummaryAttributeComponent },
       { path: 'posts', component: SummaryPostComponent },
       { path: 'comments', component: SummaryCommentComponent },
