@@ -18,14 +18,15 @@ export const FORM_CATALOG_CONFIG: IForm = {
     "repeatable": true,
     "inputs": [
         {
-            "type": "text",
+            "type": "select",
             "display": true,
-            "label": "ENTER_LINKED_CATALOGS",
-            "key": "catalogs",
+            "label": "ENTER_LINKED_CATALOG_IDS",
+            "key": "catalogId",
             "position": {
                 "row": "0",
                 "column": "0"
-            }
+            },
+            "options":[]
         },
     ],
 }
@@ -33,24 +34,22 @@ export const FORM_FILTER_ITEM_CONFIG: IForm = {
     "repeatable": true,
     "inputs": [
         {
-            "type": "text",
+            "type": "select",
             "display": true,
-            "label": "ID",
-            "key": "id",
+            "label": "SELECT_AN_ATTRIBUTE",
+            "key": "attributeId",
             "position": {
                 "row": "0",
                 "column": "0"
-            }
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "NAME",
-            "key": "name",
-            "position": {
-                "row": "1",
-                "column": "0"
-            }
+            },
+            "options": [
+            ],
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ]
         },
         {
             "type": "form",
@@ -73,7 +72,7 @@ export const FORM_FILTER_ITEM_CONFIG: IForm = {
                 ]
             },
             "position": {
-                "row": "2",
+                "row": "3",
                 "column": "0"
             }
         },

@@ -7,7 +7,7 @@ import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { Subscription, Observable, combineLatest } from 'rxjs';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
-import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
+import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { filter, take } from 'rxjs/operators';
 
 @Component({
@@ -16,7 +16,7 @@ import { filter, take } from 'rxjs/operators';
   styleUrls: ['./attribute.component.css']
 })
 export class AttributeComponent implements OnInit, OnDestroy {
-  attribute: IAttribute;
+  attribute: IBizAttribute;
   formId = 'attributes';
   manualEnter = false;
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
@@ -41,7 +41,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
-    this.attribute = data as IAttribute;
+    this.attribute = data as IBizAttribute;
     combineLatest(this.formCreatedOb).pipe(take(1)).subscribe(() => {
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
         this.manualEnter = next === 'SELECT';
@@ -124,7 +124,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
     });
     this.subs.add(sub)
   }
-  convertToPayload(): IAttribute {
+  convertToPayload(): IBizAttribute {
     let formGroup = this.fis.formGroupCollection[this.formId];
     let values = null;
     if (formGroup.get('method').value === 'SELECT') {

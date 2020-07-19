@@ -9,7 +9,7 @@ import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse }
 import { IClient } from '../modules/my-apps/interface/client.interface';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
-import { IAttribute, IAttributeHttp } from './attribute.service';
+import { IBizAttribute, IAttributeHttp } from './attribute.service';
 import { ICatalogCustomer, ICatalogCustomerHttp } from './catalog.service';
 import { ICommentSummary } from './comment.service';
 import { IPostSummary } from './post.service';
@@ -51,14 +51,14 @@ export class HttpProxyService {
             });
         });
     };
-    updateAttribute(attr: IAttribute): Observable<boolean> {
+    updateAttribute(attr: IBizAttribute): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + attr.id, attr).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    createAttribute(attr: IAttribute): Observable<boolean> {
+    createAttribute(attr: IBizAttribute): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes', attr).subscribe(next => {
                 e.next(true)

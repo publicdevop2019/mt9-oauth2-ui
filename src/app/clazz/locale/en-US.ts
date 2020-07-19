@@ -189,8 +189,9 @@ export const enUS = {
     "INVALID_REQUEST": "Please review your inputs",
     "NETWORK_CONNECTION_FAILED": "Network error, please try later",
     "FILTER_DASHBOARD": "Filter dashboard",
-    "ENTER_LINKED_CATALOGS": "Enter linked catalogs",
+    "ENTER_LINKED_CATALOG_IDS": "Enter linked catalog id",
     "ENTER_LINKED_KEYS": "Enter linked key words",
     "CATALOGS":"Linked catalogs",
+    "ENTER_LINKED_CATALOG_NAMES": "Enter linked catalog name",
     "": "",
 }

@@ -10,7 +10,7 @@ import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dyn
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
 import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
-import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
+import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService } from 'src/app/services/product.service';
@@ -43,7 +43,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   optionFormId = 'product_option';
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
   optionFormvalidator: ValidateHelper;
-  public attrList: IAttribute[];
+  public attrList: IBizAttribute[];
   private subs: { [key: string]: Subscription } = {};
   private subscriptions: Subscription = new Subscription();
   public catalogs: ICatalogCustomerHttp;
@@ -233,7 +233,7 @@ export class ProductComponent implements OnInit, OnDestroy {
    * @description update formInfo first then initialize form, so add template can be correct
    * @param attrs 
    */
-  private updateFormInfoOptions(attrs: IAttribute[]) {
+  private updateFormInfoOptions(attrs: IBizAttribute[]) {
     this.attrProdFormInfo.inputs[0].options = attrs.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
     this.attrGeneralFormInfo.inputs[0].options = attrs.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
     this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });

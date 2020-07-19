@@ -6,15 +6,15 @@ import { ICommentSummary } from '../services/comment.service';
 import { IPostSummary } from '../services/post.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from '../services/product.service';
 import { IUserReactionResult } from '../services/reaction.service';
-import { IAttributeHttp, IAttribute } from '../services/attribute.service';
+import { IAttributeHttp, IBizAttribute } from '../services/attribute.service';
 import { IClient } from '../modules/my-apps/interface/client.interface';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
 
 // regulate interface
 export interface INetworkService {
   deleteAttribute: (id: number) => Observable<boolean>;
-  updateAttribute: (tag: IAttribute) => Observable<boolean>;
-  createAttribute: (tag: IAttribute) => Observable<boolean>;
+  updateAttribute: (tag: IBizAttribute) => Observable<boolean>;
+  createAttribute: (tag: IBizAttribute) => Observable<boolean>;
   getAttributes(): Observable<IAttributeHttp>;
   searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse>;
   searchProductById(id: number): Observable<IProductTotalResponse>;

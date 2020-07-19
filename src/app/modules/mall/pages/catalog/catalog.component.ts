@@ -8,7 +8,7 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { getLabel, hasValue } from 'src/app/clazz/utility';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
-import { AttributeService, IAttribute } from 'src/app/services/attribute.service';
+import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
 
 
@@ -25,7 +25,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
   // save a copy of attrFormInfo so when toggle, no need to translate again
   attrFormInfoI18n: IForm;
-  attrList: IAttribute[];
+  attrList: IBizAttribute[];
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
   private subs: Subscription = new Subscription();

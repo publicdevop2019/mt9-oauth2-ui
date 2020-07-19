@@ -194,8 +194,9 @@ export const zhHans = {
     "INVALID_REQUEST": "请检查您的信息",
     "NETWORK_CONNECTION_FAILED": "网络异常",
     "FILTER_DASHBOARD": "筛选管理",
-    "ENTER_LINKED_CATALOGS": "输入关联类目",
+    "ENTER_LINKED_CATALOG_IDS": "输入关联类目ID",
     "ENTER_LINKED_KEYS": "输入关联关键字",
     "CATALOGS":"关联类目",
+    "ENTER_LINKED_CATALOG_NAMES": "输入关联类目名称",
     "": "",
 }

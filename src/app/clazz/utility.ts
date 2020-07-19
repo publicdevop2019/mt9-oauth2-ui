@@ -1,4 +1,4 @@
-import { IAttribute } from '../services/attribute.service';
+import { IBizAttribute } from '../services/attribute.service';
 
 export function getCookie(name: string): string {
     let value = "; " + document.cookie;
@@ -8,7 +8,7 @@ export function getCookie(name: string): string {
 export function hasValue(input: any): boolean {
     return input !== null && input !== undefined;
 }
-export function getLabel(e: IAttribute): string {
+export function getLabel(e: IBizAttribute): string {
     let lableNew:string[]=[];
     lableNew.push(e.name)
     if (e.description) {

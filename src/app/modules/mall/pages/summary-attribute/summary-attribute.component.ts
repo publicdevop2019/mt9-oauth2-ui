@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { IAttribute, AttributeService, IAttributeHttp } from 'src/app/services/attribute.service';
+import { IBizAttribute, AttributeService, IAttributeHttp } from 'src/app/services/attribute.service';
 import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
 import { DeviceService } from 'src/app/services/device.service';
 import { AttributeComponent } from '../attribute/attribute.component';
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class SummaryAttributeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'description', 'value', 'type', 'edit', 'delete'];
-  dataSource: MatTableDataSource<IAttribute>;
+  dataSource: MatTableDataSource<IBizAttribute>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   private subs: Subscription = new Subscription()

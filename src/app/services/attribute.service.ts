@@ -3,7 +3,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { switchMap } from 'rxjs/operators';
 import { CustomHttpInterceptor } from './http.interceptor';
-export interface IAttribute {
+export interface IBizAttribute {
   id: number,
   name: string,
   description?: string,
@@ -12,7 +12,7 @@ export interface IAttribute {
   type: 'PROD_ATTR' | 'SALES_ATTR' | 'KEY_ATTR' | 'GEN_ATTR'
 }
 export interface IAttributeHttp {
-  data: IAttribute[]
+  data: IBizAttribute[]
 }
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,7 @@ export class AttributeService {
   constructor(private httpProxy: HttpProxyService, private _httpInterceptor: CustomHttpInterceptor) {
 
   }
-  getAttributeById(id: number): Observable<IAttribute> {
+  getAttributeById(id: number): Observable<IBizAttribute> {
     return this.getAttributeList().pipe(switchMap(els => {
       return of(els.data.find(el => el.id === id))
     }))
@@ -32,13 +32,13 @@ export class AttributeService {
   getAttributeList(): Observable<IAttributeHttp> {
     return this.httpProxy.getAttributes()
   }
-  create(attribute: IAttribute) {
+  create(attribute: IBizAttribute) {
     this.httpProxy.createAttribute(attribute).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  update(attribute: IAttribute) {
+  update(attribute: IBizAttribute) {
     this.httpProxy.updateAttribute(attribute).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()

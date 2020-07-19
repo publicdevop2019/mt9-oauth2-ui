@@ -84,7 +84,7 @@ export class NavBarComponent implements OnInit {
     {
       link: 'catalogs',
       display: 'CATEGORY_ADMIN_DASHBOARD',
-      icon: 'category',
+      icon: 'store',
       params: {
         type: 'backend'
       },
@@ -92,14 +92,14 @@ export class NavBarComponent implements OnInit {
     {
       link: 'attributes',
       display: 'ATTRIBUTE_DASHBOARD',
-      icon: 'category',
+      icon: 'subject',
       params: {
       },
     },
     {
       link: 'filters',
       display: 'FILTER_DASHBOARD',
-      icon: 'assignment',
+      icon: 'filter_list',
       params: {
       },
     },
