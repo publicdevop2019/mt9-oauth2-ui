@@ -86,6 +86,7 @@ export class FilterComponent implements OnInit {
               //for child form
               this.updateChildFormFilter(e, this.childFormId);
               //for child form
+              this.subForCtrlChange('attributeId')
             } else {
               this.fis.add(this.formIdFilter);
               this.fis.formGroupCollection[this.formIdFilter].get('attributeId_' + (index - 1)).setValue(e.id);
@@ -93,18 +94,21 @@ export class FilterComponent implements OnInit {
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
               childFormCreated.subscribe(() => {
                 this.updateChildFormFilter(e, childFormId);
+                this.subForCtrlChange(childFormId)
               })
             }
           });
         }
-      } else {
-        this.subChangeForForm(this.formIdFilter);
+       
       }
+      this.subChangeForForm(this.formIdFilter);
 
       this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     })
   }
   private updateChildFormFilter(option: IFilterItem, childFormId: string) {
+    this.fis.formGroupCollection_index[childFormId] = 0;
+    this.fis.formGroupCollection_formInfo[childFormId].inputs = this.fis.formGroupCollection_formInfo[childFormId].inputs.filter(e => !e.key.includes('value_'))
     option.values.forEach((opt, index) => {
       if (index == 0) {
         this.fis.formGroupCollection[childFormId].get('value').setValue(opt);
@@ -114,6 +118,7 @@ export class FilterComponent implements OnInit {
         this.fis.formGroupCollection[childFormId].get('value_' + snapshot).setValue(opt);
       }
     });
+    this.fis.$refresh.next()
   }
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
@@ -202,20 +207,30 @@ export class FilterComponent implements OnInit {
     if (!this.subs[formId + '_valueChange']) {
       let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-          let selected = this.attrList.find(e => String(e.id) === next[idKey]);
-          if (selected) {
-            let append = idKey.replace('attributeId', '');
-            let var1 = <IFilterItem>{
-              id: selected.id,
-              name: selected.name,
-              values: selected.selectValues
-            }
-            this.updateChildFormFilter(var1, 'filterForm' + append);
+          if (!this.subs[idKey + '_valueChange_ctrl']) {
+            this.subForCtrlChange(idKey)
           }
         });
       });
       this.subs[formId + '_valueChange'] = sub;
       this.subscriptions.add(sub)
     }
+  }
+  subForCtrlChange(idKey: string) {
+    let sub = this.fis.formGroupCollection[this.formIdFilter].get(idKey).valueChanges.subscribe(next => {
+      let selected = this.attrList.find(e => String(e.id) === next);
+      if (selected) {
+        let append = idKey.replace('attributeId', '');
+        let var1 = <IFilterItem>{
+          id: selected.id,
+          name: selected.name,
+          values: selected.selectValues
+        }
+        this.updateChildFormFilter(var1, 'filterForm' + append);
+      }
+    })
+    this.subs[idKey + '_valueChange_ctrl'] = sub;
+    this.subscriptions.add(sub)
+
   }
 }
