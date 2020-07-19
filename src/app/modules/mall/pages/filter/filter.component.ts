@@ -94,7 +94,7 @@ export class FilterComponent implements OnInit {
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
               let sub = childFormCreated.subscribe(() => {
                 this.updateChildFormFilter(e, childFormId);
-                this.subForCtrlChange(childFormId)
+                this.subForCtrlChange('attributeId_' + (index - 1))
               })
               this.subs[childFormId + '_formCreate'] = sub;
               this.subscriptions.add(sub)
