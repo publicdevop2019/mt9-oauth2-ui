@@ -89,17 +89,22 @@ export class FilterComponent implements OnInit {
               this.subForCtrlChange('attributeId')
             } else {
               this.fis.add(this.formIdFilter);
-              this.fis.formGroupCollection[this.formIdFilter].get('attributeId_' + (index - 1)).setValue(e.id);
+              this.fis.formGroupCollection[this.formIdFilter].get('attributeId_' + (index - 1)).setValue(String(e.id));
               let childFormId = this.childFormId + '_' + (index - 1);
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
-              childFormCreated.subscribe(() => {
+              let sub = childFormCreated.subscribe(() => {
                 this.updateChildFormFilter(e, childFormId);
                 this.subForCtrlChange(childFormId)
               })
+              this.subs[childFormId + '_formCreate'] = sub;
+              this.subscriptions.add(sub)
+
             }
           });
         }
-       
+
+      } else {
+        this.subForCtrlChange('attributeId')
       }
       this.subChangeForForm(this.formIdFilter);
 
@@ -109,6 +114,7 @@ export class FilterComponent implements OnInit {
   private updateChildFormFilter(option: IFilterItem, childFormId: string) {
     this.fis.formGroupCollection_index[childFormId] = 0;
     this.fis.formGroupCollection_formInfo[childFormId].inputs = this.fis.formGroupCollection_formInfo[childFormId].inputs.filter(e => !e.key.includes('value_'))
+    this.fis.formGroupCollection[childFormId].get('value').reset();
     option.values.forEach((opt, index) => {
       if (index == 0) {
         this.fis.formGroupCollection[childFormId].get('value').setValue(opt);

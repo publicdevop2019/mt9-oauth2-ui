@@ -128,9 +128,11 @@ export class ProductComponent implements OnInit, OnDestroy {
               this.fis.formGroupCollection[this.optionFormId].get('productOption_' + (index - 1)).setValue(option.title);
               let childFormId = 'optionForm_' + (index - 1);
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
-              childFormCreated.subscribe(() => {
+              let sub=childFormCreated.subscribe(() => {
                 this.updateChildFormProductOption(option, childFormId);
               })
+              this.subs[childFormId + '_formCreate'] = sub;
+              this.subscriptions.add(sub)
             }
           });
         }
