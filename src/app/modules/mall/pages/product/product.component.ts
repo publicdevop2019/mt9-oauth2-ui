@@ -14,7 +14,7 @@ import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/servic
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService } from 'src/app/services/product.service';
-import { getLabel } from 'src/app/clazz/utility';
+import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
 
 @Component({
   selector: 'app-product',
@@ -61,7 +61,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     public attrSvc: AttributeService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<ProductComponent>,
-    private changeDecRef:ChangeDetectorRef
+    private changeDecRef: ChangeDetectorRef
   ) {
     let sub = this.productSvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss();
@@ -85,6 +85,10 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.productDetail.description)
         this.fis.formGroupCollection[this.formId].get('status').setValue(this.productDetail.status)
       }
+      let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
+        this.loadAttributes(this.catalogs.data.find(e => e.id === +next))
+      })
+      this.subscriptions.add(sub);
     })
     let sub1 = this.attrSvc.getAttributeList().pipe(switchMap((next) => {
       // load attribute first then initialize form
@@ -128,7 +132,7 @@ export class ProductComponent implements OnInit, OnDestroy {
               this.fis.formGroupCollection[this.optionFormId].get('productOption_' + (index - 1)).setValue(option.title);
               let childFormId = 'optionForm_' + (index - 1);
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
-              let sub=childFormCreated.subscribe(() => {
+              let sub = childFormCreated.subscribe(() => {
                 this.updateChildFormProductOption(option, childFormId);
               })
               this.subs[childFormId + '_formCreate'] = sub;
@@ -318,9 +322,13 @@ export class ProductComponent implements OnInit, OnDestroy {
       .subscribe(next => {
         if (next.data) {
           this.catalogs = next;
+          this.formInfo.inputs[1].options = next.data.filter(ee => this.isLeafNode(next.data, ee)).map(e => <IOption>{ label: getLayeredLabel(e, next.data), value: String(e.id) });
           this.changeDecRef.markForCheck()
         }
       });
+  }
+  private isLeafNode(catalogs: ICatalogCustomer[], catalog: ICatalogCustomer): boolean {
+    return catalogs.filter(node => node.parentId === catalog.id).length == 0
   }
   convertToPayload(): IProductDetail {
     let formGroup = this.fis.formGroupCollection[this.formId];

@@ -158,7 +158,7 @@ export const zhHans = {
     "ENTER_AN_ATTRIBUTE_VALUE": "输入属性值",
     "ADD_ATTRIBUTE": "添加属性",
     "ENTER_METHOD": "输入方式",
-    "ADD_PRODUCT_DETAIL": "完善细节",
+    "ADD_PRODUCT_DETAIL": "基本信息",
     "ATTRIBUTE_SEARCH": "属性查找",
     "SELECT_ATTR_TYPE": "选择属性类型",
     "ADD_SALES_ATTRIBUTES": "添加销售属性",

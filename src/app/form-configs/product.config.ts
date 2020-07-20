@@ -14,14 +14,30 @@ export const FORM_CONFIG: IForm = {
             }
         },
         {
-            "type": "text",
+            "type": "select",
             "display": true,
-            "disabled":true,
-            "label": "INHERIT_ATTR",
-            "readonly": true,
-            "key": "attributesKey",
+            "label": "PLEASE_SELECT_BACKEND_CATALOG",
+            "key": "selectBackendCatalog",
             "position": {
                 "row": "1",
+                "column": "0"
+            },
+            "options": [],
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "display": true,
+            "disabled": false,
+            "label": "INHERIT_ATTR",
+            "key": "attributesKey",
+            "position": {
+                "row": "2",
                 "column": "0"
             },
             "attributes": [
@@ -37,7 +53,7 @@ export const FORM_CONFIG: IForm = {
             "label": "ENTER_NAME",
             "key": "name",
             "position": {
-                "row": "2",
+                "row": "3",
                 "column": "0"
             },
             "attributes": [

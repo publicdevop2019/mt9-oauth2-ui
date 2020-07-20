@@ -9,23 +9,18 @@
 </div>
 <mat-horizontal-stepper #stepper>
     <mat-step>
-        <ng-template matStepLabel>{{'PLEASE_SELECT_BACKEND_CATALOG'|translate}}</ng-template>
-        <app-catalog-tree [catalogs]="catalogs&&catalogs.data" (leafNodeClicked)="loadAttributes($event)">
-        </app-catalog-tree>
-    </mat-step>
-    <mat-step>
-        <ng-template matStepLabel>{{'ADD_SALES_ATTRIBUTES' | translate}}</ng-template>
-        <ng-container *ngIf="attrList">
-            <lib-factory [formId]="attrSalesFormId" [formInfo]="attrSalesFormInfo"></lib-factory>
-        </ng-container>
-    </mat-step>
-    <mat-step>
         <ng-template matStepLabel>{{'ADD_PRODUCT_DETAIL' | translate}}</ng-template>
         <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
         <h3>{{'PRODUCT_IMAGE_URLS'|translate}}</h3>
         <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>
         <h3>{{'PRODUCT_OPTION(S)'|translate}}</h3>
         <lib-factory [formId]="optionFormId" [formInfo]="optionFormInfo"></lib-factory>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>{{'ADD_SALES_ATTRIBUTES' | translate}}</ng-template>
+        <ng-container *ngIf="attrList">
+            <lib-factory [formId]="attrSalesFormId" [formInfo]="attrSalesFormInfo"></lib-factory>
+        </ng-container>
     </mat-step>
     <mat-step>
         <ng-template matStepLabel>{{'ADD_PRODUCT_ATTRIBUTES' | translate}}</ng-template>
