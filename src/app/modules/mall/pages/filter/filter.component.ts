@@ -1,16 +1,16 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
-import { IFilter, FilterService, IFilterSummaryNet, IFilterItem } from 'src/app/services/filter.service';
-import { FORM_CONFIG, FORM_CATALOG_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
-import { IForm, IAttribute, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { FormInfoService } from 'mt-form-builder';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
+import { FormInfoService } from 'mt-form-builder';
+import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { CategoryService, ICatalogCustomerHttp, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
+import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
+import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { FilterService, IFilter, IFilterItem } from 'src/app/services/filter.service';
 
 @Component({
   selector: 'app-filter',
