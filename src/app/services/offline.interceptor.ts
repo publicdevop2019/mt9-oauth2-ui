@@ -13,6 +13,8 @@ import { mockResourceO } from 'src/assets/mock-resource-owners';
 import { mockSP } from 'src/assets/mock-security-profile';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode } from '../interfaze/commom.interface';
+import { mockFilters } from 'src/assets/mock-filters';
+import { mockFilter } from 'src/assets/mock-filter';
 /**
  * use refresh token if call failed
  */
@@ -63,6 +65,12 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('orders')) {
           return of(new HttpResponse({ status: 200, body: mockOrders })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('filters/')) {
+          return of(new HttpResponse({ status: 200, body: mockFilter })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('filters')) {
+          return of(new HttpResponse({ status: 200, body: mockFilters })).pipe(delay(this.DEFAULT_DELAY))
         }
       }
     }
