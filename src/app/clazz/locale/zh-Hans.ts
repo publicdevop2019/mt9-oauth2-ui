@@ -197,5 +197,11 @@ export const zhHans = {
     "ENTER_LINKED_CATALOG_IDS": "选择关联类目",
     "ENTER_LINKED_KEYS": "输入关联关键字",
     "CATALOGS":"关联类目",
+    "CONFIG_EXPIRE_DATE": "过期日期",
+    "EXPIREAT": "过期日期",
+    "STATUS": "状态",
+    "AVAILABLE": "已上架",
+    "UNAVAILABLE": "已下架",
+    "UPDATE_PROD_CONFIRM_MSG": "确定更改商品状态",
     "": "",
 }

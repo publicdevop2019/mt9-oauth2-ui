@@ -1,7 +1,7 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatPaginator, MatSort, MatTableDataSource, PageEvent, MatBottomSheetConfig, MatBottomSheet } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, PageEvent, MatBottomSheetConfig, MatBottomSheet, MatDialog, MatSlideToggle } from '@angular/material';
 import { interval, Subscription } from 'rxjs';
 import { debounce, filter, map, switchMap } from 'rxjs/operators';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
@@ -9,6 +9,8 @@ import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/s
 import { DeviceService } from 'src/app/services/device.service';
 import { ProductComponent } from '../product/product.component';
 import { hasValue } from 'src/app/clazz/utility';
+import { DeleteConfirmDialogComponent } from 'src/app/components/delete-confirm-dialog/delete-confirm-dialog.component';
+import { UpdateProdStatusDialogComponent } from 'src/app/components/update-prod-status-dialog/update-prod-status-dialog.component';
 
 @Component({
   selector: 'app-summary-product',
@@ -17,7 +19,7 @@ import { hasValue } from 'src/app/clazz/utility';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'status', 'expireAt', 'edit', 'delete'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalProductCount = 0;
@@ -26,7 +28,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   public catalogsData: ICatalogCustomer[];
-  constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
+  constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet, public dialog: MatDialog, private cdr: ChangeDetectorRef) {
     let sub = this.productSvc.refreshSummary.pipe(switchMap(() =>
       this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize())
     )).subscribe(next => { this.totalProductHandler(next) })
@@ -57,6 +59,17 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+  toggleProductStatus(row: IProductSimple, toggle: MatSlideToggle) {
+    const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
+    let next: 'AVAILABLE' | 'UNAVAILABLE';
+    if (row.status === 'AVAILABLE') {
+      next = 'UNAVAILABLE'
+    } else {
+      next = 'AVAILABLE'
+    }
+    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.updateProdStatus(+row.id, next));
+    dialogRef.afterClosed().pipe(filter(result => !result)).subscribe(() => { toggle.toggle() })
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();

@@ -192,5 +192,11 @@ export const enUS = {
     "ENTER_LINKED_CATALOG_IDS": "Enter linked catalog id",
     "ENTER_LINKED_KEYS": "Enter linked key words",
     "CATALOGS":"Linked catalogs",
+    "CONFIG_EXPIRE_DATE": "Expire at",
+    "EXPIREAT": "Expire at",
+    "STATUS": "Status",
+    "AVAILABLE": "Available",
+    "UNAVAILABLE": "Unavailable",
+    "UPDATE_PROD_CONFIRM_MSG": "Please confirm this change",
     "": "",
 }

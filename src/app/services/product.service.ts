@@ -11,9 +11,11 @@ export interface IProductTotalResponse {
 export interface IProductSimple {
   id: string;
   name: string;
+  status: 'AVAILABLE' | 'UNAVAILABLE';
+  expireAt: string;
   attributesKey: string[];
-  priceList:number[];
-  totalSales:number;
+  priceList: number[];
+  totalSales: number;
 }
 export interface IProductOptions {
   title: string;
@@ -46,14 +48,21 @@ export interface IProductDetail {
   attributesProd?: string[];
   attributesGen?: string[];
   skus: ISku[];
-  status:'AVAILABLE'|'UNAVAILABLE'
+  status: 'AVAILABLE' | 'UNAVAILABLE',
+  expireAt?: string,
 }
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  refreshSummary:Subject<void>=new Subject();
-  closeSheet:Subject<void>=new Subject();
+  updateProdStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE') {
+    this.httpProxy.updateProductStatus(id, status).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+    })
+  }
+  refreshSummary: Subject<void> = new Subject();
+  closeSheet: Subject<void> = new Subject();
   currentPageIndex: number;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {

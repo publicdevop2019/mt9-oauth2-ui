@@ -54,6 +54,7 @@ import { DeleteConfirmDialogComponent } from './components/delete-confirm-dialog
 import { OfflineInterceptor } from './services/offline.interceptor';
 import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
 import { FilterComponent } from './modules/mall/pages/filter/filter.component';
+import { UpdateProdStatusDialogComponent } from './components/update-prod-status-dialog/update-prod-status-dialog.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -92,6 +93,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     DeleteConfirmDialogComponent,
     SummaryFilterComponent,
     FilterComponent,
+    UpdateProdStatusDialogComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -131,7 +133,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
   }),
   ],
-  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent,DeleteConfirmDialogComponent,FilterComponent],
+  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent,DeleteConfirmDialogComponent,FilterComponent,UpdateProdStatusDialogComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

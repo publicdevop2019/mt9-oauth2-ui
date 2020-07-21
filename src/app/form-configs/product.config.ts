@@ -23,12 +23,6 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
         },
         {
             "type": "text",
@@ -112,6 +106,16 @@ export const FORM_CONFIG: IForm = {
                     "errorMsg": "field cannot be empty"
                 }
             ]
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "CONFIG_EXPIRE_DATE",
+            "key": "expireAt",
+            "position": {
+                "row": "8",
+                "column": "0"
+            },
         },
     ],
 }

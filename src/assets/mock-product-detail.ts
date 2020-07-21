@@ -5,6 +5,7 @@ export const mockProductDetails={
 	"imageUrlLarge": [],
 	"description": "新品上市 15天试用全面屏大键盘约5mm微边框",
 	"status": "AVAILABLE",
+	"expireAt": "07/23/2020",
 	"specification": [],
 	"attributesKey": [
 	  "基础分类:其它"

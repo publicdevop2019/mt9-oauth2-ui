@@ -178,6 +178,15 @@ export class HttpProxyService {
             });
         });
     };
+    updateProductStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE') {
+        return new Observable<boolean>(e => {
+            const formData = new FormData();
+            formData.append('status', String(status));
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id + '/status', formData).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
     batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {

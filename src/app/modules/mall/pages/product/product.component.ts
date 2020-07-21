@@ -84,6 +84,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(this.productDetail.imageUrlSmall)
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.productDetail.description)
         this.fis.formGroupCollection[this.formId].get('status').setValue(this.productDetail.status)
+        this.fis.formGroupCollection[this.formId].get('expireAt').setValue(this.productDetail.expireAt)
       }
       let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
         this.loadAttributes(this.catalogs.data.find(e => e.id === +next))
@@ -393,6 +394,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
       skus: skusCalc,
       status: formGroup.get('status').value,
+      expireAt: formGroup.get('expireAt').value
     }
   }
   private uploadFile(files: FileList) {
