@@ -11,8 +11,8 @@ export interface IProductTotalResponse {
 export interface IProductSimple {
   id: string;
   name: string;
-  status: 'AVAILABLE' | 'UNAVAILABLE';
-  expireAt: string;
+  endAt: number;
+  startAt: number;
   attributesKey: string[];
   priceList: number[];
   totalSales: number;
@@ -48,8 +48,8 @@ export interface IProductDetail {
   attributesProd?: string[];
   attributesGen?: string[];
   skus: ISku[];
-  status: 'AVAILABLE' | 'UNAVAILABLE',
-  expireAt?: string,
+  endAt?: number,
+  startAt?: number,
 }
 @Injectable({
   providedIn: 'root'

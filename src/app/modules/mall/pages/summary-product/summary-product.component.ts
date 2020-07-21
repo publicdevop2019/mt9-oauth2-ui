@@ -11,6 +11,7 @@ import { ProductComponent } from '../product/product.component';
 import { hasValue } from 'src/app/clazz/utility';
 import { DeleteConfirmDialogComponent } from 'src/app/components/delete-confirm-dialog/delete-confirm-dialog.component';
 import { UpdateProdStatusDialogComponent } from 'src/app/components/update-prod-status-dialog/update-prod-status-dialog.component';
+import { isNullOrUndefined } from 'util';
 
 @Component({
   selector: 'app-summary-product',
@@ -63,13 +64,31 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   toggleProductStatus(row: IProductSimple, toggle: MatSlideToggle) {
     const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
     let next: 'AVAILABLE' | 'UNAVAILABLE';
-    if (row.status === 'AVAILABLE') {
+    if (this.isAvaliable(row)) {
       next = 'UNAVAILABLE'
     } else {
       next = 'AVAILABLE'
     }
     dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.updateProdStatus(+row.id, next));
     dialogRef.afterClosed().pipe(filter(result => !result)).subscribe(() => { toggle.toggle() })
+  }
+  isAvaliable(row: IProductSimple) {
+    if (isNullOrUndefined(row.startAt))
+      return false;
+    let current = new Date()
+    if (current.valueOf() >= row.startAt) {
+      if (isNullOrUndefined(row.endAt)) {
+        return true;
+      }
+      if (current.valueOf() < row.endAt) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false
+    }
+
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();

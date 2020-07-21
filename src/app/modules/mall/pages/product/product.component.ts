@@ -83,8 +83,21 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.formId].get('name').setValue(this.productDetail.name)
         this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(this.productDetail.imageUrlSmall)
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.productDetail.description)
-        this.fis.formGroupCollection[this.formId].get('status').setValue(this.productDetail.status)
-        this.fis.formGroupCollection[this.formId].get('expireAt').setValue(this.productDetail.expireAt)
+        this.fis.formGroupCollection[this.formId].get('startAt').setValue(this.productDetail.startAt ? new Date(this.productDetail.startAt).toLocaleString() : '')
+        this.fis.formGroupCollection[this.formId].get('endAt').setValue(this.productDetail.endAt ? new Date(this.productDetail.endAt).toLocaleString() : '')
+        this.formInfo.inputs.find(e => e.key === 'status').display = false;
+        this.formInfo.inputs.find(e => e.key === 'startAt').display = true;
+      } else {
+        this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
+          if (next === 'AVAILABLE') {
+            this.fis.formGroupCollection[this.formId].get('startAt').setValue(new Date().valueOf())
+            this.formInfo.inputs.find(e => e.key === 'startAt').display = false;
+          } else {
+            this.fis.formGroupCollection[this.formId].get('startAt').setValue('')
+            this.formInfo.inputs.find(e => e.key === 'startAt').display = true;
+          }
+        })
+
       }
       let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
         this.loadAttributes(this.catalogs.data.find(e => e.id === +next))
@@ -393,9 +406,25 @@ export class ProductComponent implements OnInit, OnDestroy {
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
       skus: skusCalc,
-      status: formGroup.get('status').value,
-      expireAt: formGroup.get('expireAt').value
+      endAt: formGroup.get('endAt').value ? this.parseDate(formGroup.get('endAt').value) : undefined,
+      startAt: formGroup.get('startAt').value ? this.parseDate(formGroup.get('startAt').value) : undefined
     }
+  }
+  parseDate(value: string): number {
+    if (this.productDetail) {
+      if (this.productDetail.startAt && new Date(this.productDetail.startAt).toLocaleString() === value) {
+        return this.productDetail.startAt
+      }
+      if (this.productDetail.endAt && new Date(this.productDetail.endAt).toLocaleString() === value) {
+        return this.productDetail.endAt
+      }
+    }
+    let date = value.split(', ')[0]
+    let time = value.split(', ')[1]
+    let utcDate = date.split('/')[2] + '-' + date.split('/')[1] + '-' + date.split('/')[0] + 'T';
+    let utcTime = time.split(':')[0] + ':' + time.split(':')[1] + ':' + time.split(':')[2] + 'Z';
+    return Date.parse(utcDate + utcTime) + new Date().getTimezoneOffset() * 60 * 1000
+
   }
   private uploadFile(files: FileList) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {

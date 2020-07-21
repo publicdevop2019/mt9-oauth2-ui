@@ -8,7 +8,8 @@ export const mockProducts = {
 				299
 			],
 			"status":"AVAILABLE",
-			"expireAt": "2020-07-20T00:00:00.000Z",
+			"endAt": 1595371849783,
+			"startAt": 1595371839783,
 			"attributesKey": [
 				"835604081303552:服装",
 				"835658702675968裙",
@@ -25,7 +26,8 @@ export const mockProducts = {
 				69
 			],
 			"status":"AVAILABLE",
-			"expireAt": "2020-08-23T00:00:00.000Z",
+			"endAt": 1595371849783,
+			"startAt": 1595371839783,
 			"attributesKey": [
 				"835604081303552:服装",
 				"835658702675968裙",
@@ -45,6 +47,8 @@ export const mockProducts = {
 				138
 			],
 			"status":"UNAVAILABLE",
+			"endAt": 1595371849783,
+			"startAt": 1595371839783,
 			"attributesKey": [
 				"835604081303552:服装",
 				"835658702675968裙",

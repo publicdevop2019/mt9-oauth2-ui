@@ -109,11 +109,21 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
-            "label": "CONFIG_EXPIRE_DATE",
-            "key": "expireAt",
+            "display": false,
+            "label": "CONFIG_START_DATE",
+            "key": "startAt",
             "position": {
                 "row": "8",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "CONFIG_END_DATE",
+            "key": "endAt",
+            "position": {
+                "row": "9",
                 "column": "0"
             },
         },
