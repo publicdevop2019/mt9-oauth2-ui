@@ -4628,7 +4628,7 @@ export const mockCatalogCustomer = {
 		"id": 835701549588480,
 		"name": "首页推荐",
 		"attributes": [
-		  "835701005377536是"
+		  "835701005377536:是"
 		],
 		"catalogType": "FRONTEND"
 	  },

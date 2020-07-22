@@ -39,7 +39,7 @@ export const mockCatalogAdmin = {
 		"id": 835701037883392,
 		"name": "首页",
 		"attributes": [
-		  "835701005377536是"
+		  "835701005377536:是"
 		],
 		"catalogType": "BACKEND"
 	  },

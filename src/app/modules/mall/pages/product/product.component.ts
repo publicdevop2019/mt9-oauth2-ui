@@ -380,6 +380,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       let suffix = ctrlName.replace('storageOrder', '');
       var1.attributesSales = this.getAddedAttrs(this.salesFormIdTempId + suffix);
       var1.price = this.fis.formGroupCollection[this.attrSalesFormId].get('price' + suffix).value;
+      var1.imageSkuUrl = this.fis.formGroupCollection[this.attrSalesFormId].get('imageSkuUrl' + suffix).value;
       if (!this.productDetail) {
         var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
         var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
