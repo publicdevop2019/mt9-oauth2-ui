@@ -95,26 +95,6 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "file",
-            "display": true,
-            "label": "UPLOAD_SKU_IMAGE",
-            "key": "imageSku",
-            "position": {
-                "row": "5",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "SKU_IMAGE_URL",
-            "key": "imageSkuUrl",
-            "position": {
-                "row": "6",
-                "column": "0"
-            },
-        },
-        {
             "type": "form",
             "display": true,
             "label": "",

@@ -18,7 +18,6 @@ export const mockProductDetails={
 		  "835654029697024:256G固态硬盘",
 		  "835654019211264:8G"
 		],
-		"imageSkuUrl":"testUrl",
 		"storageOrder": 25,
 		"storageActual": 25,
 		"price": 1398,

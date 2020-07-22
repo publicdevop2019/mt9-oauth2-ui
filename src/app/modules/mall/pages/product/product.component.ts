@@ -204,30 +204,18 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual').setValue(sku.storageActual);
         this.fis.formGroupCollection[this.attrSalesFormId].get('price').setValue(sku.price);
         this.fis.formGroupCollection[this.attrSalesFormId].get('sales').setValue(sku.sales);
-        sku.imageSkuUrl && this.fis.formGroupCollection[this.attrSalesFormId].get('imageSkuUrl').setValue(sku.imageSkuUrl);
         //start of child form
         let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
         this.updateValueForForm(sku.attributesSales, this.salesFormIdTempId);
         this.disabledAttrSalesChildForm(formInfo);
         //end of child form
         this.subChangeForForm(this.salesFormIdTempId);
-        if (!this.subs['imageSku_fileUpload']) {
-          let sub = this.fis.formGroupCollection[this.attrSalesFormId].get('imageSku').valueChanges.subscribe((next) => { this.uploadFileSku(next, undefined) })
-          this.subs['imageSku_fileUpload'] = sub;
-          this.subscriptions.add(sub)
-        }
       } else {
         this.fis.add(this.attrSalesFormId);
         this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder_' + (index - 1)).setValue(sku.storageOrder);
         this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual_' + (index - 1)).setValue(sku.storageActual);
         this.fis.formGroupCollection[this.attrSalesFormId].get('price_' + (index - 1)).setValue(sku.price);
         this.fis.formGroupCollection[this.attrSalesFormId].get('sales_' + (index - 1)).setValue(sku.sales);
-        sku.imageSkuUrl && this.fis.formGroupCollection[this.attrSalesFormId].get('imageSkuUrl_' + (index - 1)).setValue(sku.imageSkuUrl);
-        if (!this.subs['imageSku_fileUpload_' + (index - 1)]) {
-          let sub = this.fis.formGroupCollection[this.attrSalesFormId].get('imageSku_' + (index - 1)).valueChanges.subscribe((next) => { this.uploadFileSku(next, (index - 1)) })
-          this.subs['imageSku_fileUpload_' + (index - 1)] = sub;
-          this.subscriptions.add(sub)
-        }
         //start of child form
         let formId = this.salesFormIdTempId + '_' + (index - 1);
 
@@ -380,7 +368,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       let suffix = ctrlName.replace('storageOrder', '');
       var1.attributesSales = this.getAddedAttrs(this.salesFormIdTempId + suffix);
       var1.price = this.fis.formGroupCollection[this.attrSalesFormId].get('price' + suffix).value;
-      var1.imageSkuUrl = this.fis.formGroupCollection[this.attrSalesFormId].get('imageSkuUrl' + suffix).value;
       if (!this.productDetail) {
         var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
         var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
@@ -442,11 +429,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   private uploadFile(files: FileList) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
       this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
-    })
-  }
-  private uploadFileSku(files: FileList, index: number) {
-    this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[this.formId].get('imageSkuUrl' + hasValue(index) ? '_' + index : '').setValue(next)
     })
   }
   public loadAttributes(attr: ICatalogCustomer) {
