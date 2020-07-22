@@ -204,5 +204,7 @@ export const zhHans = {
     "UNAVAILABLE": "已下架",
     "UPDATE_PROD_CONFIRM_MSG": "确定更改商品状态",
     "CONFIG_START_DATE": "上架日期(示例 21/07/2020, 18:42:21)",
+    "SKU_IMAGE_URL": "展示图片链接",
+    "UPLOAD_SKU_IMAGE": "上传展示图片",
     "": "",
 }

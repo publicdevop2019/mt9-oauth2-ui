@@ -29,6 +29,7 @@ export interface ISku {
   attributesSales: string[];
   storageOrder?: number;
   storageActual?: number;
+  imageSkuUrl?: string;
   price: number;
   sales?: number;
   increaseOrderStorage?: number;

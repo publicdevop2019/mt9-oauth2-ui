@@ -199,5 +199,7 @@ export const enUS = {
     "UNAVAILABLE": "Unavailable",
     "UPDATE_PROD_CONFIRM_MSG": "Please confirm this change",
     "CONFIG_START_DATE": "Start at",
+    "SKU_IMAGE_URL": "Display image url",
+    "UPLOAD_SKU_IMAGE": "Upload display image",
     "": "",
 }
