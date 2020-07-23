@@ -201,5 +201,6 @@ export const enUS = {
     "CONFIG_START_DATE": "Start at",
     "SKU_IMAGE_URL": "Display image url",
     "UPLOAD_SKU_IMAGE": "Upload display image",
+    "PRODUCT_ATTR_SALE_IMAGE_URLS": "Attribute sales image urls",
     "": "",
 }

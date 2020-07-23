@@ -9,11 +9,11 @@ import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
-import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
+import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS, ATTR_SALE_FORM_CONFIG_IMAGE } from 'src/app/form-configs/product.config';
 import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService } from 'src/app/services/product.service';
+import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IAttrImage } from 'src/app/services/product.service';
 import { getLabel, getLayeredLabel, hasValue } from 'src/app/clazz/utility';
 
 @Component({
@@ -37,6 +37,9 @@ export class ProductComponent implements OnInit, OnDestroy {
   attrGeneralFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_GEN_FORM_CONFIG));
   attrGeneralFormInfoI18n: IForm;
   validator: ValidateHelper;
+  imageAttrSaleFormId = 'productAttrSaleImage';
+  imageAttrSaleChildFormId = 'imageChildForm';
+  imageAttrSaleFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_SALE_FORM_CONFIG_IMAGE));
   imageFormId = 'product_image';
   imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
   imageFormvalidator: ValidateHelper;
@@ -52,6 +55,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private prodFormCreatedOb: Observable<string>;
   private salesFormCreatedOb: Observable<string>;
   private genFormCreatedOb: Observable<string>;
+  private imgAttrSaleFormCreatedOb: Observable<string>;
   constructor(
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
@@ -76,6 +80,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.prodFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrProdFormId));
     this.salesFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrSalesFormId));
     this.genFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrGeneralFormId));
+    this.imgAttrSaleFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleFormId));
     let sub0 = this.formCreatedOb.subscribe(() => {
       if (this.productDetail) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
@@ -90,7 +95,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       } else {
         this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
           if (next === 'AVAILABLE') {
-            this.fis.formGroupCollection[this.formId].get('startAt').setValue(new Date().valueOf())
+            this.fis.formGroupCollection[this.formId].get('startAt').setValue(new Date().toLocaleString())
             this.formInfo.inputs.find(e => e.key === 'startAt').display = false;
           } else {
             this.fis.formGroupCollection[this.formId].get('startAt').setValue('')
@@ -108,7 +113,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       // load attribute first then initialize form
       this.updateFormInfoOptions(next.data);
       this.attrList = next.data;
-      return combineLatest(this.prodFormCreatedOb, this.salesFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
+      return combineLatest(this.prodFormCreatedOb, this.salesFormCreatedOb, this.genFormCreatedOb, this.imgAttrSaleFormCreatedOb).pipe(take(1))
     })).subscribe(() => {
       if (!this.productDetail) {
         this.subChangeForForm(this.salesFormIdTempId);
@@ -124,14 +129,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.updateAndSubSalesForm(this.productDetail.skus);
         }
         if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
-          this.productDetail.imageUrlLarge.forEach((url, index) => {
-            if (index === 0) {
-              this.fis.formGroupCollection[this.imageFormId].get('imageUrl').setValue(url);
-            } else {
-              this.fis.add(this.imageFormId);
-              this.fis.formGroupCollection[this.imageFormId].get('imageUrl_' + (index - 1)).setValue(url);
-            }
-          })
+          this.updateImageForm(this.imageFormId, this.productDetail.imageUrlLarge)
         }
         if (this.productDetail.selectedOptions && this.productDetail.selectedOptions.length !== 0) {
           this.productDetail.selectedOptions.forEach((option, index) => {
@@ -154,7 +152,27 @@ export class ProductComponent implements OnInit, OnDestroy {
             }
           });
         }
+        if (this.productDetail.attributeSaleImages && this.productDetail.attributeSaleImages.length !== 0) {
+          let attrs = this.productDetail.attributeSaleImages.map(e => e.attributeSales)
+          this.updateValueForForm(attrs, this.imageAttrSaleFormId);
+
+          this.productDetail.attributeSaleImages.forEach((e, index) => {
+            if (index === 0) {
+              this.updateImageForm(this.imageAttrSaleChildFormId, e.imageUrls)
+            } else {
+              let formId = this.imageAttrSaleChildFormId + '_' + (index - 1);
+              let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
+              let sub = childFormCreated.subscribe(() => {
+                this.updateImageForm(formId, e.imageUrls)
+                this.fis.$refresh.next();
+              });
+              this.subs[formId + '_formCreate'] = sub;
+              this.subscriptions.add(sub)
+            }
+          })
+        }
       }
+      this.subChangeForForm(this.imageAttrSaleFormId);
       this.subChangeForForm(this.attrProdFormId);
       this.subChangeForForm(this.attrGeneralFormId);
       // when add new child form sub for value chage if no sub
@@ -182,6 +200,16 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.subscriptions.add(sub1)
       this.subscriptions.add(sub2)
       this.subscriptions.add(sub3)
+    })
+  }
+  private updateImageForm(formId: string, urls: string[]) {
+    urls.forEach((url, index) => {
+      if (index === 0) {
+        this.fis.formGroupCollection[formId].get('imageUrl').setValue(url);
+      } else {
+        this.fis.add(formId);
+        this.fis.formGroupCollection[formId].get('imageUrl_' + (index - 1)).setValue(url);
+      }
     })
   }
   private updateChildFormProductOption(option: IProductOptions, childFormId: string) {
@@ -257,6 +285,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.attrProdFormInfo.inputs[0].options = attrs.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
     this.attrGeneralFormInfo.inputs[0].options = attrs.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
     this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
+    this.imageAttrSaleFormInfo.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
   }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe()
@@ -311,6 +340,12 @@ export class ProductComponent implements OnInit, OnDestroy {
         e.label = res;
       });
     })
+    this.imageAttrSaleFormInfo.inputs.filter(e => e.label).forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
     //nested form
     this.optionFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
@@ -319,6 +354,12 @@ export class ProductComponent implements OnInit, OnDestroy {
       });
     })
     this.attrSalesFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
+      this.translate.get(e.label).subscribe((res: string) => {
+        this.transKeyMap.set(e.key, e.label);
+        e.label = res;
+      });
+    })
+    this.imageAttrSaleFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
       this.translate.get(e.label).subscribe((res: string) => {
         this.transKeyMap.set(e.key, e.label);
         e.label = res;
@@ -347,7 +388,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   convertToPayload(): IProductDetail {
     let formGroup = this.fis.formGroupCollection[this.formId];
     let valueSnapshot = this.fis.formGroupCollection[this.imageFormId].value;
-    let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string);
+    let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string).filter(e => e !== '');
     let selectedOptions: IProductOptions[] = [];
     Object.keys(this.fis.formGroupCollection[this.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((ctrlName) => {
       let var1 = <IProductOptions>{};
@@ -395,6 +436,17 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
       skusCalc.push(var1)
     });
+    let attrSaleImages = [];
+    if (this.hasAttrsForCtrl()) {
+      Object.keys(this.fis.formGroupCollection[this.imageAttrSaleFormId].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
+        let var1 = <IAttrImage>{};
+        var1.attributeSales = this.getAddedAttrsForCtrl(ctrlName)
+        let append = ctrlName.replace('attributeId', '');
+        let childFormValue = this.fis.formGroupCollection[this.imageAttrSaleChildFormId + append].value;
+        var1.imageUrls = Object.keys(childFormValue).map(e => childFormValue[e] as string).filter(e => e !== '');;
+        attrSaleImages.push(var1)
+      });
+    }
     return {
       id: formGroup.get('id').value,
       attributesKey: formGroup.get('attributesKey').value,
@@ -407,7 +459,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
       skus: skusCalc,
       endAt: formGroup.get('endAt').value ? this.parseDate(formGroup.get('endAt').value) : undefined,
-      startAt: formGroup.get('startAt').value ? this.parseDate(formGroup.get('startAt').value) : undefined
+      startAt: formGroup.get('startAt').value ? this.parseDate(formGroup.get('startAt').value) : undefined,
+      attributeSaleImages: attrSaleImages
     }
   }
   parseDate(value: string): number {
@@ -458,6 +511,21 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
       return selected.id + ':' + attrValue
     });
+  }
+  private getAddedAttrsForCtrl(ctrlName: string): string {
+    let selected = this.attrList.find(e => String(e.id) === this.fis.formGroupCollection[this.imageAttrSaleFormId].get(ctrlName).value);
+    let append = ctrlName.replace('attributeId', '');
+    let attrValue: string;
+    if (selected.method === 'SELECT') {
+      attrValue = this.fis.formGroupCollection[this.imageAttrSaleFormId].get('attributeValueSelect' + append).value;
+    } else {
+      attrValue = this.fis.formGroupCollection[this.imageAttrSaleFormId].get('attributeValueManual' + append).value;
+    }
+    return selected.id + ':' + attrValue
+  }
+  private hasAttrsForCtrl(): boolean {
+    let attrFormValue = this.fis.formGroupCollection[this.imageAttrSaleFormId].value;
+    return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
   }
   private updateValueForForm(attrs: string[], formId: string) {
     attrs.forEach((attr, index) => {

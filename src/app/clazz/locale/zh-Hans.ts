@@ -206,5 +206,6 @@ export const zhHans = {
     "CONFIG_START_DATE": "上架日期(示例 21/07/2020, 18:42:21)",
     "SKU_IMAGE_URL": "展示图片链接",
     "UPLOAD_SKU_IMAGE": "上传展示图片",
+    "PRODUCT_ATTR_SALE_IMAGE_URLS": "销售规格展示图片",
     "": "",
 }

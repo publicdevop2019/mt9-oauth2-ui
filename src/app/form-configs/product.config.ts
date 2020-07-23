@@ -147,6 +147,69 @@ export const FORM_CONFIG_IMAGE: IForm = {
     ],
 }
 
+export const ATTR_SALE_FORM_CONFIG_IMAGE: IForm = {
+    "repeatable": true,
+    "inputs": [
+        {
+            "type": "select",
+            "display": true,
+            "label": "SELECT_AN_SALES_ATTRIBUTE",
+            "key": "attributeId",
+            "options":[],
+            "position": {
+                "row": "0",
+                "column": "0"
+            }
+        },
+        {
+            "type": "select",
+            "display": false,
+            "label": "SELECT_AN_ATTRIBUTE_VALUE",
+            "key": "attributeValueSelect",
+            "options":[],
+            "position": {
+                "row": "0",
+                "column": "1"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_AN_ATTRIBUTE_VALUE",
+            "key": "attributeValueManual",
+            "position": {
+                "row": "0",
+                "column": "1"
+            }
+        },
+        {
+            "type": "form",
+            "display": true,
+            "label": "",
+            "key": "imageChildForm",
+            "form": {
+                "repeatable": true,
+                "inputs": [
+                    {
+                        "type": "text",
+                        "display": true,
+                        "label": "ENTER_IMAGE_URL",
+                        "key": "imageUrl",
+                        "position": {
+                            "row": "0",
+                            "column": "0"
+                        }
+                    },
+                ]
+            },
+            "position": {
+                "row": "1",
+                "column": "0"
+            }
+        },
+    ],
+}
+
 export const FORM_CONFIG_OPTIONS: IForm = {
     "repeatable": true,
     "inputs": [

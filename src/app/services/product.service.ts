@@ -47,9 +47,14 @@ export interface IProductDetail {
   specification?: string[];
   attributesProd?: string[];
   attributesGen?: string[];
+  attributeSaleImages?: IAttrImage[]
   skus: ISku[];
   endAt?: number,
   startAt?: number,
+}
+export interface IAttrImage {
+  attributeSales: string,
+  imageUrls: string[]
 }
 @Injectable({
   providedIn: 'root'
@@ -81,6 +86,7 @@ export class ProductService {
     return this.httpProxy.getProductDetail(id)
   }
   create(product: IProductDetail) {
+    console.dir(product)
     this.httpProxy.createProduct(product).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
