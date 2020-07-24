@@ -202,5 +202,6 @@ export const enUS = {
     "SKU_IMAGE_URL": "Display image url",
     "UPLOAD_SKU_IMAGE": "Upload display image",
     "PRODUCT_ATTR_SALE_IMAGE_URLS": "Attribute sales image urls",
+    "HAS_SKU": "Has Sku",
     "": "",
 }

@@ -66,7 +66,7 @@ export const zhHans = {
     "ENTER_PRODUCT_OPTION_TITLE": "输入产品选项名称",
     "ENTER_OPTION_VALUE": "输入产品选项值",
     "ENTER_OPTION_PRICE_CHANGE": "输入产品选项价格变化",
-    "PRODUCT_IMAGE_URLS": "产品图片",
+    "PRODUCT_IMAGE_URLS": "产品详情图片",
     "PRODUCT_OPTION(S)": "产品选项",
     "BACK": "返回",
     "CREATE": "创建",
@@ -207,5 +207,6 @@ export const zhHans = {
     "SKU_IMAGE_URL": "展示图片链接",
     "UPLOAD_SKU_IMAGE": "上传展示图片",
     "PRODUCT_ATTR_SALE_IMAGE_URLS": "销售规格展示图片",
+    "HAS_SKU": "设置最小存货单位",
     "": "",
 }

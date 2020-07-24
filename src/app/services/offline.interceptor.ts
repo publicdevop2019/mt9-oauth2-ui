@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 import { IAuthorizeCode } from '../interfaze/commom.interface';
 import { mockFilters } from 'src/assets/mock-filters';
 import { mockFilter } from 'src/assets/mock-filter';
+import { mockProductDetailsNoSku } from 'src/assets/mock-product-detail-no-sku';
 /**
  * use refresh token if call failed
  */
@@ -40,7 +41,8 @@ export class OfflineInterceptor implements HttpInterceptor {
           return of(new HttpResponse({ status: 200, body: mockAttr })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('/admin/productDetails/')) {
-          return of(new HttpResponse({ status: 200, body: mockProductDetail })).pipe(delay(this.DEFAULT_DELAY))
+          return of(new HttpResponse({ status: 200, body: mockProductDetailsNoSku })).pipe(delay(this.DEFAULT_DELAY))
+          // return of(new HttpResponse({ status: 200, body: mockProductDetail })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('admin/productDetails')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))

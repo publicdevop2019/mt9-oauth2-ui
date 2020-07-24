@@ -13,12 +13,14 @@
         <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
         <h3>{{'PRODUCT_IMAGE_URLS'|translate}}</h3>
         <lib-factory [formId]="imageFormId" [formInfo]="imageFormInfo"></lib-factory>
-        <h3>{{'PRODUCT_ATTR_SALE_IMAGE_URLS'|translate}}</h3>
-        <lib-factory *ngIf="attrList" [formId]="imageAttrSaleFormId" [formInfo]="imageAttrSaleFormInfo"></lib-factory>
+        <ng-container *ngIf="hasSku">
+            <h3>{{'PRODUCT_ATTR_SALE_IMAGE_URLS'|translate}}</h3>
+            <lib-factory *ngIf="attrList" [formId]="imageAttrSaleFormId" [formInfo]="imageAttrSaleFormInfo"></lib-factory>
+        </ng-container>
         <h3>{{'PRODUCT_OPTION(S)'|translate}}</h3>
         <lib-factory [formId]="optionFormId" [formInfo]="optionFormInfo"></lib-factory>
     </mat-step>
-    <mat-step>
+    <mat-step *ngIf="hasSku">
         <ng-template matStepLabel>{{'ADD_SALES_ATTRIBUTES' | translate}}</ng-template>
         <ng-container *ngIf="attrList">
             <lib-factory [formId]="attrSalesFormId" [formInfo]="attrSalesFormInfo"></lib-factory>

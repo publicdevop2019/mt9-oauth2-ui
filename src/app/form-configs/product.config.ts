@@ -127,6 +127,106 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
         },
+        {
+            "type": "radio",
+            "display": true,
+            "label": "HAS_SKU",
+            "key": "hasSku",
+            "position": {
+                "row": "10",
+                "column": "0"
+            },
+            "options": [
+                { label: 'YES', value: "YES" },
+                { label: 'NO', value: "NO" },
+            ],
+            "attributes": [
+                {
+                    "type": "required",
+                    "errorMsg": "field cannot be empty"
+                }
+            ]
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_INITIAL_ORDER_STORAGE",
+            "key": "storageOrder",
+            "position": {
+                "row": "11",
+                "column": "0"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_ORDER_STORAGE_INCREASE_AMOUNT",
+            "key": "storage_OrderIncreaseBy",
+            "position": {
+                "row": "11",
+                "column": "1"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_ORDER_STORAGE_DECREASE_AMOUNT",
+            "key": "storage_OrderDecreaseBy",
+            "position": {
+                "row": "11",
+                "column": "2"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_INITIAL_ACTUAL_STORAGE",
+            "key": "storageActual",
+            "position": {
+                "row": "12",
+                "column": "0"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_ACTUAL_STORAGE_INCREASE_AMOUNT",
+            "key": "storage_ActualIncreaseBy",
+            "position": {
+                "row": "12",
+                "column": "1"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_ACTUAL_STORAGE_DECREASE_AMOUNT",
+            "key": "storage_ActualDecreaseBy",
+            "position": {
+                "row": "12",
+                "column": "2"
+            }
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_PRICE",
+            "key": "price",
+            "position": {
+                "row": "13",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ENTER_SALES",
+            "key": "sales",
+            "position": {
+                "row": "14",
+                "column": "0"
+            },
+        },
     ],
 }
 

@@ -37,7 +37,7 @@ export interface ISku {
   decreaseActualStorage?: number;
 }
 export interface IProductDetail {
-  id: string;
+  id: number;
   name: string;
   imageUrlSmall: string;
   description: string;
@@ -48,9 +48,17 @@ export interface IProductDetail {
   attributesProd?: string[];
   attributesGen?: string[];
   attributeSaleImages?: IAttrImage[]
-  skus: ISku[];
+  skus?: ISku[];
   endAt?: number,
   startAt?: number,
+  storageOrder?: number;
+  storageActual?: number;
+  price?: number;
+  sales?: number;
+  increaseOrderStorage?: number;
+  decreaseOrderStorage?: number;
+  increaseActualStorage?: number;
+  decreaseActualStorage?: number;
 }
 export interface IAttrImage {
   attributeSales: string,
@@ -86,7 +94,6 @@ export class ProductService {
     return this.httpProxy.getProductDetail(id)
   }
   create(product: IProductDetail) {
-    console.dir(product)
     this.httpProxy.createProduct(product).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
