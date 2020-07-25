@@ -5,6 +5,7 @@ import { ActivatedRouteSnapshot, ActivatedRoute, Router } from '@angular/router'
 import { MatSidenav } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { DeviceService } from 'src/app/services/device.service';
 export interface INavElement {
   link: string;
   icon?: string;
@@ -53,6 +54,13 @@ export class NavBarComponent implements OnInit {
       link: 'updatePwd',
       display: 'UPDATE_PASSWORD',
       icon: 'vpn_key',
+      params: {
+      },
+    },
+    {
+      link: 'settings',
+      display: 'SYSTEM_SETTINGS',
+      icon: 'settings',
       params: {
       },
     },
@@ -164,7 +172,7 @@ export class NavBarComponent implements OnInit {
   ];
   private _mobileQueryListener: () => void;
   @ViewChild("snav", { static: true }) snav: MatSidenav;
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, private breakpointObserver: BreakpointObserver, public translate: TranslateService) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, public translate: TranslateService,public deviceSvc:DeviceService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -184,24 +192,5 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit() {
   }
-  public toggleLang() {
-    if (this.translate.currentLang === 'enUS') {
-      this.translate.use('zhHans')
-      this.translate.get('DOCUMENT_TITLE').subscribe(
-        next => {
-          document.title = next
-          document.documentElement.lang = 'zh-Hans'
-        }
-      )
-    }
-    else {
-      this.translate.use('enUS')
-      this.translate.get('DOCUMENT_TITLE').subscribe(
-        next => {
-          document.title = next
-          document.documentElement.lang = 'en'
-        }
-      )
-    }
-  }
+  
 }

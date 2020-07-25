@@ -203,5 +203,7 @@ export const enUS = {
     "UPLOAD_SKU_IMAGE": "Upload display image",
     "PRODUCT_ATTR_SALE_IMAGE_URLS": "Attribute sales image urls",
     "HAS_SKU": "Has Sku",
+    "SYSTEM_SETTINGS":"Settings",
+    "CHANGE_DEFAULT_LANGUAGE": "Default Language",
     "": "",
 }

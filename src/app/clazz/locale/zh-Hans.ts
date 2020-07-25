@@ -208,5 +208,7 @@ export const zhHans = {
     "UPLOAD_SKU_IMAGE": "上传展示图片",
     "PRODUCT_ATTR_SALE_IMAGE_URLS": "销售规格展示图片",
     "HAS_SKU": "设置最小存货单位",
+    "SYSTEM_SETTINGS":"设置",
+    "CHANGE_DEFAULT_LANGUAGE": "默认语言",
     "": "",
 }

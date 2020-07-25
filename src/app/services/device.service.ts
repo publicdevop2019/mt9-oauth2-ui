@@ -6,7 +6,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 export class DeviceService {
     private summaryRow = 48;
     private optionalVerticalScrollbar = 48;
-    private topBar = 64;
+    public topBar = 48;
     private contentTitle = 74.81;
     private contentTitleFilter = 65.5;
     private summaryRowHeader = 56;

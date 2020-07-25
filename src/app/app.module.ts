@@ -55,6 +55,7 @@ import { OfflineInterceptor } from './services/offline.interceptor';
 import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
 import { FilterComponent } from './modules/mall/pages/filter/filter.component';
 import { UpdateProdStatusDialogComponent } from './components/update-prod-status-dialog/update-prod-status-dialog.component';
+import { SettingComponent } from './pages/setting/setting.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -93,7 +94,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     DeleteConfirmDialogComponent,
     SummaryFilterComponent,
     FilterComponent,
-    UpdateProdStatusDialogComponent
+    UpdateProdStatusDialogComponent,
+    SettingComponent
   ],
   imports: [
     BrowserAnimationsModule,

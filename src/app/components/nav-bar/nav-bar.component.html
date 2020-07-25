@@ -1,11 +1,8 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
-    <mat-toolbar color="primary" class="example-toolbar" style="justify-content: space-between;">
+    <mat-toolbar color="primary" class="example-toolbar" style="justify-content: space-between;" [style.height.px]="deviceSvc.topBar">
         <button mat-icon-button (click)="snav.toggle();">
             <mat-icon>{{snav.opened?'menu_open':'menu'}}</mat-icon>
         </button>
-        <mat-slide-toggle class="example-margin" [color]="'accent'" [checked]="'false'" (change)="snav.close();toggleLang()">
-            {{'CURRENT_LANG' | translate}}
-        </mat-slide-toggle>
     </mat-toolbar>
 
     <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
