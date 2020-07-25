@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
@@ -73,6 +73,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     let sub = this.productSvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss();
     })
+    let keys = ['storageActual', 'storageOrder', 'price', 'sales']
     this.subs['closeSheet'] = sub;
     this.subscriptions.add(sub)
     this.productDetail = data as IProductDetail;
@@ -86,7 +87,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.imgAttrSaleFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleFormId));
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
-    let sub0 = this.formCreatedOb.subscribe(() => {
+    let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
       if (this.productDetail) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
         this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
@@ -98,7 +99,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.formInfo.inputs.find(e => e.key === 'status').display = false;
         this.formInfo.inputs.find(e => e.key === 'startAt').display = true;
       } else {
-        this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
+        let sub = this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
           if (next === 'AVAILABLE') {
             this.fis.formGroupCollection[this.formId].get('startAt').setValue(new Date().toLocaleString())
             this.formInfo.inputs.find(e => e.key === 'startAt').display = false;
@@ -107,12 +108,12 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.formInfo.inputs.find(e => e.key === 'startAt').display = true;
           }
         })
+        this.subscriptions.add(sub);
       }
       let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
         this.loadAttributes(this.catalogs.data.find(e => e.id === +next))
       })
       let sub2 = this.fis.formGroupCollection[this.formId].get('hasSku').valueChanges.subscribe(next => {
-        let keys = ['storageActual', 'storageOrder', 'price', 'sales']
         if (next === 'YES') {
           this.hasSku = true;
           this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = false);
@@ -128,12 +129,14 @@ export class ProductComponent implements OnInit, OnDestroy {
       // load attribute first then initialize form
       this.updateFormInfoOptions(next.data);
       this.attrList = next.data;
+      this.changeDecRef.markForCheck() // this is required to initialize all forms
       return combineLatest(this.prodFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
     })).subscribe(() => {
       if (!this.productDetail) {
-        this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
+        let sub = this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
           this.subChangeForForm(this.salesFormIdTempId);
         })
+        this.subscriptions.add(sub)
       } else {
         if (this.productDetail.attributesProd) {
           this.updateValueForForm(this.productDetail.attributesProd, this.attrProdFormId);
@@ -143,19 +146,22 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
         if (this.productDetail.skus && this.productDetail.skus.length > 0) {
           this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
-          this.fis.formGroupCollection[this.formId].get('hasSku').setValue('YES')
+          this.fis.formGroupCollection[this.formId].get('hasSku').setValue('YES', { emitEvent: false });
+          this.hasSku = true;
+          this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = false);
           this.salesFormCreatedOb.pipe(take(1)).subscribe(() => {
             this.updateAndSubSalesForm(this.productDetail.skus);
-          })
+          });
         } else {
-          this.fis.formGroupCollection[this.formId].get('hasSku').setValue('NO');
+          this.fis.formGroupCollection[this.formId].get('hasSku').setValue('NO', { emitEvent: false });
+          this.hasSku = false;
+          this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = true);
           this.fis.formGroupCollection[this.formId].get('price').setValue(this.productDetail.price)
           this.fis.formGroupCollection[this.formId].get('sales').setValue(this.productDetail.sales)
           this.fis.formGroupCollection[this.formId].get('storageOrder').setValue(this.productDetail.storageOrder)
           this.fis.formGroupCollection[this.formId].get('storageActual').setValue(this.productDetail.storageActual)
           this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.formId]);
           this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.formId]);
-          this.fis.$refresh.next();
         }
         if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
           this.updateImageForm(this.imageFormId, this.productDetail.imageUrlLarge)
@@ -230,12 +236,12 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
       let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) })
       this.subs['imageUrlSmallFile_valueChange'] = sub3;
-      this.subs[this.formId + '_formCreate'] = sub0;
-      this.subs['getAttributeList_http'] = sub1;
-      this.subscriptions.add(sub0)
-      this.subscriptions.add(sub1)
       this.subscriptions.add(sub3)
     })
+    this.subs['getAttributeList_http'] = sub1;
+    this.subs[this.formId + '_formCreate'] = sub0;
+    this.subscriptions.add(sub0)
+    this.subscriptions.add(sub1)
   }
   private updateImageForm(formId: string, urls: string[]) {
     urls.forEach((url, index) => {
@@ -269,7 +275,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.attrSalesFormId].get('sales').setValue(sku.sales);
         //start of child form
         let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
-        this.salesFormIdTempFormCreatedOb.subscribe(()=>{
+        this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
           this.updateValueForForm(sku.attributesSales, this.salesFormIdTempId);
           this.subChangeForForm(this.salesFormIdTempId);
         })
