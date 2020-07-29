@@ -12,5 +12,6 @@ export const mockFilters = {
                 "835577139191808"
             ]
         }
-    ]
+    ],
+    "totalProductCount": 2
 }

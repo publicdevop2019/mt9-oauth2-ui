@@ -13,7 +13,6 @@ export interface IBizAttribute {
 }
 export interface IAttributeHttp {
   data: IBizAttribute[];
-  totalPageCount: number,
   totalItemCount: number,
 }
 @Injectable({

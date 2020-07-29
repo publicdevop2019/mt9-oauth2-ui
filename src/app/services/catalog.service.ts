@@ -19,7 +19,6 @@ export interface ICatalogCustomerTreeNode {
 }
 export interface ICatalogCustomerHttp {
   data: ICatalogCustomer[],
-  totalPageCount: number,
   totalItemCount: number,
 }
 @Injectable({

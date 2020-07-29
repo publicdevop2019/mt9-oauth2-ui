@@ -19,7 +19,6 @@ export interface IFilterSummary {
 }
 export interface IFilterSummaryNet {
   data: IFilterSummary[];
-  totalPageCount: number,
   totalItemCount: number,
 }
 @Injectable({

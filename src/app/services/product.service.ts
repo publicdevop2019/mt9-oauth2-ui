@@ -5,7 +5,6 @@ import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IProductTotalResponse {
   data: IProductSimple[],
-  totalPageCount: number,
   totalItemCount: number,
 }
 export interface IProductSimple {

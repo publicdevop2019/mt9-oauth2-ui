@@ -69,7 +69,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     this.fis.reset(this.formId);
   }
   ngAfterViewInit(): void {
-    this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
+    let sub = this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
       this.viewType = e.view;
       if (this.viewType === 'TREE_VIEW') {
         if (this.catalogType === 'frontend') {
@@ -93,7 +93,8 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
         }
       }
     });
-    this.fis.formGroupCollection[this.formId].get('view').setValue(this.viewType);
+    this.subs.add(sub)
+    this.fis.formGroupCollection[this.formId].get('view').setValue(this.viewType, { onlySelf: true });
   }
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
