@@ -19,6 +19,7 @@ export class SummaryFilterComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   private subs: Subscription = new Subscription()
   private fronCatalog: ICatalogCustomer[]
+  totoalItemCount: number;
   constructor(
     public filterSvc: FilterService,
     public deviceSvc: DeviceService,
@@ -39,9 +40,8 @@ export class SummaryFilterComponent implements OnInit {
     this.subs.unsubscribe()
   }
   updateSummaryData(next: IFilterSummaryNet) {
-    this.dataSource = new MatTableDataSource(next.data)
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+    this.dataSource = new MatTableDataSource(next.data);
+    this.totoalItemCount = next.totalItemCount;
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();

@@ -21,7 +21,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'priceList', 'sales', 'status', 'expireDate', 'edit', 'delete'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
-  totoalProductCount = 0;
+  totoalItemCount = 0;
   pageSizeOffset = 4;
   private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -126,10 +126,10 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   private totalProductHandler(products: IProductTotalResponse) {
     if (products.data) {
       this.dataSource = new MatTableDataSource(products.data);
-      this.totoalProductCount = products.totalProductCount;
+      this.totoalItemCount = products.totalItemCount;
     } else {
       this.dataSource = new MatTableDataSource([]);
-      this.totoalProductCount = 0;
+      this.totoalItemCount = 0;
     }
   }
   private invalidSearchParam(input: string): boolean {

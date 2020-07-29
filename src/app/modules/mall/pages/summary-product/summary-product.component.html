@@ -102,5 +102,5 @@
     </div>
     <mat-paginator [showFirstLastButtons]="true" [pageIndex]="productSvc.currentPageIndex"
         [pageSize]="(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1"
-        [length]="totoalProductCount" (page)="pageHandler($event)"></mat-paginator>
+        [length]="totoalItemCount" (page)="pageHandler($event)"></mat-paginator>
 </div>

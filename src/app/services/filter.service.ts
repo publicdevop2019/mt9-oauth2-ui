@@ -18,7 +18,9 @@ export interface IFilterSummary {
   catalogs: string[]
 }
 export interface IFilterSummaryNet {
-  data: IFilterSummary[]
+  data: IFilterSummary[];
+  totalPageCount: number,
+  totalItemCount: number,
 }
 @Injectable({
   providedIn: 'root'

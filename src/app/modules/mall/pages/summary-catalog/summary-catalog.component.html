@@ -48,7 +48,7 @@
         </div>
 
         <mat-paginator [pageIndex]="catalogSvc.currentPageIndex" [showFirstLastButtons]="true"
-            [length]="99"
+            [length]="totoalItemCount"
             [pageSize]="[(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1 ]"
             (page)="pageHandler($event)">
         </mat-paginator>

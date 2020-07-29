@@ -12,7 +12,9 @@ export interface IBizAttribute {
   type: 'PROD_ATTR' | 'SALES_ATTR' | 'KEY_ATTR' | 'GEN_ATTR'
 }
 export interface IAttributeHttp {
-  data: IBizAttribute[]
+  data: IBizAttribute[];
+  totalPageCount: number,
+  totalItemCount: number,
 }
 @Injectable({
   providedIn: 'root'

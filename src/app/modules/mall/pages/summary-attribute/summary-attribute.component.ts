@@ -17,6 +17,7 @@ export class SummaryAttributeComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   private subs: Subscription = new Subscription()
+  totoalItemCount: number;
   constructor(
     public attrSvc: AttributeService,
     public deviceSvc: DeviceService,
@@ -31,7 +32,8 @@ export class SummaryAttributeComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe()
   }
   updateSummaryData(next: IAttributeHttp) {
-    this.dataSource = new MatTableDataSource(next.data)
+    this.dataSource = new MatTableDataSource(next.data);
+    this.totoalItemCount = next.totalItemCount;
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();

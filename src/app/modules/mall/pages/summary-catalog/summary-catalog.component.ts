@@ -33,6 +33,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   pageSizeOffset = 2;
   public catalogsData: ICatalogCustomer[];
   private subs: Subscription = new Subscription()
+  totoalItemCount: number;
   constructor(
     public catalogSvc: CategoryService,
     private fis: FormInfoService,
@@ -56,10 +57,11 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     this.subs.add(sub)
     this.subs.add(sub0)
   }
-  updateSummaryData(catalogs: ICatalogCustomerHttp) {
-    this.dataSource = new MatTableDataSource(catalogs.data)
-    if (catalogs.data) {
-      this.catalogsData = catalogs.data;
+  updateSummaryData(next: ICatalogCustomerHttp) {
+    this.dataSource = new MatTableDataSource(next.data)
+    if (next.data) {
+      this.catalogsData = next.data;
+      this.totoalItemCount = next.totalItemCount;
     }
   }
   ngOnDestroy(): void {

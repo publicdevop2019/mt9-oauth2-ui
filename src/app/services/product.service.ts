@@ -6,7 +6,7 @@ import { CustomHttpInterceptor } from './http.interceptor';
 export interface IProductTotalResponse {
   data: IProductSimple[],
   totalPageCount: number,
-  totalProductCount: number,
+  totalItemCount: number,
 }
 export interface IProductSimple {
   id: string;

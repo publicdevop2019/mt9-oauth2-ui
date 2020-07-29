@@ -50,7 +50,7 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="99" 
+    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount" 
         [pageIndex]="attrSvc.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>
