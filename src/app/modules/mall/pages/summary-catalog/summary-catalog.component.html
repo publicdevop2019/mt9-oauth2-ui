@@ -12,15 +12,20 @@
 
     <div class="mat-elevation-z8">
         <div class="table-container">
-            <table mat-table [dataSource]="dataSource" matSort>
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
 
-                <ng-container matColumnDef="name" 　sticky>
+                <ng-container matColumnDef="id" 　sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ID' |translate}}</th>
+                    <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME' |translate}}</th>
                     <td mat-cell *matCellDef="let row"> {{row.name}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="parentId">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PARENT_ID' |translate}}</th>
+                    <th mat-header-cell *matHeaderCellDef> {{'PARENT_ID' |translate}}</th>
                     <td mat-cell *matCellDef="let row"> {{getParenteName(row.parentId)}} </td>
                 </ng-container>
 
@@ -43,8 +48,8 @@
         </div>
 
         <mat-paginator [pageIndex]="catalogSvc.currentPageIndex" [showFirstLastButtons]="true"
-            [length]="dataSource&&dataSource.data.length"
-            [pageSizeOptions]="[(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1 ]"
+            [length]="99"
+            [pageSize]="[(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1 ]"
             (page)="pageHandler($event)">
         </mat-paginator>
     </div>

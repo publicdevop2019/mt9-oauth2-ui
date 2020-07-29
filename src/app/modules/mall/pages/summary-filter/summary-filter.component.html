@@ -6,7 +6,7 @@
 
 <div class="mat-elevation-z8">
 <div class="table-container">
-    <table mat-table [dataSource]="dataSource" matSort>
+    <table mat-table [dataSource]="dataSource" matSort  (matSortChange)="updateTable($event)">
 
         <ng-container matColumnDef="id" 　sticky>
             <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ID'|translate}}</th>
@@ -14,7 +14,7 @@
         </ng-container>
 
         <ng-container matColumnDef="catalogs">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CATALOGS'|translate}}</th>
+            <th mat-header-cell *matHeaderCellDef> {{'CATALOGS'|translate}}</th>
             <td mat-cell *matCellDef="let row"> {{parse(row.catalogs)}} </td>
         </ng-container>
 
@@ -35,7 +35,7 @@
     </table>
 </div>
 
-<mat-paginator [showFirstLastButtons]="true" [length]="dataSource&&dataSource.data.length"
+<mat-paginator [showFirstLastButtons]="true" [length]="99"
     [pageIndex]="filterSvc.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
 </mat-paginator>
 </div>

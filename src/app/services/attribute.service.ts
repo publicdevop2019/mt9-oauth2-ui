@@ -18,9 +18,9 @@ export interface IAttributeHttp {
   providedIn: 'root'
 })
 export class AttributeService {
-  refreshSummary:Subject<void>=new Subject();
-  closeSheet:Subject<void>=new Subject();
-  currentPageIndex: number;
+  refreshSummary: Subject<void> = new Subject();
+  closeSheet: Subject<void> = new Subject();
+  currentPageIndex: number = 0;
   constructor(private httpProxy: HttpProxyService, private _httpInterceptor: CustomHttpInterceptor) {
 
   }
@@ -29,8 +29,8 @@ export class AttributeService {
       return of(els.data.find(el => el.id === id))
     }))
   }
-  getAttributeList(): Observable<IAttributeHttp> {
-    return this.httpProxy.getAttributes()
+  getAttributeList(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<IAttributeHttp> {
+    return this.httpProxy.getAttributes(pageNum, pageSize, sortBy, sortOrder)
   }
   create(attribute: IBizAttribute) {
     this.httpProxy.createAttribute(attribute).subscribe(result => {

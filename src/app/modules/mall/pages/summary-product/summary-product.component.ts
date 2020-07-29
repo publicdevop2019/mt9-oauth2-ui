@@ -1,17 +1,15 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatPaginator, MatSort, MatTableDataSource, PageEvent, MatBottomSheetConfig, MatBottomSheet, MatDialog, MatSlideToggle } from '@angular/material';
+import { MatBottomSheet, MatBottomSheetConfig, MatDialog, MatPaginator, MatSlideToggle, MatTableDataSource, PageEvent, Sort } from '@angular/material';
 import { interval, Subscription } from 'rxjs';
 import { debounce, filter, map, switchMap } from 'rxjs/operators';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
-import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
-import { DeviceService } from 'src/app/services/device.service';
-import { ProductComponent } from '../product/product.component';
 import { hasValue } from 'src/app/clazz/utility';
-import { DeleteConfirmDialogComponent } from 'src/app/components/delete-confirm-dialog/delete-confirm-dialog.component';
 import { UpdateProdStatusDialogComponent } from 'src/app/components/update-prod-status-dialog/update-prod-status-dialog.component';
+import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { DeviceService } from 'src/app/services/device.service';
+import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
 import { isNullOrUndefined } from 'util';
+import { ProductComponent } from '../product/product.component';
 
 @Component({
   selector: 'app-summary-product',
@@ -20,20 +18,19 @@ import { isNullOrUndefined } from 'util';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id', 'name', 'priceList', 'totalSales', 'status', 'expireAt', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'priceList', 'sales', 'status', 'expireDate', 'edit', 'delete'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalProductCount = 0;
   pageSizeOffset = 4;
   private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
   public catalogsData: ICatalogCustomer[];
   constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet, public dialog: MatDialog, private cdr: ChangeDetectorRef) {
     let sub = this.productSvc.refreshSummary.pipe(switchMap(() =>
-      this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize())
+      this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize())
     )).subscribe(next => { this.totalProductHandler(next) })
-    let sub0 = this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
+    let sub0 = this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
     let sub1 = this.categorySvc.getCatalogBackend()
       .subscribe(catalogs => {
         if (catalogs.data)
@@ -119,7 +116,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   pageHandler(e: PageEvent) {
     this.productSvc.currentPageIndex = e.pageIndex;
-    this.productSvc.getAllProduct(this.productSvc.currentPageIndex || 0, this.getPageSize()).subscribe(products => {
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize()).subscribe(products => {
       this.totalProductHandler(products)
     });
   }
@@ -130,15 +127,18 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     if (products.data) {
       this.dataSource = new MatTableDataSource(products.data);
       this.totoalProductCount = products.totalProductCount;
-      this.dataSource.sort = this.sort;
     } else {
       this.dataSource = new MatTableDataSource([]);
       this.totoalProductCount = 0;
-      this.dataSource.sort = this.sort;
     }
   }
   private invalidSearchParam(input: string): boolean {
     let spaces: RegExp = new RegExp(/^\s*$/)
     return !spaces.test(input)
+  }
+  updateTable(sort: Sort) {
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize(), sort.active, sort.direction).subscribe(products => {
+      this.totalProductHandler(products)
+    });
   }
 }

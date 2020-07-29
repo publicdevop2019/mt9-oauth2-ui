@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { IBizAttribute, AttributeService, IAttributeHttp } from 'src/app/services/attribute.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig, Sort } from '@angular/material';
 import { DeviceService } from 'src/app/services/device.service';
 import { AttributeComponent } from '../attribute/attribute.component';
 import { switchMap } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './summary-attribute.component.html',
 })
 export class SummaryAttributeComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['name', 'description', 'value', 'type', 'edit', 'delete'];
+  displayedColumns: string[] = ['id','name', 'description', 'value', 'type', 'edit', 'delete'];
   dataSource: MatTableDataSource<IBizAttribute>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -22,8 +22,8 @@ export class SummaryAttributeComponent implements OnInit, OnDestroy {
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
   ) {
-    let sub = this.attrSvc.refreshSummary.pipe(switchMap(() => this.attrSvc.getAttributeList())).subscribe(next => { this.updateSummaryData(next) })
-    let sub0 = this.attrSvc.getAttributeList().subscribe(next => { this.updateSummaryData(next) })
+    let sub = this.attrSvc.refreshSummary.pipe(switchMap(() => this.attrSvc.getAttributeList(this.attrSvc.currentPageIndex, this.getPageSize()))).subscribe(next => { this.updateSummaryData(next) })
+    let sub0 = this.attrSvc.getAttributeList(this.attrSvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next) })
     this.subs.add(sub)
     this.subs.add(sub0)
   }
@@ -32,8 +32,6 @@ export class SummaryAttributeComponent implements OnInit, OnDestroy {
   }
   updateSummaryData(next: IAttributeHttp) {
     this.dataSource = new MatTableDataSource(next.data)
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
   openBottomSheet(id?: number): void {
     let config = new MatBottomSheetConfig();
@@ -58,6 +56,17 @@ export class SummaryAttributeComponent implements OnInit, OnDestroy {
     }
   }
   pageHandler(e: PageEvent) {
-    this.attrSvc.currentPageIndex = e.pageIndex
+    this.attrSvc.currentPageIndex = e.pageIndex;
+    this.attrSvc.getAttributeList(this.attrSvc.currentPageIndex, this.getPageSize()).subscribe(next => {
+      this.updateSummaryData(next)
+    });
+  }
+  private getPageSize() {
+    return (this.deviceSvc.pageSize) > 0 ? (this.deviceSvc.pageSize) : 1;
+  }
+  updateTable(sort: Sort) {
+    this.attrSvc.getAttributeList(this.attrSvc.currentPageIndex, this.getPageSize(), sort.active, sort.direction).subscribe(next => {
+      this.updateSummaryData(next)
+    });
   }
 }

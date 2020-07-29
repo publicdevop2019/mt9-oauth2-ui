@@ -46,7 +46,7 @@
 
 <div class="mat-elevation-z8" style="margin-bottom: 20px;">
     <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
 
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'ID'|translate}} </th>
@@ -59,23 +59,23 @@
             </ng-container>
 
             <ng-container matColumnDef="priceList">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PRICE_LIST'|translate}} </th>
+                <th mat-header-cell *matHeaderCellDef> {{'PRICE_LIST'|translate}} </th>
                 <td mat-cell *matCellDef="let row"> {{row.priceList}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="totalSales">
+            <ng-container matColumnDef="sales">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'TOTAL_SALES'|translate}}</th>
                 <td mat-cell *matCellDef="let row"> {{row.totalSales}} </td>
             </ng-container>
 
 
-            <ng-container matColumnDef="expireAt">
+            <ng-container matColumnDef="expireDate">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'EXPIREAT'|translate}}</th>
                 <td mat-cell *matCellDef="let row"> {{row.endAt | date:'shortDate'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'AVAILABLE'|translate}}</th>
+                <th mat-header-cell *matHeaderCellDef >{{'AVAILABLE'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
                     <mat-slide-toggle #slide [color]="'primary'" [checked]="isAvaliable(row)" (click)="toggleProductStatus(row,slide)" >
                     </mat-slide-toggle>

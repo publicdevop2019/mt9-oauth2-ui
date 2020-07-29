@@ -26,15 +26,15 @@ export interface IFilterSummaryNet {
 export class FilterService {
   refreshSummary: Subject<void> = new Subject();
   closeSheet: Subject<void> = new Subject();
-  currentPageIndex: number;
+  currentPageIndex: number = 0;
   constructor(private httpProxy: HttpProxyService, private _httpInterceptor: CustomHttpInterceptor) {
 
   }
   getById(id: number): Observable<IFilter> {
     return this.httpProxy.readFilter(id)
   }
-  getAll(): Observable<IFilterSummaryNet> {
-    return this.httpProxy.getAllFilters()
+  getAll(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IFilterSummaryNet> {
+    return this.httpProxy.getAllFilters(pageNum, pageSize, sortBy, sortOrder)
   }
   create(filter: IFilter) {
     this.httpProxy.createFilter(filter).subscribe(result => {

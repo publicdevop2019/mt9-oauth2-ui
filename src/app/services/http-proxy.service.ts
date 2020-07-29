@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { getCookie } from '../clazz/utility';
+import { getCookie, hasValue } from '../clazz/utility';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../interfaze/commom.interface';
 import { IClient } from '../modules/my-apps/interface/client.interface';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
@@ -89,11 +89,11 @@ export class HttpProxyService {
             });
         });
     }
-    getAllFilters(): Observable<IFilterSummaryNet> {
-        return this._httpClient.get<IFilterSummaryNet>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters')
+    getAllFilters(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IFilterSummaryNet> {
+        return this._httpClient.get<IFilterSummaryNet>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder))
     }
-    getAttributes(): Observable<IAttributeHttp> {
-        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes');
+    getAttributes(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<IAttributeHttp> {
+        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
     }
     searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize + '&key=' + keyword);
@@ -136,8 +136,8 @@ export class HttpProxyService {
     getAllPosts(pageNum: number, pageSize: number): Observable<IPostSummary> {
         return this._httpClient.get<IPostSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
-    getAllProducts(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize);
+    getAllProducts(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
     };
     getOrders(): Observable<IOrder[]> {
         return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME + '/orders');
@@ -209,11 +209,11 @@ export class HttpProxyService {
         formData.append('grant_type', 'client_credentials');
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
     };
-    getCatalogFrontendAdmin(): Observable<ICatalogCustomerHttp> {
-        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/frontend/catalogs');
+    getCatalogFrontendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/frontend/catalogs?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
     };
-    getCatalogBackendAdmin(): Observable<ICatalogCustomerHttp> {
-        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/backend/catalogs');
+    getCatalogBackendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/backend/catalogs?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
     };
     createCategory(category: ICatalogCustomer): Observable<boolean> {
         return new Observable<boolean>(e => {
@@ -405,5 +405,22 @@ export class HttpProxyService {
             token: fg.get('token').value,
             newPassword: fg.get('pwd').value,
         };
+    }
+    private getPageParam(pageNumer?: number, pageSize?: number, sortBy?: string, sortOrder?: string): string {
+        let var1: string[] = [];
+        if (hasValue(pageNumer) && hasValue(pageSize)) {
+            if (sortBy && sortOrder) {
+                var1.push('pageNum=' + pageNumer)
+                var1.push('pageSize=' + pageSize)
+                var1.push('sortBy=' + sortBy)
+                var1.push('sortOrder=' + sortOrder)
+                return var1.join('&')
+            } else {
+                var1.push('pageNum=' + pageNumer)
+                var1.push('pageSize=' + pageSize)
+                return var1.join('&')
+            }
+        }
+        return ''
     }
 }

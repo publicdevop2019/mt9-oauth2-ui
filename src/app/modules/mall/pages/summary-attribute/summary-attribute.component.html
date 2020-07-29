@@ -6,20 +6,25 @@
 
 <div class="mat-elevation-z8">
     <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
 
-            <ng-container matColumnDef="name" 　sticky>
+            <ng-container matColumnDef="id" 　sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ID'|translate}}</th>
+                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME'|translate}}</th>
                 <td mat-cell *matCellDef="let row"> {{row.name}} </td>
             </ng-container>
 
             <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'DESCRIPTION'|translate}}</th>
+                <th mat-header-cell *matHeaderCellDef> {{'DESCRIPTION'|translate}}</th>
                 <td mat-cell *matCellDef="let row"> {{row.description|translate}} </td>
             </ng-container>
 
             <ng-container matColumnDef="value">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'VALUE'|translate}}</th>
+                <th mat-header-cell *matHeaderCellDef> {{'VALUE'|translate}}</th>
                 <td mat-cell *matCellDef="let row"> {{row.selectValues}} </td>
             </ng-container>
 
@@ -45,7 +50,7 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource&&dataSource.data.length"
+    <mat-paginator [showFirstLastButtons]="true" [length]="99" 
         [pageIndex]="attrSvc.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

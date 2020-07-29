@@ -76,10 +76,10 @@ export class ProductService {
   }
   refreshSummary: Subject<void> = new Subject();
   closeSheet: Subject<void> = new Subject();
-  currentPageIndex: number;
+  currentPageIndex: number=0;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getAllProduct(pageNum: number, pageSize: number): Observable<IProductTotalResponse> {
-    return this.httpProxy.getAllProducts(pageNum, pageSize)
+  getAllProduct(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IProductTotalResponse> {
+    return this.httpProxy.getAllProducts(pageNum, pageSize, sortBy, sortOrder)
   }
   searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
     return this.httpProxy.searchProductsByTags(pageNum, pageSize, tags)

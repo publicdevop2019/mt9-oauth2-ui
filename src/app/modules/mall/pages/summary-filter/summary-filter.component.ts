@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FilterService, IFilterSummary, IFilterSummaryNet } from 'src/app/services/filter.service';
-import { MatTableDataSource, MatPaginator, MatSort, MatBottomSheet, MatBottomSheetConfig, PageEvent } from '@angular/material';
-import { Subscription, combineLatest } from 'rxjs';
-import { DeviceService } from 'src/app/services/device.service';
+import { MatBottomSheet, MatBottomSheetConfig, MatPaginator, MatSort, MatTableDataSource, PageEvent, Sort } from '@angular/material';
+import { combineLatest, Subscription } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
-import { AttributeComponent } from '../attribute/attribute.component';
-import { FilterComponent } from '../filter/filter.component';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { DeviceService } from 'src/app/services/device.service';
+import { FilterService, IFilterSummary, IFilterSummaryNet } from 'src/app/services/filter.service';
+import { FilterComponent } from '../filter/filter.component';
 
 @Component({
   selector: 'app-summary-filter',
@@ -26,8 +25,8 @@ export class SummaryFilterComponent implements OnInit {
     private _bottomSheet: MatBottomSheet,
     private catalogSvc: CategoryService,
   ) {
-    let sub = this.filterSvc.refreshSummary.pipe(switchMap(() => this.filterSvc.getAll())).subscribe(next => { this.updateSummaryData(next) })
-    combineLatest(this.filterSvc.getAll(), this.catalogSvc.getCatalogFrontend()).pipe(take(1)).subscribe(next => {
+    let sub = this.filterSvc.refreshSummary.pipe(switchMap(() => this.filterSvc.getAll(this.filterSvc.currentPageIndex, this.getPageSize()))).subscribe(next => { this.updateSummaryData(next) })
+    combineLatest(this.filterSvc.getAll(this.filterSvc.currentPageIndex, this.getPageSize()), this.catalogSvc.getCatalogFrontend()).pipe(take(1)).subscribe(next => {
       this.updateSummaryData(next[0]);
       this.fronCatalog = next[1].data
     })
@@ -58,7 +57,9 @@ export class SummaryFilterComponent implements OnInit {
   }
   ngOnInit() {
   }
-
+  private getPageSize() {
+    return (this.deviceSvc.pageSize) > 0 ? (this.deviceSvc.pageSize) : 1;
+  }
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -71,5 +72,10 @@ export class SummaryFilterComponent implements OnInit {
   }
   parse(inputs: string[]) {
     return inputs.map(e => this.parseCatalogId(+e)).join(',')
+  }
+  updateTable(sort: Sort) {
+    this.filterSvc.getAll(this.filterSvc.currentPageIndex, this.getPageSize(), sort.active, sort.direction).subscribe(next => {
+      this.updateSummaryData(next)
+    });
   }
 }

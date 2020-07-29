@@ -1,18 +1,16 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { CategoryService, ICatalogCustomer, ICatalogCustomerTreeNode, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatTreeFlatDataSource, MatTreeFlattener, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
-import { FormInfoService } from 'mt-form-builder';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatBottomSheet, MatBottomSheetConfig, MatPaginator, MatSort, MatTableDataSource, PageEvent, Sort } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Observable } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DeviceService } from 'src/app/services/device.service';
-import { AttributeComponent } from '../attribute/attribute.component';
-import { CatalogComponent } from '../catalog/catalog.component';
+import { FormInfoService } from 'mt-form-builder';
+import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
+import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
+import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
+import { DeviceService } from 'src/app/services/device.service';
+import { CatalogComponent } from '../catalog/catalog.component';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -28,7 +26,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  displayedColumns: string[] = ['name', 'parentId', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'parentId', 'edit', 'delete'];
   dataSource: MatTableDataSource<ICatalogCustomer>;
   catalogType: string;
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
@@ -47,9 +45,9 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     let ob = this.route.queryParamMap.pipe(switchMap(queryMaps => {
       this.catalogType = queryMaps.get('type');
       if (queryMaps.get('type') === 'frontend') {
-        return this.catalogSvc.getCatalogFrontend();
+        return this.catalogSvc.getCatalogFrontend(this.catalogSvc.currentPageIndex, this.getPageSize());
       } else if (queryMaps.get('type') === 'backend') {
-        return this.catalogSvc.getCatalogBackend();
+        return this.catalogSvc.getCatalogBackend(this.catalogSvc.currentPageIndex, this.getPageSize());
       } else {
       }
     }));
@@ -60,18 +58,38 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   }
   updateSummaryData(catalogs: ICatalogCustomerHttp) {
     this.dataSource = new MatTableDataSource(catalogs.data)
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
     if (catalogs.data) {
       this.catalogsData = catalogs.data;
     }
   }
   ngOnDestroy(): void {
-    this.subs.unsubscribe()
+    this.subs.unsubscribe();
+    this.fis.reset(this.formId);
   }
   ngAfterViewInit(): void {
     this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
       this.viewType = e.view;
+      if (this.viewType === 'TREE_VIEW') {
+        if (this.catalogType === 'frontend') {
+          this.catalogSvc.getCatalogFrontend().subscribe(next => {
+            this.updateSummaryData(next)
+          });
+        } else {
+          this.catalogSvc.getCatalogBackend().subscribe(next => {
+            this.updateSummaryData(next)
+          });
+        }
+      } else {
+        if (this.catalogType === 'frontend') {
+          this.catalogSvc.getCatalogFrontend(this.catalogSvc.currentPageIndex, this.getPageSize()).subscribe(next => {
+            this.updateSummaryData(next)
+          });
+        } else {
+          this.catalogSvc.getCatalogBackend(this.catalogSvc.currentPageIndex, this.getPageSize()).subscribe(next => {
+            this.updateSummaryData(next)
+          });
+        }
+      }
     });
     this.fis.formGroupCollection[this.formId].get('view').setValue(this.viewType);
   }
@@ -134,9 +152,32 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
   pageHandler(e: PageEvent) {
-    this.catalogSvc.currentPageIndex = e.pageIndex
+    this.catalogSvc.currentPageIndex = e.pageIndex;
+    if (this.catalogType === 'frontend') {
+      this.catalogSvc.getCatalogFrontend(this.catalogSvc.currentPageIndex, this.getPageSize()).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    } else {
+      this.catalogSvc.getCatalogBackend(this.catalogSvc.currentPageIndex, this.getPageSize()).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    }
   }
   getParenteName(id: number) {
     return ((id !== null && id !== undefined) && this.dataSource.data.find(e => e.id === id)) ? this.dataSource.data.find(e => e.id === id).name : '';
+  }
+  private getPageSize() {
+    return (this.deviceSvc.pageSize - this.pageSizeOffset) > 0 ? (this.deviceSvc.pageSize - this.pageSizeOffset) : 1;
+  }
+  updateTable(sort: Sort) {
+    if (this.catalogType === 'frontend') {
+      this.catalogSvc.getCatalogFrontend(this.catalogSvc.currentPageIndex, this.getPageSize(), sort.active, sort.direction).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    } else {
+      this.catalogSvc.getCatalogBackend(this.catalogSvc.currentPageIndex, this.getPageSize(), sort.active, sort.direction).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    }
   }
 }

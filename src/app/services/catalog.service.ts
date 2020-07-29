@@ -25,15 +25,15 @@ export interface ICatalogCustomerHttp {
   providedIn: 'root'
 })
 export class CategoryService {
-  currentPageIndex: number;
-  refreshSummary:Subject<void>=new Subject();
-  closeSheet:Subject<void>=new Subject();
+  currentPageIndex: number = 0;
+  refreshSummary: Subject<void> = new Subject();
+  closeSheet: Subject<void> = new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getCatalogFrontend(): Observable<ICatalogCustomerHttp> {
-    return this.httpProxy.getCatalogFrontendAdmin()
+  getCatalogFrontend(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
+    return this.httpProxy.getCatalogFrontendAdmin(pageNum, pageSize, sortBy, sortOrder)
   }
-  getCatalogBackend(): Observable<ICatalogCustomerHttp> {
-    return this.httpProxy.getCatalogBackendAdmin()
+  getCatalogBackend(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
+    return this.httpProxy.getCatalogBackendAdmin(pageNum, pageSize, sortBy, sortOrder)
   }
   getCatalogFrontendById(id: number): Observable<ICatalogCustomer> {
     return this.getCatalogFrontend().pipe(switchMap(els => {
