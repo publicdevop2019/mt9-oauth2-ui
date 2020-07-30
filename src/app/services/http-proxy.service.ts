@@ -95,6 +95,9 @@ export class HttpProxyService {
     getAttributes(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<IAttributeHttp> {
         return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
     }
+    getAttributeById(id: number): Observable<IBizAttribute> {
+        return this._httpClient.get<IBizAttribute>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + id);
+    }
     searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize + '&key=' + keyword);
     }

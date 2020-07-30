@@ -26,9 +26,7 @@ export class AttributeService {
 
   }
   getAttributeById(id: number): Observable<IBizAttribute> {
-    return this.getAttributeList().pipe(switchMap(els => {
-      return of(els.data.find(el => el.id === id))
-    }))
+    return this.httpProxy.getAttributeById(id)
   }
   getAttributeList(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<IAttributeHttp> {
     return this.httpProxy.getAttributes(pageNum, pageSize, sortBy, sortOrder)
