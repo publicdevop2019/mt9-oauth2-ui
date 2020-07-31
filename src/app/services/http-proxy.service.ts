@@ -218,6 +218,9 @@ export class HttpProxyService {
     getCatalogBackendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
         return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/backend/catalogs?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
     };
+    getCatalogByIdAdmin(id: number): Observable<ICatalogCustomer> {
+        return this._httpClient.get<ICatalogCustomer>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + id);
+    };
     createCategory(category: ICatalogCustomer): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs', category).subscribe(next => {

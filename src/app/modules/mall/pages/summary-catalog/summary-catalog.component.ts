@@ -132,17 +132,10 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
     if (hasValue(id)) {
-      if (this.catalogType === 'frontend') {
-        this.catalogSvc.getCatalogFrontendById(id).subscribe(next => {
-          config.data = next;
-          this._bottomSheet.open(CatalogComponent, config);
-        })
-      } else {
-        this.catalogSvc.getCatalogBackendById(id).subscribe(next => {
-          config.data = next;
-          this._bottomSheet.open(CatalogComponent, config);
-        })
-      }
+      this.catalogSvc.getCatalogById(id).subscribe(next => {
+        config.data = next;
+        this._bottomSheet.open(CatalogComponent, config);
+      })
     } else {
       this._bottomSheet.open(CatalogComponent, config);
     }

@@ -35,15 +35,8 @@ export class CategoryService {
   getCatalogBackend(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
     return this.httpProxy.getCatalogBackendAdmin(pageNum, pageSize, sortBy, sortOrder)
   }
-  getCatalogFrontendById(id: number): Observable<ICatalogCustomer> {
-    return this.getCatalogFrontend().pipe(switchMap(els => {
-      return of(els.data.find(el => el.id === id))
-    }))
-  }
-  getCatalogBackendById(id: number): Observable<ICatalogCustomer> {
-    return this.getCatalogBackend().pipe(switchMap(els => {
-      return of(els.data.find(el => el.id === id))
-    }))
+  getCatalogById(id: number): Observable<ICatalogCustomer> {
+    return this.httpProxy.getCatalogByIdAdmin(id)
   }
   create(category: ICatalogCustomer) {
     this.httpProxy.createCategory(category).subscribe(result => {
