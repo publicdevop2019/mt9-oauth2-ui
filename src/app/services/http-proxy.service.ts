@@ -90,22 +90,28 @@ export class HttpProxyService {
         });
     }
     getAllFilters(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IFilterSummaryNet> {
-        return this._httpClient.get<IFilterSummaryNet>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder))
+        return this._httpClient.get<IFilterSummaryNet>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]))
     }
     getAttributes(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<IAttributeHttp> {
-        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
+        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     }
     getAttributeById(id: number): Observable<IBizAttribute> {
         return this._httpClient.get<IBizAttribute>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + id);
     }
-    searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?pageNum=' + pageNum + '&pageSize=' + pageSize + '&key=' + keyword);
+    searchProductByName(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getQueryParam([this.getKeywordParam(keyword), this.getPageParam(pageNum, pageSize)]));
+    }
+    private getKeywordParam(keyword: string) {
+        return 'query=name:' + keyword
     }
     searchProductById(id: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?id=' + id);
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?query=id:' + id + "&sc:0");
     }
-    searchProductsByTags(pageNum: number, pageSize: number, attr: string[]): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/search?pageNum=' + pageNum + '&pageSize=' + pageSize + '&attributes=' + attr.join(','));
+    searchProductsByAttrs(pageNum: number, pageSize: number, attr: string[]): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getQueryParam([this.getSearchParam(attr), this.getPageParam(pageNum, pageSize)]));
+    }
+    private getSearchParam(attr: string[]): string {
+        return 'query=attr:' + attr.map(e => e.replace(":", "-")).join('$')
     }
     deletePost(id: string): Observable<boolean> {
         return new Observable<boolean>(e => {
@@ -140,7 +146,7 @@ export class HttpProxyService {
         return this._httpClient.get<IPostSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
     getAllProducts(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getOrders(): Observable<IOrder[]> {
         return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME + '/orders');
@@ -213,10 +219,10 @@ export class HttpProxyService {
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
     };
     getCatalogFrontendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
-        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/frontend/catalogs?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs' + this.getQueryParam(["query=type:FRONTEND", this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getCatalogBackendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
-        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/backend/catalogs?' + this.getPageParam(pageNum, pageSize, sortBy, sortOrder));
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs' + this.getQueryParam(["query=type:BACKEND", this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getCatalogByIdAdmin(id: number): Observable<ICatalogCustomer> {
         return this._httpClient.get<ICatalogCustomer>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + id);
@@ -416,17 +422,24 @@ export class HttpProxyService {
         let var1: string[] = [];
         if (hasValue(pageNumer) && hasValue(pageSize)) {
             if (sortBy && sortOrder) {
-                var1.push('pageNum=' + pageNumer)
-                var1.push('pageSize=' + pageSize)
-                var1.push('sortBy=' + sortBy)
-                var1.push('sortOrder=' + sortOrder)
-                return var1.join('&')
+                var1.push('num:' + pageNumer)
+                var1.push('size:' + pageSize)
+                var1.push('by:' + sortBy)
+                var1.push('order:' + sortOrder)
+                return "page=" + var1.join(',')
             } else {
-                var1.push('pageNum=' + pageNumer)
-                var1.push('pageSize=' + pageSize)
-                return var1.join('&')
+                var1.push('num:' + pageNumer)
+                var1.push('size:' + pageSize)
+                return "page=" + var1.join(',')
             }
         }
         return ''
+    }
+    private getQueryParam(params: string[]): string {
+        console.dir(params)
+        params = params.filter(e => e !== '')
+        if (params.length > 0)
+            return "?" + params.join('&')
+        return ""
     }
 }

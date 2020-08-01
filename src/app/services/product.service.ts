@@ -81,13 +81,13 @@ export class ProductService {
     return this.httpProxy.getAllProducts(pageNum, pageSize, sortBy, sortOrder)
   }
   searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
-    return this.httpProxy.searchProductsByTags(pageNum, pageSize, tags)
+    return this.httpProxy.searchProductsByAttrs(pageNum, pageSize, tags)
   }
   searchProductById(id: number): Observable<IProductTotalResponse> {
     return this.httpProxy.searchProductById(id)
   }
   searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
-    return this.httpProxy.searchProductByKeyword(pageNum, pageSize, keyword)
+    return this.httpProxy.searchProductByName(pageNum, pageSize, keyword)
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.getProductDetail(id)
