@@ -47,10 +47,10 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('admin/productDetails')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/admin/frontend/catalogs')) {
+        if (req.url.includes('/admin/catalogs?query=type:FRONTEND')) {
           return of(new HttpResponse({ status: 200, body: mockCatalogCustomer })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/admin/backend/catalogs')) {
+        if (req.url.includes('/admin/catalogs?query=type:BACKEND')) {
           return of(new HttpResponse({ status: 200, body: mockCatalogAdmin })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('/catalogs/')) {

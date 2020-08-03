@@ -43,10 +43,34 @@
 <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
 </mat-form-field>
-
+<div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
+    <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'" style="margin-right: 16px;"
+        (click)="showOptions()">
+        {{'BATCH_OPERATION'|translate}}
+    </mat-slide-toggle>
+    <ng-container *ngIf="batchUpdate.checked">
+        <button mat-raised-button color="primary" (click)="doBatchOnline()" style="margin-right: 16px;">{{'BATCH_ONLINE'|translate}}</button>
+        <button mat-raised-button color="primary" (click)="doBatchOffline()" style="margin-right: 16px;">{{'BATCH_OFFLINE'|translate}}</button>
+        <button mat-raised-button color="primary" (click)="doBatchDelete()">{{'BATCH_DELETE'|translate}}</button>
+    </ng-container>
+</div>
 <div class="mat-elevation-z8" style="margin-bottom: 20px;">
     <div class="table-container">
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
 
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'ID'|translate}} </th>
@@ -75,9 +99,10 @@
             </ng-container>
 
             <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef >{{'AVAILABLE'|translate}}</th>
+                <th mat-header-cell *matHeaderCellDef>{{'AVAILABLE'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
-                    <mat-slide-toggle #slide [color]="'primary'" [checked]="isAvaliable(row)" (click)="toggleProductStatus(row,slide)" >
+                    <mat-slide-toggle #slide [color]="'primary'" [checked]="isAvaliable(row)"
+                        (click)="toggleProductStatus(row,slide)">
                     </mat-slide-toggle>
                 </td>
             </ng-container>

@@ -185,6 +185,13 @@ export class HttpProxyService {
             });
         });
     };
+    deleteProducts(ids: number[]): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?query=id:' + ids.join(".")).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + productDetail.id, productDetail).subscribe(next => {
@@ -201,15 +208,18 @@ export class HttpProxyService {
             });
         });
     }
-    // updateProductStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE') {
-    //     return new Observable<boolean>(e => {
-    //         const formData = new FormData();
-    //         formData.append('status', String(status));
-    //         this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id + '/status', formData).subscribe(next => {
-    //             e.next(true)
-    //         });
-    //     });
-    // }
+    batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE') {
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getBatchQuery(ids), this.getTimeValuePatch(status)).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    getBatchQuery(ids: number[]) {
+        if (ids.length > 0)
+            return "?query=id:" + ids.join('.')
+        return ''
+    }
     batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {

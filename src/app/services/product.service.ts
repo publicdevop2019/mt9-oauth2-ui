@@ -8,7 +8,7 @@ export interface IProductTotalResponse {
   totalItemCount: number,
 }
 export interface IProductSimple {
-  id: string;
+  id: number;
   name: string;
   endAt: number;
   startAt: number;
@@ -73,6 +73,12 @@ export class ProductService {
       this.refreshSummary.next()
     })
   }
+  batchUpdateProdStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE') {
+    this.httpProxy.batchUpdateProductStatus(ids, status).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+    })
+  }
   refreshSummary: Subject<void> = new Subject();
   closeSheet: Subject<void> = new Subject();
   currentPageIndex: number=0;
@@ -108,6 +114,13 @@ export class ProductService {
   }
   delete(id: number) {
     this.httpProxy.deleteProduct(id).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+      this.closeSheet.next()
+    })
+  }
+  batchDelete(ids: number[]) {
+    this.httpProxy.deleteProducts(ids).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

@@ -10,6 +10,7 @@ import { DeviceService } from 'src/app/services/device.service';
 import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
 import { isNullOrUndefined } from 'util';
 import { ProductComponent } from '../product/product.component';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-summary-product',
@@ -22,15 +23,17 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalItemCount = 0;
-  pageSizeOffset = 4;
+  pageSizeOffset = 5;
   private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
+  selection = new SelectionModel<IProductSimple>(true, []);
   public catalogsData: ICatalogCustomer[];
   constructor(public productSvc: ProductService, private categorySvc: CategoryService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet, public dialog: MatDialog, private cdr: ChangeDetectorRef) {
     let sub = this.productSvc.refreshSummary.pipe(switchMap(() =>
-      this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize())
+      this.productSvc.getAllProduct(this.productSvc.currentPageIndex, this.getPageSize())
     )).subscribe(next => { this.totalProductHandler(next) })
-    let sub0 = this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
+    let sub0 = this.productSvc.getAllProduct(this.productSvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.totalProductHandler(next) });
     let sub1 = this.categorySvc.getCatalogBackend()
       .subscribe(catalogs => {
         if (catalogs.data)
@@ -66,7 +69,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     } else {
       next = 'AVAILABLE'
     }
-    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.updateProdStatus(+row.id, next));
+    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.updateProdStatus(row.id, next));
     dialogRef.afterClosed().pipe(filter(result => !result)).subscribe(() => { toggle.toggle() })
   }
   isAvaliable(row: IProductSimple) {
@@ -116,7 +119,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   pageHandler(e: PageEvent) {
     this.productSvc.currentPageIndex = e.pageIndex;
-    this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize()).subscribe(products => {
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex, this.getPageSize()).subscribe(products => {
       this.totalProductHandler(products)
     });
   }
@@ -137,8 +140,51 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     return !spaces.test(input)
   }
   updateTable(sort: Sort) {
-    this.productSvc.getAllProduct(this.productSvc.currentPageIndex , this.getPageSize(), sort.active, sort.direction).subscribe(products => {
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex, this.getPageSize(), sort.active, sort.direction).subscribe(products => {
       this.totalProductHandler(products)
     });
+  }
+  showOptions() {
+    if (!this.displayedColumns.includes('select')) {
+      this.displayedColumns = ['select', ...this.displayedColumns]
+    } else {
+      this.displayedColumns = this.displayedColumns.filter(e => e !== 'select')
+    }
+  }
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource ? this.dataSource.data.length : 0;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: IProductSimple): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
+  }
+  doBatchOffline() {
+    const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
+    let ids = this.selection.selected.map(e => e.id)
+    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.batchUpdateProdStatus(ids, 'UNAVAILABLE'));
+
+  }
+  doBatchOnline() {
+    const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
+    let ids = this.selection.selected.map(e => e.id)
+    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.batchUpdateProdStatus(ids, 'AVAILABLE'));
+  }
+  doBatchDelete() {
+    let ids = this.selection.selected.map(e => e.id)
+    this.productSvc.batchDelete(ids)
   }
 }
