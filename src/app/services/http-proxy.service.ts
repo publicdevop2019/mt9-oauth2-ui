@@ -16,6 +16,11 @@ import { IPostSummary } from './post.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from './product.service';
 import { IUserReactionResult } from './reaction.service';
 import { IFilter, IFilterSummaryNet } from './filter.service';
+export interface IPatch {
+    op: string,
+    path: string,
+    value?: string,
+}
 /**
  * proxy http to enalbe offline mode and mocking
  */
@@ -188,14 +193,23 @@ export class HttpProxyService {
         });
     };
     updateProductStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE') {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         return new Observable<boolean>(e => {
-            const formData = new FormData();
-            formData.append('status', String(status));
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id + '/status', formData).subscribe(next => {
+            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id, this.getTimeValuePatch(status), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     }
+    // updateProductStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE') {
+    //     return new Observable<boolean>(e => {
+    //         const formData = new FormData();
+    //         formData.append('status', String(status));
+    //         this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id + '/status', formData).subscribe(next => {
+    //             e.next(true)
+    //         });
+    //     });
+    // }
     batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {
@@ -436,10 +450,19 @@ export class HttpProxyService {
         return ''
     }
     private getQueryParam(params: string[]): string {
-        console.dir(params)
         params = params.filter(e => e !== '')
         if (params.length > 0)
             return "?" + params.join('&')
         return ""
+    }
+    private getTimeValuePatch(status: 'AVAILABLE' | 'UNAVAILABLE'): IPatch[] {
+        if (status === "AVAILABLE") {
+            let startAt = <IPatch>{ op: 'add', path: '/startAt', value: String(Date.now()) }
+            let endAt = <IPatch>{ op: 'add', path: '/endAt' }
+            return [startAt, endAt]
+        } else {
+            let startAt = <IPatch>{ op: 'add', path: '/startAt' }
+            return [startAt]
+        }
     }
 }
