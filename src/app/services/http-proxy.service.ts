@@ -210,15 +210,10 @@ export class HttpProxyService {
     }
     batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE') {
         return new Observable<boolean>(e => {
-            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getBatchQuery(ids), this.getTimeValuePatch(status)).subscribe(next => {
+            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails', this.getTimeValuePatch(status, ids)).subscribe(next => {
                 e.next(true)
             });
         });
-    }
-    getBatchQuery(ids: number[]) {
-        if (ids.length > 0)
-            return "?query=id:" + ids.join('.')
-        return ''
     }
     batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
         return new Observable<boolean>(e => {
@@ -465,14 +460,29 @@ export class HttpProxyService {
             return "?" + params.join('&')
         return ""
     }
-    private getTimeValuePatch(status: 'AVAILABLE' | 'UNAVAILABLE'): IPatch[] {
-        if (status === "AVAILABLE") {
-            let startAt = <IPatch>{ op: 'add', path: '/startAt', value: String(Date.now()) }
-            let endAt = <IPatch>{ op: 'add', path: '/endAt' }
-            return [startAt, endAt]
+    private getTimeValuePatch(status: 'AVAILABLE' | 'UNAVAILABLE', ids?: number[]): IPatch[] {
+        let re: IPatch[] = [];
+        if (ids && ids.length > 0) {
+            ids.forEach(id => {
+                if (status === "AVAILABLE") {
+                    let startAt = <IPatch>{ op: 'add', path: "/" + id + '/startAt', value: String(Date.now()) }
+                    let endAt = <IPatch>{ op: 'add', path: "/" + id + '/endAt' }
+                    re.push(startAt, endAt)
+                } else {
+                    let startAt = <IPatch>{ op: 'add', path: "/" + id + '/startAt' }
+                    re.push(startAt)
+                }
+            })
         } else {
-            let startAt = <IPatch>{ op: 'add', path: '/startAt' }
-            return [startAt]
+            if (status === "AVAILABLE") {
+                let startAt = <IPatch>{ op: 'add', path: '/startAt', value: String(Date.now()) }
+                let endAt = <IPatch>{ op: 'add', path: '/endAt' }
+                re.push(startAt, endAt)
+            } else {
+                let startAt = <IPatch>{ op: 'add', path: '/startAt' }
+                re.push(startAt)
+            }
         }
+        return re;
     }
 }
