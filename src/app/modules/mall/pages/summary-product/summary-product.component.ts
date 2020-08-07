@@ -19,7 +19,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id', 'name', 'priceList', 'sales', 'status', 'expireDate', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'priceList', 'sales', 'status', 'endAt', 'edit', 'delete'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalItemCount = 0;
