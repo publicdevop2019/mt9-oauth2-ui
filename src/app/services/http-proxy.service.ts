@@ -16,6 +16,7 @@ import { IPostSummary } from './post.service';
 import { IProductDetail, IProductSimple, IProductTotalResponse } from './product.service';
 import { IUserReactionResult } from './reaction.service';
 import { IFilter, IFilterSummaryNet } from './filter.service';
+import * as UUID from 'uuid/v1';
 export interface IPatch {
     op: string,
     path: string,
@@ -104,16 +105,16 @@ export class HttpProxyService {
         return this._httpClient.get<IBizAttribute>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + id);
     }
     searchProductByName(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getQueryParam([this.getKeywordParam(keyword), this.getPageParam(pageNum, pageSize)]));
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getKeywordParam(keyword), this.getPageParam(pageNum, pageSize)]));
     }
     private getKeywordParam(keyword: string) {
         return 'query=name:' + keyword
     }
     searchProductById(id: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?query=id:' + id + "&sc:0");
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin?query=id:' + id + "&sc:0");
     }
     searchProductsByAttrs(pageNum: number, pageSize: number, attr: string[]): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getQueryParam([this.getSearchParam(attr), this.getPageParam(pageNum, pageSize)]));
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getSearchParam(attr), this.getPageParam(pageNum, pageSize)]));
     }
     private getSearchParam(attr: string[]): string {
         return 'query=attr:' + attr.map(e => e.replace(":", "-")).join('$')
@@ -151,7 +152,7 @@ export class HttpProxyService {
         return this._httpClient.get<IPostSummary>(environment.serverUri + this.BBS_SVC_NAME + '/admin/posts?pageNum=' + pageNum + '&pageSize=' + pageSize + '&sortBy=id' + '&sortOrder=asc');
     };
     getAllProducts(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getOrders(): Observable<IOrder[]> {
         return this._httpClient.get<IOrder[]>(environment.serverUri + this.PROFILE_SVC_NAME + '/orders');
@@ -169,32 +170,32 @@ export class HttpProxyService {
         return this._httpClient.get<IProductSimple[]>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/' + category + '?pageNum=' + pageNum + '&pageSize=' + pageSize);
     };
     getProductDetail(id: number): Observable<IProductDetail> {
-        return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id);
+        return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + id);
     };
     createProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails', productDetail).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin', productDetail).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteProduct(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + id).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteProducts(ids: number[]): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails?query=id:' + ids.join(".")).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin?query=id:' + ids.join(".")).subscribe(next => {
                 e.next(true)
             });
         });
     };
     updateProduct(productDetail: IProductDetail): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + productDetail.id, productDetail).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + productDetail.id, productDetail).subscribe(next => {
                 e.next(true)
             });
         });
@@ -203,14 +204,16 @@ export class HttpProxyService {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         return new Observable<boolean>(e => {
-            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails/' + id, this.getTimeValuePatch(status), { headers: headerConfig }).subscribe(next => {
+            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + id, this.getTimeValuePatch(status), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     }
     batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE') {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
-            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/productDetails', this.getTimeValuePatch(status, ids)).subscribe(next => {
+            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin', this.getTimeValuePatch(status, ids), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
