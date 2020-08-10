@@ -47,17 +47,11 @@ export interface IProductDetail {
   attributesProd?: string[];
   attributesGen?: string[];
   attributeSaleImages?: IAttrImage[]
-  skus?: ISku[];
+  skus: ISku[];
   endAt?: number,
   startAt?: number,
-  storageOrder?: number;
-  storageActual?: number;
-  price?: number;
-  sales?: number;
-  increaseOrderStorage?: number;
-  decreaseOrderStorage?: number;
-  increaseActualStorage?: number;
-  decreaseActualStorage?: number;
+  lowestPrice?: number;
+  totaleSales?: number;
 }
 export interface IAttrImage {
   attributeSales: string,

@@ -22,6 +22,9 @@ import { getLabel, getLayeredLabel, hasValue } from 'src/app/clazz/utility';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit, OnDestroy {
+  hasEmptyAttrSales(e: ISku): boolean {
+    return e.attributesSales.length === 0
+  }
   productDetail: IProductDetail;
   salesFormIdTempId = 'attrSalesFormChild';
   formId = 'product';
@@ -74,6 +77,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       this._bottomSheetRef.dismiss();
     })
     let keys = ['storageActual', 'storageOrder', 'price', 'sales']
+    let keys2 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
     this.subs['closeSheet'] = sub;
     this.subscriptions.add(sub)
     this.productDetail = data as IProductDetail;
@@ -117,6 +121,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         if (next === 'YES') {
           this.hasSku = true;
           this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = false);
+          this.formInfo.inputs.filter(e => keys2.includes(e.key)).forEach(e => e.display = false);
         } else {
           this.hasSku = false;
           this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = true);
@@ -144,7 +149,8 @@ export class ProductComponent implements OnInit, OnDestroy {
         if (this.productDetail.attributesGen) {
           this.updateValueForForm(this.productDetail.attributesGen, this.attrGeneralFormId);
         }
-        if (this.productDetail.skus && this.productDetail.skus.length > 0) {
+        if (this.productDetail.skus.filter(e => this.hasEmptyAttrSales(e)).length === 0) {
+          // use sku form
           this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
           this.fis.formGroupCollection[this.formId].get('hasSku').setValue('YES', { emitEvent: false });
           this.hasSku = true;
@@ -153,15 +159,17 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.updateAndSubSalesForm(this.productDetail.skus);
           });
         } else {
+          // use no sku form
           this.fis.formGroupCollection[this.formId].get('hasSku').setValue('NO', { emitEvent: false });
           this.hasSku = false;
           this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = true);
-          this.fis.formGroupCollection[this.formId].get('price').setValue(this.productDetail.price)
-          this.fis.formGroupCollection[this.formId].get('sales').setValue(this.productDetail.sales)
-          this.fis.formGroupCollection[this.formId].get('storageOrder').setValue(this.productDetail.storageOrder)
-          this.fis.formGroupCollection[this.formId].get('storageActual').setValue(this.productDetail.storageActual)
+          this.fis.formGroupCollection[this.formId].get('price').setValue(this.productDetail.skus[0].price)
+          this.fis.formGroupCollection[this.formId].get('sales').setValue(this.productDetail.skus[0].sales)
+          this.fis.formGroupCollection[this.formId].get('storageOrder').setValue(this.productDetail.skus[0].storageOrder)
+          this.fis.formGroupCollection[this.formId].get('storageActual').setValue(this.productDetail.skus[0].storageActual)
           this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.formId]);
           this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.formId]);
+          this.fis.$refresh.next();
         }
         if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
           this.updateImageForm(this.imageFormId, this.productDetail.imageUrlLarge)
@@ -454,6 +462,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         var1.attributesSales = this.getAddedAttrs(this.salesFormIdTempId + suffix);
         var1.price = this.fis.formGroupCollection[this.attrSalesFormId].get('price' + suffix).value;
         if (!this.productDetail) {
+          //create
           var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
           var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
           var1.sales = this.fis.formGroupCollection[this.attrSalesFormId].get('sales' + suffix).value;
@@ -480,6 +489,26 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
         skusCalc.push(var1)
       });
+    } else {
+      let var1 = <ISku>{};
+      var1.attributesSales = [];
+      if (!this.productDetail) {
+        //create
+        var1.storageOrder = formGroup.get('storageOrder').value
+        var1.storageActual = formGroup.get('storageActual').value
+        var1.price = formGroup.get('price').value;
+        var1.sales = formGroup.get('sales').value;
+        skusCalc.push(var1)
+      } else {
+        //update
+        var1.increaseOrderStorage = formGroup.get('storage_OrderIncreaseBy').value
+        var1.decreaseOrderStorage = formGroup.get('storage_OrderDecreaseBy').value
+        var1.increaseActualStorage = formGroup.get('storage_ActualIncreaseBy').value
+        var1.decreaseActualStorage = formGroup.get('storage_ActualDecreaseBy').value
+        var1.price = formGroup.get('price').value;
+        var1.sales = formGroup.get('sales').value;
+        skusCalc.push(var1)
+      }
     }
     let attrSaleImages = [];
     if (this.hasSku && this.hasAttrsForCtrl()) {
@@ -502,18 +531,10 @@ export class ProductComponent implements OnInit, OnDestroy {
       description: formGroup.get('description').value,
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
-      skus: this.hasSku ? skusCalc : undefined,
+      skus: skusCalc,
       endAt: formGroup.get('endAt').value ? this.parseDate(formGroup.get('endAt').value) : undefined,
       startAt: formGroup.get('startAt').value ? this.parseDate(formGroup.get('startAt').value) : undefined,
       attributeSaleImages: attrSaleImages,
-      storageOrder: (this.hasSku && !this.productDetail) ? undefined : formGroup.get('storageOrder').value,
-      storageActual: (this.hasSku && !this.productDetail) ? undefined : formGroup.get('storageActual').value,
-      price: this.hasSku ? undefined : formGroup.get('price').value,
-      sales: (this.hasSku && !this.productDetail) ? undefined : formGroup.get('sales').value,
-      increaseOrderStorage: (this.hasSku && this.productDetail) ? undefined : formGroup.get('storage_OrderIncreaseBy').value,
-      decreaseOrderStorage: (this.hasSku && this.productDetail) ? undefined : formGroup.get('storage_OrderDecreaseBy').value,
-      increaseActualStorage: (this.hasSku && this.productDetail) ? undefined : formGroup.get('storage_ActualIncreaseBy').value,
-      decreaseActualStorage: (this.hasSku && this.productDetail) ? undefined : formGroup.get('storage_ActualDecreaseBy').value,
     }
   }
   parseDate(value: string): number {
