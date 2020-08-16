@@ -9,7 +9,7 @@ import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { filter, take } from 'rxjs/operators';
-
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-attribute',
   templateUrl: './attribute.component.html',
@@ -19,6 +19,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
   attribute: IBizAttribute;
   formId = 'attributes';
   manualEnter = false;
+  changeId: string = UUID();
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   formIdAttrValue = 'attributesValue';
   formInfoAttrValue: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
@@ -26,7 +27,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
   validator: ValidateHelper;
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
-  private subs: Subscription=new Subscription()
+  private subs: Subscription = new Subscription()
   constructor(
     public attributeSvc: AttributeService,
     private fis: FormInfoService,
@@ -139,5 +140,11 @@ export class AttributeComponent implements OnInit, OnDestroy {
       selectValues: values,
       type: formGroup.get('type').value,
     }
+  }
+  createAttr() {
+    this.attributeSvc.create(this.convertToPayload(), this.changeId)
+  }
+  updateAttr() {
+    this.attributeSvc.update(this.convertToPayload(), this.changeId)
   }
 }

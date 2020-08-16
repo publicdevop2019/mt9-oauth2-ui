@@ -1,8 +1,8 @@
 <div style="display: flex;flex-direction: row;justify-content: space-between;">
     <button mat-raised-button color="primary" *ngIf="productDetail" style="margin-top: 10px;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
+        (click)="validator.valid()&&imageFormvalidator.valid()&&updateProduct()">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 10px;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&productSvc.create(convertToPayload())"
+        (click)="validator.valid()&&imageFormvalidator.valid()&&createProduct()"
         *ngIf="!productDetail">{{'CREATE'|translate}}</button>
     <mat-icon style="text-align: right;padding-top: 8px;cursor: pointer;width:100%" (click)="dismiss($event)">close
     </mat-icon>

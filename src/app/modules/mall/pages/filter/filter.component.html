@@ -4,7 +4,7 @@
 
 <lib-factory [formId]="formIdFilter" [formInfo]="formInfoFilter"></lib-factory>
 <button mat-raised-button color="primary" *ngIf="filter" class="app-btn"
-    (click)="validator.valid()&&filterSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
+    (click)="validator.valid()&&updateFilter()">{{'UPDATE'|translate}}</button>
 <button mat-raised-button color="primary" class="app-btn"
-    (click)="validator.valid()&&filterSvc.create(convertToPayload())"
+    (click)="validator.valid()&&createFilter()"
     *ngIf="!filter">{{'CREATE'|translate}}</button>

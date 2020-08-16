@@ -11,7 +11,7 @@ import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/s
 import { isNullOrUndefined } from 'util';
 import { ProductComponent } from '../product/product.component';
 import { SelectionModel } from '@angular/cdk/collections';
-
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
@@ -69,7 +69,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     } else {
       next = 'AVAILABLE'
     }
-    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.updateProdStatus(row.id, next));
+    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.updateProdStatus(row.id, next, UUID()));
     dialogRef.afterClosed().pipe(filter(result => !result)).subscribe(() => { toggle.toggle() })
   }
   isAvaliable(row: IProductSimple) {
@@ -175,13 +175,13 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   doBatchOffline() {
     const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
     let ids = this.selection.selected.map(e => e.id)
-    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.batchUpdateProdStatus(ids, 'UNAVAILABLE'));
+    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.batchUpdateProdStatus(ids, 'UNAVAILABLE', UUID()));
 
   }
   doBatchOnline() {
     const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
     let ids = this.selection.selected.map(e => e.id)
-    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.batchUpdateProdStatus(ids, 'AVAILABLE'));
+    dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.productSvc.batchUpdateProdStatus(ids, 'AVAILABLE', UUID()));
   }
   doBatchDelete() {
     let ids = this.selection.selected.map(e => e.id)

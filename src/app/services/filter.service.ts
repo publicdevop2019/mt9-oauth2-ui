@@ -37,14 +37,14 @@ export class FilterService {
   getAll(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IFilterSummaryNet> {
     return this.httpProxy.getAllFilters(pageNum, pageSize, sortBy, sortOrder)
   }
-  create(filter: IFilter) {
-    this.httpProxy.createFilter(filter).subscribe(result => {
+  create(filter: IFilter, changeId: string) {
+    this.httpProxy.createFilter(filter,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  update(attribute: IFilter) {
-    this.httpProxy.updateFilter(attribute).subscribe(result => {
+  update(attribute: IFilter, changeId: string) {
+    this.httpProxy.updateFilter(attribute,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

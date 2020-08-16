@@ -38,14 +38,14 @@ export class CategoryService {
   getCatalogById(id: number): Observable<ICatalogCustomer> {
     return this.httpProxy.getCatalogByIdAdmin(id)
   }
-  create(category: ICatalogCustomer) {
-    this.httpProxy.createCategory(category).subscribe(result => {
+  create(category: ICatalogCustomer, changeId: string) {
+    this.httpProxy.createCategory(category,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  update(category: ICatalogCustomer) {
-    this.httpProxy.updateCategory(category).subscribe(result => {
+  update(category: ICatalogCustomer, changeId: string) {
+    this.httpProxy.updateCategory(category,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

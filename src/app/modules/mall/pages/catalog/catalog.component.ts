@@ -10,7 +10,7 @@ import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dy
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
-
+import * as UUID from 'uuid/v1';
 
 @Component({
   selector: 'app-catalog',
@@ -29,8 +29,9 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
   private subs: Subscription = new Subscription();
+  private changeId=UUID()
   constructor(
-    public categorySvc: CategoryService,
+    public catalogSvc: CategoryService,
     private fis: FormInfoService,
     public translate: TranslateService,
     public attrSvc: AttributeService,
@@ -38,7 +39,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
-    let sub = this.categorySvc.closeSheet.subscribe(() => {
+    let sub = this.catalogSvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss()
     });
     this.subs.add(sub)
@@ -57,7 +58,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
         this.fis.formGroupCollection[this.formId].get('catalogType').setValue(this.category.catalogType);
         this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
         if (this.category.catalogType === 'FRONTEND') {
-          this.categorySvc.getCatalogFrontend().subscribe(next1 => {
+          this.catalogSvc.getCatalogFrontend().subscribe(next1 => {
             this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
             if (hasValue(this.category.parentId)) {
               this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
@@ -65,7 +66,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
             }
           })
         } else if (this.category.catalogType === 'BACKEND') {
-          this.categorySvc.getCatalogBackend().subscribe(next1 => {
+          this.catalogSvc.getCatalogBackend().subscribe(next1 => {
             this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
             if (hasValue(this.category.parentId)) {
               this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
@@ -121,11 +122,11 @@ export class CatalogComponent implements OnInit, OnDestroy {
     let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
       if (next === 'FRONTEND') {
-        this.categorySvc.getCatalogFrontend().subscribe(next1 => {
+        this.catalogSvc.getCatalogFrontend().subscribe(next1 => {
           this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
         })
       } else if (next === 'BACKEND') {
-        this.categorySvc.getCatalogBackend().subscribe(next1 => {
+        this.catalogSvc.getCatalogBackend().subscribe(next1 => {
           this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
         })
       } else {
@@ -233,5 +234,11 @@ export class CatalogComponent implements OnInit, OnDestroy {
       }
       return selected.id + ':' + attrValue
     });
+  }
+  createCatalog() {
+    this.catalogSvc.create(this.convertToCategoryPayload(), this.changeId)
+  }
+  updateCatalog() {
+    this.catalogSvc.update(this.convertToCategoryPayload(), this.changeId)
   }
 }

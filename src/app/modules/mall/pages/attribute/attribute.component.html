@@ -2,7 +2,7 @@
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <lib-factory *ngIf="manualEnter" [formId]="formIdAttrValue" [formInfo]="formInfoAttrValue"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="attribute" class="app-btn"
-        (click)="validator.valid()&&attributeSvc.update(convertToPayload())">{{'UPDATE'|translate}}</button>
+        (click)="validator.valid()&&updateAttr()">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="primary" class="app-btn"
-        (click)="validator.valid()&&attributeSvc.create(convertToPayload())"
+        (click)="validator.valid()&&createAttr()"
         *ngIf="!attribute">{{'CREATE'|translate}}</button>

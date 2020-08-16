@@ -15,7 +15,7 @@ import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IAttrImage } from 'src/app/services/product.service';
 import { getLabel, getLayeredLabel, hasValue } from 'src/app/clazz/utility';
-
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -26,6 +26,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     return e.attributesSales.length === 0
   }
   productDetail: IProductDetail;
+  changeId: string;
   salesFormIdTempId = 'attrSalesFormChild';
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
@@ -92,6 +93,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
+      this.changeId = UUID();
       if (this.productDetail) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
         this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
@@ -655,5 +657,11 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.subs[formId + '_valueChange'] = sub;
       this.subscriptions.add(sub)
     }
+  }
+  createProduct() {
+    this.productSvc.create(this.convertToPayload(), this.changeId)
+  }
+  updateProduct(){
+    this.productSvc.update(this.convertToPayload(), this.changeId)
   }
 }

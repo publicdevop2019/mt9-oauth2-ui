@@ -31,14 +31,14 @@ export class AttributeService {
   getAttributeList(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<IAttributeHttp> {
     return this.httpProxy.getAttributes(pageNum, pageSize, sortBy, sortOrder)
   }
-  create(attribute: IBizAttribute) {
-    this.httpProxy.createAttribute(attribute).subscribe(result => {
+  create(attribute: IBizAttribute, changeId: string) {
+    this.httpProxy.createAttribute(attribute,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  update(attribute: IBizAttribute) {
-    this.httpProxy.updateAttribute(attribute).subscribe(result => {
+  update(attribute: IBizAttribute, changeId: string) {
+    this.httpProxy.updateAttribute(attribute,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

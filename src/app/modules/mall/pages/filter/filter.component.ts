@@ -11,7 +11,7 @@ import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/a
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { FilterService, IFilter, IFilterItem } from 'src/app/services/filter.service';
-
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -38,6 +38,7 @@ export class FilterComponent implements OnInit {
   private subs: { [key: string]: Subscription } = {};
   attrList: IBizAttribute[];
   catalogList: ICatalogCustomer[];
+  changeId: string;
   constructor(
     public filterSvc: FilterService,
     private fis: FormInfoService,
@@ -51,6 +52,7 @@ export class FilterComponent implements OnInit {
     let sub = this.filterSvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss()
     })
+    this.changeId = UUID();
     this.subscriptions.add(sub)
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.catalogFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdCatalog));
@@ -63,7 +65,7 @@ export class FilterComponent implements OnInit {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
-      this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLayeredLabel(e,next[1].data), value: String(e.id) });
+      this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLayeredLabel(e, next[1].data), value: String(e.id) });
       this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
       this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
       this.cdr.detectChanges()
@@ -238,5 +240,11 @@ export class FilterComponent implements OnInit {
     this.subs[idKey + '_valueChange_ctrl'] = sub;
     this.subscriptions.add(sub)
 
+  }
+  createFilter() {
+    this.filterSvc.create(this.convertToPayload(), this.changeId)
+  }
+  updateFilter() {
+    this.filterSvc.update(this.convertToPayload(), this.changeId)
   }
 }

@@ -52,57 +52,65 @@ export class HttpProxyService {
     }
     deleteAttribute(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/attributes/admin/' + id).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    updateAttribute(attr: IBizAttribute): Observable<boolean> {
+    updateAttribute(attr: IBizAttribute, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + attr.id, attr).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/attributes/admin/' + attr.id, attr, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    createAttribute(attr: IBizAttribute): Observable<boolean> {
+    createAttribute(attr: IBizAttribute, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes', attr).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/attributes/admin', attr, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    createFilter(filter: IFilter) {
+    createFilter(filter: IFilter, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters', filter).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/filters/admin', filter, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     }
     readFilter(id: number) {
-        return this._httpClient.get<IFilter>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters/' + id)
+        return this._httpClient.get<IFilter>(environment.serverUri + this.PRODUCT_SVC_NAME + '/filters/admin/' + id)
     }
-    updateFilter(filter: IFilter) {
+    updateFilter(filter: IFilter, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters/' + filter.id, filter).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/filters/admin/' + filter.id, filter, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     }
     deleteFilter(id: number) {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters/' + id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/filters/admin/' + id).subscribe(next => {
                 e.next(true)
             });
         });
     }
     getAllFilters(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IFilterSummaryNet> {
-        return this._httpClient.get<IFilterSummaryNet>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/filters' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]))
+        return this._httpClient.get<IFilterSummaryNet>(environment.serverUri + this.PRODUCT_SVC_NAME + '/filters/admin' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]))
     }
     getAttributes(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<IAttributeHttp> {
-        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+        return this._httpClient.get<IAttributeHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/attributes/admin' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     }
     getAttributeById(id: number): Observable<IBizAttribute> {
-        return this._httpClient.get<IBizAttribute>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/attributes/' + id);
+        return this._httpClient.get<IBizAttribute>(environment.serverUri + this.PRODUCT_SVC_NAME + '/attributes/admin/' + id);
     }
     searchProductByName(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getKeywordParam(keyword), this.getPageParam(pageNum, pageSize)]));
@@ -172,9 +180,11 @@ export class HttpProxyService {
     getProductDetail(id: number): Observable<IProductDetail> {
         return this._httpClient.get<IProductDetail>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + id);
     };
-    createProduct(productDetail: IProductDetail): Observable<boolean> {
+    createProduct(productDetail: IProductDetail, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin', productDetail).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin', productDetail, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -193,25 +203,28 @@ export class HttpProxyService {
             });
         });
     };
-    updateProduct(productDetail: IProductDetail): Observable<boolean> {
+    updateProduct(productDetail: IProductDetail, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + productDetail.id, productDetail).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + productDetail.id, productDetail, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    updateProductStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE') {
+    updateProductStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin/' + id, this.getTimeValuePatch(status), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     }
-    batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE') {
+    batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE',changeId:string) {
         let headerConfig = new HttpHeaders();
-        headerConfig = headerConfig.set('changeId', UUID())
+        headerConfig = headerConfig.set('changeId',changeId)
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin', this.getTimeValuePatch(status, ids), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
@@ -241,32 +254,36 @@ export class HttpProxyService {
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
     };
     getCatalogFrontendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
-        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs' + this.getQueryParam(["query=type:FRONTEND", this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/admin' + this.getQueryParam(["query=type:FRONTEND", this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getCatalogBackendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
-        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs' + this.getQueryParam(["query=type:BACKEND", this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+        return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/admin' + this.getQueryParam(["query=type:BACKEND", this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getCatalogByIdAdmin(id: number): Observable<ICatalogCustomer> {
-        return this._httpClient.get<ICatalogCustomer>(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + id);
+        return this._httpClient.get<ICatalogCustomer>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/admin/' + id);
     };
-    createCategory(category: ICatalogCustomer): Observable<boolean> {
+    createCategory(category: ICatalogCustomer, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs', category).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/admin', category, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteCategory(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/admin/' + id).subscribe(next => {
                 e.next(true)
             });
         });
 
     };
-    updateCategory(category: ICatalogCustomer): Observable<boolean> {
+    updateCategory(category: ICatalogCustomer, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/admin/catalogs/' + category.id, category).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/admin/' + category.id, category, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

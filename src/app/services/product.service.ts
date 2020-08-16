@@ -61,21 +61,21 @@ export interface IAttrImage {
   providedIn: 'root'
 })
 export class ProductService {
-  updateProdStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE') {
-    this.httpProxy.updateProductStatus(id, status).subscribe(result => {
+  updateProdStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
+    this.httpProxy.updateProductStatus(id, status,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  batchUpdateProdStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE') {
-    this.httpProxy.batchUpdateProductStatus(ids, status).subscribe(result => {
+  batchUpdateProdStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
+    this.httpProxy.batchUpdateProductStatus(ids, status,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   refreshSummary: Subject<void> = new Subject();
   closeSheet: Subject<void> = new Subject();
-  currentPageIndex: number=0;
+  currentPageIndex: number = 0;
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   getAllProduct(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IProductTotalResponse> {
     return this.httpProxy.getAllProducts(pageNum, pageSize, sortBy, sortOrder)
@@ -92,14 +92,14 @@ export class ProductService {
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.getProductDetail(id)
   }
-  create(product: IProductDetail) {
-    this.httpProxy.createProduct(product).subscribe(result => {
+  create(product: IProductDetail, changeId: string) {
+    this.httpProxy.createProduct(product, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  update(product: IProductDetail) {
-    this.httpProxy.updateProduct(product).subscribe(result => {
+  update(product: IProductDetail, changeId: string) {
+    this.httpProxy.updateProduct(product, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()
