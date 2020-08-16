@@ -44,13 +44,15 @@
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
 </mat-form-field>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
-    <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'" style="margin-right: 16px;"
-        (click)="showOptions()">
+    <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
+        style="margin-right: 16px;" (click)="showOptions()">
         {{'BATCH_OPERATION'|translate}}
     </mat-slide-toggle>
     <ng-container *ngIf="batchUpdate.checked">
-        <button mat-raised-button color="primary" (click)="doBatchOnline()" style="margin-right: 16px;">{{'BATCH_ONLINE'|translate}}</button>
-        <button mat-raised-button color="primary" (click)="doBatchOffline()" style="margin-right: 16px;">{{'BATCH_OFFLINE'|translate}}</button>
+        <button mat-raised-button color="primary" (click)="doBatchOnline()"
+            style="margin-right: 16px;">{{'BATCH_ONLINE'|translate}}</button>
+        <button mat-raised-button color="primary" (click)="doBatchOffline()"
+            style="margin-right: 16px;">{{'BATCH_OFFLINE'|translate}}</button>
         <button mat-raised-button color="primary" (click)="doBatchDelete()">{{'BATCH_DELETE'|translate}}</button>
     </ng-container>
 </div>
@@ -79,7 +81,10 @@
 
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-field [inputValue]="row.name" (newValue)="doPatch(row.id,$event)">
+                    </app-editable-field>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="priceList">

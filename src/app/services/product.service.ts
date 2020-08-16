@@ -62,13 +62,13 @@ export interface IAttrImage {
 })
 export class ProductService {
   updateProdStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
-    this.httpProxy.updateProductStatus(id, status,changeId).subscribe(result => {
+    this.httpProxy.updateProductStatus(id, status, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   batchUpdateProdStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
-    this.httpProxy.batchUpdateProductStatus(ids, status,changeId).subscribe(result => {
+    this.httpProxy.batchUpdateProductStatus(ids, status, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
@@ -122,5 +122,12 @@ export class ProductService {
   }
   notify(result: boolean) {
     result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
+  }
+  updateName(id: number, value: string, changeId: string) {
+    this.httpProxy.updateField(id, 'products', 'name', value, changeId).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+      this.closeSheet.next()
+    })
   }
 }

@@ -56,6 +56,7 @@ import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summ
 import { FilterComponent } from './modules/mall/pages/filter/filter.component';
 import { UpdateProdStatusDialogComponent } from './components/update-prod-status-dialog/update-prod-status-dialog.component';
 import { SettingComponent } from './pages/setting/setting.component';
+import { EditableFieldComponent } from './components/editable-field/editable-field.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -95,7 +96,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SummaryFilterComponent,
     FilterComponent,
     UpdateProdStatusDialogComponent,
-    SettingComponent
+    SettingComponent,
+    EditableFieldComponent
   ],
   imports: [
     BrowserAnimationsModule,

@@ -187,4 +187,8 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     let ids = this.selection.selected.map(e => e.id)
     this.productSvc.batchDelete(ids)
   }
+  doPatch(id: number, event: string) {
+    this.productSvc.updateName(id, event, UUID())
+
+  }
 }

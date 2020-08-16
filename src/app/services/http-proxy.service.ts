@@ -222,9 +222,19 @@ export class HttpProxyService {
             });
         });
     }
-    batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE',changeId:string) {
+    updateField(id: number, type: string, field: string, value: string, changeId: string) {
         let headerConfig = new HttpHeaders();
-        headerConfig = headerConfig.set('changeId',changeId)
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId);
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + `/${type}/admin/` + id, this.getPatchPayload(field, value), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin', this.getTimeValuePatch(status, ids), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
@@ -503,6 +513,12 @@ export class HttpProxyService {
                 re.push(startAt)
             }
         }
+        return re;
+    }
+    private getPatchPayload(fieldName: string, fieldValue: string): IPatch[] {
+        let re: IPatch[] = [];
+        let startAt = <IPatch>{ op: 'replace', path: "/" + fieldName, value: fieldValue }
+        re.push(startAt)
         return re;
     }
 }
