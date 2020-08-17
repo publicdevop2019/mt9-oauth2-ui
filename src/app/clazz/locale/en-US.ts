@@ -211,5 +211,6 @@ export const enUS = {
     "COPY_SUCCESS": "Copy success",
     "COPY_FAILED": "Copy failed",
     "COVER_IMAGE":"Cover image",
+    "CLONE":"Clone",
     "": "",
 }

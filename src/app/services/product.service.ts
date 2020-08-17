@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { IEditEvent } from '../components/editable-field/editable-field.component';
+
 export interface IProductTotalResponse {
   data: IProductSimple[],
   totalItemCount: number,
@@ -55,6 +56,10 @@ export interface IProductDetail {
   lowestPrice?: number;
   totaleSales?: number;
 }
+export interface IBizProductBottomSheet {
+  context: string,
+  from: IProductDetail
+}
 export interface IAttrImage {
   attributeSales: string,
   imageUrls: string[]
@@ -98,6 +103,7 @@ export class ProductService {
     this.httpProxy.createProduct(product, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
+      this.closeSheet.next()
     })
   }
   update(product: IProductDetail, changeId: string) {

@@ -1,20 +1,20 @@
-import { Component, Inject, OnDestroy, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
+import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
-import { FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS, ATTR_SALE_FORM_CONFIG_IMAGE } from 'src/app/form-configs/product.config';
+import { ATTR_SALE_FORM_CONFIG_IMAGE, FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/services/attribute.service';
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
+import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IBizProductBottomSheet } from 'src/app/services/product.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IAttrImage } from 'src/app/services/product.service';
-import { getLabel, getLayeredLabel, hasValue } from 'src/app/clazz/utility';
 import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-product',
@@ -26,6 +26,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     return e.attributesSales.length === 0
   }
   productDetail: IProductDetail;
+  productBottomSheet: IBizProductBottomSheet;
   changeId: string;
   salesFormIdTempId = 'attrSalesFormChild';
   formId = 'product';
@@ -70,7 +71,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     public translate: TranslateService,
     private categorySvc: CategoryService,
     public attrSvc: AttributeService,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, // keep as any is needed
     private _bottomSheetRef: MatBottomSheetRef<ProductComponent>,
     private changeDecRef: ChangeDetectorRef
   ) {
@@ -80,8 +81,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     let keys = ['storageActual', 'storageOrder', 'price', 'sales']
     let keys2 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
     this.subs['closeSheet'] = sub;
-    this.subscriptions.add(sub)
-    this.productDetail = data as IProductDetail;
+    this.subscriptions.add(sub);
+    this.productBottomSheet = data;
+    this.productDetail = this.productBottomSheet.from;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);
     this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis);
@@ -94,7 +96,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
       this.changeId = UUID();
-      if (this.productDetail) {
+      if (this.productBottomSheet.context !== 'new') {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.productDetail.id)
         this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(this.productDetail.attributesKey)
         this.fis.formGroupCollection[this.formId].get('name').setValue(this.productDetail.name)
@@ -113,7 +115,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.fis.formGroupCollection[this.formId].get('startAt').setValue('')
             this.formInfo.inputs.find(e => e.key === 'startAt').display = true;
           }
-        })
+        });
         this.subscriptions.add(sub);
       }
       let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
@@ -139,7 +141,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.changeDecRef.markForCheck() // this is required to initialize all forms
       return combineLatest(this.prodFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
     })).subscribe(() => {
-      if (!this.productDetail) {
+      if (this.productBottomSheet.context === 'new') {
         let sub = this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
           this.subChangeForForm(this.salesFormIdTempId);
         })
@@ -289,7 +291,9 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.updateValueForForm(sku.attributesSales, this.salesFormIdTempId);
           this.subChangeForForm(this.salesFormIdTempId);
         })
-        this.disabledAttrSalesChildForm(formInfo);
+        if (this.productBottomSheet.context !== 'clone') {
+          this.disabledAttrSalesChildForm(formInfo);
+        }
         //end of child form
       } else {
         this.fis.add(this.attrSalesFormId);
@@ -304,7 +308,9 @@ export class ProductComponent implements OnInit, OnDestroy {
         let sub = childFormCreated.subscribe(() => {
           let formInfo = this.fis.formGroupCollection_formInfo[formId];
           this.updateValueForForm(sku.attributesSales, formId);
-          this.disabledAttrSalesChildForm(formInfo);
+          if (this.productBottomSheet.context !== 'clone') {
+            this.disabledAttrSalesChildForm(formInfo);
+          }
           this.subChangeForForm(formId);
           this.fis.$refresh.next();
         });
@@ -313,9 +319,10 @@ export class ProductComponent implements OnInit, OnDestroy {
         //end of child form
       }
     });
-    this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-    this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-    this.fis.formGroupCollection_formInfo[this.attrSalesFormId];
+    if (this.productBottomSheet.context !== 'clone') {
+      this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+      this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+    }
     this.fis.$refresh.next();
   }
   private displayStorageChangeInputs(arg0: IForm) {
@@ -661,7 +668,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   createProduct() {
     this.productSvc.create(this.convertToPayload(), this.changeId)
   }
-  updateProduct(){
+  updateProduct() {
     this.productSvc.update(this.convertToPayload(), this.changeId)
   }
 }

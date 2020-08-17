@@ -7,7 +7,7 @@ import { hasValue } from 'src/app/clazz/utility';
 import { UpdateProdStatusDialogComponent } from 'src/app/components/update-prod-status-dialog/update-prod-status-dialog.component';
 import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { DeviceService } from 'src/app/services/device.service';
-import { IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
+import { IProductSimple, IProductTotalResponse, ProductService, IProductDetail, IBizProductBottomSheet } from 'src/app/services/product.service';
 import { isNullOrUndefined } from 'util';
 import { ProductComponent } from '../product/product.component';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -20,7 +20,7 @@ import { IEditEvent } from 'src/app/components/editable-field/editable-field.com
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id','coverImage', 'name', 'priceList', 'sales', 'status', 'endAt', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'coverImage', 'name', 'priceList', 'sales', 'status', 'endAt', 'edit', 'delete', 'clone'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalItemCount = 0;
@@ -91,16 +91,22 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     }
 
   }
-  openBottomSheet(id?: number): void {
+  openBottomSheet(id?: number, clone?: boolean): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
     config.panelClass = 'fix-height'
     if (hasValue(id)) {
       this.productSvc.getProductDetailById(id).subscribe(next => {
-        config.data = next;
-        this._bottomSheet.open(ProductComponent, config);
+        if (clone) {
+          config.data = <IBizProductBottomSheet>{ context: 'clone', from: next };
+          this._bottomSheet.open(ProductComponent, config);
+        } else {
+          config.data = <IBizProductBottomSheet>{ context: 'edit', from: next };
+          this._bottomSheet.open(ProductComponent, config);
+        }
       })
     } else {
+      config.data = <IBizProductBottomSheet>{ context: 'new', from: undefined };
       this._bottomSheet.open(ProductComponent, config);
     }
   }
@@ -191,5 +197,8 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   doPatch(id: number, event: IEditEvent) {
     this.productSvc.updateName(id, event, UUID())
 
+  }
+  doClone(id: number) {
+    this.openBottomSheet(id, true)
   }
 }

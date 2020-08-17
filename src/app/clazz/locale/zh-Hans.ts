@@ -216,5 +216,6 @@ export const zhHans = {
     "COPY_SUCCESS": "复制成功",
     "COPY_FAILED": "复制失败",
     "COVER_IMAGE":"封面图",
+    "CLONE":"克隆",
     "": "",
 }
