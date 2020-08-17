@@ -36,7 +36,7 @@ export class OfflineInterceptor implements HttpInterceptor {
         return of(new HttpResponse({ status: 200 })).pipe(delay(this.DEFAULT_DELAY));
       }
       if (['get'].includes(req.method.toLowerCase())) {
-        if (req.url.includes('admin/attributes')) {
+        if (req.url.includes('attributes/admin')) {
           return of(new HttpResponse({ status: 200, body: mockAttr })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('/products/admin/')) {
@@ -46,10 +46,10 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('products/admin')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/admin/catalogs?query=type:FRONTEND')) {
+        if (req.url.includes('/catalogs/admin?query=type:FRONTEND')) {
           return of(new HttpResponse({ status: 200, body: mockCatalogCustomer })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/admin/catalogs?query=type:BACKEND')) {
+        if (req.url.includes('/catalogs/admin?query=type:BACKEND')) {
           return of(new HttpResponse({ status: 200, body: mockCatalogAdmin })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('/catalogs/')) {

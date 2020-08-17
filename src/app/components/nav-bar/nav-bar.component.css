@@ -30,7 +30,5 @@
     flex: 1 0 auto;
   }
   .nav-active{
-    background-color: #fafafa;
-    font-weight: 700;
-    border-bottom: 1px solid #673ab7;
+    color: #673ab7;
   }
