@@ -3,6 +3,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { switchMap } from 'rxjs/operators';
 import { CustomHttpInterceptor } from './http.interceptor';
+import { IEditEvent } from '../components/editable-field/editable-field.component';
 export interface IBizAttribute {
   id: number,
   name: string,
@@ -32,13 +33,13 @@ export class AttributeService {
     return this.httpProxy.getAttributes(pageNum, pageSize, sortBy, sortOrder)
   }
   create(attribute: IBizAttribute, changeId: string) {
-    this.httpProxy.createAttribute(attribute,changeId).subscribe(result => {
+    this.httpProxy.createAttribute(attribute, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   update(attribute: IBizAttribute, changeId: string) {
-    this.httpProxy.updateAttribute(attribute,changeId).subscribe(result => {
+    this.httpProxy.updateAttribute(attribute, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()
@@ -54,5 +55,12 @@ export class AttributeService {
   }
   notify(result: boolean) {
     result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
+  }
+  doPatch(id: number, value: IEditEvent, type: string, changeId: string) {
+    this.httpProxy.updateField(id, 'attributes', type, value, changeId).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+      this.closeSheet.next()
+    })
   }
 }

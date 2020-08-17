@@ -29,16 +29,6 @@
         <input matInput placeholder="{{'ENTER_KEYWORD'|translate}}" [formControl]="rangeSearch">
     </mat-form-field>
 </mat-expansion-panel>
-<mat-expansion-panel style="margin-bottom: 12px;">
-    <mat-expansion-panel-header>
-        <mat-panel-title>
-            <h3>{{'ATTRIBUTE_SEARCH'|translate}}</h3>
-        </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-form-field>
-        <input matInput placeholder="{{'ENTER_KEYWORD'|translate}}" [formControl]="rangeSearch">
-    </mat-form-field>
-</mat-expansion-panel>
 
 <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
@@ -76,7 +66,16 @@
 
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'ID'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-copy-field [inputValue]="row.id"></app-copy-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="coverImage" >
+                <th mat-header-cell *matHeaderCellDef style="text-align: center;">{{'COVER_IMAGE'|translate}} </th>
+                <td mat-cell *matCellDef="let row">
+                   <app-lazy-image [lazySrc]="row.coverImage"></app-lazy-image>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="name">

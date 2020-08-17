@@ -213,5 +213,8 @@ export const zhHans = {
     "BATCH_ONLINE": "批量上架",
     "BATCH_OFFLINE": "批量下架",
     "BATCH_DELETE": "批量删除",
+    "COPY_SUCCESS": "复制成功",
+    "COPY_FAILED": "复制失败",
+    "COVER_IMAGE":"封面图",
     "": "",
 }

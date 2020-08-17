@@ -11,6 +11,8 @@ import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
 import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { CatalogComponent } from '../catalog/catalog.component';
+import * as UUID from 'uuid/v1';
+import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -175,5 +177,8 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
         this.updateSummaryData(next)
       });
     }
+  }
+  doPatchName(id: number, event: IEditEvent) {
+    this.catalogSvc.doPatch(id, event, 'name', UUID())
   }
 }

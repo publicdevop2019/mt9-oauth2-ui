@@ -57,6 +57,8 @@ import { FilterComponent } from './modules/mall/pages/filter/filter.component';
 import { UpdateProdStatusDialogComponent } from './components/update-prod-status-dialog/update-prod-status-dialog.component';
 import { SettingComponent } from './pages/setting/setting.component';
 import { EditableFieldComponent } from './components/editable-field/editable-field.component';
+import { CopyFieldComponent } from './components/copy-field/copy-field.component';
+import { LazyImageComponent } from './components/lazy-image/lazy-image.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -97,7 +99,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     FilterComponent,
     UpdateProdStatusDialogComponent,
     SettingComponent,
-    EditableFieldComponent
+    EditableFieldComponent,
+    CopyFieldComponent,
+    LazyImageComponent
   ],
   imports: [
     BrowserAnimationsModule,

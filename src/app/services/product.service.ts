@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
+import { IEditEvent } from '../components/editable-field/editable-field.component';
 export interface IProductTotalResponse {
   data: IProductSimple[],
   totalItemCount: number,
@@ -15,6 +16,7 @@ export interface IProductSimple {
   attributesKey: string[];
   priceList: number[];
   totalSales: number;
+  coverImage:string
 }
 export interface IProductOptions {
   title: string;
@@ -123,7 +125,7 @@ export class ProductService {
   notify(result: boolean) {
     result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
-  updateName(id: number, value: string, changeId: string) {
+  updateName(id: number, value: IEditEvent, changeId: string) {
     this.httpProxy.updateField(id, 'products', 'name', value, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()

@@ -208,5 +208,8 @@ export const enUS = {
     "BATCH_ONLINE": "Batch online",
     "BATCH_OFFLINE": "Batch offline",
     "BATCH_DELETE": "Batch delete",
+    "COPY_SUCCESS": "Copy success",
+    "COPY_FAILED": "Copy failed",
+    "COVER_IMAGE":"Cover image",
     "": "",
 }

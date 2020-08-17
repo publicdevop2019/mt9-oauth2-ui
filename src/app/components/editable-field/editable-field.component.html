@@ -1,11 +1,13 @@
 <div style="display: flex;flex-direction: row;justify-content: space-between;" (mouseenter)="showEditIcon()"
     (mouseleave)="hideEditIcon()">
-    <div *ngIf="!editView">{{inputValue}}</div>
+    <div *ngIf="!editView">{{inputValue?inputValue:''}}</div>
     <div *ngIf="editView" style="display: flex;flex-direction: row;width: 100%;">
-        <input #inputField [value]="inputValue" style="flex: 1;">
-        <mat-icon [color]="'primary'" (click)="doUpdate(inputField.value)" style="cursor: pointer;">check_circle_outline</mat-icon>
-        <mat-icon [color]="'primary'" (click)="doCancel()" style="cursor: pointer;">cancel</mat-icon>
+        <input #inputField [value]="inputValue?inputValue:''" style="flex: 1;">
+        <mat-icon [color]="'primary'" (click)="doUpdate(inputField.value)" style="cursor: pointer;">check_circle_outline
+        </mat-icon>
+        <mat-icon [color]="'error'" (click)="doCancel()" style="cursor: pointer;">cancel</mat-icon>
     </div>
-    <mat-icon *ngIf="!editView" [ngStyle]="{'display':displayEdit}" [color]="'primary'" (click)="editView=true" style="padding-right: 8px;cursor: pointer;">edit
+    <mat-icon *ngIf="!editView" [ngStyle]="{'visibility':displayEdit}" [color]="'primary'" (click)="editView=true"
+        style="padding-right: 8px;cursor: pointer;">edit
     </mat-icon>
 </div>

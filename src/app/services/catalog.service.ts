@@ -4,6 +4,7 @@ import { switchMap } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material';
 import { CustomHttpInterceptor } from './http.interceptor';
+import { IEditEvent } from '../components/editable-field/editable-field.component';
 export interface ICatalogCustomer {
   id: number,
   name: string,
@@ -39,13 +40,13 @@ export class CategoryService {
     return this.httpProxy.getCatalogByIdAdmin(id)
   }
   create(category: ICatalogCustomer, changeId: string) {
-    this.httpProxy.createCategory(category,changeId).subscribe(result => {
+    this.httpProxy.createCategory(category, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
   update(category: ICatalogCustomer, changeId: string) {
-    this.httpProxy.updateCategory(category,changeId).subscribe(result => {
+    this.httpProxy.updateCategory(category, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()
@@ -61,5 +62,12 @@ export class CategoryService {
   }
   notify(result: boolean) {
     result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
+  }
+  doPatch(id: number, value: IEditEvent, type: string, changeId: string) {
+    this.httpProxy.updateField(id, 'catalogs', type, value, changeId).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+      this.closeSheet.next()
+    })
   }
 }

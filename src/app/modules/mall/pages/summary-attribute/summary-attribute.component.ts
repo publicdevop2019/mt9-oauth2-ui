@@ -6,13 +6,14 @@ import { AttributeComponent } from '../attribute/attribute.component';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
 import { Subscription } from 'rxjs';
-
+import * as UUID from 'uuid/v1';
+import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
 @Component({
   selector: 'app-summary-attribute',
   templateUrl: './summary-attribute.component.html',
 })
 export class SummaryAttributeComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id','name', 'description', 'value', 'type', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'description', 'value', 'type', 'edit', 'delete'];
   dataSource: MatTableDataSource<IBizAttribute>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
@@ -70,5 +71,11 @@ export class SummaryAttributeComponent implements OnInit, OnDestroy {
     this.attrSvc.getAttributeList(this.attrSvc.currentPageIndex, this.getPageSize(), sort.active, sort.direction).subscribe(next => {
       this.updateSummaryData(next)
     });
+  }
+  doPatchName(id: number, event: IEditEvent) {
+    this.attrSvc.doPatch(id, event, 'name', UUID())
+  }
+  doPatchDesc(id: number, event: IEditEvent) {
+    this.attrSvc.doPatch(id, event, 'description', UUID())
   }
 }

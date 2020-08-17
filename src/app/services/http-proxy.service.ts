@@ -17,6 +17,7 @@ import { IProductDetail, IProductSimple, IProductTotalResponse } from './product
 import { IUserReactionResult } from './reaction.service';
 import { IFilter, IFilterSummaryNet } from './filter.service';
 import * as UUID from 'uuid/v1';
+import { IEditEvent } from '../components/editable-field/editable-field.component';
 export interface IPatch {
     op: string,
     path: string,
@@ -222,7 +223,7 @@ export class HttpProxyService {
             });
         });
     }
-    updateField(id: number, type: string, field: string, value: string, changeId: string) {
+    updateField(id: number, type: string, field: string, value: IEditEvent, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId);
@@ -515,9 +516,15 @@ export class HttpProxyService {
         }
         return re;
     }
-    private getPatchPayload(fieldName: string, fieldValue: string): IPatch[] {
+    private getPatchPayload(fieldName: string, fieldValue: IEditEvent): IPatch[] {
         let re: IPatch[] = [];
-        let startAt = <IPatch>{ op: 'replace', path: "/" + fieldName, value: fieldValue }
+        let type = undefined;
+        if (fieldValue.original) {
+            type = 'replace'
+        } else {
+            type = 'add'
+        }
+        let startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next }
         re.push(startAt)
         return re;
     }

@@ -12,6 +12,7 @@ import { isNullOrUndefined } from 'util';
 import { ProductComponent } from '../product/product.component';
 import { SelectionModel } from '@angular/cdk/collections';
 import * as UUID from 'uuid/v1';
+import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
@@ -19,11 +20,11 @@ import * as UUID from 'uuid/v1';
 export class SummaryProductComponent implements OnInit, OnDestroy {
   exactSearch = new FormControl('', []);
   rangeSearch = new FormControl('', []);
-  displayedColumns: string[] = ['id', 'name', 'priceList', 'sales', 'status', 'endAt', 'edit', 'delete'];
+  displayedColumns: string[] = ['id','coverImage', 'name', 'priceList', 'sales', 'status', 'endAt', 'edit', 'delete'];
   columnWidth: number;
   dataSource: MatTableDataSource<IProductSimple>;
   totoalItemCount = 0;
-  pageSizeOffset = 5;
+  pageSizeOffset = 8;
   private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSlideToggle, { static: true }) slide: MatSlideToggle;
@@ -187,7 +188,7 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
     let ids = this.selection.selected.map(e => e.id)
     this.productSvc.batchDelete(ids)
   }
-  doPatch(id: number, event: string) {
+  doPatch(id: number, event: IEditEvent) {
     this.productSvc.updateName(id, event, UUID())
 
   }
