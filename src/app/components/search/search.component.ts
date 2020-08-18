@@ -26,8 +26,12 @@ export class SearchComponent {
   constructor(fb: FormBuilder, private categorySvc: CatalogService, private attrSvc: AttributeService) {
     this.options = fb.group({
       searchType: this.searchTypeCtrl,
-      searchHelperValue: this.searchByIdCtrl,
       searchQuery: this.searchQueryCtrl,
+      searchHelperValue: this.searchByIdCtrl,
+      searchByName: this.searchByNameCtrl,
+      searchByAttr: this.searchByAttr,
+      searchByAttrSelect: this.searchByAttrSelect,
+      searchByAttrManual: this.searchByAttrManual,
     });
     let sub2 = this.searchQueryCtrl.valueChanges.pipe(debounce(() => interval(1000)))
       .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).subscribe(next => {
@@ -68,7 +72,7 @@ export class SearchComponent {
     })
   }
   private invalidSearchParam(input: string): boolean {
-    if (['attributes:', 'id:'].includes(input))
+    if (['attributes:', 'id:', 'name:'].includes(input))
       return false;
     let spaces: RegExp = new RegExp(/^\s*$/)
     return (!spaces.test(input))
@@ -83,5 +87,17 @@ export class SearchComponent {
   }
   searchWithTags(catalog: ICatalogCustomer) {
     this.searchQueryCtrl.setValue('attributes:' + catalog.attributes.join(','))
+  }
+  doReset() {
+    this.options.reset({
+      searchType: '',
+      searchQuery: '',
+      searchHelperValue: '',
+      searchByName: '',
+      searchByAttr: '',
+      searchByAttrSelect: '',
+      searchByAttrManual: '',
+    }, { emitEvent: false });
+    this.search.emit('')
   }
 }

@@ -181,6 +181,8 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
   }
   doSearch(queryString: string) {
     this.productSvc.currentPageIndex = 0;
-    this.productSvc.searchProductWithQuery(this.productSvc.currentPageIndex, this.getPageSize(), queryString)
+    this.productSvc.searchProductWithQuery(this.productSvc.currentPageIndex, this.getPageSize(), queryString).subscribe(next=>{
+      this.totalProductHandler(next)
+    })
   }
 }

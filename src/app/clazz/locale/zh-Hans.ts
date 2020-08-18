@@ -225,5 +225,6 @@ export const zhHans = {
     "SEARCH_BY_CATALOG_BACK": "搜后台类目",
     "ENTER_ID": "输入编号",
     "SEARCH": "搜索值",
+    "RESET": "重置",
     "": "",
 }

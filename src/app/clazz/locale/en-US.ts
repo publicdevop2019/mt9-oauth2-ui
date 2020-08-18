@@ -220,5 +220,6 @@ export const enUS = {
     "SEARCH_BY_CATALOG_BACK": "search by catalog backend",
     "ENTER_ID": "Enter Id",
     "SEARCH": "Search query",
+    "RESET": "Reset",
     "": "",
 }
