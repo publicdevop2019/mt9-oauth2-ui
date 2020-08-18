@@ -1,8 +1,8 @@
-<h2 *ngIf="catalogType==='frontend'" class="flex-row-space-between">{{'MALL_CENTER' |translate}} /
-    {{'CATEGORY_DASHBOARD'|translate}} <button mat-raised-button color="primary"
+<h2 *ngIf="catalogType==='frontend'" class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
+    {{'CATEGORY_DASHBOARD'|translate}} <button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<h2 *ngIf="catalogType==='backend'" class="flex-row-space-between">{{'MALL_CENTER' |translate}} /
-    {{'CATEGORY_ADMIN_DASHBOARD'|translate}} <button mat-raised-button color="primary"
+<h2 *ngIf="catalogType==='backend'" class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
+    {{'CATEGORY_ADMIN_DASHBOARD'|translate}} <button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <ng-container *ngIf="viewType==='LIST_VIEW'">
