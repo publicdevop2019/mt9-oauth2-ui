@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
-import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { CatalogComponent } from '../catalog/catalog.component';
 import * as UUID from 'uuid/v1';
@@ -37,7 +37,7 @@ export class SummaryCatalogComponent implements OnInit, AfterViewInit, OnDestroy
   private subs: Subscription = new Subscription()
   totoalItemCount: number;
   constructor(
-    public catalogSvc: CategoryService,
+    public catalogSvc: CatalogService,
     private fis: FormInfoService,
     public translate: TranslateService,
     private route: ActivatedRoute,

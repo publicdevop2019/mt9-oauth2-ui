@@ -113,20 +113,21 @@ export class HttpProxyService {
     getAttributeById(id: number): Observable<IBizAttribute> {
         return this._httpClient.get<IBizAttribute>(environment.serverUri + this.PRODUCT_SVC_NAME + '/attributes/admin/' + id);
     }
-    searchProductByName(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getKeywordParam(keyword), this.getPageParam(pageNum, pageSize)]));
+    searchProductWithQuery(pageNum: number, pageSize: number, query: string): Observable<IProductTotalResponse> {
+        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getSearchParam(query), this.getPageParam(pageNum, pageSize)]));
     }
-    private getKeywordParam(keyword: string) {
-        return 'query=name:' + keyword
-    }
-    searchProductById(id: number): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin?query=id:' + id + "&sc:0");
-    }
-    searchProductsByAttrs(pageNum: number, pageSize: number, attr: string[]): Observable<IProductTotalResponse> {
-        return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getSearchParam(attr), this.getPageParam(pageNum, pageSize)]));
-    }
-    private getSearchParam(attr: string[]): string {
-        return 'query=attr:' + attr.map(e => e.replace(":", "-")).join('$')
+    private getSearchParam(query: string): string {
+        if (query.includes('id:')) {
+            return 'query=' + query.replace(',', '.');
+        } else if (query.includes('name:')) {
+            return 'query=' + query;
+        } else if (query.includes('attributes:')) {
+            let var1 = query.replace('attributes:', '')
+            let attr = var1.split(',');
+            return 'query=attr:' + attr.map(e => e.replace(":", "-")).join('$')
+        } else {
+
+        }
     }
     deletePost(id: string): Observable<boolean> {
         return new Observable<boolean>(e => {

@@ -9,7 +9,7 @@ import { getLabel, hasValue, getLayeredLabel } from 'src/app/clazz/utility';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalogCustomer } from 'src/app/services/catalog.service';
 import * as UUID from 'uuid/v1';
 
 @Component({
@@ -31,7 +31,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private subs: Subscription = new Subscription();
   private changeId=UUID()
   constructor(
-    public catalogSvc: CategoryService,
+    public catalogSvc: CatalogService,
     private fis: FormInfoService,
     public translate: TranslateService,
     public attrSvc: AttributeService,

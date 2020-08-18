@@ -655,5 +655,5 @@ export const mockAttr = {
       "type": "PROD_ATTR"
     }
   ],
-  "totalProductCount": 58
+  "totalItemCount": 58
 }

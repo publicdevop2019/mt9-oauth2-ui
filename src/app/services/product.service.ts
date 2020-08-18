@@ -17,7 +17,7 @@ export interface IProductSimple {
   attributesKey: string[];
   priceList: number[];
   totalSales: number;
-  coverImage:string
+  coverImage: string
 }
 export interface IProductOptions {
   title: string;
@@ -87,14 +87,8 @@ export class ProductService {
   getAllProduct(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IProductTotalResponse> {
     return this.httpProxy.getAllProducts(pageNum, pageSize, sortBy, sortOrder)
   }
-  searchProductsByTags(pageNum: number, pageSize: number, tags: string[]): Observable<IProductTotalResponse> {
-    return this.httpProxy.searchProductsByAttrs(pageNum, pageSize, tags)
-  }
-  searchProductById(id: number): Observable<IProductTotalResponse> {
-    return this.httpProxy.searchProductById(id)
-  }
-  searchProductByKeyword(pageNum: number, pageSize: number, keyword: string): Observable<IProductTotalResponse> {
-    return this.httpProxy.searchProductByName(pageNum, pageSize, keyword)
+  searchProductWithQuery(pageNum: number, pageSize: number, query: string): Observable<IProductTotalResponse> {
+    return this.httpProxy.searchProductWithQuery(pageNum, pageSize, query)
   }
   getProductDetailById(id: number): Observable<IProductDetail> {
     return this.httpProxy.getProductDetail(id)

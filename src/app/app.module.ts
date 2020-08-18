@@ -59,6 +59,7 @@ import { SettingComponent } from './pages/setting/setting.component';
 import { EditableFieldComponent } from './components/editable-field/editable-field.component';
 import { CopyFieldComponent } from './components/copy-field/copy-field.component';
 import { LazyImageComponent } from './components/lazy-image/lazy-image.component';
+import { SearchComponent } from './components/search/search.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -101,7 +102,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     SettingComponent,
     EditableFieldComponent,
     CopyFieldComponent,
-    LazyImageComponent
+    LazyImageComponent,
+    SearchComponent
   ],
   imports: [
     BrowserAnimationsModule,

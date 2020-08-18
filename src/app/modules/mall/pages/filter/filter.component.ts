@@ -9,7 +9,7 @@ import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { FilterService, IFilter, IFilterItem } from 'src/app/services/filter.service';
 import * as UUID from 'uuid/v1';
 @Component({
@@ -45,7 +45,7 @@ export class FilterComponent implements OnInit {
     public translate: TranslateService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<FilterComponent>,
-    private categorySvc: CategoryService,
+    private categorySvc: CatalogService,
     private cdr: ChangeDetectorRef,
     public attrSvc: AttributeService,
   ) {

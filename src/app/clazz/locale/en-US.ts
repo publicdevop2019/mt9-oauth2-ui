@@ -212,5 +212,13 @@ export const enUS = {
     "COPY_FAILED": "Copy failed",
     "COVER_IMAGE":"Cover image",
     "CLONE":"Clone",
+    "SELECT_A_SEARCH_TYPE": "Select a search type",
+    "SEARCH_BY_ID": "search by id",
+    "SEARCH_BY_NAME": "search by name",
+    "SEARCH_BY_ATTRIBUTES": "search by attributes",
+    "SEARCH_BY_CATALOG_FRONT": "search by catalog frontend",
+    "SEARCH_BY_CATALOG_BACK": "search by catalog backend",
+    "ENTER_ID": "Enter Id",
+    "SEARCH": "Search query",
     "": "",
 }

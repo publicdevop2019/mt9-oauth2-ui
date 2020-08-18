@@ -12,7 +12,7 @@ import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dy
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
 import { ATTR_SALE_FORM_CONFIG_IMAGE, FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/services/attribute.service';
-import { CategoryService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IBizProductBottomSheet } from 'src/app/services/product.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import * as UUID from 'uuid/v1';
@@ -69,7 +69,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     private httpProxy: HttpProxyService,
     private fis: FormInfoService,
     public translate: TranslateService,
-    private categorySvc: CategoryService,
+    private categorySvc: CatalogService,
     public attrSvc: AttributeService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, // keep as any is needed
     private _bottomSheetRef: MatBottomSheetRef<ProductComponent>,

@@ -3,7 +3,7 @@ import { MatBottomSheet, MatBottomSheetConfig, MatPaginator, MatSort, MatTableDa
 import { combineLatest, Subscription } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
-import { CategoryService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalogCustomer } from 'src/app/services/catalog.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { FilterService, IFilterSummary, IFilterSummaryNet } from 'src/app/services/filter.service';
 import { FilterComponent } from '../filter/filter.component';
@@ -24,7 +24,7 @@ export class SummaryFilterComponent implements OnInit {
     public filterSvc: FilterService,
     public deviceSvc: DeviceService,
     private _bottomSheet: MatBottomSheet,
-    private catalogSvc: CategoryService,
+    private catalogSvc: CatalogService,
   ) {
     let sub = this.filterSvc.refreshSummary.pipe(switchMap(() => this.filterSvc.getAll(this.filterSvc.currentPageIndex, this.getPageSize()))).subscribe(next => { this.updateSummaryData(next) })
     combineLatest(this.filterSvc.getAll(this.filterSvc.currentPageIndex, this.getPageSize()), this.catalogSvc.getCatalogFrontend()).pipe(take(1)).subscribe(next => {

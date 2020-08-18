@@ -25,7 +25,7 @@ export interface ICatalogCustomerHttp {
 @Injectable({
   providedIn: 'root'
 })
-export class CategoryService {
+export class CatalogService {
   currentPageIndex: number = 0;
   refreshSummary: Subject<void> = new Subject();
   closeSheet: Subject<void> = new Subject();
