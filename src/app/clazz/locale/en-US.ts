@@ -221,5 +221,9 @@ export const enUS = {
     "ENTER_ID": "Enter Id",
     "SEARCH": "Search query",
     "RESET": "Reset",
+    "PREVIEW": "Preview",
+    "SCREEN_WIDTH": "Screen width",
+    "SCREEN_HEIGHT": "Screen height",
+    "DARK_MODE": "Dark mode",
     "": "",
 }

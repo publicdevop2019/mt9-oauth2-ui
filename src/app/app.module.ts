@@ -60,6 +60,8 @@ import { EditableFieldComponent } from './components/editable-field/editable-fie
 import { CopyFieldComponent } from './components/copy-field/copy-field.component';
 import { LazyImageComponent } from './components/lazy-image/lazy-image.component';
 import { SearchComponent } from './components/search/search.component';
+import 'mt-wc-product';
+import { PreviewOutletComponent } from './components/preview-outlet/preview-outlet.component'
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -103,7 +105,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     EditableFieldComponent,
     CopyFieldComponent,
     LazyImageComponent,
-    SearchComponent
+    SearchComponent,
+    PreviewOutletComponent
   ],
   imports: [
     BrowserAnimationsModule,

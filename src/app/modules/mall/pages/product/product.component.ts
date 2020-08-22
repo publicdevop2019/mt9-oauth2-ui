@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ElementRef, AfterContentInit, ViewContainerRef } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
@@ -16,6 +16,28 @@ import { CatalogService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/
 import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IBizProductBottomSheet } from 'src/app/services/product.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import * as UUID from 'uuid/v1';
+interface IProductSimplePublic {
+  imageUrlSmall: string;
+  name: string;
+  description: string;
+  lowestPrice: number;
+  totalSales: number;
+  id: number;
+}
+interface IProductSkuPublic {
+  attributeSales: string[];
+  price: number;
+  storage: number;
+}
+interface IProductDetailPublic extends IProductSimplePublic {
+  imageUrlLarge?: string[];
+  selectedOptions?: IProductOptions[];
+  specification?: string[];
+  skus: IProductSkuPublic[],
+  storage?: number,
+  attrIdMap: { [key: number]: string }
+  attributeSaleImages?: IAttrImage[]
+}
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -671,4 +693,45 @@ export class ProductComponent implements OnInit, OnDestroy {
   updateProduct() {
     this.productSvc.update(this.convertToPayload(), this.changeId)
   }
+  previewFlag: boolean = false;
+  doPreview() {
+    this.previewFlag = !this.previewFlag;
+  }
+  parseProductForm() {
+    let beforeParse = this.convertToPayload();
+    let var1: IProductSkuPublic[] = [];
+    let skuIds = new Set<string>();
+    let lowestPrice = 0;
+    beforeParse.skus.forEach(e => {
+      e.attributesSales.forEach(ee => {
+        skuIds.add(ee.split(":")[0])
+      });
+      var1.push(<IProductSkuPublic>{
+        attributeSales: e.attributesSales,
+        storage: e.storageOrder,
+        price: e.price
+      });
+      if (lowestPrice === 0)
+        lowestPrice = e.price
+      if (lowestPrice > e.price)
+        lowestPrice = e.price
+    })
+    let parsedIdMap = {};
+    skuIds.forEach(id => {
+      parsedIdMap[id] = this.attrList.find(e => e.id.toString() === id).name
+    })
+    let afterParse = <IProductDetailPublic>{
+      name: beforeParse.name,
+      imageUrlSmall: beforeParse.imageUrlSmall,
+      imageUrlLarge: beforeParse.imageUrlLarge,
+      description: beforeParse.description,
+      attributeSaleImages: beforeParse.attributeSaleImages,
+      selectedOptions: beforeParse.selectedOptions,
+      skus: var1,
+      attrIdMap: parsedIdMap,
+      lowestPrice: lowestPrice
+    }
+    return afterParse;
+  }
+
 }

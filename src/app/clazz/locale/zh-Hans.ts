@@ -226,5 +226,9 @@ export const zhHans = {
     "ENTER_ID": "输入编号",
     "SEARCH": "搜索值",
     "RESET": "重置",
+    "PREVIEW": "预览",
+    "SCREEN_WIDTH": "屏幕宽度",
+    "SCREEN_HEIGHT": "屏幕高度",
+    "DARK_MODE": "夜间模式",
     "": "",
 }
