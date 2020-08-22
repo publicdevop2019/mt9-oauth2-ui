@@ -25,7 +25,7 @@ interface IProductSimplePublic {
   id: number;
 }
 interface IProductSkuPublic {
-  attributeSales: string[];
+  attributesSales: string[];
   price: number;
   storage: number;
 }
@@ -707,7 +707,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         skuIds.add(ee.split(":")[0])
       });
       var1.push(<IProductSkuPublic>{
-        attributeSales: e.attributesSales,
+        attributesSales: e.attributesSales,
         storage: e.storageOrder,
         price: e.price
       });
