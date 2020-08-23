@@ -1,4 +1,4 @@
-export const mockAttr = {
+export const mockAttrs = {
   "data": [
     {
       "id": 835602958278656,

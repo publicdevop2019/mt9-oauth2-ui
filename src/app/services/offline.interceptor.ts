@@ -2,20 +2,21 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } fr
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { mockAttr } from 'src/assets/mock-attributes';
-import { mockCatalogAdmin } from 'src/assets/mock-catalog-admin';
-import { mockCatalogCustomer } from 'src/assets/mock-catalog-customer';
-import { mockClient } from 'src/assets/mock-clients';
-import { mockFilter } from 'src/assets/mock-filter';
-import { mockFilters } from 'src/assets/mock-filters';
-import { mockOrders } from 'src/assets/mock-order';
-import { mockProductDetails } from 'src/assets/mock-product-detail';
-import { mockProducts } from 'src/assets/mock-product-simple';
-import { mockResourceO } from 'src/assets/mock-resource-owners';
-import { mockSP } from 'src/assets/mock-security-profile';
+import { mockAttrs } from 'src/assets/mocks/mock-attributes';
+import { mockCatalogAdmin } from 'src/assets/mocks/mock-catalog-admin';
+import { mockCatalogCustomer } from 'src/assets/mocks/mock-catalog-customer';
+import { mockClient } from 'src/assets/mocks/mock-clients';
+import { mockFilter } from 'src/assets/mocks/mock-filter';
+import { mockFilters } from 'src/assets/mocks/mock-filters';
+import { mockOrders } from 'src/assets/mocks/mock-order';
+import { mockProductDetails } from 'src/assets/mocks/mock-product-detail';
+import { mockProducts } from 'src/assets/mocks/mock-product-simple';
+import { mockResourceO } from 'src/assets/mocks/mock-resource-owners';
+import { mockSP } from 'src/assets/mocks/mock-security-profile';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode } from '../interfaze/commom.interface';
-import { mockCatalog } from 'src/assets/mock-catalog';
+import { mockCatalog } from 'src/assets/mocks/mock-catalog';
+import { mockAttr } from 'src/assets/mocks/mock-attribute';
 /**
  * use refresh token if call failed
  */
@@ -37,8 +38,11 @@ export class OfflineInterceptor implements HttpInterceptor {
         return of(new HttpResponse({ status: 200 })).pipe(delay(this.DEFAULT_DELAY));
       }
       if (['get'].includes(req.method.toLowerCase())) {
-        if (req.url.includes('attributes/admin')) {
+        if (req.url.includes('attributes/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockAttr })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('attributes/admin')) {
+          return of(new HttpResponse({ status: 200, body: mockAttrs })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('/products/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockProductDetails })).pipe(delay(this.DEFAULT_DELAY))
@@ -71,10 +75,10 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('orders')) {
           return of(new HttpResponse({ status: 200, body: mockOrders })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('filters/')) {
+        if (req.url.includes('filters/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockFilter })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('filters')) {
+        if (req.url.includes('filters/admin')) {
           return of(new HttpResponse({ status: 200, body: mockFilters })).pipe(delay(this.DEFAULT_DELAY))
         }
       }
