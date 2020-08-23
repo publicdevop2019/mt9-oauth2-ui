@@ -30,3 +30,25 @@ export function getLayeredLabel(attr: ICatalogCustomer, es: ICatalogCustomer[]):
     }
     return tags.reverse().join(' / ')
 }
+export function parseAttributePayload(input: string[], attrList: IBizAttribute[]) {
+    let parsed = {};
+    input.forEach((attr, index) => {
+        let selected = attrList.find(e => String(e.id) === attr.split(':')[0]);
+        if (index === 0) {
+            parsed['attributeId'] = selected.id;
+            if (selected.method === 'SELECT') {
+                parsed['attributeValueSelect'] = attr.split(':')[1];
+            } else {
+                parsed['attributeValueManual'] = attr.split(':')[1];
+            }
+        } else {
+            parsed['attributeId_' + (index - 1)] = selected.id;
+            if (selected.method === 'SELECT') {
+                parsed['attributeValueSelect_' + (index - 1)] = attr.split(':')[1];
+            } else {
+                parsed['attributeValueManual_' + (index - 1)] = attr.split(':')[1];
+            }
+        }
+    })
+    return parsed;
+}

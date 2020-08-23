@@ -64,7 +64,7 @@ export class FilterComponent implements OnInit {
     combineLatest(this.attrSvc.getAttributeList(), this.categorySvc.getCatalogFrontend(), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
-      this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
+      this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });
       this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLayeredLabel(e, next[1].data), value: String(e.id) });
       this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
       this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
@@ -72,26 +72,18 @@ export class FilterComponent implements OnInit {
       if (this.filter) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.filter.id);
         if (this.filter.catalogs && this.filter.catalogs.length !== 0) {
-          this.filter.catalogs.forEach((url, index) => {
-            if (index === 0) {
-              this.fis.formGroupCollection[this.formIdCatalog].get('catalogId').setValue(url);
-            } else {
-              this.fis.add(this.formIdCatalog);
-              this.fis.formGroupCollection[this.formIdCatalog].get('catalogId_' + (index - 1)).setValue(url);
-            }
-          })
+          this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.filter.catalogs, 'catalogId'), this.filter.catalogs.length);
         }
         if (this.filter.filters && this.filter.filters.length !== 0) {
+          this.fis.restoreDynamicForm(this.formIdFilter, this.fis.parsePayloadArr(this.filter.filters.map(e => e.id), 'attributeId'), this.filter.filters.length);
+
           this.filter.filters.forEach((e, index) => {
             if (index === 0) {
-              this.fis.formGroupCollection[this.formIdFilter].get('attributeId').setValue(String(e.id));
               //for child form
               this.updateChildFormFilter(e, this.childFormId);
               //for child form
               this.subForCtrlChange('attributeId')
             } else {
-              this.fis.add(this.formIdFilter);
-              this.fis.formGroupCollection[this.formIdFilter].get('attributeId_' + (index - 1)).setValue(String(e.id));
               let childFormId = this.childFormId + '_' + (index - 1);
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
               let sub = childFormCreated.subscribe(() => {
@@ -117,16 +109,7 @@ export class FilterComponent implements OnInit {
     this.fis.formGroupCollection_index[childFormId] = 0;
     this.fis.formGroupCollection_formInfo[childFormId].inputs = this.fis.formGroupCollection_formInfo[childFormId].inputs.filter(e => !e.key.includes('value_'))
     this.fis.formGroupCollection[childFormId].get('value').reset();
-    option.values.forEach((opt, index) => {
-      if (index == 0) {
-        this.fis.formGroupCollection[childFormId].get('value').setValue(opt);
-      } else {
-        let snapshot = this.fis.formGroupCollection_index[childFormId];
-        this.fis.add(childFormId);
-        this.fis.formGroupCollection[childFormId].get('value_' + snapshot).setValue(opt);
-      }
-    });
-    this.fis.$refresh.next()
+    this.fis.restoreDynamicForm(childFormId, this.fis.parsePayloadArr(option.values, 'value'), option.values.length);
   }
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
@@ -226,7 +209,7 @@ export class FilterComponent implements OnInit {
   }
   subForCtrlChange(idKey: string) {
     let sub = this.fis.formGroupCollection[this.formIdFilter].get(idKey).valueChanges.subscribe(next => {
-      let selected = this.attrList.find(e => String(e.id) === next);
+      let selected = this.attrList.find(e => e.id === next);
       if (selected) {
         let append = idKey.replace('attributeId', '');
         let var1 = <IFilterItem>{

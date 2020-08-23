@@ -1,8 +1,10 @@
-export const mockProductDetails={
+import { IProductDetail } from 'src/app/services/product.service';
+
+export const mockProductDetails:IProductDetail={
 	"id": 835654087368704,
 	"name": "笔记本电脑DERE戴睿R9 pro轻薄便携学生15.6英寸全新四核独显游戏本超薄超级上网手提办公商务超极本2020款",
 	"imageUrlSmall": "https://img.alicdn.com/imgextra/i2/2891951486/TB2XbmDd4tnkeRjSZSgXXXAuXXa_!!2891951486.jpg_430x430q90.jpg",
-	"imageUrlLarge": [],
+	"imageUrlLarge": ["https://img.alicdn.com/imgextra/i2/2891951486/TB2XbmDd4tnkeRjSZSgXXXAuXXa_!!2891951486.jpg_430x430q90.jpg","https://img.alicdn.com/imgextra/i2/2891951486/TB2XbmDd4tnkeRjSZSgXXXAuXXa_!!2891951486.jpg_430x430q90.jpg"],
 	"description": "新品上市 15天试用全面屏大键盘约5mm微边框",
 	"endAt": 15000000000,
 	"specification": [],
@@ -43,5 +45,42 @@ export const mockProductDetails={
 		"price": 3178,
 		"sales": 0
 	  }
+	],
+	selectedOptions:[
+		{
+			'title':'SSD',
+			'options':[
+				{
+					optionValue:'64G',
+					priceVar:'+52'
+				},
+				{
+					optionValue:'128G',
+					priceVar:'+100'
+				},
+				{
+					optionValue:'256G',
+					priceVar:'+152'
+				},
+			]
+		},
+		{
+			'title':'键盘',
+			'options':[
+				{
+					optionValue:'一般',
+					priceVar:'+52'
+				},
+				{
+					optionValue:'高级',
+					priceVar:'+100'
+				},
+				{
+					optionValue:'豪华',
+					priceVar:'+152'
+				},
+			]
+		}
 	]
+	
   }

@@ -5,11 +5,11 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { getLabel, hasValue, getLayeredLabel } from 'src/app/clazz/utility';
+import { getLabel, hasValue, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CatalogService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
 import * as UUID from 'uuid/v1';
 
 @Component({
@@ -29,7 +29,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
   private subs: Subscription = new Subscription();
-  private changeId=UUID()
+  private changeId = UUID()
   constructor(
     public catalogSvc: CatalogService,
     private fis: FormInfoService,
@@ -43,104 +43,53 @@ export class CatalogComponent implements OnInit, OnDestroy {
       this._bottomSheetRef.dismiss()
     });
     this.subs.add(sub)
-    this.category = data as ICatalogCustomer;
+    this.category = data;
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
     let sub1 = combineLatest(this.formCreatedOb, this.attrSvc.getAttributeList()).pipe(take(1)).pipe(switchMap(next => {
-      //update formInfo first then initialize form, so add template can be correct
-      this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: String(e.id) });
+      this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: e.id });//update formInfo first then initialize form, so add template can be correct
       this.attrList = next[1].data;
-      this.changeDecRef.markForCheck();
+      this.changeDecRef.markForCheck();//refresh view for create
+      this.subForCatalogTypeChange(true);
       if (this.category) {
-        this.fis.formGroupCollection[this.formId].get('id').setValue(this.category.id);
-        this.fis.formGroupCollection[this.formId].get('name').setValue(this.category.name);
-        this.fis.formGroupCollection[this.formId].get('catalogType').setValue(this.category.catalogType);
-        this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
-        if (this.category.catalogType === 'FRONTEND') {
-          this.catalogSvc.getCatalogFrontend().subscribe(next1 => {
-            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
-            if (hasValue(this.category.parentId)) {
-              this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
-              this.changeDecRef.markForCheck();
-            }
-          })
-        } else if (this.category.catalogType === 'BACKEND') {
-          this.catalogSvc.getCatalogBackend().subscribe(next1 => {
-            this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
-            if (hasValue(this.category.parentId)) {
-              this.fis.formGroupCollection[this.formId].get('parentId').setValue(this.category.parentId.toString())
-              this.changeDecRef.markForCheck();
-            }
-          })
-        } else {
-        }
-      } else {
-        this.subForCatalogTypeChange();
+        this.fis.restore(this.formId, this.category);
       }
       return this.attrFormCreatedOb
     })).subscribe(() => {
-      if (this.category && this.category.attributes) {
-        this.category.attributes.forEach((attr, index) => {
-          if (index === 0) {
-            let selected = this.attrList.find(e => String(e.id) === attr.split(':')[0]);
-            this.fis.formGroupCollection[this.attrFormId].get('attributeId').setValue(String(selected.id));
-            if (selected.method === 'SELECT') {
-              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect').display = true;
-              this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect').options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
-              this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect').setValue(attr.split(':')[1]);
-            } else {
-              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual').display = true;
-              this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual').setValue(String(attr.split(':')[1]));
-            }
-          } else {
-            this.fis.add(this.attrFormId);
-            let selected = this.attrList.find(e => String(e.id) === attr.split(':')[0]);
-            this.fis.formGroupCollection[this.attrFormId].get('attributeId_' + (index - 1)).setValue(String(selected.id));
-            if (selected.method === 'SELECT') {
-              this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect_' + (index - 1)).setValue(attr.split(':')[1]);
-            } else {
-              this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual_' + (index - 1)).setValue(attr.split(':')[1]);
-            }
-            //update display after new inputs added
-            if (selected.method === 'SELECT') {
-              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + (index - 1)).display = true;
-              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueSelect_' + (index - 1)).options = selected.selectValues.map(e => <IOption>{ label: e, value: e })
-            } else {
-              this.attrFormInfo.inputs.find(e => e.key === 'attributeValueManual_' + (index - 1)).display = true;
-            }
-          }
-        })
-      }
       this.subForAttrFormChange();
+      if (this.category && this.category.attributes) {
+        this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.category.attributes,this.attrList), this.category.attributes.length);
+      }
       this.fis.$refresh.next();
       this.changeDecRef.markForCheck();
     })
     this.subs.add(sub1)
   }
-  private subForCatalogTypeChange() {
+  private subForCatalogTypeChange(skipReset: boolean) {
     let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
+      let catalogOb: Observable<ICatalogCustomerHttp>;
       if (next === 'FRONTEND') {
-        this.catalogSvc.getCatalogFrontend().subscribe(next1 => {
-          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
-        })
-      } else if (next === 'BACKEND') {
-        this.catalogSvc.getCatalogBackend().subscribe(next1 => {
-          this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id.toString() } })
-        })
+        catalogOb = this.catalogSvc.getCatalogFrontend();
       } else {
-
+        catalogOb = this.catalogSvc.getCatalogBackend();
       }
-      this.fis.formGroupCollection[this.formId].get('parentId').reset();
-      this.changeDecRef.markForCheck()
+      catalogOb.subscribe(next1 => {
+        this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })
+        this.changeDecRef.markForCheck();
+      })
+      if (!skipReset) {
+        this.fis.formGroupCollection[this.formId].get('parentId').reset();
+      }
+      this.changeDecRef.markForCheck();
     });
     this.subs.add(sub3)
   }
   private subForAttrFormChange() {
     let sub2 = this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
       Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-        let selected = this.attrList.find(e => String(e.id) === next[idKey]);
+        let selected = this.attrList.find(e => e.id === next[idKey]);
         if (selected) {
           let append = idKey.replace('attributeId', '');
           this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
@@ -213,7 +162,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
       parentId: formGroup.get('parentId').value,
-      attributes: this.hasAttr() ? this.getAddedAttrs() : null,
+      attributes: this.hasAttr() ? this.getAttributeAsPayload() : null,
       catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
     }
   }
@@ -221,10 +170,10 @@ export class CatalogComponent implements OnInit, OnDestroy {
     let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
   }
-  private getAddedAttrs(): string[] {
+  private getAttributeAsPayload(): string[] {
     let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
-      let selected = this.attrList.find(e => String(e.id) === attrFormValue[idKey]);
+      let selected = this.attrList.find(e => e.id === attrFormValue[idKey]);
       let append = idKey.replace('attributeId', '');
       let attrValue: string;
       if (selected.method === 'SELECT') {

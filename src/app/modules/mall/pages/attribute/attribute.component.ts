@@ -51,21 +51,10 @@ export class AttributeComponent implements OnInit, OnDestroy {
         }
       });
       if (this.attribute) {
-        this.fis.formGroupCollection[this.formId].get('id').setValue(this.attribute.id);
-        this.fis.formGroupCollection[this.formId].get('name').setValue(this.attribute.name);
-        this.fis.formGroupCollection[this.formId].get('method').setValue(this.attribute.method);
-        this.fis.formGroupCollection[this.formId].get('type').setValue(this.attribute.type);
-        this.fis.formGroupCollection[this.formId].get('description').setValue(this.attribute.description);
+        this.fis.restore(this.formId, this.attribute);
         combineLatest(this.attrFormCreatedOb).pipe(take(1)).subscribe(() => {
           if (this.attribute.selectValues && this.attribute.selectValues.length !== 0) {
-            this.attribute.selectValues.forEach((e, index) => {
-              if (index === 0) {
-                this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue').setValue(e);
-              } else {
-                this.fis.add(this.formIdAttrValue);
-                this.fis.formGroupCollection[this.formIdAttrValue].get('attrValue_' + (index - 1)).setValue(e);
-              }
-            })
+            this.fis.restoreDynamicForm(this.formIdAttrValue, this.fis.parsePayloadArr(this.attribute.selectValues,'attrValue'), this.attribute.selectValues.length)
           }
         })
       }
