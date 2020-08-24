@@ -18,12 +18,11 @@ import * as UUID from 'uuid/v1';
 export class AttributeComponent implements OnInit, OnDestroy {
   attribute: IBizAttribute;
   formId = 'attributes';
-  manualEnter = false;
+  manualSelect = false;
   changeId: string = UUID();
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   formIdAttrValue = 'attributesValue';
   formInfoAttrValue: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
-  formInfoAttrValueI18n: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
   validator: ValidateHelper;
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
@@ -45,10 +44,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
     this.attribute = data as IBizAttribute;
     combineLatest(this.formCreatedOb).pipe(take(1)).subscribe(() => {
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
-        this.manualEnter = next === 'SELECT';
-        if (this.manualEnter) {
-          this.formInfoAttrValue = JSON.parse(JSON.stringify(this.formInfoAttrValueI18n));
-        }
+        this.manualSelect = next === 'SELECT';
       });
       if (this.attribute) {
         this.fis.restore(this.formId, this.attribute);
@@ -69,50 +65,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe()
     this.fis.resetAll();
   }
-  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
-    this.formInfo.inputs.forEach(e => {
-      if (e.options) {
-        e.options.forEach(el => {
-          this.translate.get(el.label).subscribe((res: string) => {
-            this.transKeyMap.set(e.key + el.value, el.label);
-            el.label = res;
-          });
-        })
-      }
-      e.label && this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.formInfoAttrValue.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.formInfoAttrValueI18n = JSON.parse(JSON.stringify(this.formInfoAttrValue));
-    let sub = this.translate.onLangChange.subscribe(() => {
-      this.formInfo.inputs.forEach(e => {
-        e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
-          e.label = res;
-        });
-        if (e.options) {
-          e.options.forEach(el => {
-            this.translate.get(this.transKeyMap.get(e.key + el.value)).subscribe((res: string) => {
-              el.label = res;
-            });
-          })
-        }
-      });
-      this.formInfoAttrValue.inputs.filter(e => e.label).forEach(e => {
-        this.translate.get(e.label).subscribe((res: string) => {
-          this.transKeyMap.set(e.key, e.label);
-          e.label = res;
-        });
-      })
-    });
-    this.subs.add(sub)
   }
   convertToPayload(): IBizAttribute {
     let formGroup = this.fis.formGroupCollection[this.formId];

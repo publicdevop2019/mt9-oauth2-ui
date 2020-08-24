@@ -28,8 +28,6 @@ export class FilterComponent implements OnInit {
   formInfoCatalog: IForm = JSON.parse(JSON.stringify(FORM_CATALOG_CONFIG));
   formInfoFilter: IForm = JSON.parse(JSON.stringify(FORM_FILTER_ITEM_CONFIG));
   validator: ValidateHelper;
-  formInfoCatalogI18n: IForm;
-  formInfoFilterI18n: IForm;
   private formCreatedOb: Observable<string>;
   private catalogFormCreatedOb: Observable<string>;
   private filterFormCreatedOb: Observable<string>;
@@ -121,11 +119,6 @@ export class FilterComponent implements OnInit {
   }
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
-    this.translateFormLabel();
-    let sub = this.translate.onLangChange.subscribe(() => {
-      this.translateFormLabel();
-    })
-    this.subscriptions.add(sub);
   }
   public updateSelectCatalogs(catalog: ICatalogCustomer) {
     if (this.fis.formGroupCollection_index[this.formIdCatalog] === 0) {
@@ -156,43 +149,6 @@ export class FilterComponent implements OnInit {
       catalogs: catalogs,
       filters: filters,
     }
-  }
-  private translateFormLabel() {
-    this.formInfo.inputs.forEach(e => {
-      if (e.options) {
-        e.options.forEach(el => {
-          this.translate.get(el.label).subscribe((res: string) => {
-            this.transKeyMap.set(e.key + el.value, el.label);
-            el.label = res;
-          });
-        })
-      }
-      e.label && this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.formInfoCatalog.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.formInfoCatalogI18n = JSON.parse(JSON.stringify(this.formInfoCatalog));
-    this.formInfoFilter.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.formInfoFilterI18n = JSON.parse(JSON.stringify(this.formInfoFilter));
-    //nested form
-    this.formInfoFilter.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
   }
   private subChangeForForm(formId: string) {
     if (!this.subs[formId + '_valueChange']) {

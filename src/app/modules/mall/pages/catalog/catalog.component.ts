@@ -23,8 +23,6 @@ export class CatalogComponent implements OnInit, OnDestroy {
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   attrFormId = 'attributes';
   attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
-  // save a copy of attrFormInfo so when toggle, no need to translate again
-  attrFormInfoI18n: IForm;
   attrList: IBizAttribute[];
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
@@ -108,53 +106,9 @@ export class CatalogComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe()
-    this.fis.reset(this.formId)
-    this.fis.reset(this.attrFormId)
+    this.fis.resetAllExcept(['summaryCatalogCustomerView'])
   }
-  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
-    this.formInfo.inputs.forEach(e => {
-      if (e.options) {
-        e.options.forEach(el => {
-          this.translate.get(el.label).subscribe((res: string) => {
-            this.transKeyMap.set(e.key + el.value, el.label);
-            el.label = res;
-          });
-        })
-      }
-      e.label && this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.attrFormInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.attrFormInfoI18n = JSON.parse(JSON.stringify(this.attrFormInfo));
-    let sub4 = this.translate.onLangChange.subscribe(() => {
-      this.formInfo.inputs.forEach(e => {
-        e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
-          e.label = res;
-        });
-        if (e.options) {
-          e.options.forEach(el => {
-            this.translate.get(this.transKeyMap.get(e.key + el.value)).subscribe((res: string) => {
-              el.label = res;
-            });
-          })
-        }
-      });
-      this.attrFormInfo.inputs.filter(e => e.label).forEach(e => {
-        this.translate.get(e.label).subscribe((res: string) => {
-          this.transKeyMap.set(e.key, e.label);
-          e.label = res;
-        });
-      })
-    });
-    this.subs.add(sub4)
   }
   convertToCategoryPayload(): ICatalogCustomer {
     let formGroup = this.fis.formGroupCollection[this.formId];

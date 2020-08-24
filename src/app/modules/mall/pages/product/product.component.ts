@@ -55,14 +55,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   attrProdFormId = 'attributesProd';
   attrProdFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
-  // save a copy of attrFormInfo so when toggle, no need to translate again
-  attrProdFormInfoI18n: IForm;
   attrSalesFormId = 'attributeSales';
   attrSalesFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_SALES_FORM_CONFIG));
-  attrSalesFormInfoI18n: IForm;
   attrGeneralFormId = 'attributesGeneral';
   attrGeneralFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_GEN_FORM_CONFIG));
-  attrGeneralFormInfoI18n: IForm;
   validator: ValidateHelper;
   imageAttrSaleFormId = 'productAttrSaleImage';
   imageAttrSaleChildFormId = 'imageChildForm';
@@ -348,87 +344,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.fis.resetAll();
   }
   private transKeyMap: Map<string, string> = new Map();
-  private translateFormLabel() {
-    this.formInfo.inputs.forEach(e => {
-      if (e.options) {
-        e.options.forEach(el => {
-          this.translate.get(el.label).subscribe((res: string) => {
-            this.transKeyMap.set(e.key + el.value, el.label);
-            el.label = res;
-          });
-        })
-      }
-      e.label && this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.attrProdFormInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.attrProdFormInfoI18n = JSON.parse(JSON.stringify(this.attrProdFormInfo));
-    this.attrGeneralFormInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.attrGeneralFormInfoI18n = JSON.parse(JSON.stringify(this.attrGeneralFormInfo));
-    this.attrSalesFormInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.attrSalesFormInfoI18n = JSON.parse(JSON.stringify(this.attrSalesFormInfo));
-    this.imageFormInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.optionFormInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.imageAttrSaleFormInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    //nested form
-    this.optionFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.attrSalesFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.imageAttrSaleFormInfo.inputs.filter(e => e.form)[0].form.inputs.forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-  }
   ngOnInit() {
-    this.translateFormLabel();
-    let sub = this.translate.onLangChange.subscribe(() => {
-      this.translateFormLabel();
-    })
-    this.subs['i18n'] = sub;
-    this.subscriptions.add(sub)
     this.categorySvc.getCatalogBackend()
       .subscribe(next => {
         if (next.data) {

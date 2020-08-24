@@ -26,7 +26,7 @@ import { environment } from '../environments/environment';
 import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
 import { OrderComponent } from './modules/mall/pages/order/order.component';
 import { FormInfoService, MtFormBuilderModule } from 'mt-form-builder';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { CustomLoader } from './clazz/locale/custom-loader';
 import { ClientComponent } from './modules/my-apps/pages/client/client.component';
@@ -62,9 +62,8 @@ import { LazyImageComponent } from './components/lazy-image/lazy-image.component
 import { SearchComponent } from './components/search/search.component';
 import 'mt-wc-product';
 import { PreviewOutletComponent } from './components/preview-outlet/preview-outlet.component'
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
+import { zhHans } from './clazz/locale/zh-Hans';
+import { enUS } from './clazz/locale/en-US';
 
 @NgModule({
   declarations: [
@@ -142,12 +141,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     TranslateModule.forRoot({
       loader: {
-          provide: TranslateLoader,
-          useClass:CustomLoader
+        provide: TranslateLoader,
+        useClass: CustomLoader
       }
-  }),
+    }),
   ],
-  entryComponents: [MsgBoxComponent,CatalogComponent,AttributeComponent,ProductComponent,ClientComponent,SecurityProfileComponent,ResourceOwnerComponent,DeleteConfirmDialogComponent,FilterComponent,UpdateProdStatusDialogComponent],
+  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, SecurityProfileComponent, ResourceOwnerComponent, DeleteConfirmDialogComponent, FilterComponent, UpdateProdStatusDialogComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -169,7 +168,21 @@ export function HttpLoaderFactory(http: HttpClient) {
       useClass: OfflineInterceptor,
       multi: true
     },
-    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService,CustomHttpInterceptor,FormInfoService,DeviceService],
+    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService, CustomHttpInterceptor, FormInfoService, DeviceService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private translate: TranslateService, private fis: FormInfoService) {
+    let lang = this.translate.currentLang
+    if (lang === 'zhHans')
+      this.fis.i18nLabel = zhHans
+    if (lang === 'enUS')
+      this.fis.i18nLabel = enUS
+    this.translate.onLangChange.subscribe((e) => {
+      if (e.lang === 'zhHans')
+        this.fis.i18nLabel = zhHans
+      if (e.lang === 'enUS')
+        this.fis.i18nLabel = enUS
+    })
+  }
+}
