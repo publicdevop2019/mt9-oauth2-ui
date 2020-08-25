@@ -126,7 +126,7 @@ export class ProductService {
     result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
   updateName(id: number, value: IEditEvent, changeId: string) {
-    this.httpProxy.updateField(id, 'products', 'name', value, changeId).subscribe(result => {
+    this.httpProxy.updateProductSvcField(id, 'products', 'name', value, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

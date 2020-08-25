@@ -1,14 +1,12 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { Subscription, Observable, combineLatest } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { filter, take } from 'rxjs/operators';
 import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-attribute',
@@ -30,7 +28,6 @@ export class AttributeComponent implements OnInit, OnDestroy {
   constructor(
     public attributeSvc: AttributeService,
     private fis: FormInfoService,
-    public translate: TranslateService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<AttributeComponent>
   ) {

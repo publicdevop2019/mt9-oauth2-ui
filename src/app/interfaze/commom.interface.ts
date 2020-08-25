@@ -88,7 +88,11 @@ export interface IAuthorizeCode {
   authorize_code: string;
 }
 export interface IAutoApprove {
-  autoApprove: boolean;
+  data: IClientUserRep[]
+}
+interface IClientUserRep {
+  autoApprove?: boolean;
+  clientId: string;
 }
 export interface IOrder {
   id: string;

@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { getCookie, hasValue } from '../clazz/utility';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../interfaze/commom.interface';
-import { IClient } from '../modules/my-apps/interface/client.interface';
+import { IClient, IClientSumRep } from '../modules/my-apps/interface/client.interface';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
 import { IBizAttribute, IAttributeHttp } from './attribute.service';
@@ -224,12 +224,22 @@ export class HttpProxyService {
             });
         });
     }
-    updateField(id: number, type: string, field: string, value: IEditEvent, changeId: string) {
+    updateProductSvcField(id: number, type: string, field: string, value: IEditEvent, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId);
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + `/${type}/admin/` + id, this.getPatchPayload(field, value), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    updateAuthSvcField(id: number, type: string, field: string, value: IEditEvent, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId);
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(environment.serverUri + this.AUTH_SVC_NAME + `/${type}/root/` + id, this.getPatchPayload(field, value), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -302,8 +312,8 @@ export class HttpProxyService {
     };
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.get<IAutoApprove>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/autoApprove?clientId=' + clientId).subscribe(next => {
-                if (next.autoApprove)
+            this._httpClient.get<IAutoApprove>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/user?query=clientId:' + clientId).subscribe(next => {
+                if (next.data[0].autoApprove)
                     e.next(true)
                 e.next(false)
             });
@@ -379,23 +389,27 @@ export class HttpProxyService {
             });
         });
     };
-    createClient(client: IClient): Observable<boolean> {
+    createClient(client: IClient, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + this.AUTH_SVC_NAME + '/clients', client).subscribe(next => {
+            this._httpClient.post(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root', client, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    updateClient(client: IClient): Observable<boolean> {
+    updateClient(client: IClient, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + client.id, client).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root/' + client.id, client, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteClient(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/' + id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -403,8 +417,14 @@ export class HttpProxyService {
     getResourceOwners(): Observable<IResourceOwner[]> {
         return this._httpClient.get<IResourceOwner[]>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners');
     };
-    getClients(): Observable<IClient[]> {
-        return this._httpClient.get<IClient[]>(environment.serverUri + this.AUTH_SVC_NAME + '/clients');
+    getClients(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
+        return this._httpClient.get<IClientSumRep>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+    };
+    getClientsById(id: number) {
+        return this._httpClient.get<IClient>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root/' + id);
+    };
+    getResourceClient() {
+        return this._httpClient.get<IClientSumRep>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root?query=resourceIndicator:1');
     };
     refreshToken(): Observable<ITokenResponse> {
         const formData = new FormData();

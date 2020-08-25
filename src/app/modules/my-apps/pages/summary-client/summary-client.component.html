@@ -6,16 +6,60 @@
 
 <div class="mat-elevation-z8">
     <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
 
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-                <td mat-cell *matCellDef="let row"> {{row.id}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-copy-field [inputValue]="row.id"></app-copy-field>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="clientId">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CLIENT_ID'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.clientId}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-copy-field [inputValue]="row.clientId"></app-copy-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> {{'DESCRIPTION'|translate}} </th>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-field [inputValue]="row.description" (newValue)="doPatchDesc(row.id,$event)">
+                    </app-editable-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="resourceIndicator">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'RESOURCE_INDICATOR'|translate}} </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-icon *ngIf="row.resourceIndicator" [color]="'primary'">
+                        check_circle_outline
+                    </mat-icon>
+                    <mat-icon *ngIf="!row.resourceIndicator" [color]="'error'">cancel
+                    </mat-icon>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="grantTypeEnums">
+                <th mat-header-cell *matHeaderCellDef> {{'GRANTTYPE_ENUMS'|translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.grantTypeEnums}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="accessTokenValiditySeconds">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ACCESS_TOKEN_VALIDITY_SECONDS'|translate}}
+                </th>
+                <td mat-cell *matCellDef="let row"> {{row.accessTokenValiditySeconds}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="grantedAuthorities">
+                <th mat-header-cell *matHeaderCellDef> {{'GRANTED_AUTHORITIES'|translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{parseAuthority(row.grantedAuthorities)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="resourceIds">
+                <th mat-header-cell *matHeaderCellDef> {{'RESOURCEIDS'|translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.resourceIds}} </td>
             </ng-container>
 
             <ng-container matColumnDef="edit">
@@ -28,7 +72,7 @@
             <ng-container matColumnDef="token">
                 <th mat-header-cell *matHeaderCellDef class="table-icon">{{'REVOKE_TOKEN'|translate}}</th>
                 <td mat-cell *matCellDef="let row" class="table-icon" style="text-align: center;">
-                    <mat-icon (click)="revokeClientToken(row.clientId)"[color]="'accent'" >remove_circle</mat-icon>
+                    <mat-icon (click)="revokeClientToken(row.clientId)" [color]="'accent'">remove_circle</mat-icon>
                 </td>
             </ng-container>
             <ng-container matColumnDef="delete">

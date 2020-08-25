@@ -1,6 +1,5 @@
-import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild, ElementRef, AfterContentInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -13,8 +12,8 @@ import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dyn
 import { ATTR_SALE_FORM_CONFIG_IMAGE, FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
-import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IBizProductBottomSheet } from 'src/app/services/product.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
+import { IAttrImage, IBizProductBottomSheet, IProductDetail, IProductOption, IProductOptions, ISku, ProductService } from 'src/app/services/product.service';
 import * as UUID from 'uuid/v1';
 interface IProductSimplePublic {
   imageUrlSmall: string;
@@ -86,7 +85,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
     private fis: FormInfoService,
-    public translate: TranslateService,
     private categorySvc: CatalogService,
     public attrSvc: AttributeService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, // keep as any is needed

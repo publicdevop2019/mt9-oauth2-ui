@@ -6,6 +6,7 @@ import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { switchMap } from 'rxjs/operators';
 import { IClient } from '../modules/my-apps/interface/client.interface';
+import { IEditEvent } from '../components/editable-field/editable-field.component';
 /**
  * responsible for convert FormGroup to business model
  */
@@ -13,7 +14,7 @@ import { IClient } from '../modules/my-apps/interface/client.interface';
   providedIn: 'root'
 })
 export class ClientService {
-  currentPageIndex: number;
+  currentPageIndex: number=0;
   refreshSummary: Subject<void> = new Subject();
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeClientToken(clientId: string): void {
@@ -21,21 +22,17 @@ export class ClientService {
       this.notifyTokenRevocation(result);
     })
   }
-  getClients(): Observable<IClient[]> {
-    return this.httpProxy.getClients()
+  getClients(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
+    return this.httpProxy.getClients(pageNum, pageSize, sortBy, sortOrder)
   }
   getClientById(id: number): Observable<IClient> {
-    return this.getClients().pipe(switchMap(clients => {
-      return of(clients.find(el => el.id === id))
-    }))
+    return this.httpProxy.getClientsById(id);
   }
-  getResourceClient(): Observable<IClient[]> {
-    return this.getClients().pipe(switchMap(clients => {
-      return of(clients.filter(el => el.resourceIndicator))
-    }))
+  getResourceClient() {
+    return this.httpProxy.getResourceClient();
   }
-  updateClient(client: IClient): void {
-    this.httpProxy.updateClient(client).subscribe(result => {
+  updateClient(client: IClient, changeId: string): void {
+    this.httpProxy.updateClient(client, changeId).subscribe(result => {
       this.notifyTokenRevocation(result)
       this.refreshSummary.next()
     })
@@ -47,8 +44,8 @@ export class ClientService {
       this.refreshSummary.next()
     })
   }
-  createClient(client: IClient): void {
-    this.httpProxy.createClient(client).subscribe(result => {
+  createClient(client: IClient, changeId: string): void {
+    this.httpProxy.createClient(client, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
@@ -58,5 +55,11 @@ export class ClientService {
   }
   notifyTokenRevocation(result: boolean) {
     result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
+  }
+  doPatch(id: number, value: IEditEvent, type: string, changeId: string) {
+    this.httpProxy.updateAuthSvcField(id, 'clients', type, value, changeId).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+    })
   }
 }

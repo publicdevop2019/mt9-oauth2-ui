@@ -57,7 +57,7 @@ export class AttributeService {
     result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
   doPatch(id: number, value: IEditEvent, type: string, changeId: string) {
-    this.httpProxy.updateField(id, 'attributes', type, value, changeId).subscribe(result => {
+    this.httpProxy.updateProductSvcField(id, 'attributes', type, value, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
       this.closeSheet.next()

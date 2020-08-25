@@ -1,11 +1,10 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { getLabel, hasValue, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
+import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
@@ -31,7 +30,6 @@ export class CatalogComponent implements OnInit, OnDestroy {
   constructor(
     public catalogSvc: CatalogService,
     private fis: FormInfoService,
-    public translate: TranslateService,
     public attrSvc: AttributeService,
     private changeDecRef: ChangeDetectorRef,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,

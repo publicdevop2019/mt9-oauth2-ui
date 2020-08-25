@@ -230,5 +230,9 @@ export const zhHans = {
     "SCREEN_WIDTH": "屏幕宽度",
     "SCREEN_HEIGHT": "屏幕高度",
     "DARK_MODE": "夜间模式",
+    "RESOURCE_INDICATOR": "可访问",
+    "GRANTTYPE_ENUMS": "授权方式",
+    "GRANTED_AUTHORITIES": "权限",
+    "RESOURCEIDS": "可访问资源",
     "": "",
 }

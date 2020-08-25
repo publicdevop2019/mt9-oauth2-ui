@@ -225,5 +225,9 @@ export const enUS = {
     "SCREEN_WIDTH": "Screen width",
     "SCREEN_HEIGHT": "Screen height",
     "DARK_MODE": "Dark mode",
+    "RESOURCE_INDICATOR": "is resource",
+    "GRANTTYPE_ENUMS": "grant type",
+    "GRANTED_AUTHORITIES": "Authorities",
+    "RESOURCEIDS": "Resource Ids",
     "": "",
 }

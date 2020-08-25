@@ -14,7 +14,7 @@ import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/int
   providedIn: 'root'
 })
 export class ResourceOwnerService {
-  currentPageIndex: number;
+  currentPageIndex: number=0;
   refreshSummary:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router, private _httpInterceptor: CustomHttpInterceptor) { }
   revokeResourceOwnerToken(resourceOwnerName: string): void {

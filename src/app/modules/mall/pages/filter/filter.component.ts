@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -40,7 +39,6 @@ export class FilterComponent implements OnInit {
   constructor(
     public filterSvc: FilterService,
     private fis: FormInfoService,
-    public translate: TranslateService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<FilterComponent>,
     private categorySvc: CatalogService,
