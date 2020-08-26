@@ -1,5 +1,8 @@
 import { IAuthority } from '../../my-apps/interface/client.interface';
-
+export interface IUserSumRep{
+    data: IResourceOwner[],
+    totalItemCount?: number
+}
 export interface IResourceOwner {
     id?: number,
     email: string;
@@ -7,6 +10,7 @@ export interface IResourceOwner {
     locked: boolean;
     subscription?: boolean;
     grantedAuthorities: IAuthority[];
+    createAt?:number;
 }
 export interface IPendingResourceOwner {
     email: string;

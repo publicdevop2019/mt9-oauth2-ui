@@ -22,19 +22,20 @@ export class ResourceOwnerService {
       this.notifyTokenRevocation(result);
     })
   }
-  getResourceOwners(): Observable<IResourceOwner[]> {
-    return this.httpProxy.getResourceOwners();
+  getResourceOwners(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string){
+    return this.httpProxy.getResourceOwners(pageNum,pageSize,sortBy,sortOrder);
   }
   getResourceOwner(id: number): Observable<IResourceOwner> {
-    return this.httpProxy.getResourceOwners().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
+    return this.httpProxy.getResourceOwner(id);
   }
-  updateResourceOwner(resourceOwner: IResourceOwner): void {
-    this.httpProxy.updateResourceOwner(resourceOwner).subscribe(result => {
-      this.notify(result)
+  updateResourceOwner(resourceOwner: IResourceOwner,changeId:string): void {
+    this.httpProxy.updateResourceOwner(resourceOwner,changeId).subscribe(result => {
+      this.notify(result);
+      this.refreshSummary.next()
     });
   }
-  updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): void {
-    this.httpProxy.updateResourceOwnerPwd(resourceOwner).subscribe(result => {
+  updateMyPwd(resourceOwner: IResourceOwnerUpdatePwd,changeId:string): void {
+    this.httpProxy.updateResourceOwnerPwd(resourceOwner,changeId).subscribe(result => {
       this.notifyPwdUpdate(result)
       /** clear authentication info */
       this.httpProxy.currentUserAuthInfo = undefined;

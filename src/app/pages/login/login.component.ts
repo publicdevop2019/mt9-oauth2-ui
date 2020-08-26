@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material';
 import { MsgBoxComponent } from 'src/app/components/msg-box/msg-box.component';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
-
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class LoginComponent implements OnInit {
   nextUrl: string = '/dashboard';
   forgetPwd: boolean = false;
+  uuid=UUID();
   loginOrRegForm = new FormGroup({
     state: new FormControl('', [
       Validators.required
@@ -61,18 +62,20 @@ export class LoginComponent implements OnInit {
     })
   }
   register() {
-    this.httpProxy.register(this.loginOrRegForm).subscribe(next => {
+    this.httpProxy.register(this.loginOrRegForm,UUID()).subscribe(next => {
       this.loginOrRegForm.get('state').setValue(false);
       this.openDialog('register success, please login');
     })
   }
   getCode() {
-    this.httpProxy.activate(this.loginOrRegForm).subscribe(next => {
+    this.httpProxy.currentUserAuthInfo=undefined;
+    this.httpProxy.activate(this.loginOrRegForm,UUID()).subscribe(next => {
       this.openDialog('code send success, please check your email');
     })
 
   }
   getToken() {
+    this.httpProxy.currentUserAuthInfo=undefined;
     this.httpProxy.forgetPwd(this.loginOrRegForm).subscribe(next => {
       this.openDialog('token send success, please check your email');
     })

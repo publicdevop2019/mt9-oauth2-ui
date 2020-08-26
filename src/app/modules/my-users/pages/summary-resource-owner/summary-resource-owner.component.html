@@ -6,7 +6,7 @@
 <div class="mat-elevation-z8">
     <div class="table-container">
 
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort  (matSortChange)="updateTable($event)">
 
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
@@ -16,6 +16,22 @@
             <ng-container matColumnDef="email">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'EMAIL'|translate}} </th>
                 <td mat-cell *matCellDef="let row"> {{row.email}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createAt">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CREATE_AT'|translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.createAt | date:'shortDate'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="locked">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NOT_LOCKED'|translate}} </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-icon *ngIf="!row.locked" [color]="'primary'">
+                        check_circle_outline
+                    </mat-icon>
+                    <mat-icon *ngIf="row.locked" [color]="'error'">cancel
+                    </mat-icon>
+                    </td>
             </ng-container>
 
             <ng-container matColumnDef="edit">
@@ -43,6 +59,6 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="resourceOwnerService.currentPageIndex"
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="resourceOwnerService.currentPageIndex" [length]="totoalItemCount"
         [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)"></mat-paginator>
 </div>

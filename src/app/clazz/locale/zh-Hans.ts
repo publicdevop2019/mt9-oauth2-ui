@@ -234,5 +234,7 @@ export const zhHans = {
     "GRANTTYPE_ENUMS": "授权方式",
     "GRANTED_AUTHORITIES": "权限",
     "RESOURCEIDS": "可访问资源",
+    "NOT_LOCKED": "状态",
+    "CREATE_AT": "创建于",
     "": "",
 }

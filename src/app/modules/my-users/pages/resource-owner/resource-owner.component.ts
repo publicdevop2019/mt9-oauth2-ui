@@ -10,6 +10,7 @@ import { FORM_CONFIG } from 'src/app/form-configs/resource-owner.config';
 import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { IResourceOwner } from '../../interface/resource-owner.interface';
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',
@@ -21,10 +22,8 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   constructor(
-    private route: ActivatedRoute,
     public resourceOwnerService: ResourceOwnerService,
     private fis: FormInfoService,
-    public translate: TranslateService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>
   ) {
@@ -46,40 +45,9 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
     this.fis.resetAll();
   }
-  private sub: Subscription;
-  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
-    this.formInfo.inputs.forEach(e => {
-      if (e.options) {
-        e.options.forEach(el => {
-          this.translate.get(el.label).subscribe((res: string) => {
-            this.transKeyMap.set(e.key + el.value, el.label);
-            el.label = res;
-          });
-        })
-      }
-      e.label && this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.sub = this.translate.onLangChange.subscribe(() => {
-      this.formInfo.inputs.forEach(e => {
-        e.label && this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
-          e.label = res;
-        });
-        if (e.options) {
-          e.options.forEach(el => {
-            this.translate.get(this.transKeyMap.get(e.key + el.value)).subscribe((res: string) => {
-              el.label = res;
-            });
-          })
-        }
-      })
-    })
   }
 
   convertToResourceOwner(): IResourceOwner {
@@ -99,5 +67,8 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
       subscription: formGroup.get('subNewOrder').value,
       grantedAuthorities: authority
     }
+  }
+  doUpdate(){
+    this.resourceOwnerService.updateResourceOwner(this.convertToResourceOwner(),UUID())
   }
 }

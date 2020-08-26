@@ -2,4 +2,4 @@
 </mat-icon>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <button mat-raised-button color="primary" style="margin-bottom: 20px;margin-top: 20px;"
-    (click)="validator.valid()&&resourceOwnerService.updateResourceOwner(convertToResourceOwner())">{{'UPDATE'|translate}}</button>
+    (click)="validator.valid()&&doUpdate()">{{'UPDATE'|translate}}</button>

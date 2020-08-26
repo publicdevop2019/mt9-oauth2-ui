@@ -8,7 +8,7 @@ import { getCookie, hasValue } from '../clazz/utility';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../interfaze/commom.interface';
 import { IClient, IClientSumRep } from '../modules/my-apps/interface/client.interface';
 import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
-import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
+import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd, IUserSumRep } from '../modules/my-users/interface/resource-owner.interface';
 import { IBizAttribute, IAttributeHttp } from './attribute.service';
 import { ICatalogCustomer, ICatalogCustomerHttp } from './catalog.service';
 import { ICommentSummary } from './comment.service';
@@ -270,10 +270,11 @@ export class HttpProxyService {
         formData.append('grant_type', 'client_credentials');
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._resetPwd(this._getToken(token), fg)))
     };
-    activate(fg: FormGroup): Observable<any> {
+    activate(fg: FormGroup, changeId: string): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
-        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg)))
+        let headers = this._getAuthHeader(false);
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: headers }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg, changeId)))
     };
     getCatalogFrontendAdmin(pageNum?: number, pageSize?: number, sortBy?: string, sortOrder?: string): Observable<ICatalogCustomerHttp> {
         return this._httpClient.get<ICatalogCustomerHttp>(environment.serverUri + this.PRODUCT_SVC_NAME + '/catalogs/admin' + this.getQueryParam(["query=type:FRONTEND", this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
@@ -367,16 +368,20 @@ export class HttpProxyService {
         formData.append('redirect_uri', authorizeParty.redirect_uri);
         return this._httpClient.post<IAuthorizeCode>(environment.serverUri + this.AUTH_SVC_NAME + '/authorize', formData);
     };
-    updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd): Observable<boolean> {
+    updateResourceOwnerPwd(resourceOwner: IResourceOwnerUpdatePwd, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.patch<IResourceOwnerUpdatePwd>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwner/pwd', resourceOwner).subscribe(next => {
+            this._httpClient.put<IResourceOwnerUpdatePwd>(environment.serverUri + this.AUTH_SVC_NAME + '/users/user/pwd', resourceOwner, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    updateResourceOwner(resourceOwner: IResourceOwner): Observable<boolean> {
+    updateResourceOwner(resourceOwner: IResourceOwner, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + resourceOwner.id, resourceOwner).subscribe(next => {
+            this._httpClient.put<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/users/admin/' + resourceOwner.id, resourceOwner, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -384,7 +389,7 @@ export class HttpProxyService {
     };
     deleteResourceOwner(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/' + id).subscribe(next => {
+            this._httpClient.delete<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/users/admin/' + id).subscribe(next => {
                 e.next(true)
             });
         });
@@ -414,8 +419,11 @@ export class HttpProxyService {
             });
         });
     };
-    getResourceOwners(): Observable<IResourceOwner[]> {
-        return this._httpClient.get<IResourceOwner[]>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners');
+    getResourceOwners(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
+        return this._httpClient.get<IUserSumRep>(environment.serverUri + this.AUTH_SVC_NAME + '/users/admin' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+    };
+    getResourceOwner(id: number) {
+        return this._httpClient.get<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/users/admin/' + id);
     };
     getClients(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
         return this._httpClient.get<IClientSumRep>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
@@ -439,10 +447,10 @@ export class HttpProxyService {
         formData.append('password', loginFG.get('pwd').value);
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(true) });
     }
-    register(registerFG: FormGroup): Observable<any> {
+    register(registerFG: FormGroup, changeId: string): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
-        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._createUser(this._getToken(token), registerFG)))
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._createUser(this._getToken(token), registerFG,changeId)))
     }
     private _getAuthHeader(islogin: boolean, token?: string): HttpHeaders {
         return islogin ? new HttpHeaders().append('Authorization',
@@ -453,17 +461,21 @@ export class HttpProxyService {
     private _getToken(res: ITokenResponse): string {
         return res.access_token;
     }
-    private _createUser(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners', this._getRegPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+    private _createUser(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
+        let headers = this._getAuthHeader(false, token);
+        headers = headers.append("changeId", changeId)
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public', this._getRegPayload(registerFG), { headers: headers})
     }
-    private _getActivationCode(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/register', this._getActivatePayload(registerFG), { headers: this._getAuthHeader(false, token) })
+    private _getActivationCode(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
+        let headers = this._getAuthHeader(false, token);
+        headers = headers.append("changeId", changeId)
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/pending-users/public', this._getActivatePayload(registerFG), { headers: headers })
     }
     private _resetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _forgetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/resourceOwners/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _getRegPayload(fg: FormGroup): IPendingResourceOwner {
         return {

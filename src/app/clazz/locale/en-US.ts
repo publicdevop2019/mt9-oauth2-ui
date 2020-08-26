@@ -229,5 +229,7 @@ export const enUS = {
     "GRANTTYPE_ENUMS": "grant type",
     "GRANTED_AUTHORITIES": "Authorities",
     "RESOURCEIDS": "Resource Ids",
+    "NOT_LOCKED": "Status",
+    "CREATE_AT": "Create at",
     "": "",
 }

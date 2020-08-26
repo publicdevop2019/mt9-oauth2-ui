@@ -1,22 +1,18 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatBottomSheet, MatBottomSheetConfig, MatDialog, MatPaginator, MatSlideToggle, MatTableDataSource, PageEvent, Sort } from '@angular/material';
-import { interval, Subscription, Observable } from 'rxjs';
-import { debounce, filter, map, switchMap } from 'rxjs/operators';
-import { hasValue } from 'src/app/clazz/utility';
-import { UpdateProdStatusDialogComponent } from 'src/app/components/update-prod-status-dialog/update-prod-status-dialog.component';
-import { CatalogService, ICatalogCustomer } from 'src/app/services/catalog.service';
-import { DeviceService } from 'src/app/services/device.service';
-import { IProductSimple, IProductTotalResponse, ProductService, IProductDetail, IBizProductBottomSheet } from 'src/app/services/product.service';
-import { isNullOrUndefined } from 'util';
-import { ProductComponent } from '../product/product.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import * as UUID from 'uuid/v1';
-import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
-import { FORM_SEARCH_CONFIG } from 'src/app/form-configs/search-product.config';
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatBottomSheet, MatBottomSheetConfig, MatDialog, MatPaginator, MatSlideToggle, MatTableDataSource, PageEvent, Sort } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
+import { Subscription } from 'rxjs';
+import { filter, switchMap } from 'rxjs/operators';
+import { hasValue } from 'src/app/clazz/utility';
+import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
+import { UpdateProdStatusDialogComponent } from 'src/app/components/update-prod-status-dialog/update-prod-status-dialog.component';
+import { DeviceService } from 'src/app/services/device.service';
+import { IBizProductBottomSheet, IProductSimple, IProductTotalResponse, ProductService } from 'src/app/services/product.service';
+import { isNullOrUndefined } from 'util';
+import * as UUID from 'uuid/v1';
+import { ProductComponent } from '../product/product.component';
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',

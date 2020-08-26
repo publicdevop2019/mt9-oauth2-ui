@@ -2,5 +2,5 @@
     <app-back-button></app-back-button>
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <button mat-raised-button color="primary" style="margin-bottom: 20px;margin-top: 20px;"
-        (click)="validator.valid()&&resourceOwnerService.updateResourceOwnerPwd(convertToIResourceOwnerUpdatePwd())">{{'UPDATE_PASSWORD'|translate}}</button>
+        (click)="validator.valid()&&updatePwd()">{{'UPDATE_PASSWORD'|translate}}</button>
 </div>
