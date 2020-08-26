@@ -10,7 +10,7 @@ import { SecurityProfileService } from 'src/app/services/security-profile.servic
 import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
 import { TranslateService } from '@ngx-translate/core';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
-
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-security-profile',
   templateUrl: './security-profile.component.html',
@@ -55,17 +55,7 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
       })
     })
     if (this.securityProfile) {
-      this.fis.formGroupCollection[this.formId].get('id').setValue(this.securityProfile.id)
-      this.fis.formGroupCollection[this.formId].get('resourceId').setValue(this.securityProfile.resourceId)
-      this.fis.formGroupCollection[this.formId].get('lookupPath').setValue(this.securityProfile.lookupPath)
-      this.fis.formGroupCollection[this.formId].get('method').setValue(this.securityProfile.method)
-      this.fis.formGroupCollection[this.formId].get('expression').setValue(this.securityProfile.expression)
-      if (this.securityProfile.scheme !== null || this.securityProfile.scheme !== undefined) {
-        this.fis.formGroupCollection[this.formId].get('scheme').setValue(this.securityProfile.scheme)
-        this.fis.formGroupCollection[this.formId].get('host').setValue(this.securityProfile.host)
-        this.fis.formGroupCollection[this.formId].get('port').setValue(this.securityProfile.port)
-        this.fis.formGroupCollection[this.formId].get('path').setValue(this.securityProfile.path)
-      }
+      this.fis.restore(this.formId,this.securityProfile)
     }
     else {
   
@@ -80,13 +70,15 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     return {
       id: formGroup.get('id').value,
       resourceId: formGroup.get('resourceId').value,
-      lookupPath: formGroup.get('lookupPath').value,
+      path: formGroup.get('path').value,
       method: formGroup.get('method').value,
       expression: formGroup.get('expression').value,
-      scheme: formGroup.get('scheme').value,
-      host: formGroup.get('host').value,
-      port: formGroup.get('port').value,
-      path: formGroup.get('path').value,
     }
+  }
+  doUpdate(){
+    this.securityProfileService.update(this.convertToSecurityProfile(),UUID())
+  }
+  doCreate(){
+    this.securityProfileService.create(this.convertToSecurityProfile(),UUID())
   }
 }

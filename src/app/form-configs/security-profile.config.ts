@@ -33,7 +33,7 @@ export const FORM_CONFIG: IForm = {
             "type": "text",
             "display": true,
             "label": "ENTER_ENDPOINT",
-            "key": "lookupPath",
+            "key": "path",
             "position": {
                 "row": "2",
                 "column": "0"
@@ -55,11 +55,11 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                { label: 'GET', value: "GET" },
-                { label: 'POST', value: "POST" },
-                { label: 'PUT', value: "PUT" },
-                { label: 'DELETE', value: "DELETE" },
-                { label: 'PATCH', value: "PATCH" },
+                { label: 'HTTP_GET', value: "GET" },
+                { label: 'HTTP_POST', value: "POST" },
+                { label: 'HTTP_PUT', value: "PUT" },
+                { label: 'HTTP_DELETE', value: "DELETE" },
+                { label: 'HTTP_PATCH', value: "PATCH" },
             ],
             "attributes": [
                 {
@@ -84,45 +84,5 @@ export const FORM_CONFIG: IForm = {
                 }
             ]
         },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_SCHEME",
-            "key": "scheme",
-            "position": {
-                "row": "5",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_HOST",
-            "key": "host",
-            "position": {
-                "row": "6",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_PORT_NUMBER",
-            "key": "port",
-            "position": {
-                "row": "7",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "ENTER_PATH",
-            "key": "path",
-            "position": {
-                "row": "8",
-                "column": "0"
-            },
-        }
     ],
 }

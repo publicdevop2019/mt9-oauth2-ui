@@ -1,42 +1,34 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { of, Subject } from 'rxjs';
-import { Observable } from 'rxjs/internal/Observable';
-import { switchMap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SecurityProfileService {
-  currentPageIndex:number;
+  currentPageIndex:number=0;
   refreshSummary:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
 
-  readAll(): Observable<ISecurityProfile[]> {
-    return this.httpProxy.getSecurityProfiles();
+  readAll(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string){
+    return this.httpProxy.getSecurityProfiles(pageNum,pageSize,sortBy,sortOrder);
   }
-  readById(id: number): Observable<ISecurityProfile> {
-    return this.httpProxy.getSecurityProfiles().pipe(switchMap(next=>of(next.find(e=>e.id === id))))
+  readById(id: number){
+    return this.httpProxy.getSecurityProfilesById(id)
   }
-  create(securityProfiel: ISecurityProfile) {
-    this.httpProxy.createSecurityProfile(securityProfiel).subscribe(result => {
+  create(securityProfiel: ISecurityProfile,changeId:string) {
+    this.httpProxy.createSecurityProfile(securityProfiel,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  update(securityProfiel: ISecurityProfile) {
-    this.httpProxy.updateSecurityProfile(securityProfiel).subscribe(result => {
+  update(securityProfiel: ISecurityProfile,changeId:string) {
+    this.httpProxy.updateSecurityProfile(securityProfiel,changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
-    })
-
-  }
-  batchUpdate(batchUpdateForm: {[key:string]:string}) {
-    this.httpProxy.batchUpdateSecurityProfile(batchUpdateForm).subscribe(result => {
-      this.notify(result)
     })
 
   }

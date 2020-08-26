@@ -36,7 +36,7 @@
                     <mat-icon *ngIf="row.resourceIndicator" [color]="'primary'">
                         check_circle_outline
                     </mat-icon>
-                    <mat-icon *ngIf="!row.resourceIndicator" [color]="'error'">cancel
+                    <mat-icon *ngIf="!row.resourceIndicator" [color]="'primary'">cancel
                     </mat-icon>
                 </td>
             </ng-container>
@@ -86,7 +86,7 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource&&dataSource.data.length"
+    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount"
         [pageIndex]="clientService.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

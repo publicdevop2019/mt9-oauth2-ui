@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { SecurityProfileService } from 'src/app/services/security-profile.service';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle, MatBottomSheet, MatBottomSheetConfig } from '@angular/material';
+import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatSlideToggle, MatBottomSheet, MatBottomSheetConfig, Sort } from '@angular/material';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -9,17 +9,18 @@ import { DeviceService } from 'src/app/services/device.service';
 import { SecurityProfileComponent } from '../security-profile/security-profile.component';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';
-
+import * as UUID from 'uuid/v1';
+import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
+export interface ISecurityProfileSumRep {
+  data: ISecurityProfile[],
+  totalItemCount: number,
+}
 export interface ISecurityProfile {
   resourceId: string;
-  lookupPath: string;
+  path: string;
   method: string;
   expression: string;
   id: number;
-  scheme?: string;
-  host?: string;
-  port?: string;
-  path?: string;
 }
 @Component({
   selector: 'app-summary-security-profile',
@@ -27,25 +28,21 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'resourceId', 'path', 'method', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'resourceId', 'path', 'expression','method', 'edit', 'delete'];
   dataSource: MatTableDataSource<ISecurityProfile>;
-  batchUpdateForm = new FormGroup({
-    host: new FormControl('', []),
-  });
   private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
   selection = new SelectionModel<ISecurityProfile>(true, []);
+  totoalItemCount: number;
   constructor(public securityProfileSvc: SecurityProfileService, public deviceSvc: DeviceService, private _bottomSheet: MatBottomSheet,) {
-    let sub = this.securityProfileSvc.refreshSummary.pipe(switchMap(() => this.securityProfileSvc.readAll())).subscribe(next => { this.updateSummaryData(next) });
-    let sub0 = this.securityProfileSvc.readAll().subscribe(next => { this.updateSummaryData(next) });
+    let sub = this.securityProfileSvc.refreshSummary.pipe(switchMap(() => this.securityProfileSvc.readAll(this.securityProfileSvc.currentPageIndex, deviceSvc.pageSize))).subscribe(next => { this.updateSummaryData(next) });
+    let sub0 = this.securityProfileSvc.readAll(this.securityProfileSvc.currentPageIndex, deviceSvc.pageSize).subscribe(next => { this.updateSummaryData(next) });
     this.subs.add(sub)
     this.subs.add(sub0)
   }
-  updateSummaryData(next: ISecurityProfile[]) {
-    this.dataSource = new MatTableDataSource(next)
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  updateSummaryData(next: ISecurityProfileSumRep) {
+    this.dataSource = new MatTableDataSource(next.data)
+    this.totoalItemCount = next.totalItemCount;
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe()
@@ -79,7 +76,16 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
     }
   }
   pageHandler(e: PageEvent) {
-    this.securityProfileSvc.currentPageIndex = e.pageIndex
+    this.securityProfileSvc.currentPageIndex = e.pageIndex;
+    if (this.sort) {
+      this.securityProfileSvc.readAll(this.securityProfileSvc.currentPageIndex, this.deviceSvc.pageSize, this.sort.active, this.sort.direction).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    } else {
+      this.securityProfileSvc.readAll(this.securityProfileSvc.currentPageIndex, this.deviceSvc.pageSize).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    }
   }
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -102,14 +108,14 @@ export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
-  doBatchUpdate() {
-    let form = {};
-    let ids = this.selection.selected
-      .filter(e => e.scheme !== null && e.scheme !== undefined)
-      .map(e => String(e.id));
-    form['host'] = this.batchUpdateForm.get('host').value;
-    form['ids'] = ids.join(',');
-    this.securityProfileSvc.batchUpdate(form);
+  private sort: Sort;
+  updateTable(sort: Sort) {
+    this.sort = sort;
+    this.securityProfileSvc.readAll(this.securityProfileSvc.currentPageIndex, this.deviceSvc.pageSize, sort.active, sort.direction).subscribe(next => {
+      this.updateSummaryData(next)
+    });
   }
-
+  doPatchDesc(id: number, event: IEditEvent) {
+    // this.clientService.doPatch(id, event, 'description', UUID())
+  }
 }

@@ -5,7 +5,7 @@
 </mat-form-field>
 <div class="mat-elevation-z8">
     <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
             <!-- Checkbox Column -->
             <ng-container matColumnDef="select">
                 <th mat-header-cell *matHeaderCellDef>
@@ -29,6 +29,11 @@
             <ng-container matColumnDef="resourceId">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'RESOURCE_ID'|translate}} </th>
                 <td mat-cell *matCellDef="let row"> {{row.resourceId}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expression">
+                <th mat-header-cell *matHeaderCellDef> {{'EXPRESSION'|translate}} </th>
+                <td mat-cell *matCellDef="let row"> {{row.expression}} </td>
             </ng-container>
 
             <ng-container matColumnDef="path">
@@ -59,7 +64,7 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="dataSource&&dataSource.data.length"
+    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount"
         [pageIndex]="securityProfileSvc.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

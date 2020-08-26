@@ -231,5 +231,10 @@ export const enUS = {
     "RESOURCEIDS": "Resource Ids",
     "NOT_LOCKED": "Status",
     "CREATE_AT": "Create at",
+    "HTTP_GET": "GET",
+    "HTTP_POST": "POST",
+    "HTTP_PUT": "PUT",
+    "HTTP_PATCH": "PATCH",
+    "HTTP_DELETE": "DELETE",
     "": "",
 }

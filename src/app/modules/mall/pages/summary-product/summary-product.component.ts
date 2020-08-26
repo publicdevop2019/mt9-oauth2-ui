@@ -119,9 +119,10 @@ export class SummaryProductComponent implements OnInit, OnDestroy {
       this.totoalItemCount = 0;
     }
   }
-
+  private sort: Sort;
   updateTable(sort: Sort) {
-    this.productSvc.getAllProduct(this.productSvc.currentPageIndex, this.getPageSize(), sort.active, sort.direction).subscribe(products => {
+    this.sort=sort;
+    this.productSvc.getAllProduct(this.productSvc.currentPageIndex, this.getPageSize(), this.sort.active, this.sort.direction).subscribe(products => {
       this.totalProductHandler(products)
     });
   }

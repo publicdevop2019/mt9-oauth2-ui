@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 import { getCookie, hasValue } from '../clazz/utility';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../interfaze/commom.interface';
 import { IClient, IClientSumRep } from '../modules/my-apps/interface/client.interface';
-import { ISecurityProfile } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { ISecurityProfile, ISecurityProfileSumRep } from '../modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd, IUserSumRep } from '../modules/my-users/interface/resource-owner.interface';
 import { IBizAttribute, IAttributeHttp } from './attribute.service';
 import { ICatalogCustomer, ICatalogCustomerHttp } from './catalog.service';
@@ -253,13 +253,6 @@ export class HttpProxyService {
             });
         });
     }
-    batchUpdateSecurityProfile(securitypProfile: { [key: string]: string }): Observable<boolean> {
-        return new Observable<boolean>(e => {
-            this._httpClient.patch(environment.serverUri + '/proxy/security/profile/batch/url', securitypProfile).subscribe(next => {
-                e.next(true)
-            });
-        });
-    };
     forgetPwd(fg: FormGroup): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
@@ -320,31 +313,38 @@ export class HttpProxyService {
             });
         });
     };
-    createSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+    createSecurityProfile(securitypProfile: ISecurityProfile, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.post(environment.serverUri + '/proxy/security/profile', securitypProfile).subscribe(next => {
+            this._httpClient.post(environment.serverUri + '/proxy/endpoints/root', securitypProfile, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
 
     };
-    updateSecurityProfile(securitypProfile: ISecurityProfile): Observable<boolean> {
+    updateSecurityProfile(securitypProfile: ISecurityProfile, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + '/proxy/security/profile/' + securitypProfile.id, securitypProfile).subscribe(next => {
+            this._httpClient.put(environment.serverUri + '/proxy/endpoints/root/' + securitypProfile.id, securitypProfile, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
     deleteSecurityProfile(id: number): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(environment.serverUri + '/proxy/security/profile/' + id).subscribe(next => {
+            this._httpClient.delete(environment.serverUri + '/proxy/endpoints/root/' + id).subscribe(next => {
                 e.next(true)
             });
         });
 
     };
-    getSecurityProfiles(): Observable<ISecurityProfile[]> {
-        return this._httpClient.get<ISecurityProfile[]>(environment.serverUri + '/proxy/security/profiles');
+    getSecurityProfiles(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
+        return this._httpClient.get<ISecurityProfileSumRep>(environment.serverUri + '/proxy/endpoints/root' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+    };
+    getSecurityProfilesById(id: number) {
+        return this._httpClient.get<ISecurityProfile>(environment.serverUri + '/proxy/endpoints/root/' + id);
     };
     revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
         return new Observable<boolean>(e => {
@@ -450,7 +450,7 @@ export class HttpProxyService {
     register(registerFG: FormGroup, changeId: string): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
-        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._createUser(this._getToken(token), registerFG,changeId)))
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._createUser(this._getToken(token), registerFG, changeId)))
     }
     private _getAuthHeader(islogin: boolean, token?: string): HttpHeaders {
         return islogin ? new HttpHeaders().append('Authorization',
@@ -464,7 +464,7 @@ export class HttpProxyService {
     private _createUser(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
         let headers = this._getAuthHeader(false, token);
         headers = headers.append("changeId", changeId)
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public', this._getRegPayload(registerFG), { headers: headers})
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public', this._getRegPayload(registerFG), { headers: headers })
     }
     private _getActivationCode(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
         let headers = this._getAuthHeader(false, token);

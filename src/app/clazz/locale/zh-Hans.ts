@@ -236,5 +236,10 @@ export const zhHans = {
     "RESOURCEIDS": "可访问资源",
     "NOT_LOCKED": "状态",
     "CREATE_AT": "创建于",
+    "HTTP_GET": "GET",
+    "HTTP_POST": "POST",
+    "HTTP_PUT": "PUT",
+    "HTTP_PATCH": "PATCH",
+    "HTTP_DELETE": "DELETE",
     "": "",
 }

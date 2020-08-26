@@ -14,10 +14,9 @@ import * as UUID from 'uuid/v1';
   templateUrl: './summary-client.component.html',
 })
 export class SummaryClientComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'clientId','description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
+  displayedColumns: string[] = ['id', 'clientId', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
   dataSource: MatTableDataSource<IClient>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
   totoalItemCount: number;
   private subs: Subscription = new Subscription()
   constructor(
@@ -63,13 +62,24 @@ export class SummaryClientComponent implements OnInit, OnDestroy {
     this.clientService.revokeClientToken(clientId);
   }
   pageHandler(e: PageEvent) {
-    this.clientService.currentPageIndex = e.pageIndex
+    this.clientService.currentPageIndex = e.pageIndex;
+    if (this.sort) {
+      this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize, this.sort.active, this.sort.direction).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    } else {
+      this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize).subscribe(next => {
+        this.updateSummaryData(next)
+      });
+    }
   }
   parseAuthority(autho: IAuthority[]): string[] {
     return autho.map(e => e.grantedAuthority)
   }
+  private sort: Sort;
   updateTable(sort: Sort) {
-    this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize, sort.active, sort.direction).subscribe(next => {
+    this.sort = sort;
+    this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize, this.sort.active, this.sort.direction).subscribe(next => {
       this.updateSummaryData(next)
     });
   }
