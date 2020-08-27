@@ -18,7 +18,7 @@ import { CustomHttpInterceptor } from './services/http.interceptor';
 import { HttpProxyService } from './services/http-proxy.service';
 import { LoadingInterceptor } from './services/loading.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
-import { SecurityProfileService } from './services/security-profile.service';
+import { EndpointService } from './services/endpoint.service';
 import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
 import { ProductComponent } from './modules/mall/pages/product/product.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -168,7 +168,7 @@ import { enUS } from './clazz/locale/en-US';
       useClass: OfflineInterceptor,
       multi: true
     },
-    HttpProxyService, ClientService, ResourceOwnerService, AuthService, SecurityProfileService, CustomHttpInterceptor, FormInfoService, DeviceService],
+    HttpProxyService, ClientService, ResourceOwnerService, AuthService, EndpointService, CustomHttpInterceptor, FormInfoService, DeviceService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -37,7 +37,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     this.client = data as IClient;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
-    combineLatest([this.formCreatedOb, this.clientService.getResourceClient()]).pipe(take(1)).subscribe(next => {
+    combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 20, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
       this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: String(e.id), value: String(e.id) });
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
@@ -59,8 +59,8 @@ export class ClientComponent implements OnDestroy, OnInit {
           id: this.client.id,
           hasSecret: this.client.hasSecret,
           clientSecret: this.client.hasSecret ? '*****' : '',
-          name:this.client.name,
-          description:this.client.description,
+          name: this.client.name,
+          description: this.client.description,
           grantType: grantType,
           registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
           refreshToken: grantType === 'password' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
@@ -102,8 +102,8 @@ export class ClientComponent implements OnDestroy, OnInit {
 
     return {
       id: formGroup.get('id').value,
-      name:formGroup.get('name').value,
-      description:formGroup.get('description').value,
+      name: formGroup.get('name').value,
+      description: formGroup.get('description').value,
       hasSecret: formGroup.get('clientSecret').value ? true : false,
       clientSecret: formGroup.get('clientSecret').value == '*****' ? '' : formGroup.get('clientSecret').value,
       grantTypeEnums: grants,
@@ -130,10 +130,10 @@ export class ClientComponent implements OnDestroy, OnInit {
     }
     return changeKeys[0];
   }
-  doUpdate(){
-    this.clientService.updateClient(this.convertToClient(),this.changeId)
+  doUpdate() {
+    this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(), this.changeId)
   }
-  doCreate(){
-    this.clientService.createClient(this.convertToClient(),this.changeId)
+  doCreate() {
+    this.clientService.create(this.convertToClient(), this.changeId)
   }
 }

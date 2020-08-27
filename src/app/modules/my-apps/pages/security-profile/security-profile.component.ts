@@ -6,7 +6,7 @@ import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { Subscription } from 'rxjs';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/security-profile.config';
-import { SecurityProfileService } from 'src/app/services/security-profile.service';
+import { EndpointService } from 'src/app/services/endpoint.service';
 import * as UUID from 'uuid/v1';
 import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
 @Component({
@@ -20,7 +20,7 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   securityProfile: ISecurityProfile;
   validator: ValidateHelper;;
   constructor(
-    public securityProfileService: SecurityProfileService,
+    public endpointSvc: EndpointService,
     private fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<SecurityProfileComponent>
@@ -38,10 +38,10 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     if (this.securityProfile) {
-      this.fis.restore(this.formId,this.securityProfile)
+      this.fis.restore(this.formId, this.securityProfile)
     }
     else {
-  
+
     }
   }
   ngOnInit() {
@@ -50,17 +50,17 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     let formGroup = this.fis.formGroupCollection[this.formId];
     return {
       id: formGroup.get('id').value,
-      description:formGroup.get('description').value,
+      description: formGroup.get('description').value,
       resourceId: formGroup.get('resourceId').value,
       path: formGroup.get('path').value,
       method: formGroup.get('method').value,
       expression: formGroup.get('expression').value,
     }
   }
-  doUpdate(){
-    this.securityProfileService.update(this.convertToSecurityProfile(),UUID())
+  doUpdate() {
+    this.endpointSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToSecurityProfile(), UUID())
   }
-  doCreate(){
-    this.securityProfileService.create(this.convertToSecurityProfile(),UUID())
+  doCreate() {
+    this.endpointSvc.create(this.convertToSecurityProfile(), UUID())
   }
 }

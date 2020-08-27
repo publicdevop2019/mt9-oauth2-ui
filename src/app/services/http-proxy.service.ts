@@ -18,6 +18,7 @@ import { IUserReactionResult } from './reaction.service';
 import { IFilter, IFilterSummaryNet } from './filter.service';
 import * as UUID from 'uuid/v1';
 import { IEditEvent } from '../components/editable-field/editable-field.component';
+import { ISumRep } from '../clazz/summary.component';
 export interface IPatch {
     op: string,
     path: string,
@@ -117,6 +118,9 @@ export class HttpProxyService {
         return this._httpClient.get<IProductTotalResponse>(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin' + this.getQueryParam([this.getSearchParam(query), this.getPageParam(pageNum, pageSize)]));
     }
     private getSearchParam(query: string): string {
+        if (!query) {
+            return ''
+        }
         if (query.includes('id:')) {
             return 'query=' + query.replace(',', '.');
         } else if (query.includes('name:')) {
@@ -340,8 +344,8 @@ export class HttpProxyService {
         });
 
     };
-    getSecurityProfiles(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
-        return this._httpClient.get<ISecurityProfileSumRep>(environment.serverUri + '/proxy/endpoints/root' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+    getSecurityProfiles(pageNum: number, pageSize: number, query?: string, sortBy?: string, sortOrder?: string) {
+        return this._httpClient.get<ISumRep<ISecurityProfile>>(environment.serverUri + '/proxy/endpoints/root' + this.getQueryParam([this.getSearchParam(query), this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getSecurityProfilesById(id: number) {
         return this._httpClient.get<ISecurityProfile>(environment.serverUri + '/proxy/endpoints/root/' + id);
@@ -355,7 +359,7 @@ export class HttpProxyService {
             });
         });
     }
-    revokeClientToken(clientId: number): Observable<boolean>{
+    revokeClientToken(clientId: number): Observable<boolean> {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
@@ -407,11 +411,11 @@ export class HttpProxyService {
             });
         });
     };
-    updateClient(client: IClient, changeId: string): Observable<boolean> {
+    updateClient(id: number, client: IClient, changeId: string): Observable<boolean> {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root/' + client.id, client, { headers: headerConfig }).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root/' + id, client, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -423,14 +427,21 @@ export class HttpProxyService {
             });
         });
     };
+    deleteClientByQuery(query: string): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root?query=' + query).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
     getResourceOwners(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
         return this._httpClient.get<IUserSumRep>(environment.serverUri + this.AUTH_SVC_NAME + '/users/admin' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getResourceOwner(id: number) {
         return this._httpClient.get<IResourceOwner>(environment.serverUri + this.AUTH_SVC_NAME + '/users/admin/' + id);
     };
-    getClients(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
-        return this._httpClient.get<IClientSumRep>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root' + this.getQueryParam([this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
+    getClients(pageNum: number, pageSize: number, query?: string, sortBy?: string, sortOrder?: string) {
+        return this._httpClient.get<ISumRep<IClient>>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root' + this.getQueryParam([this.getSearchParam(query), this.getPageParam(pageNum, pageSize, sortBy, sortOrder)]));
     };
     getClientsById(id: number) {
         return this._httpClient.get<IClient>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/root/' + id);
@@ -564,5 +575,53 @@ export class HttpProxyService {
         let startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next }
         re.push(startAt)
         return re;
+    }
+    createEntity(entityRepo: string, role: string, entity: any, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
+        return new Observable<boolean>(e => {
+            this._httpClient.post(entityRepo + '/' + role, entity, { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    readEntityById<S>(entityRepo: string, role: string, id: number): Observable<S> {
+        return this._httpClient.get<S>(entityRepo + '/' + role + '/' + id);
+    };
+    readEntityByQuery<T>(entityRepo: string, role: string, num: number, size: number, query?: string, by?: string, order?: string) {
+        return this._httpClient.get<ISumRep<T>>(entityRepo + '/' + role + this.getQueryParam([this.getSearchParam(query), this.getPageParam(num, size, by, order)]))
+    };
+    updateEntity(entityRepo: string, role: string, id: number, entity: any, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
+        return new Observable<boolean>(e => {
+            this._httpClient.put(entityRepo + '/' + role + '/' + id, entity, { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    deleteEntityById(entityRepo: string, role: string, id: number): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(entityRepo + '/' + role + '/' + id).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    deleteEntityByQuery(entityRepo: string, role: string, query: string): Observable<boolean> {
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(entityRepo + '/' + role + '?' + query).subscribe(next => {
+                e.next(true)
+            });
+        });
+    };
+    patchEntityById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditEvent, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId);
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
     }
 }

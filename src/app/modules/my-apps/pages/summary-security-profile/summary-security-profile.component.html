@@ -1,8 +1,15 @@
 <h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'SECURITY_PROFILE_DASHBOARD' |translate}}<button
         mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
-</mat-form-field>
+<app-search (search)="doSearch($event)"></app-search>
+<div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
+    <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
+        style="margin-right: 16px;" (click)="showOptions()">
+        {{'BATCH_OPERATION'|translate}}
+    </mat-slide-toggle>
+    <ng-container *ngIf="batchUpdate.checked">
+        <button mat-raised-button color="primary" (click)="doBatchDelete()">{{'BATCH_DELETE'|translate}}</button>
+    </ng-container>
+</div>
 <div class="mat-elevation-z8">
     <div class="table-container">
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
@@ -60,7 +67,7 @@
             <ng-container matColumnDef="delete">
                 <th mat-header-cell *matHeaderCellDef class="table-icon">{{'DELETE'|translate}}</th>
                 <td mat-cell *matCellDef="let row" class="table-icon">
-                    <mat-icon (click)="securityProfileSvc.delete(row.id)" [color]="'warn'">delete_outline</mat-icon>
+                    <mat-icon (click)="entitySvc.deleteById(row.id)" [color]="'warn'">delete_outline</mat-icon>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -68,7 +75,7 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount"
-        [pageIndex]="securityProfileSvc.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
+    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount" [pageIndex]="entitySvc.currentPageIndex"
+        [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

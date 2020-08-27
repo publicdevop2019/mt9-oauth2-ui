@@ -63,13 +63,13 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('/catalogs/')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/proxy/security/profiles')) {
+        if (req.url.includes('/proxy/endpoints')) {
           return of(new HttpResponse({ status: 200, body: mockSP })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('clients')) {
           return of(new HttpResponse({ status: 200, body: mockClient })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('resourceOwners')) {
+        if (req.url.includes('users')) {
           return of(new HttpResponse({ status: 200, body: mockResourceO })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('orders')) {
