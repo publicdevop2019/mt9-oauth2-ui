@@ -17,7 +17,7 @@ export class ClientService {
   currentPageIndex: number=0;
   refreshSummary: Subject<void> = new Subject();
   constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  revokeClientToken(clientId: string): void {
+  revokeClientToken(clientId: number): void {
     this.httpProxy.revokeClientToken(clientId).subscribe(result => {
       this.notifyTokenRevocation(result);
     })

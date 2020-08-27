@@ -346,16 +346,20 @@ export class HttpProxyService {
     getSecurityProfilesById(id: number) {
         return this._httpClient.get<ISecurityProfile>(environment.serverUri + '/proxy/endpoints/root/' + id);
     };
-    revokeResourceOwnerToken(resourceOwnerName: string): Observable<boolean> {
+    revokeResourceOwnerToken(id: number): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + '/proxy/blacklist/resourceOwner', { "name": resourceOwnerName }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": id, "type": "User" }, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     }
-    revokeClientToken(clientId: string): Observable<boolean> {
+    revokeClientToken(clientId: number): Observable<boolean>{
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + '/proxy/blacklist/client', { "name": clientId }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": clientId, "type": "Client" }, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

@@ -84,7 +84,7 @@ export const zhHans = {
     "NAME": "名称",
     "EMAIL": "邮箱",
     "BATCH_OPERATION": "批量操作",
-    "RESOURCE_ID": "资源ID",
+    "RESOURCE_ID": "服务ID",
     "METHOD": "方法",
     "POSTS": "帖子",
     "COMMENTS": "评论",
@@ -241,5 +241,6 @@ export const zhHans = {
     "HTTP_PUT": "PUT",
     "HTTP_PATCH": "PATCH",
     "HTTP_DELETE": "DELETE",
+    "EXPRESSION": "安全表达式",
     "": "",
 }

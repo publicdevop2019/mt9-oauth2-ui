@@ -17,8 +17,8 @@ export class ResourceOwnerService {
   currentPageIndex: number=0;
   refreshSummary:Subject<void>=new Subject();
   constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router, private _httpInterceptor: CustomHttpInterceptor) { }
-  revokeResourceOwnerToken(resourceOwnerName: string): void {
-    this.httpProxy.revokeResourceOwnerToken(resourceOwnerName).subscribe(result => {
+  revokeResourceOwnerToken(id: number): void {
+    this.httpProxy.revokeResourceOwnerToken(id).subscribe(result => {
       this.notifyTokenRevocation(result);
     })
   }

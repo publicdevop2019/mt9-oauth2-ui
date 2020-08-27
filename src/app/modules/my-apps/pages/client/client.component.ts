@@ -39,7 +39,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     combineLatest([this.formCreatedOb, this.clientService.getResourceClient()]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
-      this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.clientId, value: e.clientId });
+      this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: String(e.id), value: String(e.id) });
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         // prevent infinite loop
         if (this.findDelta(e) !== undefined) {
@@ -57,9 +57,9 @@ export class ClientComponent implements OnDestroy, OnInit {
         const grantType: string = this.client.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
         this.fis.formGroupCollection[this.formId].patchValue({
           id: this.client.id,
-          clientId: this.client.clientId,
           hasSecret: this.client.hasSecret,
           clientSecret: this.client.hasSecret ? '*****' : '',
+          description:this.client.description,
           grantType: grantType,
           registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
           refreshToken: grantType === 'password' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
@@ -101,7 +101,6 @@ export class ClientComponent implements OnDestroy, OnInit {
 
     return {
       id: formGroup.get('id').value,
-      clientId: formGroup.get('clientId').value,
       description:formGroup.get('description').value,
       hasSecret: formGroup.get('clientSecret').value ? true : false,
       clientSecret: formGroup.get('clientSecret').value == '*****' ? '' : formGroup.get('clientSecret').value,

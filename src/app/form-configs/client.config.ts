@@ -16,22 +16,6 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
-            "label": "ENTER_CLIENT_ID",
-            "key": "clientId",
-            "position": {
-                "row": "1",
-                "column": "0"
-            },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
-        },
-        {
-            "type": "text",
-            "display": true,
             "label": "ENTER_DESCRIPTION",
             "key": "description",
             "position": {

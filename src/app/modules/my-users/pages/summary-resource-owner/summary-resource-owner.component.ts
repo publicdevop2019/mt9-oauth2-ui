@@ -45,8 +45,8 @@ export class SummaryResourceOwnerComponent implements OnInit, OnDestroy {
       this.dataSource.paginator.firstPage();
     }
   }
-  revokeResourceOwnerToken(resourceOwnersName: string) {
-    this.resourceOwnerService.revokeResourceOwnerToken(resourceOwnersName);
+  revokeResourceOwnerToken(id: number) {
+    this.resourceOwnerService.revokeResourceOwnerToken(id);
   }
   pageHandler(e: PageEvent) {
     this.resourceOwnerService.currentPageIndex = e.pageIndex

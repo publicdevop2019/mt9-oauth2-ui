@@ -14,7 +14,7 @@ import * as UUID from 'uuid/v1';
   templateUrl: './summary-client.component.html',
 })
 export class SummaryClientComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'clientId', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
+  displayedColumns: string[] = ['id',  'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
   dataSource: MatTableDataSource<IClient>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   totoalItemCount: number;
@@ -58,7 +58,7 @@ export class SummaryClientComponent implements OnInit, OnDestroy {
       this.dataSource.paginator.firstPage();
     }
   }
-  revokeClientToken(clientId: string) {
+  revokeClientToken(clientId: number) {
     this.clientService.revokeClientToken(clientId);
   }
   pageHandler(e: PageEvent) {

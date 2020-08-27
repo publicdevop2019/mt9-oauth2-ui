@@ -236,5 +236,6 @@ export const enUS = {
     "HTTP_PUT": "PUT",
     "HTTP_PATCH": "PATCH",
     "HTTP_DELETE": "DELETE",
+    "EXPRESSION": "Expression",
     "": "",
 }
