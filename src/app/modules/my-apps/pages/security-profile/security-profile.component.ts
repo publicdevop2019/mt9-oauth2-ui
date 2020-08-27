@@ -24,7 +24,7 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<SecurityProfileComponent>
   ) {
-    this.securityProfile = data as IEndpoint;
+    this.securityProfile = (data as IBottomSheet<IEndpoint>).from;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
   dismiss(event: MouseEvent) {
