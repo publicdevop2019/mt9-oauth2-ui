@@ -1,14 +1,12 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
-import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { Subscription } from 'rxjs';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/security-profile.config';
-import { EndpointService } from 'src/app/services/endpoint.service';
+import { EndpointService, IEndpoint } from 'src/app/services/endpoint.service';
 import * as UUID from 'uuid/v1';
-import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
+import { IBottomSheet } from 'src/app/clazz/summary.component';
 @Component({
   selector: 'app-security-profile',
   templateUrl: './security-profile.component.html',
@@ -17,15 +15,16 @@ import { ISecurityProfile } from '../summary-security-profile/summary-security-p
 export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestroy {
   formId = 'securityProfile';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  securityProfile: ISecurityProfile;
+  securityProfile: IEndpoint;
   validator: ValidateHelper;;
+  productBottomSheet: IBottomSheet<IEndpoint>;
   constructor(
     public endpointSvc: EndpointService,
     private fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<SecurityProfileComponent>
   ) {
-    this.securityProfile = data as ISecurityProfile;
+    this.securityProfile = data as IEndpoint;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
   dismiss(event: MouseEvent) {
@@ -46,7 +45,7 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   }
   ngOnInit() {
   }
-  convertToSecurityProfile(): ISecurityProfile {
+  convertToSecurityProfile(): IEndpoint {
     let formGroup = this.fis.formGroupCollection[this.formId];
     return {
       id: formGroup.get('id').value,

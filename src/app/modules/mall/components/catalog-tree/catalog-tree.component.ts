@@ -1,8 +1,12 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { CatalogCustomerFlatNode } from '../../pages/summary-catalog/summary-catalog.component';
-import { ICatalogCustomerTreeNode, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { ICatalogCustomerTreeNode, ICatalog } from 'src/app/services/catalog.service';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+export interface CatalogCustomerFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
 
 @Component({
   selector: 'app-catalog-tree',
@@ -10,9 +14,9 @@ import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
   styleUrls: ['./catalog-tree.component.css']
 })
 export class CatalogTreeComponent implements OnInit, OnChanges {
-  @Input() catalogs: ICatalogCustomer[];
-  @Output() leafNodeClicked = new EventEmitter<ICatalogCustomer>();
-  @Output() nonLeafNodeClicked = new EventEmitter<ICatalogCustomer>();
+  @Input() catalogs: ICatalog[];
+  @Output() leafNodeClicked = new EventEmitter<ICatalog>();
+  @Output() nonLeafNodeClicked = new EventEmitter<ICatalog>();
   treeControl = new FlatTreeControl<CatalogCustomerFlatNode>(node => node.level, node => node.expandable);
   private _transformer = (node: ICatalogCustomerTreeNode, level: number) => {
     return {
@@ -35,12 +39,12 @@ export class CatalogTreeComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
   hasChild = (_: number, node: CatalogCustomerFlatNode) => node.expandable;
-  private notLeafNode(catalogs: ICatalogCustomer[], nodes: ICatalogCustomerTreeNode[]): boolean {
+  private notLeafNode(catalogs: ICatalog[], nodes: ICatalogCustomerTreeNode[]): boolean {
     return nodes.filter(node => {
       return catalogs.filter(el => el.parentId === node.id).length >= 1
     }).length >= 1
   }
-  private convertToTree(catalogs: ICatalogCustomer[]): ICatalogCustomerTreeNode[] {
+  private convertToTree(catalogs: ICatalog[]): ICatalogCustomerTreeNode[] {
     let rootNodes = catalogs.filter(e => e.parentId === null || e.parentId === undefined);
     let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
       id: e.id,

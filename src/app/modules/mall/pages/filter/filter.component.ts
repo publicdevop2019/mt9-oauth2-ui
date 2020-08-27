@@ -8,9 +8,10 @@ import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CatalogService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { FilterService, IFilter, IFilterItem } from 'src/app/services/filter.service';
 import * as UUID from 'uuid/v1';
+import { IBottomSheet } from 'src/app/clazz/summary.component';
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -34,8 +35,9 @@ export class FilterComponent implements OnInit {
   private subscriptions: Subscription = new Subscription()
   private subs: { [key: string]: Subscription } = {};
   attrList: IBizAttribute[];
-  catalogList: ICatalogCustomer[];
+  catalogList: ICatalog[];
   changeId: string;
+  productBottomSheet: IBottomSheet<IFilter>;
   constructor(
     public filterSvc: FilterService,
     private fis: FormInfoService,
@@ -55,9 +57,9 @@ export class FilterComponent implements OnInit {
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
-    this.filter = data as IFilter;
+    this.filter = (data as IBottomSheet<IFilter>).from;
 
-    combineLatest(this.attrSvc.getAttributeList(), this.categorySvc.getCatalogFrontend(), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
+    combineLatest(this.attrSvc.readByQuery(0,1000), this.categorySvc.readByQuery(0, 1000, 'query=type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });
@@ -118,7 +120,7 @@ export class FilterComponent implements OnInit {
   private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
   }
-  public updateSelectCatalogs(catalog: ICatalogCustomer) {
+  public updateSelectCatalogs(catalog: ICatalog) {
     if (this.fis.formGroupCollection_index[this.formIdCatalog] === 0) {
       this.fis.formGroupCollection[this.formIdCatalog].get('catalogId').setValue(catalog.id);
       this.fis.formGroupCollection[this.formIdCatalog].get('catalogName').setValue(catalog.name);
@@ -182,6 +184,6 @@ export class FilterComponent implements OnInit {
     this.filterSvc.create(this.convertToPayload(), this.changeId)
   }
   updateFilter() {
-    this.filterSvc.update(this.convertToPayload(), this.changeId)
+    this.filterSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(), this.changeId)
   }
 }

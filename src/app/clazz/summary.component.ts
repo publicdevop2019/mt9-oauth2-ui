@@ -46,14 +46,19 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   constructor(
     protected entitySvc: IEntityService<T, S>,
     protected deviceSvc: DeviceService,
-    protected _bottomSheet: MatBottomSheet,
+    protected bottomSheet: MatBottomSheet,
+    protected _pageSizeOffset: number,
+    protected skipInitialLoad?: boolean
   ) {
-    let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next) });
-    let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
-      this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize())
-    )).subscribe(next => { this.updateSummaryData(next) })
-    this.subs.add(sub)
-    this.subs.add(sub0)
+    this.pageSizeOffset = _pageSizeOffset;
+    if (!skipInitialLoad) {
+      let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next) });
+      let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
+        this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize())
+      )).subscribe(next => { this.updateSummaryData(next) })
+      this.subs.add(sub)
+      this.subs.add(sub0)
+    }
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -66,15 +71,15 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
       this.entitySvc.readById(id).subscribe(next => {
         if (clone) {
           config.data = <IBottomSheet<S>>{ context: 'clone', from: next };
-          this._bottomSheet.open(this.sheetComponent, config);
+          this.bottomSheet.open(this.sheetComponent, config);
         } else {
           config.data = <IBottomSheet<S>>{ context: 'edit', from: next };
-          this._bottomSheet.open(this.sheetComponent, config);
+          this.bottomSheet.open(this.sheetComponent, config);
         }
       })
     } else {
       config.data = <IBottomSheet<S>>{ context: 'new', from: undefined };
-      this._bottomSheet.open(this.sheetComponent, config);
+      this.bottomSheet.open(this.sheetComponent, config);
     }
   }
   pageHandler(e: PageEvent) {

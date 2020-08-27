@@ -1,14 +1,9 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { EntityCommonService } from '../clazz/entity.common-service';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { IEditEvent } from '../components/editable-field/editable-field.component';
 
-export interface IProductTotalResponse {
-  data: IProductSimple[],
-  totalItemCount: number,
-}
 export interface IProductSimple {
   id: number;
   name: string;
@@ -56,10 +51,6 @@ export interface IProductDetail {
   lowestPrice?: number;
   totaleSales?: number;
 }
-export interface IBizProductBottomSheet {
-  context: string,
-  from: IProductDetail
-}
 export interface IAttrImage {
   attributeSales: string,
   imageUrls: string[]
@@ -67,7 +58,14 @@ export interface IAttrImage {
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class ProductService extends EntityCommonService<IProductSimple, IProductDetail>{
+  private PRODUCT_SVC_NAME = '/product-svc';
+  private ENTITY_NAME = '/products';
+  entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;
+  role: string = 'admin';
+  constructor(private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
+    super(httpProxy, interceptor);
+  }
   updateProdStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
     this.httpProxy.updateProductStatus(id, status, changeId).subscribe(result => {
       this.notify(result)
@@ -78,58 +76,6 @@ export class ProductService {
     this.httpProxy.batchUpdateProductStatus(ids, status, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
-    })
-  }
-  refreshSummary: Subject<void> = new Subject();
-  closeSheet: Subject<void> = new Subject();
-  currentPageIndex: number = 0;
-  constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getAllProduct(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IProductTotalResponse> {
-    return this.httpProxy.getAllProducts(pageNum, pageSize, sortBy, sortOrder)
-  }
-  searchProductWithQuery(pageNum: number, pageSize: number, query: string): Observable<IProductTotalResponse> {
-    return this.httpProxy.searchProductWithQuery(pageNum, pageSize, query)
-  }
-  getProductDetailById(id: number): Observable<IProductDetail> {
-    return this.httpProxy.getProductDetail(id)
-  }
-  create(product: IProductDetail, changeId: string) {
-    this.httpProxy.createProduct(product, changeId).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-      this.closeSheet.next()
-    })
-  }
-  update(product: IProductDetail, changeId: string) {
-    this.httpProxy.updateProduct(product, changeId).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-      this.closeSheet.next()
-    })
-
-  }
-  delete(id: number) {
-    this.httpProxy.deleteProduct(id).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-      this.closeSheet.next()
-    })
-  }
-  batchDelete(ids: number[]) {
-    this.httpProxy.deleteProducts(ids).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-      this.closeSheet.next()
-    })
-  }
-  notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
-  }
-  updateName(id: number, value: IEditEvent, changeId: string) {
-    this.httpProxy.updateProductSvcField(id, 'products', 'name', value, changeId).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-      this.closeSheet.next()
     })
   }
 }

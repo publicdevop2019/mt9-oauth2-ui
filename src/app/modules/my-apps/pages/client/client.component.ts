@@ -9,6 +9,7 @@ import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
 import { grantTypeEnums, IAuthority, IClient, scopeEnums } from '../../interface/client.interface';
 import * as UUID from 'uuid/v1';
+import { IBottomSheet } from 'src/app/clazz/summary.component';
 
 @Component({
   selector: 'app-client',
@@ -24,6 +25,7 @@ export class ClientComponent implements OnDestroy, OnInit {
   formId = 'client'
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
+  productBottomSheet: IBottomSheet<IClient>;
   private formCreatedOb: Observable<string>;
   private previousPayload: any = {};
   private changeId = UUID()
@@ -34,7 +36,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<ClientComponent>,
   ) {
-    this.client = data as IClient;
+    this.client = (data as IBottomSheet<IClient>).from;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 20, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {

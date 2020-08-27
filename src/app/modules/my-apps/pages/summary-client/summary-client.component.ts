@@ -15,9 +15,9 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
   constructor(
     protected entitySvc: ClientService,
     public deviceSvc: DeviceService,
-    public _bottomSheet: MatBottomSheet,
+    public bottomSheet: MatBottomSheet,
   ) {
-    super(entitySvc, deviceSvc, _bottomSheet);
+    super(entitySvc, deviceSvc, bottomSheet,2);
   }
   revokeClientToken(clientId: number) {
     this.entitySvc.revokeClientToken(clientId);

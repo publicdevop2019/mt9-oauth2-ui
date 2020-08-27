@@ -1,5 +1,5 @@
 import { IBizAttribute } from '../services/attribute.service';
-import { ICatalogCustomer } from '../services/catalog.service';
+import { ICatalog } from '../services/catalog.service';
 
 export function getCookie(name: string): string {
     let value = "; " + document.cookie;
@@ -20,7 +20,7 @@ export function getLabel(e: IBizAttribute): string {
     }
     return lableNew.join(' - ')
 }
-export function getLayeredLabel(attr: ICatalogCustomer, es: ICatalogCustomer[]): string {
+export function getLayeredLabel(attr: ICatalog, es: ICatalog[]): string {
     let tags: string[] = [];
     tags.push(attr.name);
     while (attr.parentId !== null && attr.parentId !== undefined) {
