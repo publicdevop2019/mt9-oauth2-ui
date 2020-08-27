@@ -59,6 +59,7 @@ export class ClientComponent implements OnDestroy, OnInit {
           id: this.client.id,
           hasSecret: this.client.hasSecret,
           clientSecret: this.client.hasSecret ? '*****' : '',
+          name:this.client.name,
           description:this.client.description,
           grantType: grantType,
           registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
@@ -101,6 +102,7 @@ export class ClientComponent implements OnDestroy, OnInit {
 
     return {
       id: formGroup.get('id').value,
+      name:formGroup.get('name').value,
       description:formGroup.get('description').value,
       hasSecret: formGroup.get('clientSecret').value ? true : false,
       clientSecret: formGroup.get('clientSecret').value == '*****' ? '' : formGroup.get('clientSecret').value,

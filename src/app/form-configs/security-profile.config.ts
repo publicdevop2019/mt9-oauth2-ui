@@ -32,10 +32,20 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
+            "label": "ENTER_DESCRIPTION",
+            "key": "description",
+            "position": {
+                "row": "2",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
             "label": "ENTER_ENDPOINT",
             "key": "path",
             "position": {
-                "row": "2",
+                "row": "3",
                 "column": "0"
             },
             "attributes": [
@@ -51,7 +61,7 @@ export const FORM_CONFIG: IForm = {
             "label": "SELECT_METHOD",
             "key": "method",
             "position": {
-                "row": "3",
+                "row": "4",
                 "column": "0"
             },
             "options": [
@@ -74,7 +84,7 @@ export const FORM_CONFIG: IForm = {
             "label": "ENTER_SECURITY_EXPRESSION",
             "key": "expression",
             "position": {
-                "row": "4",
+                "row": "5",
                 "column": "0"
             },
             "attributes": [

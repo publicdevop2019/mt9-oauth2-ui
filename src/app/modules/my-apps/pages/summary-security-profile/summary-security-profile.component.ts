@@ -17,6 +17,7 @@ export interface ISecurityProfileSumRep {
 }
 export interface ISecurityProfile {
   resourceId: string;
+  description?:string;
   path: string;
   method: string;
   expression: string;
@@ -28,7 +29,7 @@ export interface ISecurityProfile {
   styleUrls: ['./summary-security-profile.component.css']
 })
 export class SummarySecurityProfileComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['id', 'resourceId', 'path', 'expression','method', 'edit', 'delete'];
+  displayedColumns: string[] = ['id','description', 'resourceId', 'path', 'expression','method', 'edit', 'delete'];
   dataSource: MatTableDataSource<ISecurityProfile>;
   private subs: Subscription = new Subscription()
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;

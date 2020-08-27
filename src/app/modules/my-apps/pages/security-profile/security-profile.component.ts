@@ -1,16 +1,14 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Inject } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/security-profile.config';
 import { SecurityProfileService } from 'src/app/services/security-profile.service';
-import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
-import { TranslateService } from '@ngx-translate/core';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material';
 import * as UUID from 'uuid/v1';
+import { ISecurityProfile } from '../summary-security-profile/summary-security-profile.component';
 @Component({
   selector: 'app-security-profile',
   templateUrl: './security-profile.component.html',
@@ -24,7 +22,6 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   constructor(
     public securityProfileService: SecurityProfileService,
     private fis: FormInfoService,
-    public translate: TranslateService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<SecurityProfileComponent>
   ) {
@@ -36,24 +33,10 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     event.preventDefault();
   }
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
     this.fis.resetAll();
   }
   ngAfterViewInit(): void {
     this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
-    this.formInfo.inputs.filter(e => e.label).forEach(e => {
-      this.translate.get(e.label).subscribe((res: string) => {
-        this.transKeyMap.set(e.key, e.label);
-        e.label = res;
-      });
-    })
-    this.sub = this.translate.onLangChange.subscribe(() => {
-      this.formInfo.inputs.filter(e => e.label).forEach(e => {
-        this.translate.get(this.transKeyMap.get(e.key)).subscribe((res: string) => {
-          e.label = res;
-        });
-      })
-    })
     if (this.securityProfile) {
       this.fis.restore(this.formId,this.securityProfile)
     }
@@ -61,14 +44,13 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   
     }
   }
-  private sub: Subscription;
-  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
   }
   convertToSecurityProfile(): ISecurityProfile {
     let formGroup = this.fis.formGroupCollection[this.formId];
     return {
       id: formGroup.get('id').value,
+      description:formGroup.get('description').value,
       resourceId: formGroup.get('resourceId').value,
       path: formGroup.get('path').value,
       method: formGroup.get('method').value,

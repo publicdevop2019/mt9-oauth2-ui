@@ -13,6 +13,7 @@ export enum scopeEnums {
   trust = 'trust'
 }
 export interface IClient {
+  name: string;
   id: number;
   clientSecret?: string;
   description?: string;
