@@ -4,7 +4,7 @@ export interface IUserSumRep{
     totalItemCount?: number
 }
 export interface IResourceOwner {
-    id?: number,
+    id: number,
     email: string;
     password?: string;
     locked: boolean;

@@ -1,65 +1,23 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { Router } from '@angular/router';
-import { Observable, of, Subject } from 'rxjs';
+import { EntityCommonService } from '../clazz/entity.common-service';
+import { IClient } from '../modules/my-apps/interface/client.interface';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { switchMap } from 'rxjs/operators';
-import { IClient } from '../modules/my-apps/interface/client.interface';
-import { IEditEvent } from '../components/editable-field/editable-field.component';
-/**
- * responsible for convert FormGroup to business model
- */
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class ClientService {
-  currentPageIndex: number=0;
-  refreshSummary: Subject<void> = new Subject();
-  constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
+export class ClientService extends EntityCommonService<IClient, IClient>{
+  private AUTH_SVC_NAME = '/auth-svc';
+  private ENTITY_NAME = '/clients';
+  entityRepo: string = environment.serverUri + this.AUTH_SVC_NAME + this.ENTITY_NAME;
+  role: string = 'root';
+  constructor(private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
+    super(httpProxy, interceptor);
+  }
   revokeClientToken(clientId: number): void {
     this.httpProxy.revokeClientToken(clientId).subscribe(result => {
-      this.notifyTokenRevocation(result);
-    })
-  }
-  getClients(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string) {
-    return this.httpProxy.getClients(pageNum, pageSize, sortBy, sortOrder)
-  }
-  getClientById(id: number): Observable<IClient> {
-    return this.httpProxy.getClientsById(id);
-  }
-  getResourceClient() {
-    return this.httpProxy.getResourceClient();
-  }
-  updateClient(client: IClient, changeId: string): void {
-    this.httpProxy.updateClient(client, changeId).subscribe(result => {
-      this.notifyTokenRevocation(result)
-      this.refreshSummary.next()
-    })
-  }
-  delete(id: number): void {
-    this.httpProxy.deleteClient(id).subscribe(result => {
-      this.notify(result)
-      this.router.navigateByUrl('/dashboard/clients');
-      this.refreshSummary.next()
-    })
-  }
-  createClient(client: IClient, changeId: string): void {
-    this.httpProxy.createClient(client, changeId).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-    })
-  }
-  notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
-  }
-  notifyTokenRevocation(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
-  }
-  doPatch(id: number, value: IEditEvent, type: string, changeId: string) {
-    this.httpProxy.updateAuthSvcField(id, 'clients', type, value, changeId).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
+      result ? this.interceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this.interceptor.openSnackbar('OPERATION_FAILED');
     })
   }
 }

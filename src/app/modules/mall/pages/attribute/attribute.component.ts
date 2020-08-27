@@ -8,6 +8,7 @@ import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import * as UUID from 'uuid/v1';
+import { IBottomSheet } from 'src/app/clazz/summary.component';
 @Component({
   selector: 'app-attribute',
   templateUrl: './attribute.component.html',
@@ -22,6 +23,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
   formIdAttrValue = 'attributesValue';
   formInfoAttrValue: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
   validator: ValidateHelper;
+  productBottomSheet: IBottomSheet<IBizAttribute>;
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
   private subs: Subscription = new Subscription()
@@ -38,7 +40,7 @@ export class AttributeComponent implements OnInit, OnDestroy {
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
-    this.attribute = data as IBizAttribute;
+    this.attribute = (data as IBottomSheet<IBizAttribute>).from;
     combineLatest(this.formCreatedOb).pipe(take(1)).subscribe(() => {
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
         this.manualSelect = next === 'SELECT';
@@ -84,6 +86,6 @@ export class AttributeComponent implements OnInit, OnDestroy {
     this.attributeSvc.create(this.convertToPayload(), this.changeId)
   }
   updateAttr() {
-    this.attributeSvc.update(this.convertToPayload(), this.changeId)
+    this.attributeSvc.update(this.fis.formGroupCollection[this.formId].get('id').value,this.convertToPayload(), this.changeId)
   }
 }

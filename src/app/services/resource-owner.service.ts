@@ -1,60 +1,32 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { Observable, of, Subject } from 'rxjs';
-import { MsgBoxComponent } from '../components/msg-box/msg-box.component';
+import { environment } from 'src/environments/environment';
+import { EntityCommonService } from '../clazz/entity.common-service';
+import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { switchMap } from 'rxjs/operators';
-import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
-/**
- * responsible for convert FormGroup to business model
- */
 @Injectable({
   providedIn: 'root'
 })
-export class ResourceOwnerService {
-  currentPageIndex: number=0;
-  refreshSummary:Subject<void>=new Subject();
-  constructor(private httpProxy: HttpProxyService, public dialog: MatDialog, private router: Router, private _httpInterceptor: CustomHttpInterceptor) { }
+export class ResourceOwnerService extends EntityCommonService<IResourceOwner, IResourceOwner>{
+  private AUTH_SVC_NAME = '/auth-svc';
+  private ENTITY_NAME = '/users';
+  entityRepo: string = environment.serverUri + this.AUTH_SVC_NAME + this.ENTITY_NAME;
+  role: string = 'admin';
+  constructor(private router: Router, private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
+    super(httpProxy, interceptor);
+  }
   revokeResourceOwnerToken(id: number): void {
     this.httpProxy.revokeResourceOwnerToken(id).subscribe(result => {
-      this.notifyTokenRevocation(result);
+      result ? this.interceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this.interceptor.openSnackbar('OPERATION_FAILED');
     })
   }
-  getResourceOwners(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string){
-    return this.httpProxy.getResourceOwners(pageNum,pageSize,sortBy,sortOrder);
-  }
-  getResourceOwner(id: number): Observable<IResourceOwner> {
-    return this.httpProxy.getResourceOwner(id);
-  }
-  updateResourceOwner(resourceOwner: IResourceOwner,changeId:string): void {
-    this.httpProxy.updateResourceOwner(resourceOwner,changeId).subscribe(result => {
-      this.notify(result);
-      this.refreshSummary.next()
-    });
-  }
-  updateMyPwd(resourceOwner: IResourceOwnerUpdatePwd,changeId:string): void {
-    this.httpProxy.updateResourceOwnerPwd(resourceOwner,changeId).subscribe(result => {
-      this.notifyPwdUpdate(result)
+  updateMyPwd(resourceOwner: IResourceOwnerUpdatePwd, changeId: string): void {
+    this.httpProxy.updateResourceOwnerPwd(resourceOwner, changeId).subscribe(result => {
+      result ? this.interceptor.openSnackbar('OPERATION_SUCCESS_LOGIN') : this.interceptor.openSnackbar('OPERATION_FAILED');
       /** clear authentication info */
       this.httpProxy.currentUserAuthInfo = undefined;
       this.router.navigateByUrl('/login');
     });
-  }
-  delete(id: number): void {
-    this.httpProxy.deleteResourceOwner(id).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-    });
-  }
-  notifyTokenRevocation(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
-  }
-  notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
-  }
-  notifyPwdUpdate(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS_LOGIN') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
   }
 }

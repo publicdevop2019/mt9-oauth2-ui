@@ -1,92 +1,28 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatTableDataSource, MatPaginator, MatSort, PageEvent, MatBottomSheet, MatBottomSheetConfig, Sort } from '@angular/material';
+import { Component, OnDestroy } from '@angular/core';
+import { MatBottomSheet } from '@angular/material';
+import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { ClientService } from 'src/app/services/client.service';
 import { DeviceService } from 'src/app/services/device.service';
+import { IAuthority, IClient } from '../../interface/client.interface';
 import { ClientComponent } from '../client/client.component';
-import { IClient, IAuthority, IClientSumRep } from '../../interface/client.interface';
-import { switchMap } from 'rxjs/operators';
-import { hasValue } from 'src/app/clazz/utility';
-import { Subscription } from 'rxjs';
-import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
-import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-summary-client',
   templateUrl: './summary-client.component.html',
 })
-export class SummaryClientComponent implements OnInit, OnDestroy {
+export class SummaryClientComponent extends SummaryEntityComponent<IClient, IClient> implements OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
-  dataSource: MatTableDataSource<IClient>;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  totoalItemCount: number;
-  private subs: Subscription = new Subscription()
+  sheetComponent = ClientComponent;
   constructor(
-    public clientService: ClientService,
+    protected entitySvc: ClientService,
     public deviceSvc: DeviceService,
-    private _bottomSheet: MatBottomSheet,
+    public bottomSheet: MatBottomSheet,
   ) {
-    let sub = this.clientService.refreshSummary.pipe(switchMap(() => this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize))).subscribe(next => { this.updateSummaryData(next) })
-    let sub0 = this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize).subscribe(next => { this.updateSummaryData(next) })
-    this.subs.add(sub)
-    this.subs.add(sub0)
-  }
-  ngOnDestroy(): void {
-    this.subs.unsubscribe()
-  }
-
-  ngOnInit() {
-  }
-  updateSummaryData(next: IClientSumRep) {
-    this.dataSource = new MatTableDataSource(next.data)
-    this.totoalItemCount = next.totalItemCount;
-  }
-  openBottomSheet(id?: number): void {
-    let config = new MatBottomSheetConfig();
-    config.autoFocus = true;
-    if (hasValue(id)) {
-      this.clientService.getClientById(id).subscribe(next => {
-        config.data = next;
-        this._bottomSheet.open(ClientComponent, config);
-      })
-    } else {
-      this._bottomSheet.open(ClientComponent, config);
-    }
-  }
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    super(entitySvc, deviceSvc, bottomSheet,2);
   }
   revokeClientToken(clientId: number) {
-    this.clientService.revokeClientToken(clientId);
-  }
-  pageHandler(e: PageEvent) {
-    this.clientService.currentPageIndex = e.pageIndex;
-    if (this.sort) {
-      this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize, this.sort.active, this.sort.direction).subscribe(next => {
-        this.updateSummaryData(next)
-      });
-    } else {
-      this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize).subscribe(next => {
-        this.updateSummaryData(next)
-      });
-    }
+    this.entitySvc.revokeClientToken(clientId);
   }
   parseAuthority(autho: IAuthority[]): string[] {
     return autho.map(e => e.grantedAuthority)
-  }
-  private sort: Sort;
-  updateTable(sort: Sort) {
-    this.sort = sort;
-    this.clientService.getClients(this.clientService.currentPageIndex, this.deviceSvc.pageSize, this.sort.active, this.sort.direction).subscribe(next => {
-      this.updateSummaryData(next)
-    });
-  }
-  doPatchDesc(id: number, event: IEditEvent) {
-    this.clientService.doPatch(id, event, 'description', UUID())
-  }
-  doPatchName(id: number, event: IEditEvent) {
-    this.clientService.doPatch(id, event, 'name', UUID())
   }
 }

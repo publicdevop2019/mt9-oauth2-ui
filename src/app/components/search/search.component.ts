@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { CatalogService, ICatalogCustomer } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { debounce, filter, map, switchMap } from 'rxjs/operators';
 import { interval } from 'rxjs';
@@ -20,10 +20,10 @@ export class SearchComponent {
   searchByAttr = new FormControl();
   searchByAttrSelect = new FormControl();
   searchByAttrManual = new FormControl();
-  public catalogsDataBack: ICatalogCustomer[];
-  public catalogsDataFront: ICatalogCustomer[];
+  public catalogsDataBack: ICatalog[];
+  public catalogsDataFront: ICatalog[];
   public bizAttr: IBizAttribute[];
-  constructor(fb: FormBuilder, private categorySvc: CatalogService, private attrSvc: AttributeService) {
+  constructor(fb: FormBuilder, private entitySvc: CatalogService, private attrSvc: AttributeService) {
     this.options = fb.group({
       searchType: this.searchTypeCtrl,
       searchQuery: this.searchQueryCtrl,
@@ -38,17 +38,17 @@ export class SearchComponent {
         console.dir(next)
         this.search.emit(next);
       });
-    let sub1 = this.categorySvc.getCatalogBackend()
+    let sub1 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, 1000, 'query=type:BACKEND')
       .subscribe(catalogs => {
         if (catalogs.data)
           this.catalogsDataBack = catalogs.data;
       });
-    let sub4 = this.categorySvc.getCatalogFrontend()
+    let sub4 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, 1000, 'query=type:FRONTEND')
       .subscribe(catalogs => {
         if (catalogs.data)
           this.catalogsDataFront = catalogs.data;
       });
-    let sub5 = this.attrSvc.getAttributeList()
+    let sub5 = this.attrSvc.readByQuery(0,1000)
       .subscribe(next => {
         if (next.data)
           this.bizAttr = next.data;
@@ -85,7 +85,7 @@ export class SearchComponent {
     let var2 = var1.id + ":" + (var1.method === 'SELECT' ? this.searchByAttrSelect.value : this.searchByAttrManual.value);
     this.searchQueryCtrl.setValue(this.searchQueryCtrl.value === 'attributes:' ? 'attributes:' + var2 : this.searchQueryCtrl.value + ',' + var2)
   }
-  searchWithTags(catalog: ICatalogCustomer) {
+  searchWithTags(catalog: ICatalog) {
     this.searchQueryCtrl.setValue('attributes:' + catalog.attributes.join(','))
   }
   doReset() {

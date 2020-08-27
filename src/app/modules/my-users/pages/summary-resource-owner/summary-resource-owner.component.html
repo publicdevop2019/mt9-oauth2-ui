@@ -1,12 +1,18 @@
 <h2>{{'USER_CENTER' |translate}} / {{'RESOURCE_OWNER_DASHBOARD'|translate}}</h2>
-<mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
-</mat-form-field>
-
+<app-search (search)="doSearch($event)"></app-search>
+<div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
+    <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
+        style="margin-right: 16px;" (click)="showOptions()">
+        {{'BATCH_OPERATION'|translate}}
+    </mat-slide-toggle>
+    <ng-container *ngIf="batchUpdate.checked">
+        <button mat-raised-button color="primary" (click)="doBatchDelete()">{{'BATCH_DELETE'|translate}}</button>
+    </ng-container>
+</div>
 <div class="mat-elevation-z8">
     <div class="table-container">
 
-        <table mat-table [dataSource]="dataSource" matSort  (matSortChange)="updateTable($event)">
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
 
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
@@ -31,7 +37,7 @@
                     </mat-icon>
                     <mat-icon *ngIf="row.locked" [color]="'primary'">cancel
                     </mat-icon>
-                    </td>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="edit">
@@ -44,7 +50,7 @@
             <ng-container matColumnDef="delete">
                 <th mat-header-cell *matHeaderCellDef class="table-icon">{{'DELETE'|translate}}</th>
                 <td mat-cell *matCellDef="let row" class="table-icon">
-                    <mat-icon (click)="resourceOwnerService.delete(row.id)" [color]="'warn'">delete_outline</mat-icon>
+                    <mat-icon (click)="entitySvc.deleteById(row.id)" [color]="'warn'">delete_outline</mat-icon>
                 </td>
             </ng-container>
 
@@ -59,6 +65,6 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="resourceOwnerService.currentPageIndex" [length]="totoalItemCount"
+    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="entitySvc.currentPageIndex" [length]="totoalItemCount"
         [pageSizeOptions]="[deviceSvc.pageSize]" (page)="pageHandler($event)"></mat-paginator>
 </div>

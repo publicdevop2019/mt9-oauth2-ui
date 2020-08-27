@@ -1,13 +1,32 @@
 <h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'CLIENT_DASHBOARD'|translate}}<button
         mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<mat-form-field>
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'FILTER'|translate}}">
-</mat-form-field>
-
+<app-search (search)="doSearch($event)"></app-search>
+<div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
+    <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
+        style="margin-right: 16px;" (click)="showOptions()">
+        {{'BATCH_OPERATION'|translate}}
+    </mat-slide-toggle>
+    <ng-container *ngIf="batchUpdate.checked">
+        <button mat-raised-button color="primary" (click)="doBatchDelete()">{{'BATCH_DELETE'|translate}}</button>
+    </ng-container>
+</div>
 <div class="mat-elevation-z8">
     <div class="table-container">
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
-
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
             <ng-container matColumnDef="id" sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CLIENT_ID'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
@@ -18,7 +37,8 @@
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef> {{'DESCRIPTION'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    <app-editable-field [inputValue]="row.description" (newValue)="doPatchDesc(row.id,$event)">
+                    <app-editable-field [inputValue]="row.description"
+                        (newValue)="doPatch(row.id,$event,'description')">
                     </app-editable-field>
                 </td>
             </ng-container>
@@ -26,7 +46,7 @@
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'NAME'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    <app-editable-field [inputValue]="row.name" (newValue)="doPatchName(row.id,$event)">
+                    <app-editable-field [inputValue]="row.name" (newValue)="doPatch(row.id,$event,'name')">
                     </app-editable-field>
                 </td>
             </ng-container>
@@ -79,7 +99,7 @@
             <ng-container matColumnDef="delete">
                 <th mat-header-cell *matHeaderCellDef class="table-icon">{{'DELETE'|translate}}</th>
                 <td mat-cell *matCellDef="let row" class="table-icon">
-                    <mat-icon (click)="clientService.delete(row.id)" [color]="'warn'">delete_outline</mat-icon>
+                    <mat-icon (click)="entitySvc.deleteById(row.id)" [color]="'warn'">delete_outline</mat-icon>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -87,7 +107,7 @@
         </table>
     </div>
 
-    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount"
-        [pageIndex]="clientService.currentPageIndex" [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
+    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount" [pageIndex]="entitySvc.currentPageIndex"
+        [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
     </mat-paginator>
 </div>

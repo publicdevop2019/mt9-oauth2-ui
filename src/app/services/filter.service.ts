@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { EntityCommonService } from '../clazz/entity.common-service';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { switchMap } from 'rxjs/operators';
 export interface IFilterItem {
   id: number,
   name: string,
@@ -13,52 +13,23 @@ export interface IFilter {
   catalogs: string[],
   filters: IFilterItem[]
 }
-export interface IFilterSummary {
+export interface IBizFilter {
   id: number,
   catalogs: string[]
 }
 export interface IFilterSummaryNet {
-  data: IFilterSummary[];
+  data: IBizFilter[];
   totalItemCount: number,
 }
 @Injectable({
   providedIn: 'root'
 })
-export class FilterService {
-  refreshSummary: Subject<void> = new Subject();
-  closeSheet: Subject<void> = new Subject();
-  currentPageIndex: number = 0;
-  constructor(private httpProxy: HttpProxyService, private _httpInterceptor: CustomHttpInterceptor) {
-
-  }
-  getById(id: number): Observable<IFilter> {
-    return this.httpProxy.readFilter(id)
-  }
-  getAll(pageNum: number, pageSize: number, sortBy?: string, sortOrder?: string): Observable<IFilterSummaryNet> {
-    return this.httpProxy.getAllFilters(pageNum, pageSize, sortBy, sortOrder)
-  }
-  create(filter: IFilter, changeId: string) {
-    this.httpProxy.createFilter(filter,changeId).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-    })
-  }
-  update(attribute: IFilter, changeId: string) {
-    this.httpProxy.updateFilter(attribute,changeId).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-      this.closeSheet.next()
-    })
-
-  }
-  delete(id: number) {
-    this.httpProxy.deleteFilter(id).subscribe(result => {
-      this.notify(result)
-      this.refreshSummary.next()
-      this.closeSheet.next()
-    })
-  }
-  notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
+export class FilterService extends EntityCommonService<IFilter, IFilter>{
+  private PRODUCT_SVC_NAME = '/product-svc';
+  private ENTITY_NAME = '/filters';
+  entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;
+  role: string = 'admin';
+  constructor(private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
+    super(httpProxy, interceptor);
   }
 }

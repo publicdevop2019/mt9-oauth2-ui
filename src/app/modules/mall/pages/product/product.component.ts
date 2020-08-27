@@ -11,10 +11,11 @@ import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dy
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
 import { ATTR_SALE_FORM_CONFIG_IMAGE, FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
 import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/services/attribute.service';
-import { CatalogService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { IAttrImage, IBizProductBottomSheet, IProductDetail, IProductOption, IProductOptions, ISku, ProductService } from 'src/app/services/product.service';
+import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IProductSimple } from 'src/app/services/product.service';
 import * as UUID from 'uuid/v1';
+import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 interface IProductSimplePublic {
   imageUrlSmall: string;
   name: string;
@@ -47,7 +48,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     return e.attributesSales.length === 0
   }
   productDetail: IProductDetail;
-  productBottomSheet: IBizProductBottomSheet;
+  productBottomSheet: IBottomSheet<IProductDetail>;
   changeId: string;
   salesFormIdTempId = 'attrSalesFormChild';
   formId = 'product';
@@ -71,7 +72,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   public attrList: IBizAttribute[];
   private subs: { [key: string]: Subscription } = {};
   private subscriptions: Subscription = new Subscription();
-  public catalogs: ICatalogCustomerHttp;
+  public catalogs: ISumRep<ICatalog>;
   private udpateSkusOriginalCopy: ISku[];
   private formCreatedOb: Observable<string>;
   private prodFormCreatedOb: Observable<string>;
@@ -146,7 +147,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.subscriptions.add(sub);
       this.subscriptions.add(sub2);
     })
-    let sub1 = this.attrSvc.getAttributeList().pipe(switchMap((next) => {
+    let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {
       // load attribute first then initialize form
       this.updateFormInfoOptions(next.data);
       this.attrList = next.data;
@@ -341,9 +342,8 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe()
     this.fis.resetAll();
   }
-  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
-    this.categorySvc.getCatalogBackend()
+    this.categorySvc.readByQuery(0, 1000, 'query=type:FRONTEND')
       .subscribe(next => {
         if (next.data) {
           this.catalogs = next;
@@ -352,7 +352,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
       });
   }
-  private isLeafNode(catalogs: ICatalogCustomer[], catalog: ICatalogCustomer): boolean {
+  private isLeafNode(catalogs: ICatalog[], catalog: ICatalog): boolean {
     return catalogs.filter(node => node.parentId === catalog.id).length == 0
   }
   convertToPayload(): IProductDetail {
@@ -477,7 +477,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
     })
   }
-  public loadAttributes(attr: ICatalogCustomer) {
+  public loadAttributes(attr: ICatalog) {
     let tags: string[] = [];
     tags.push(...attr.attributes);
     while (attr.parentId !== null && attr.parentId !== undefined) {
@@ -552,7 +552,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.productSvc.create(this.convertToPayload(), this.changeId)
   }
   updateProduct() {
-    this.productSvc.update(this.convertToPayload(), this.changeId)
+    this.productSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(), this.changeId)
   }
   previewFlag: boolean = false;
   doPreview() {

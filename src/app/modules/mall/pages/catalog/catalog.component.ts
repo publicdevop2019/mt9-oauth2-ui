@@ -8,8 +8,9 @@ import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CatalogService, ICatalogCustomer, ICatalogCustomerHttp } from 'src/app/services/catalog.service';
+import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import * as UUID from 'uuid/v1';
+import { ISumRep, IBottomSheet } from 'src/app/clazz/summary.component';
 
 @Component({
   selector: 'app-catalog',
@@ -17,7 +18,7 @@ import * as UUID from 'uuid/v1';
   styleUrls: ['./catalog.component.css']
 })
 export class CatalogComponent implements OnInit, OnDestroy {
-  category: ICatalogCustomer;
+  category: ICatalog;
   formId = 'category';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   attrFormId = 'attributes';
@@ -27,23 +28,24 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private attrFormCreatedOb: Observable<string>;
   private subs: Subscription = new Subscription();
   private changeId = UUID()
+  productBottomSheet: IBottomSheet<ICatalog>;
   constructor(
-    public catalogSvc: CatalogService,
+    public entitySvc: CatalogService,
     private fis: FormInfoService,
     public attrSvc: AttributeService,
     private changeDecRef: ChangeDetectorRef,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
-    let sub = this.catalogSvc.closeSheet.subscribe(() => {
+    let sub = this.entitySvc.closeSheet.subscribe(() => {
       this._bottomSheetRef.dismiss()
     });
     this.subs.add(sub)
-    this.category = data;
+    this.category = (data as IBottomSheet<ICatalog>).from;
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
-    let sub1 = combineLatest(this.formCreatedOb, this.attrSvc.getAttributeList()).pipe(take(1)).pipe(switchMap(next => {
+    let sub1 = combineLatest(this.formCreatedOb, this.attrSvc.readByQuery(0, 1000)).pipe(take(1)).pipe(switchMap(next => {
       this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: e.id });//update formInfo first then initialize form, so add template can be correct
       this.attrList = next[1].data;
       this.changeDecRef.markForCheck();//refresh view for create
@@ -55,7 +57,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
     })).subscribe(() => {
       this.subForAttrFormChange();
       if (this.category && this.category.attributes) {
-        this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.category.attributes,this.attrList), this.category.attributes.length);
+        this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.category.attributes, this.attrList), this.category.attributes.length);
       }
       this.fis.$refresh.next();
       this.changeDecRef.markForCheck();
@@ -65,11 +67,11 @@ export class CatalogComponent implements OnInit, OnDestroy {
   private subForCatalogTypeChange(skipReset: boolean) {
     let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
-      let catalogOb: Observable<ICatalogCustomerHttp>;
+      let catalogOb: Observable<ISumRep<ICatalog>>;
       if (next === 'FRONTEND') {
-        catalogOb = this.catalogSvc.getCatalogFrontend();
+        catalogOb = this.entitySvc.readByQuery(0, 1000, 'query=type:FRONTEND');
       } else {
-        catalogOb = this.catalogSvc.getCatalogBackend();
+        catalogOb = this.entitySvc.readByQuery(0, 1000, 'query=type:BACKEND')
       }
       catalogOb.subscribe(next1 => {
         this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })
@@ -108,7 +110,7 @@ export class CatalogComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
   }
-  convertToCategoryPayload(): ICatalogCustomer {
+  convertToCategoryPayload(): ICatalog {
     let formGroup = this.fis.formGroupCollection[this.formId];
     return {
       id: formGroup.get('id').value,
@@ -137,9 +139,9 @@ export class CatalogComponent implements OnInit, OnDestroy {
     });
   }
   createCatalog() {
-    this.catalogSvc.create(this.convertToCategoryPayload(), this.changeId)
+    this.entitySvc.create(this.convertToCategoryPayload(), this.changeId)
   }
   updateCatalog() {
-    this.catalogSvc.update(this.convertToCategoryPayload(), this.changeId)
+    this.entitySvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToCategoryPayload(), this.changeId)
   }
 }

@@ -9,14 +9,17 @@ import { mockClient } from 'src/assets/mocks/mock-clients';
 import { mockFilter } from 'src/assets/mocks/mock-filter';
 import { mockFilters } from 'src/assets/mocks/mock-filters';
 import { mockOrders } from 'src/assets/mocks/mock-order';
-import { mockProductDetails } from 'src/assets/mocks/mock-product-detail';
-import { mockProducts } from 'src/assets/mocks/mock-product-simple';
-import { mockResourceO } from 'src/assets/mocks/mock-resource-owners';
-import { mockSP } from 'src/assets/mocks/mock-security-profile';
+import { mockProductDetails } from 'src/assets/mocks/mock-product';
+import { mockProducts } from 'src/assets/mocks/mock-products';
+import { mockSP1 } from 'src/assets/mocks/mock-endpoint';
 import { environment } from 'src/environments/environment';
 import { IAuthorizeCode } from '../interfaze/commom.interface';
 import { mockCatalog } from 'src/assets/mocks/mock-catalog';
 import { mockAttr } from 'src/assets/mocks/mock-attribute';
+import { mockClient1 } from 'src/assets/mocks/mock-client';
+import { mockSP } from 'src/assets/mocks/mock-endpoints';
+import { mockResourceO } from 'src/assets/mocks/mock-users';
+import { mockResource1 } from 'src/assets/mocks/mock-user';
 /**
  * use refresh token if call failed
  */
@@ -63,13 +66,22 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('/catalogs/')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/proxy/security/profiles')) {
+        if (req.url.includes('/proxy/endpoints/root/')) {
+          return of(new HttpResponse({ status: 200, body: mockSP1 })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('/proxy/endpoints/root')) {
           return of(new HttpResponse({ status: 200, body: mockSP })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('clients')) {
+        if (req.url.includes('clients/root/')) {
+          return of(new HttpResponse({ status: 200, body: mockClient1 })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('clients/root')) {
           return of(new HttpResponse({ status: 200, body: mockClient })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('resourceOwners')) {
+        if (req.url.includes('users/admin/')) {
+          return of(new HttpResponse({ status: 200, body: mockResource1 })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('users/admin')) {
           return of(new HttpResponse({ status: 200, body: mockResourceO })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('orders')) {

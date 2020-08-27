@@ -11,6 +11,7 @@ import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { IResourceOwner } from '../../interface/resource-owner.interface';
 import * as UUID from 'uuid/v1';
+import { IBottomSheet } from 'src/app/clazz/summary.component';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',
@@ -21,13 +22,14 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   formId = 'resourceOwner';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
+  productBottomSheet: IBottomSheet<IResourceOwner>;
   constructor(
     public resourceOwnerService: ResourceOwnerService,
     private fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>
   ) {
-    this.resourceOwner = data as IResourceOwner;
+    this.resourceOwner = (data as IBottomSheet<IResourceOwner>).from;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
   dismiss(event: MouseEvent) {
@@ -68,7 +70,7 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
       grantedAuthorities: authority
     }
   }
-  doUpdate(){
-    this.resourceOwnerService.updateResourceOwner(this.convertToResourceOwner(),UUID())
+  doUpdate() {
+    this.resourceOwnerService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToResourceOwner(), UUID())
   }
 }
