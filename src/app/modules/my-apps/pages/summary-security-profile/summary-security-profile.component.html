@@ -1,6 +1,7 @@
 <h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'SECURITY_PROFILE_DASHBOARD' |translate}}<button
-        mat-raised-button color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<app-search (search)="doSearch($event)"></app-search>
+    mat-fab color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
+        <app-search (search)="doSearch($event)" [fields]="['byId']">
+        </app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">
@@ -29,7 +30,7 @@
             </ng-container>
 
             <ng-container matColumnDef="id" sticky>
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ID'|translate}} </th>
                 <td mat-cell *matCellDef="let row"> {{row.id}} </td>
             </ng-container>
 

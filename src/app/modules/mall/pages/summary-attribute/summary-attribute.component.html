@@ -1,7 +1,8 @@
 <h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
     {{'ATTRIBUTE_DASHBOARD' |translate}} <button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<app-search (search)="doSearch($event)"></app-search>
+        <app-search (search)="doSearch($event)" [fields]="['byId','byName']">
+        </app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">
@@ -14,7 +15,20 @@
 <div class="mat-elevation-z8">
     <div class="table-container">
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
-
+            <!-- Checkbox Column -->
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                </td>
+            </ng-container>
             <ng-container matColumnDef="id" 　sticky>
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ID'|translate}}</th>
                 <td mat-cell *matCellDef="let row">

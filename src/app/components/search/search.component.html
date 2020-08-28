@@ -2,11 +2,14 @@
     <mat-form-field>
         <mat-label>{{'SELECT_A_SEARCH_TYPE'|translate}}</mat-label>
         <mat-select [formControl]="searchTypeCtrl">
-            <mat-option value="byId">{{'SEARCH_BY_ID'|translate}}</mat-option>
-            <mat-option value="byName">{{'SEARCH_BY_NAME'|translate}}</mat-option>
-            <mat-option value="byAttr">{{'SEARCH_BY_ATTRIBUTES'|translate}}</mat-option>
-            <mat-option value="byCatalogFront">{{'SEARCH_BY_CATALOG_FRONT'|translate}}</mat-option>
-            <mat-option value="byCatalogBack">{{'SEARCH_BY_CATALOG_BACK'|translate}}</mat-option>
+            <mat-option *ngIf="fields.includes('byId')" value="byId">{{'SEARCH_BY_ID'|translate}}</mat-option>
+            <mat-option *ngIf="fields.includes('byName')" value="byName">{{'SEARCH_BY_NAME'|translate}}</mat-option>
+            <mat-option *ngIf="fields.includes('byAttr')" value="byAttr">{{'SEARCH_BY_ATTRIBUTES'|translate}}
+            </mat-option>
+            <mat-option *ngIf="fields.includes('byCatalogFront')" value="byCatalogFront">
+                {{'SEARCH_BY_CATALOG_FRONT'|translate}}</mat-option>
+            <mat-option *ngIf="fields.includes('byCatalogBack')" value="byCatalogBack">
+                {{'SEARCH_BY_CATALOG_BACK'|translate}}</mat-option>
         </mat-select>
     </mat-form-field>
     <div *ngIf="searchTypeCtrl.value==='byId'" style="display: flex;flex-direction: row;">
@@ -22,6 +25,8 @@
             <mat-label>{{'ENTER_NAME'|translate}}</mat-label>
             <input matInput type="text" [formControl]="searchByNameCtrl">
         </mat-form-field>
+        <button mat-raised-button color="primary" style="height: 36px; margin-left: 24px;"
+            (click)="appendName()">{{'ADD'|translate}}</button>
     </div>
     <ng-container *ngIf="searchTypeCtrl.value==='byCatalogFront'">
         <app-catalog-tree [catalogs]="catalogsDataFront" (leafNodeClicked)="searchWithTags($event)"
@@ -64,5 +69,7 @@
         </mat-form-field>
         <button mat-raised-button color="accent" style="height: 36px; margin-left: 24px;"
             (click)="doReset()">{{'RESET'|translate}}</button>
+        <button mat-raised-button color="primary" style="height: 36px; margin-left: 24px;"
+            (click)="doRefresh()">{{'REFRESH'|translate}}</button>
     </div>
 </form>

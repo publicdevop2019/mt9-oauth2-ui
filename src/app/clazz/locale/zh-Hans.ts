@@ -242,5 +242,6 @@ export const zhHans = {
     "HTTP_PATCH": "PATCH",
     "HTTP_DELETE": "DELETE",
     "EXPRESSION": "安全表达式",
+    "REFRESH": "刷新",
     "": "",
 }

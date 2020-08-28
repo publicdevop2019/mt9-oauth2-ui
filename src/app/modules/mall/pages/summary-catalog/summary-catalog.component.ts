@@ -81,4 +81,8 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
   getParenteName(id: number) {
     return ((id !== null && id !== undefined) && this.dataSource.data.find(e => e.id === id)) ? this.dataSource.data.find(e => e.id === id).name : '';
   }
+  doSearch(queryString: string) {
+    this.queryString = (this.catalogType === 'frontend' ? 'type:FRONTEND' : 'query=type:BACKEND') + ',' + queryString;
+    super.doSearch(this.queryString);
+  }
 }

@@ -23,27 +23,32 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
         return this.httpProxySvc.readEntityByQuery<C>(this.entityRepo, this.role, num, size, query, by, order)
     };
     deleteByQuery(query: string) {
-        this.httpProxySvc.deleteEntityByQuery(this.entityRepo, this.role, query).subscribe(() => {
+        this.httpProxySvc.deleteEntityByQuery(this.entityRepo, this.role, query).subscribe(next => {
+            this.notify(next)
             this.refreshSummary.next();
         })
     };
     deleteById(id: number) {
-        this.httpProxySvc.deleteEntityById(this.entityRepo, this.role, id).subscribe(() => {
+        this.httpProxySvc.deleteEntityById(this.entityRepo, this.role, id).subscribe(next => {
+            this.notify(next)
             this.refreshSummary.next();
         })
     };
     create(s: D, changeId: string) {
-        this.httpProxySvc.createEntity(this.entityRepo, this.role, s, changeId).subscribe(() => {
+        this.httpProxySvc.createEntity(this.entityRepo, this.role, s, changeId).subscribe(next => {
+            this.notify(next)
             this.refreshSummary.next();
         })
     };
     update(id: number, s: D, changeId: string) {
-        this.httpProxySvc.updateEntity(this.entityRepo, this.role, id, s, changeId).subscribe(() => {
+        this.httpProxySvc.updateEntity(this.entityRepo, this.role, id, s, changeId).subscribe(next => {
+            this.notify(next)
             this.refreshSummary.next();
         })
     };
     patch(id: number, event: IEditEvent, changeId: string, fieldName: string) {
-        this.httpProxySvc.patchEntityById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(() => {
+        this.httpProxySvc.patchEntityById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
+            this.notify(next)
             this.refreshSummary.next();
         })
     };
