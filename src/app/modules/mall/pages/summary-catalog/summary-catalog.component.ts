@@ -24,7 +24,7 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
   sheetComponent = CatalogComponent;
   private formCreatedOb: Observable<string>;
   constructor(
-    protected entitySvc: CatalogService,
+    public entitySvc: CatalogService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
     private route: ActivatedRoute,

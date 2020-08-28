@@ -13,7 +13,7 @@ export class SummaryResourceOwnerComponent  extends SummaryEntityComponent<IReso
   displayedColumns: string[] = ['id', 'email','locked','createAt', 'edit', 'token', 'delete'];
   sheetComponent = ResourceOwnerComponent;
   constructor(
-    protected entitySvc: ResourceOwnerService,
+    public entitySvc: ResourceOwnerService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
     ) {

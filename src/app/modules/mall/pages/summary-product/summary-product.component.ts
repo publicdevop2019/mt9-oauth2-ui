@@ -16,7 +16,7 @@ export class SummaryProductComponent extends SummaryEntityComponent<IProductSimp
   displayedColumns: string[] = ['id', 'coverImage', 'name', 'priceList', 'sales', 'status', 'endAt', 'edit', 'delete', 'clone'];
   sheetComponent = ProductComponent;
   constructor(
-    protected entitySvc: ProductService,
+    public entitySvc: ProductService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
     public dialog: MatDialog,

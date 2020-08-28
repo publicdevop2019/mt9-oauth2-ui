@@ -13,7 +13,7 @@ export class SummarySecurityProfileComponent extends SummaryEntityComponent<IEnd
   displayedColumns: string[] = ['id', 'description', 'resourceId', 'path', 'expression', 'method', 'edit', 'delete'];
   sheetComponent = SecurityProfileComponent;
   constructor(
-    protected entitySvc: EndpointService,
+    public entitySvc: EndpointService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
   ) {

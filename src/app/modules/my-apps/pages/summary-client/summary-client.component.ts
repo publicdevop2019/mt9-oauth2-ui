@@ -13,7 +13,7 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
   displayedColumns: string[] = ['id', 'name', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
   sheetComponent = ClientComponent;
   constructor(
-    protected entitySvc: ClientService,
+    public entitySvc: ClientService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
   ) {
