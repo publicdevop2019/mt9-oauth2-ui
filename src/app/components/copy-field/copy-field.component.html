@@ -1,4 +1,4 @@
-<div style="display: flex;flex-direction: row;justify-content: space-between;" (mouseenter)="showIcon()"
+<div style="display: flex;flex-direction: row;" (mouseenter)="showIcon()"
     (mouseleave)="hideIcon()">
     <div>{{inputValue?inputValue:''}}</div>
     <mat-icon [ngStyle]="{'visibility':displayEdit}" [color]="'primary'" (click)="doCopy()"

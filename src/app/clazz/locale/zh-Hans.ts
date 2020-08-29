@@ -243,5 +243,6 @@ export const zhHans = {
     "HTTP_DELETE": "DELETE",
     "EXPRESSION": "安全表达式",
     "REFRESH": "刷新",
+    "REFRESH_TOKEN": "refresh_token",
     "": "",
 }

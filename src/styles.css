@@ -85,3 +85,8 @@ td, th {
 th.mat-sort-header-sorted {
   color: black;
 }
+.mat-chip-list-wrapper {
+  flex-wrap: nowrap !important;
+  display: block !important;
+  margin: 0px !important;
+}

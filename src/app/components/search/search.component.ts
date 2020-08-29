@@ -1,10 +1,16 @@
-import { Component, Output, EventEmitter, OnDestroy, Input, OnInit } from '@angular/core';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
+import { MatAutocompleteSelectedEvent } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
+import { IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { interval, Observable, Subscription } from 'rxjs';
+import { debounce } from 'rxjs/operators';
+import { IClient } from 'src/app/modules/my-apps/interface/client.interface';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { debounce, filter, map, switchMap } from 'rxjs/operators';
-import { interval, Subscription } from 'rxjs';
-
+import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
+import { ClientService } from 'src/app/services/client.service';
+import { CONST_ROLES, CONST_GRANT_TYPE } from 'src/app/clazz/constants';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -13,51 +19,88 @@ import { interval, Subscription } from 'rxjs';
 export class SearchComponent implements OnDestroy, OnInit {
   @Input() fields: string[] = [];
   @Output() search: EventEmitter<string> = new EventEmitter()
+  filteredList: Observable<IOption[]>;
+  searchItems: string[] = [];
+  autoCompleteList: IOption[] = [];
+  selectedItem = new FormControl();
   options: FormGroup;
-  searchTypeCtrl = new FormControl();
-  searchQueryCtrl = new FormControl();
-  searchByIdCtrl = new FormControl();
-  searchByNameCtrl = new FormControl();
+  searchType = new FormControl();
+  searchQuery = new FormControl({ value: [] });
+  searchByString = new FormControl();
+  searchBySelect = new FormControl();
+  searchByBoolean = new FormControl();
   searchByAttr = new FormControl();
   searchByAttrSelect = new FormControl();
   searchByAttrManual = new FormControl();
   public catalogsDataBack: ICatalog[];
   public catalogsDataFront: ICatalog[];
   public bizAttr: IBizAttribute[];
+  public resourceClients: IClient[];
+
+  public searchHelper: IOption[] = [
+    { label: 'ID', value: "id" },
+    { label: 'NAME', value: "name" },
+    { label: 'RESOURCE_INDICATOR', value: "resourceIndicator" },
+    { label: 'GRANTTYPE_ENUMS', value: "grantTypeEnums" },
+    { label: 'ACCESS_TOKEN_VALIDITY_SECONDS', value: "accessTokenValiditySeconds" },
+    { label: 'GRANTED_AUTHORITIES', value: "grantedAuthorities" },
+    { label: 'RESOURCEIDS', value: "resourceIds" },
+    { label: 'SEARCH_BY_ATTRIBUTES', value: "attributes" },
+    { label: 'SEARCH_BY_CATALOG_FRONT', value: "catalogFront" },
+    { label: 'SEARCH_BY_CATALOG_BACK', value: "catalogBack" }
+  ]
+
+  separatorKeysCodes: number[] = [ENTER, COMMA];
   private subs: Subscription = new Subscription();
-  constructor(fb: FormBuilder, private catalogSvc: CatalogService, private attrSvc: AttributeService) {
+  constructor(fb: FormBuilder, private catalogSvc: CatalogService, private attrSvc: AttributeService, public translateSvc: TranslateService, private clientSvc: ClientService) {
     this.options = fb.group({
-      searchType: this.searchTypeCtrl,
-      searchQuery: this.searchQueryCtrl,
-      searchHelperValue: this.searchByIdCtrl,
-      searchByName: this.searchByNameCtrl,
+      searchType: this.searchType,
+      searchQuery: this.searchQuery,
+      searchByString: this.searchByString,
+      searchBySelect: this.searchBySelect,
+      searchByBoolean: this.searchByBoolean,
       searchByAttr: this.searchByAttr,
       searchByAttrSelect: this.searchByAttrSelect,
       searchByAttrManual: this.searchByAttrManual,
     });
-    let sub2 = this.searchQueryCtrl.valueChanges.pipe(debounce(() => interval(1000)))
-      .pipe(filter(el => this.invalidSearchParam(el))).pipe(map(el => el.trim())).subscribe(next => {
-        this.search.emit(next);
+    let sub2 = this.searchQuery.valueChanges.pipe(debounce(() => interval(1000)))
+      .subscribe(next => {
+        let delimiter = '$'
+        if (['id', 'name'].includes(this.searchType.value))
+          delimiter = '.'
+        let prefix = this.searchType.value;
+        if (['catalogFront', 'catalogBack'].includes(this.searchType.value))
+          prefix = 'attributes'
+        this.search.emit(prefix + ":" + (<Array<string>>next).join(delimiter));
       });
-    this.searchTypeCtrl.valueChanges.subscribe(next => {
-      if (next === 'byId') {
-        this.searchQueryCtrl.setValue('id:')
-      } else if (next === 'byName') {
-        this.searchQueryCtrl.setValue('name:')
-      } else if (next === 'byAttr') {
-        this.searchQueryCtrl.setValue('attributes:')
-      } else if (next === 'byCatalogFront') {
-        this.searchQueryCtrl.setValue('attributes:')
-      } else if (next === 'byCatalogBack') {
-        this.searchQueryCtrl.setValue('attributes:')
-      } else {
+    this.searchType.valueChanges.subscribe(next => {
+      this.searchItems = [];
+      if (next === 'grantTypeEnums') {
+        this.autoCompleteList = CONST_GRANT_TYPE;
       }
+      else if (next === 'grantedAuthorities') {
+        this.autoCompleteList = CONST_ROLES;
+      }
+      else if (next === 'resourceIds') {
+        this.autoCompleteList = this.resourceClients.map(e => <IOption>{ label: e.name, value: e.id });
+      }
+      else {
+
+      }
+      this.options.reset({
+        searchType: this.searchType.value,
+        searchQuery: '',
+        searchByStringCtrl: '',
+        searchByName: '',
+        searchByAttr: '',
+        searchByAttrSelect: '',
+        searchByAttrManual: '',
+      }, { emitEvent: false });
     });
     this.subs.add(sub2)
-
   }
   ngOnInit(): void {
-    if (this.fields.includes('byCatalogFront')) {
+    if (this.fields.includes('catalogFront')) {
 
       let sub4 = this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:FRONTEND')
         .subscribe(catalogs => {
@@ -66,7 +109,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         });
       this.subs.add(sub4)
     }
-    if (this.fields.includes('byCatalogBack')) {
+    if (this.fields.includes('catalogBack')) {
 
       let sub1 = this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:BACKEND')
         .subscribe(catalogs => {
@@ -75,7 +118,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         });
       this.subs.add(sub1)
     }
-    if (this.fields.includes('byAttr')) {
+    if (this.fields.includes('attributes')) {
       let sub5 = this.attrSvc.readByQuery(0, 1000)
         .subscribe(next => {
           if (next.data)
@@ -83,49 +126,64 @@ export class SearchComponent implements OnDestroy, OnInit {
         });
       this.subs.add(sub5)
     }
+    if (this.fields.includes('resourceIds')) {
+      let sub5 = this.clientSvc.readByQuery(0, 1000, 'resourceIndicator:1')
+        .subscribe(next => {
+          if (next.data)
+            this.resourceClients = next.data;
+        });
+      this.subs.add(sub5)
+    }
   }
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
-  private invalidSearchParam(input: string): boolean {
-    if (['attributes:', 'id:', 'name:'].includes(input))
-      return false;
-    let spaces: RegExp = new RegExp(/^\s*$/)
-    return (!spaces.test(input))
-  }
-  appendId() {
-    this.searchQueryCtrl.setValue(this.searchQueryCtrl.value === 'id:' ? this.searchQueryCtrl.value + this.searchByIdCtrl.value : this.searchQueryCtrl.value + ',' + this.searchByIdCtrl.value)
-  }
   appendAttr() {
     let var1 = (this.searchByAttr.value as IBizAttribute);
     let var2 = var1.id + ":" + (var1.method === 'SELECT' ? this.searchByAttrSelect.value : this.searchByAttrManual.value);
-    this.searchQueryCtrl.setValue(this.searchQueryCtrl.value === 'attributes:' ? 'attributes:' + var2 : this.searchQueryCtrl.value + ',' + var2)
-  }
-  appendName() {
-    let var1 = (this.searchByNameCtrl.value as string);
-    if (this.searchQueryCtrl.value === 'name:')
-      this.searchQueryCtrl.setValue('name:' + var1)
-    else {
-      this.searchQueryCtrl.setValue(this.searchQueryCtrl.value + "," + var1)
-
-    }
+    this.searchItems.push(var2);
+    this.searchQuery.setValue(this.searchItems)
   }
   searchWithTags(catalog: ICatalog) {
-    this.searchQueryCtrl.setValue('attributes:' + catalog.attributes.join(','))
+    this.searchItems.push(...(catalog.attributes || []));
+    this.searchQuery.setValue(this.searchItems)
+
+  }
+  overwriteCommon(value: string) {
+    this.searchQuery.setValue([value])
   }
   doReset() {
+    this.searchItems = [];
     this.options.reset({
       searchType: '',
       searchQuery: '',
-      searchHelperValue: '',
+      searchByStringCtrl: '',
       searchByName: '',
       searchByAttr: '',
       searchByAttrSelect: '',
+      searchBySelect: '',
+      searchByBoolean: '',
       searchByAttrManual: '',
     }, { emitEvent: false });
     this.search.emit('')
   }
-  doRefresh(){
+  doRefresh() {
     this.search.emit();
+  }
+  add(value: string) {
+    this.searchItems.push(value);
+    this.searchQuery.setValue(this.searchItems)
+  }
+  remove(item: string): void {
+    const index = this.searchItems.indexOf(item);
+    if (index >= 0) {
+      this.searchItems.splice(index, 1);
+      this.searchQuery.setValue(this.searchItems)
+    }
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.searchItems.push(event.option.viewValue);
+    this.searchQuery.setValue(this.searchItems)
   }
 }

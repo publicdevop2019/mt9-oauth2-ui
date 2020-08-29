@@ -8,7 +8,7 @@
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <ng-container *ngIf="viewType==='LIST_VIEW'">
-    <app-search (search)="doSearch($event)" [fields]="['byId','byName']">
+    <app-search (search)="doSearch($event)" [fields]="['id','name']">
     </app-search>
     <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
         <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"

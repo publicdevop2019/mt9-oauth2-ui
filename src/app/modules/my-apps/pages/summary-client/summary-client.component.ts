@@ -5,6 +5,9 @@ import { ClientService } from 'src/app/services/client.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { IAuthority, IClient } from '../../interface/client.interface';
 import { ClientComponent } from '../client/client.component';
+import { TranslateService } from '@ngx-translate/core';
+import { IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { CONST_GRANT_TYPE, CONST_ROLES } from 'src/app/clazz/constants';
 @Component({
   selector: 'app-summary-client',
   templateUrl: './summary-client.component.html',
@@ -12,17 +15,34 @@ import { ClientComponent } from '../client/client.component';
 export class SummaryClientComponent extends SummaryEntityComponent<IClient, IClient> implements OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
   sheetComponent = ClientComponent;
+  resourceClients: IClient[] ;
+  public grantTypeList: IOption[] = CONST_GRANT_TYPE;
+  public roleList: IOption[] = CONST_ROLES;
+  public resourceClientList: IOption[];
   constructor(
     public entitySvc: ClientService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet,2);
+    super(entitySvc, deviceSvc, bottomSheet, 2);
+    this.entitySvc.readByQuery(0, 1000, 'resourceIndicator:1')
+      .subscribe(next => {
+        if (next.data) {
+          this.resourceClients = next.data;
+          this.resourceClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
+        }
+      });
   }
   revokeClientToken(clientId: number) {
     this.entitySvc.revokeClientToken(clientId);
   }
-  parseAuthority(autho: IAuthority[]): string[] {
-    return autho.map(e => e.grantedAuthority)
+  getList(inputs: string[]) {
+    return inputs.map(e => <IOption>{ label: e, value: e })
+  }
+  getAuthorityList(inputs: IAuthority[]) {
+    return inputs.map(e => <IOption>{ label: e.grantedAuthority, value: e.grantedAuthority })
+  }
+  getResourceList(inputs: string[]) {
+    return inputs.map(ee => this.resourceClients.find(e => e.id === +ee)).map(e => <IOption>{ label: e.name, value: e.id })
   }
 }

@@ -238,5 +238,6 @@ export const enUS = {
     "HTTP_DELETE": "DELETE",
     "EXPRESSION": "Expression",
     "REFRESH": "Refresh",
+    "REFRESH_TOKEN": "refresh_token",
     "": "",
 }

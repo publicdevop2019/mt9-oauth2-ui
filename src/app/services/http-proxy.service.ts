@@ -13,6 +13,7 @@ import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd 
 import { ICommentSummary } from './comment.service';
 import { IPostSummary } from './post.service';
 import { IUserReactionResult } from './reaction.service';
+import { IEditListEvent } from '../components/editable-list/editable-list.component';
 export interface IPatch {
     op: string,
     path: string,
@@ -293,6 +294,18 @@ export class HttpProxyService {
         re.push(startAt)
         return re;
     }
+    private getPatchListPayload(fieldName: string, fieldValue: IEditListEvent): IPatch[] {
+        let re: IPatch[] = [];
+        // let type = undefined;
+        // if (fieldValue.original) {
+        //     type = 'replace'
+        // } else {
+        //     type = 'add'
+        // }
+        // let startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next }
+        // re.push(startAt)
+        return re;
+    }
     createEntity(entityRepo: string, role: string, entity: any, changeId: string): Observable<boolean> {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
@@ -337,6 +350,16 @@ export class HttpProxyService {
         headerConfig = headerConfig.set('changeId', changeId);
         return new Observable<boolean>(e => {
             this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    patchEntityListById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditListEvent, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId);
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchListPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

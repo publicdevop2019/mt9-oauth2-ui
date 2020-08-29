@@ -8,6 +8,7 @@ import { hasValue } from 'src/app/clazz/utility';
 import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
 import { DeviceService } from 'src/app/services/device.service';
 import * as UUID from 'uuid/v1';
+import { IEditListEvent } from '../components/editable-list/editable-list.component';
 export interface IIdBasedEntity {
   id: number
 }
@@ -19,6 +20,7 @@ export interface IEntityService<C extends IIdBasedEntity, D> {
   create: (s: D, changeId: string) => void;
   update: (id: number, s: D, changeId: string) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
+  patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;
   refreshSummary: Observable<any>;
   currentPageIndex: number;
 }
@@ -142,10 +144,14 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   doPatch(id: number, event: IEditEvent, fieldName: string) {
     this.entitySvc.patch(id, event, UUID(), fieldName)
   }
+  doPatchList(id: number, event: IEditListEvent, fieldName: string) {
+    this.entitySvc.patchList(id, event, UUID(), fieldName)
+  }
   doClone(id: number) {
     this.openBottomSheet(id, true)
   }
   doSearch(queryString: string) {
+    console.dir(queryString)
     this.queryString = queryString;
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next)

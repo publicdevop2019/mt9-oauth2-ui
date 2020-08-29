@@ -3,6 +3,7 @@ import { IEditEvent } from '../components/editable-field/editable-field.componen
 import { HttpProxyService } from '../services/http-proxy.service';
 import { CustomHttpInterceptor } from '../services/http.interceptor';
 import { IEntityService, IIdBasedEntity } from "./summary.component";
+import { IEditListEvent } from '../components/editable-list/editable-list.component';
 
 export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntityService<C, D>{
     httpProxySvc: HttpProxyService;
@@ -51,6 +52,13 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
             this.notify(next)
             this.refreshSummary.next();
         })
+    };
+    patchList(id: number, event: IEditListEvent, changeId: string, fieldName: string) {
+        this.httpProxySvc.patchEntityListById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
+            this.notify(next)
+            this.refreshSummary.next();
+        })
+
     };
     notify(result: boolean) {
         result ? this.interceptor.openSnackbar('OPERATION_SUCCESS') : this.interceptor.openSnackbar('OPERATION_FAILED');

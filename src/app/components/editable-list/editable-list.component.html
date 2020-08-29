@@ -1,0 +1,37 @@
+<div (mouseenter)="showEditIcon()" (mouseleave)="hideEditIcon()"
+    style="display: flex;flex-wrap: nowrap;align-items: center;">
+    <ng-container *ngIf="!editView">
+        <mat-chip-list #chipList aria-label="chip list selection">
+            <mat-chip *ngFor="let e of inputLabel" style="margin: 4px;">
+                {{e|translate}}
+                <mat-icon *ngIf="editView" matChipRemove>cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+    </ng-container>
+    <div *ngIf="editView">
+        <mat-chip-list #chipList aria-label="chip list selection">
+            <mat-chip *ngFor="let e of inputLabelNext" [selectable]="true" [removable]="true">
+                {{e|translate}}
+                <mat-icon matChipRemove *ngIf="true" (click)="remove(e)">cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+    <ng-container *ngIf="editView">
+
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon [color]="'primary'" style="cursor: pointer;">add_circle
+            </mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button *ngFor="let e of list" mat-menu-item (click)="selected(e)">
+                <span>{{e.label|translate}}</span>
+            </button>
+        </mat-menu>
+        <mat-icon [color]="'primary'" (click)="doUpdate({})" style="cursor: pointer;">check_circle_outline
+        </mat-icon>
+        <mat-icon [color]="'error'" (click)="doCancel()" style="cursor: pointer;">cancel</mat-icon>
+    </ng-container>
+    <mat-icon *ngIf="!editView" [ngStyle]="{'visibility':displayEdit}" [color]="'primary'" (click)="doEdit()"
+        style="padding-right: 8px;cursor: pointer;">edit
+    </mat-icon>
+</div>

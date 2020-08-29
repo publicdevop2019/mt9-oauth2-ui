@@ -1,7 +1,8 @@
-<h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'CLIENT_DASHBOARD'|translate}}<button
-    mat-fab color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-        <app-search (search)="doSearch($event)" [fields]="['byId','byName']">
-        </app-search>
+<h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'CLIENT_DASHBOARD'|translate}}<button mat-fab
+        color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
+<app-search (search)="doSearch($event)"
+    [fields]="['id','name','resourceIndicator','grantTypeEnums','accessTokenValiditySeconds','grantedAuthorities','resourceIds']">
+</app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">
@@ -65,23 +66,37 @@
 
             <ng-container matColumnDef="grantTypeEnums">
                 <th mat-header-cell *matHeaderCellDef> {{'GRANTTYPE_ENUMS'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.grantTypeEnums}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-list [inputOptions]="getList(row.grantTypeEnums)" [list]="grantTypeList" (newValue)="doPatchList(row.id,$event,'grantTypeEnums')"></app-editable-list>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="accessTokenValiditySeconds">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ACCESS_TOKEN_VALIDITY_SECONDS'|translate}}
+                <th mat-header-cell *matHeaderCellDef mat-sort-header style="padding-left: 8px;padding-right: 8px;"> {{'ACCESS_TOKEN_VALIDITY_SECONDS'|translate}}
                 </th>
-                <td mat-cell *matCellDef="let row"> {{row.accessTokenValiditySeconds}} </td>
+                <td mat-cell *matCellDef="let row" style="padding-left: 8px;padding-right: 8px;"> {{row.accessTokenValiditySeconds | number}} </td>
             </ng-container>
 
             <ng-container matColumnDef="grantedAuthorities">
                 <th mat-header-cell *matHeaderCellDef> {{'GRANTED_AUTHORITIES'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{parseAuthority(row.grantedAuthorities)}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-list [inputOptions]="getAuthorityList(row.grantedAuthorities)" [list]="roleList" (newValue)="doPatchList(row.id,$event,'grantedAuthorities')"></app-editable-list>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="resourceIds">
                 <th mat-header-cell *matHeaderCellDef> {{'RESOURCEIDS'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.resourceIds}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-list *ngIf="resourceClients" [inputOptions]="getResourceList(row.resourceIds)" [list]="roleList" (newValue)="doPatchList(row.id,$event,'grantedAuthorities')"></app-editable-list>
+                    <!-- <mat-chip-list>
+                        <mat-chip *ngFor="let e of row.resourceIds">
+                            <ng-container>
+                                {{findByClientId(e)&&findByClientId(e).name}}
+                            </ng-container>
+                            <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list> -->
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="edit">

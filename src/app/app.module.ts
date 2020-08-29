@@ -2,7 +2,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule, MatSnackBarModule, MatTreeModule, MatHorizontalStepper, MatStepperModule, MatBottomSheetModule, MatSortModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule, MatSnackBarModule, MatTreeModule, MatHorizontalStepper, MatStepperModule, MatBottomSheetModule, MatSortModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatMenuModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -64,6 +64,7 @@ import 'mt-wc-product';
 import { PreviewOutletComponent } from './components/preview-outlet/preview-outlet.component'
 import { zhHans } from './clazz/locale/zh-Hans';
 import { enUS } from './clazz/locale/en-US';
+import { EditableListComponent } from './components/editable-list/editable-list.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { enUS } from './clazz/locale/en-US';
     CopyFieldComponent,
     LazyImageComponent,
     SearchComponent,
-    PreviewOutletComponent
+    PreviewOutletComponent,
+    EditableListComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -121,9 +123,11 @@ import { enUS } from './clazz/locale/en-US';
     MatSelectModule,
     MatOptionModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatExpansionModule,
     MatCardModule,
     MatPaginatorModule,
+    MatMenuModule,
     MatTableModule,
     MatToolbarModule,
     MatSidenavModule,
@@ -136,7 +140,9 @@ import { enUS } from './clazz/locale/en-US';
     MatStepperModule,
     MatBottomSheetModule,
     LayoutModule,
+    MatChipsModule,
     MatSortModule,
+    MatAutocompleteModule,
     MtFormBuilderModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     TranslateModule.forRoot({

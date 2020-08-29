@@ -1,7 +1,7 @@
 <h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
     {{'FILTER_DASHBOARD' |translate}} <button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<app-search (search)="doSearch($event)" [fields]="['byId']">
+<app-search (search)="doSearch($event)" [fields]="['id']">
 </app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
