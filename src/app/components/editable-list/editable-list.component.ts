@@ -35,15 +35,14 @@ export class EditableListComponent implements OnInit {
     this.displayEdit = 'hidden';
     this.editView = false;
   }
-  doUpdate(newValue: IOption[]) {
-    this.newValue.emit({ original: this.inputOptions, next: newValue });
+  doUpdate() {
+    this.newValue.emit({ original: this.inputOptions, next: this.inputOptionsNext });
     this.displayEdit = 'hidden';
     this.editView = false;
   }
   selected(e: IOption): void {
     this.inputOptionsNext.push(e);
     this.inputLabelNext = this.inputOptionsNext.map(e => e.label);
-    console.dir(this.inputLabelNext)
   }
   doEdit() {
     this.editView = true;
