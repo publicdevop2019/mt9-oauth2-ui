@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostBinding, HostListener, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, HostListener, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 export interface IEditEvent {
   original: string,
   next: string
@@ -11,9 +11,10 @@ export interface IEditEvent {
 export class EditableFieldComponent implements OnInit {
   @Input() inputValue: string = '';
   @Output() newValue: EventEmitter<IEditEvent> = new EventEmitter();
+  @ViewChild("inputField", { static: false }) inputField: ElementRef<HTMLInputElement>;
   displayEdit = 'hidden';
-  editView= false;
-  constructor() {
+  editView = false;
+  constructor(private cdr:ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -33,5 +34,9 @@ export class EditableFieldComponent implements OnInit {
     this.displayEdit = 'hidden';
     this.editView = false;
   }
-
+  doEdit() {
+    this.editView = true;
+    this.cdr.detectChanges();
+    this.inputField.nativeElement.focus();
+  }
 }

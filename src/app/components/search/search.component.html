@@ -50,7 +50,7 @@
         </mat-form-field>
         <mat-form-field *ngIf="(searchByAttr.value)&& searchByAttr.value.method=='MANUAL'">
             <mat-label>{{'ENTER_AN_ATTRIBUTE_VALUE'|translate}}</mat-label>
-            <input matInput type="text" [formControl]="searchByAttrManual">
+            <input matInput type="text" [formControl]="searchByAttrManual" >
         </mat-form-field>
         <button mat-raised-button color="primary" style="height: 36px; margin-left: 24px;"
             (click)="appendAttr()">{{'ADD'|translate}}</button>
@@ -66,11 +66,11 @@
                     </ng-container>
                     <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
                 </mat-chip>
-                <input [placeholder]="translateSvc.get('SEARCH') | async" [matAutocomplete]="auto"
+                <input [placeholder]="translateSvc.get('SEARCH') | async" [matAutocomplete]="auto" style="margin-bottom: 10px;"
                     [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
             </mat-chip-list>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                <mat-option *ngFor="let e of autoCompleteList" [value]="e.value">
+            <mat-autocomplete #auto="matAutocomplete" >
+                <mat-option *ngFor="let e of autoCompleteList" [value]="e.value" (click)="selected(e)">
                     {{e.label|translate}}
                 </mat-option>
             </mat-autocomplete>

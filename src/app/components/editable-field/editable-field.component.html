@@ -7,7 +7,7 @@
         </mat-icon>
         <mat-icon [color]="'error'" (click)="doCancel()" style="cursor: pointer;">cancel</mat-icon>
     </div>
-    <mat-icon *ngIf="!editView" [ngStyle]="{'visibility':displayEdit}" [color]="'primary'" (click)="editView=true"
+    <mat-icon *ngIf="!editView" [ngStyle]="{'visibility':displayEdit}" [color]="'primary'" (click)="doEdit()"
         style="padding-right: 8px;cursor: pointer;">edit
     </mat-icon>
 </div>

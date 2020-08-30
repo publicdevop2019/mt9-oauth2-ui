@@ -14,3 +14,10 @@ export const CONST_GRANT_TYPE: IOption[] = [
     { label: 'AUTHORIZATION_CODE', value: "authorization_code" },
     { label: 'REFRESH_TOKEN', value: "refresh_token" }
 ]
+export const CONST_HTTP_METHOD: IOption[] = [
+    { label: 'HTTP_GET', value: "GET" },
+    { label: 'HTTP_POST', value: "POST" },
+    { label: 'HTTP_PUT', value: "PUT" },
+    { label: 'HTTP_DELETE', value: "DELETE" },
+    { label: 'HTTP_PATCH', value: "PATCH" },
+]

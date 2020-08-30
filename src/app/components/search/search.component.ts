@@ -10,7 +10,7 @@ import { IClient } from 'src/app/modules/my-apps/interface/client.interface';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { ClientService } from 'src/app/services/client.service';
-import { CONST_ROLES, CONST_GRANT_TYPE } from 'src/app/clazz/constants';
+import { CONST_ROLES, CONST_GRANT_TYPE, CONST_HTTP_METHOD } from 'src/app/clazz/constants';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -36,15 +36,18 @@ export class SearchComponent implements OnDestroy, OnInit {
   public catalogsDataFront: ICatalog[];
   public bizAttr: IBizAttribute[];
   public resourceClients: IClient[];
+  public allClients: IClient[];
 
   public searchHelper: IOption[] = [
     { label: 'ID', value: "id" },
     { label: 'NAME', value: "name" },
     { label: 'RESOURCE_INDICATOR', value: "resourceIndicator" },
+    { label: 'RESOURCE_ID', value: "resourceId" },
     { label: 'GRANTTYPE_ENUMS', value: "grantTypeEnums" },
     { label: 'ACCESS_TOKEN_VALIDITY_SECONDS', value: "accessTokenValiditySeconds" },
     { label: 'GRANTED_AUTHORITIES', value: "grantedAuthorities" },
     { label: 'RESOURCEIDS', value: "resourceIds" },
+    { label: 'METHOD', value: "method" },
     { label: 'SEARCH_BY_ATTRIBUTES', value: "attributes" },
     { label: 'SEARCH_BY_CATALOG_FRONT', value: "catalogFront" },
     { label: 'SEARCH_BY_CATALOG_BACK', value: "catalogBack" }
@@ -66,7 +69,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     let sub2 = this.searchQuery.valueChanges.pipe(debounce(() => interval(1000)))
       .subscribe(next => {
         let delimiter = '$'
-        if (['id', 'name'].includes(this.searchType.value))
+        if (['id', 'name','resourceId','method'].includes(this.searchType.value))
           delimiter = '.'
         let prefix = this.searchType.value;
         if (['catalogFront', 'catalogBack'].includes(this.searchType.value))
@@ -81,8 +84,14 @@ export class SearchComponent implements OnDestroy, OnInit {
       else if (next === 'grantedAuthorities') {
         this.autoCompleteList = CONST_ROLES;
       }
-      else if (next === 'resourceIds') {
+      else if (next === 'method') {
+        this.autoCompleteList = CONST_HTTP_METHOD;
+      }
+      else if (next === 'resourceIds' ) {
         this.autoCompleteList = this.resourceClients.map(e => <IOption>{ label: e.name, value: e.id });
+      }
+      else if (next === 'resourceId' ) {
+        this.autoCompleteList = this.allClients.map(e => <IOption>{ label: e.name, value: e.id });
       }
       else {
 
@@ -102,37 +111,40 @@ export class SearchComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     if (this.fields.includes('catalogFront')) {
 
-      let sub4 = this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:FRONTEND')
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:FRONTEND')
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataFront = catalogs.data;
         });
-      this.subs.add(sub4)
     }
     if (this.fields.includes('catalogBack')) {
 
-      let sub1 = this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:BACKEND')
+     this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:BACKEND')
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataBack = catalogs.data;
         });
-      this.subs.add(sub1)
     }
     if (this.fields.includes('attributes')) {
-      let sub5 = this.attrSvc.readByQuery(0, 1000)
+      this.attrSvc.readByQuery(0, 1000)
         .subscribe(next => {
           if (next.data)
             this.bizAttr = next.data;
         });
-      this.subs.add(sub5)
     }
     if (this.fields.includes('resourceIds')) {
-      let sub5 = this.clientSvc.readByQuery(0, 1000, 'resourceIndicator:1')
+      this.clientSvc.readByQuery(0, 1000, 'resourceIndicator:1')
         .subscribe(next => {
           if (next.data)
             this.resourceClients = next.data;
         });
-      this.subs.add(sub5)
+    }
+    if (this.fields.includes('resourceId')) {
+      this.clientSvc.readByQuery(0, 1000)
+        .subscribe(next => {
+          if (next.data)
+            this.allClients = next.data;
+        });
     }
   }
   ngOnDestroy(): void {
@@ -182,8 +194,11 @@ export class SearchComponent implements OnDestroy, OnInit {
     }
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.searchItems.push(event.option.viewValue);
-    this.searchQuery.setValue(this.searchItems)
+  selected(event: IOption): void {
+    this.searchItems.push(event.label);
+    this.searchQuery.setValue(this.parseLable(this.searchItems))
+  }
+  parseLable(searchItems: string[]): string[]{
+    return searchItems.map(e=>this.autoCompleteList.find(ee=>ee.label===e).value as string)
   }
 }

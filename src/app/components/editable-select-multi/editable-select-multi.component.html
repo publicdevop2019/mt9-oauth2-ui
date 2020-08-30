@@ -2,7 +2,7 @@
     style="display: flex;flex-wrap: nowrap;align-items: center;">
     <ng-container *ngIf="!editView">
         <mat-chip-list #chipList aria-label="chip list selection">
-            <mat-chip *ngFor="let e of inputLabel" style="margin: 4px;">
+            <mat-chip *ngFor="let e of getLabel(inputOptions)" style="margin: 4px;">
                 {{e|translate}}
                 <mat-icon *ngIf="editView" matChipRemove>cancel</mat-icon>
             </mat-chip>
@@ -10,7 +10,7 @@
     </ng-container>
     <div *ngIf="editView">
         <mat-chip-list #chipList aria-label="chip list selection">
-            <mat-chip *ngFor="let e of inputLabelNext" [selectable]="true" [removable]="true">
+            <mat-chip *ngFor="let e of getLabel(inputOptionsNext)" [selectable]="true" [removable]="true">
                 {{e|translate}}
                 <mat-icon matChipRemove *ngIf="true" (click)="remove(e)">cancel</mat-icon>
             </mat-chip>

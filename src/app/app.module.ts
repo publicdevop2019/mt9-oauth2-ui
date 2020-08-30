@@ -64,8 +64,9 @@ import 'mt-wc-product';
 import { PreviewOutletComponent } from './components/preview-outlet/preview-outlet.component'
 import { zhHans } from './clazz/locale/zh-Hans';
 import { enUS } from './clazz/locale/en-US';
-import { EditableListComponent } from './components/editable-list/editable-list.component';
+import { EditableSelectMultiComponent } from './components/editable-select-multi/editable-select-multi.component';
 import { EditableBooleanComponent } from './components/editable-boolean/editable-boolean.component';
+import { EditableSelectSingleComponent } from './components/editable-select-single/editable-select-single.component';
 
 @NgModule({
   declarations: [
@@ -108,8 +109,9 @@ import { EditableBooleanComponent } from './components/editable-boolean/editable
     LazyImageComponent,
     SearchComponent,
     PreviewOutletComponent,
-    EditableListComponent,
-    EditableBooleanComponent
+    EditableSelectMultiComponent,
+    EditableBooleanComponent,
+    EditableSelectSingleComponent
   ],
   imports: [
     BrowserAnimationsModule,

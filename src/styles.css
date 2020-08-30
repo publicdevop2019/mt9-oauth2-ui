@@ -35,7 +35,6 @@ table {
   overflow: auto; 
 }
 td, th {
-  max-width: 20vw;
   padding-right: 10px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -89,4 +88,7 @@ th.mat-sort-header-sorted {
   flex-wrap: nowrap !important;
   display: block !important;
   margin: 0px !important;
+}
+.mat-menu-panel {
+  max-height: 250px !important;
 }

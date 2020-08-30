@@ -1,7 +1,7 @@
 <h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'SECURITY_PROFILE_DASHBOARD' |translate}}<button
-    mat-fab color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-        <app-search (search)="doSearch($event)" [fields]="['id']">
-        </app-search>
+        mat-fab color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
+<app-search (search)="doSearch($event)" [fields]="['id','resourceId','method']">
+</app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">
@@ -36,27 +36,46 @@
 
             <ng-container matColumnDef="resourceId">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'RESOURCE_ID'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.resourceId}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-select-single *ngIf="resourceClientList"
+                        [inputValue]="getOption(row.resourceId,resourceClientList)" [list]="resourceClientList"
+                        (newValue)="doPatch(row.id,$event,'resourceId')">
+                    </app-editable-select-single>
+                </td>
             </ng-container>
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'DESCRIPTION'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.description}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-field [inputValue]="row.description"
+                        (newValue)="doPatch(row.id,$event,'description')">
+                    </app-editable-field>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="expression">
                 <th mat-header-cell *matHeaderCellDef> {{'EXPRESSION'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.expression}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-field [inputValue]="row.expression" (newValue)="doPatch(row.id,$event,'expression')">
+                    </app-editable-field>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="path">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> URL </th>
-                <td mat-cell *matCellDef="let row"> {{row.path}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-field [inputValue]="row.path" (newValue)="doPatch(row.id,$event,'path')">
+                    </app-editable-field>
+                </td>
             </ng-container>
 
 
             <ng-container matColumnDef="method">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'METHOD'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.method}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-select-single [inputValue]="getOption(row.method,httpMethodList)"
+                        [list]="httpMethodList" (newValue)="doPatch(row.id,$event,'method')">
+                    </app-editable-select-single>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="edit">

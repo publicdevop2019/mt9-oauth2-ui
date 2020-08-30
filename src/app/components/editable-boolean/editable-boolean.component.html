@@ -22,7 +22,7 @@
                 check_circle_outline
             </mat-icon>
         </button>
-        <button mat-menu-item (click)="doUpdate(undefined)">
+        <button mat-menu-item  *ngIf="allowNull" (click)="doUpdate(undefined)">
             <mat-icon [color]="'accent'">
                 block
             </mat-icon>

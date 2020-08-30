@@ -13,7 +13,7 @@ import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd 
 import { ICommentSummary } from './comment.service';
 import { IPostSummary } from './post.service';
 import { IUserReactionResult } from './reaction.service';
-import { IEditListEvent } from '../components/editable-list/editable-list.component';
+import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 export interface IPatch {
     op: string,

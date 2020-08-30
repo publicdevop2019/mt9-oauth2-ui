@@ -3,7 +3,7 @@ import { IEditEvent } from '../components/editable-field/editable-field.componen
 import { HttpProxyService } from '../services/http-proxy.service';
 import { CustomHttpInterceptor } from '../services/http.interceptor';
 import { IEntityService, IIdBasedEntity } from "./summary.component";
-import { IEditListEvent } from '../components/editable-list/editable-list.component';
+import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 
 export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntityService<C, D>{
