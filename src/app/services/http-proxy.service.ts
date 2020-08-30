@@ -14,10 +14,11 @@ import { ICommentSummary } from './comment.service';
 import { IPostSummary } from './post.service';
 import { IUserReactionResult } from './reaction.service';
 import { IEditListEvent } from '../components/editable-list/editable-list.component';
+import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 export interface IPatch {
     op: string,
     path: string,
-    value?: string,
+    value?: any,
 }
 @Injectable({
     providedIn: 'root'
@@ -296,14 +297,26 @@ export class HttpProxyService {
     }
     private getPatchListPayload(fieldName: string, fieldValue: IEditListEvent): IPatch[] {
         let re: IPatch[] = [];
-        // let type = undefined;
-        // if (fieldValue.original) {
-        //     type = 'replace'
-        // } else {
-        //     type = 'add'
-        // }
-        // let startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next }
-        // re.push(startAt)
+        let type = 'replace';
+        let startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next.map(e => e.value) }
+        re.push(startAt)
+        return re;
+    }
+    private getPatchBooleanPayload(fieldName: string, fieldValue: IEditBooleanEvent): IPatch[] {
+        let re: IPatch[] = [];
+        let type = undefined;
+        let startAt: IPatch;
+        if (typeof fieldValue.original === 'boolean' && typeof fieldValue.original === 'boolean') {
+            type = 'replace'
+            startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next }
+        } else if (typeof fieldValue.original === 'boolean' && typeof fieldValue.original === 'undefined') {
+            type = 'remove'
+            startAt = <IPatch>{ op: type, path: "/" + fieldName }
+        } else {
+            type = 'add'
+            startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next }
+        }
+        re.push(startAt)
         return re;
     }
     createEntity(entityRepo: string, role: string, entity: any, changeId: string): Observable<boolean> {
@@ -360,6 +373,18 @@ export class HttpProxyService {
         headerConfig = headerConfig.set('changeId', changeId);
         return new Observable<boolean>(e => {
             this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchListPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    patchEntityBooleanById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditBooleanEvent, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId);
+        if (typeof editEvent.original === 'undefined' && typeof editEvent.next === 'undefined')
+            return new Observable<boolean>(e => e.next(true));
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchBooleanPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

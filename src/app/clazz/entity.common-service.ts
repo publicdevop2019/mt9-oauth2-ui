@@ -4,6 +4,7 @@ import { HttpProxyService } from '../services/http-proxy.service';
 import { CustomHttpInterceptor } from '../services/http.interceptor';
 import { IEntityService, IIdBasedEntity } from "./summary.component";
 import { IEditListEvent } from '../components/editable-list/editable-list.component';
+import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 
 export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntityService<C, D>{
     httpProxySvc: HttpProxyService;
@@ -55,6 +56,13 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
     };
     patchList(id: number, event: IEditListEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityListById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
+            this.notify(next)
+            this.refreshSummary.next();
+        })
+
+    };
+    patchBoolean(id: number, event: IEditBooleanEvent, changeId: string, fieldName: string) {
+        this.httpProxySvc.patchEntityBooleanById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
             this.refreshSummary.next();
         })

@@ -65,6 +65,7 @@ import { PreviewOutletComponent } from './components/preview-outlet/preview-outl
 import { zhHans } from './clazz/locale/zh-Hans';
 import { enUS } from './clazz/locale/en-US';
 import { EditableListComponent } from './components/editable-list/editable-list.component';
+import { EditableBooleanComponent } from './components/editable-boolean/editable-boolean.component';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { EditableListComponent } from './components/editable-list/editable-list.
     LazyImageComponent,
     SearchComponent,
     PreviewOutletComponent,
-    EditableListComponent
+    EditableListComponent,
+    EditableBooleanComponent
   ],
   imports: [
     BrowserAnimationsModule,

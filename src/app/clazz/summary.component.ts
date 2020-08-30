@@ -9,6 +9,7 @@ import { IEditEvent } from 'src/app/components/editable-field/editable-field.com
 import { DeviceService } from 'src/app/services/device.service';
 import * as UUID from 'uuid/v1';
 import { IEditListEvent } from '../components/editable-list/editable-list.component';
+import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 export interface IIdBasedEntity {
   id: number
 }
@@ -21,6 +22,7 @@ export interface IEntityService<C extends IIdBasedEntity, D> {
   update: (id: number, s: D, changeId: string) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;
+  patchBoolean: (id: number, event: IEditBooleanEvent, changeId: string, fieldName: string) => void;
   refreshSummary: Observable<any>;
   currentPageIndex: number;
 }
@@ -143,6 +145,9 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   }
   doPatch(id: number, event: IEditEvent, fieldName: string) {
     this.entitySvc.patch(id, event, UUID(), fieldName)
+  }
+  doPatchBoolean(id: number, event: IEditBooleanEvent, fieldName: string) {
+    this.entitySvc.patchBoolean(id, event, UUID(), fieldName)
   }
   doPatchList(id: number, event: IEditListEvent, fieldName: string) {
     this.entitySvc.patchList(id, event, UUID(), fieldName)

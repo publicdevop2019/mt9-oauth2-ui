@@ -12,7 +12,7 @@ export class EditableFieldComponent implements OnInit {
   @Input() inputValue: string = '';
   @Output() newValue: EventEmitter<IEditEvent> = new EventEmitter();
   displayEdit = 'hidden';
-  editView: false;
+  editView= false;
   constructor() {
   }
 
