@@ -14,11 +14,11 @@
     </button>
     <mat-menu #menu="matMenu" (closed)="lockEditIcon=false">
         <button mat-menu-item (click)="doUpdate(false)">
-            <mat-icon [color]="'primary'">cancel
+            <mat-icon [color]="'warn'">cancel
             </mat-icon>
         </button>
         <button mat-menu-item (click)="doUpdate(true)">
-            <mat-icon [color]="'warn'">
+            <mat-icon [color]="'primary'">
                 check_circle_outline
             </mat-icon>
         </button>

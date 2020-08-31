@@ -7,7 +7,7 @@ import { filter, take } from 'rxjs/operators';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
-import { grantTypeEnums, IAuthority, IClient, scopeEnums } from '../../interface/client.interface';
+import { grantTypeEnums, IClient, scopeEnums } from '../../interface/client.interface';
 import * as UUID from 'uuid/v1';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 
@@ -68,7 +68,7 @@ export class ClientComponent implements OnDestroy, OnInit {
           refreshToken: grantType === 'password' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
           resourceIndicator: this.client.resourceIndicator,
           autoApprove: this.client.autoApprove,
-          authority: this.client.grantedAuthorities.map(e => e.grantedAuthority),
+          authority: this.client.grantedAuthorities,
           scope: this.client.scopeEnums.map(e => e.toString()),
           accessTokenValiditySeconds: this.client.accessTokenValiditySeconds,
           refreshTokenValiditySeconds: this.client.refreshTokenValiditySeconds,
@@ -90,14 +90,14 @@ export class ClientComponent implements OnDestroy, OnInit {
   convertToClient(): IClient {
     let formGroup = this.fis.formGroupCollection[this.formId];
     let grants: grantTypeEnums[] = [];
-    let authority: IAuthority[] = [];
+    let authority: string[] = [];
     let scopes: scopeEnums[] = [];
     grants.push(formGroup.get('grantType').value as grantTypeEnums);
     if (formGroup.get('refreshToken').value)
       grants.push(grantTypeEnums.refresh_token);
 
     if (formGroup.get('authority').value)
-      authority = (formGroup.get('authority').value as string[]).map(e => { return { grantedAuthority: e } });
+      authority = (formGroup.get('authority').value as string[]);
 
     if (formGroup.get('scope').value)
       scopes = (formGroup.get('scope').value as scopeEnums[]);

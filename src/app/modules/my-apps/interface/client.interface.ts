@@ -1,6 +1,3 @@
-export interface IAuthority {
-  grantedAuthority: string;
-}
 export enum grantTypeEnums {
   refresh_token = 'refresh_token',
   password = 'password',
@@ -18,7 +15,7 @@ export interface IClient {
   clientSecret?: string;
   description?: string;
   grantTypeEnums: grantTypeEnums[];
-  grantedAuthorities: IAuthority[];
+  grantedAuthorities: string[];
   scopeEnums: scopeEnums[];
   accessTokenValiditySeconds: number;
   refreshTokenValiditySeconds: number;

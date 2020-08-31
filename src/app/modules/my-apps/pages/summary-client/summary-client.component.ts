@@ -1,13 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatBottomSheet } from '@angular/material';
+import { IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { CONST_GRANT_TYPE, CONST_ROLES } from 'src/app/clazz/constants';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { ClientService } from 'src/app/services/client.service';
 import { DeviceService } from 'src/app/services/device.service';
-import { IAuthority, IClient } from '../../interface/client.interface';
+import { IClient } from '../../interface/client.interface';
 import { ClientComponent } from '../client/client.component';
-import { TranslateService } from '@ngx-translate/core';
-import { IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { CONST_GRANT_TYPE, CONST_ROLES } from 'src/app/clazz/constants';
 @Component({
   selector: 'app-summary-client',
   templateUrl: './summary-client.component.html',
@@ -15,7 +14,7 @@ import { CONST_GRANT_TYPE, CONST_ROLES } from 'src/app/clazz/constants';
 export class SummaryClientComponent extends SummaryEntityComponent<IClient, IClient> implements OnDestroy {
   displayedColumns: string[] = ['id', 'name', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
   sheetComponent = ClientComponent;
-  resourceClients: IClient[] ;
+  resourceClients: IClient[];
   public grantTypeList: IOption[] = CONST_GRANT_TYPE;
   public roleList: IOption[] = CONST_ROLES;
   public resourceClientList: IOption[];
@@ -24,7 +23,7 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 2);
+    super(entitySvc, deviceSvc, bottomSheet, 3);
     this.entitySvc.readByQuery(0, 1000, 'resourceIndicator:1')
       .subscribe(next => {
         if (next.data) {
@@ -39,8 +38,8 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
   getList(inputs: string[]) {
     return inputs.map(e => <IOption>{ label: e, value: e })
   }
-  getAuthorityList(inputs: IAuthority[]) {
-    return inputs.map(e => <IOption>{ label: e.grantedAuthority, value: e.grantedAuthority })
+  getAuthorityList(inputs: string[]) {
+    return inputs.map(e => <IOption>{ label: e, value: e })
   }
   getResourceList(inputs: string[]) {
     return inputs.map(ee => this.resourceClients.find(e => e.id === +ee)).map(e => <IOption>{ label: e.name, value: e.id })

@@ -17,20 +17,18 @@ export class SummarySecurityProfileComponent extends SummaryEntityComponent<IEnd
   displayedColumns: string[] = ['id', 'description', 'resourceId', 'path', 'expression', 'method', 'edit', 'delete'];
   sheetComponent = SecurityProfileComponent;
   httpMethodList=CONST_HTTP_METHOD;
-  resourceClients: IClient[] ;
-  public resourceClientList: IOption[];
+  public allClientList: IOption[];
   constructor(
     public entitySvc: EndpointService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
     public clientSvc: ClientService,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet,2);
-    this.clientSvc.readByQuery(0, 1000, 'resourceIndicator:1')
+    super(entitySvc, deviceSvc, bottomSheet,3);
+    this.clientSvc.readByQuery(0, 1000)
     .subscribe(next => {
       if (next.data) {
-        this.resourceClients = next.data;
-        this.resourceClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
+        this.allClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
       }
     });
   }

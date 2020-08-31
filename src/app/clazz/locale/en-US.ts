@@ -186,6 +186,7 @@ export const enUS = {
     "SESSION_EXPIRED": "Your session has expired",
     "SERVER_RETURN_5XX": "Oops...Please try again",
     "URL_NOT_FOUND": "Resource not found",
+    "METHOD_NOT_SUPPORTED": "Method not supported",
     "ACCESS_IS_NOT_ALLOWED": "Access Denied",
     "INVALID_REQUEST": "Please review your inputs",
     "NETWORK_CONNECTION_FAILED": "Network error, please try later",

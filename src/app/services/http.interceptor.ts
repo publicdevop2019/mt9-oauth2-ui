@@ -64,6 +64,9 @@ export class CustomHttpInterceptor implements HttpInterceptor {
       } else if (error.status === 404) {
         this.openSnackbar('URL_NOT_FOUND');
         return throwError(error);
+      } else if (error.status === 405) {
+        this.openSnackbar('METHOD_NOT_SUPPORTED');
+        return throwError(error);
       } else if (error.status === 403) {
         this.openSnackbar('ACCESS_IS_NOT_ALLOWED');
         return throwError(error);

@@ -3,7 +3,6 @@ import { MatBottomSheet, MatDialog } from '@angular/material';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { CONST_ROLES_USER } from 'src/app/clazz/constants';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
-import { IAuthority } from 'src/app/modules/my-apps/interface/client.interface';
 import { DeviceService } from 'src/app/services/device.service';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import { IResourceOwner } from '../../interface/resource-owner.interface';
@@ -30,8 +29,8 @@ export class SummaryResourceOwnerComponent extends SummaryEntityComponent<IResou
   revokeResourceOwnerToken(id: number) {
     this.entitySvc.revokeResourceOwnerToken(id);
   }
-  getAuthorityList(inputs: IAuthority[]) {
-    return inputs.map(e => <IOption>{ label: this.roleList.find(ee => ee.value === e.grantedAuthority).label, value: e.grantedAuthority })
+  getAuthorityList(inputs: string[]) {
+    return inputs.map(e => <IOption>{ label: this.roleList.find(ee => ee.value === e).label, value: e })
   }
   doBatchLock(){
     const dialogRef = this.dialog.open(OperationConfirmDialogComponent);
