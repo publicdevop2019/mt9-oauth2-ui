@@ -5,6 +5,7 @@ import { CustomHttpInterceptor } from '../services/http.interceptor';
 import { IEntityService, IIdBasedEntity } from "./summary.component";
 import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
+import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
 
 export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntityService<C, D>{
     httpProxySvc: HttpProxyService;
@@ -56,6 +57,13 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
     };
     patchList(id: number, event: IEditListEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityListById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
+            this.notify(next)
+            this.refreshSummary.next();
+        })
+
+    };
+    patchMultiInput(id: number, event: IEditInputListEvent, changeId: string, fieldName: string) {
+        this.httpProxySvc.patchEntityInputListById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
             this.refreshSummary.next();
         })

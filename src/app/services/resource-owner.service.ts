@@ -29,4 +29,10 @@ export class ResourceOwnerService extends EntityCommonService<IResourceOwner, IR
       this.router.navigateByUrl('/login');
     });
   }
+  batchUpdateUserStatus(ids: number[], status:  'LOCK' | 'UNLOCK', changeId: string) {
+    this.httpProxy.batchUpdateUserStatus(ids, status, changeId).subscribe(result => {
+      this.notify(result)
+      this.refreshSummary.next()
+    })
+  }
 }

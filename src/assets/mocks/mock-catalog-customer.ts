@@ -4641,5 +4641,5 @@ export const mockCatalogCustomer = {
 		"catalogType": "FRONTEND"
 	  }
 	],
-	"totalProductCount": 643
+	"totalItemCount": 643
   }

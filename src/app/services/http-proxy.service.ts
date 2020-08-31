@@ -15,6 +15,7 @@ import { IPostSummary } from './post.service';
 import { IUserReactionResult } from './reaction.service';
 import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
+import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
 export interface IPatch {
     op: string,
     path: string,
@@ -104,6 +105,15 @@ export class HttpProxyService {
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
             this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/products/admin', this.getTimeValuePatch(status, ids), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    batchUpdateUserStatus(ids: number[], status: 'LOCK' | 'UNLOCK', changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/users/admin', this.getUserStatusPatch(status, ids), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -283,6 +293,19 @@ export class HttpProxyService {
         }
         return re;
     }
+    private getUserStatusPatch(status: 'LOCK' | 'UNLOCK', ids: number[]): IPatch[] {
+        let re: IPatch[] = [];
+        ids.forEach(id => {
+            let var0: IPatch;
+            if (status === "LOCK") {
+                var0 = <IPatch>{ op: 'replace', path: "/" + id + '/locked', value: true }
+            } else {
+                var0 = <IPatch>{ op: 'replace', path: "/" + id + '/locked', value: false }
+            }
+            re.push(var0)
+        })
+        return re;
+    }
     private getPatchPayload(fieldName: string, fieldValue: IEditEvent): IPatch[] {
         let re: IPatch[] = [];
         let type = undefined;
@@ -299,6 +322,17 @@ export class HttpProxyService {
         let re: IPatch[] = [];
         let type = 'replace';
         let startAt = <IPatch>{ op: type, path: "/" + fieldName, value: fieldValue.next.map(e => e.value) }
+        re.push(startAt)
+        return re;
+    }
+    private getPatchInputListPayload(fieldName: string, fieldValue: IEditInputListEvent): IPatch[] {
+        let re: IPatch[] = [];
+        let startAt: IPatch;
+        if (fieldValue.original) {
+            startAt = <IPatch>{ op: 'replace', path: "/" + fieldName, value: fieldValue.next }
+        } else {
+            startAt = <IPatch>{ op: 'add', path: "/" + fieldName, value: fieldValue.next }
+        }
         re.push(startAt)
         return re;
     }
@@ -373,6 +407,16 @@ export class HttpProxyService {
         headerConfig = headerConfig.set('changeId', changeId);
         return new Observable<boolean>(e => {
             this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchListPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    patchEntityInputListById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditInputListEvent, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId);
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchInputListPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

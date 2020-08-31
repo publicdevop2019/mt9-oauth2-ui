@@ -1,6 +1,6 @@
 <div style="display: flex;flex-direction: row;align-items: center;" (mouseenter)="showEditIcon()"
     (mouseleave)="hideEditIcon()">
-    <mat-chip-list aria-label="chip list selection">
+    <mat-chip-list aria-label="chip list selection" *ngIf="inputValue">
         <mat-chip>
             {{inputValue&&inputValue.label|translate}}
         </mat-chip>
@@ -11,8 +11,10 @@
         </mat-icon>
     </button>
     <mat-menu #menu="matMenu" (closed)="lockEditIcon=false">
-        <button *ngFor="let e of list" mat-menu-item (click)="doUpdate(e)">
-            {{e.label|translate}}
-        </button>
+        <ng-template matMenuContent>
+            <button *ngFor="let e of list" mat-menu-item (click)="doUpdate(e)">
+                {{e.label|translate}}
+            </button>
+        </ng-template>
     </mat-menu>
 </div>

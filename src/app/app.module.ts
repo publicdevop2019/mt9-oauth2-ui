@@ -1,72 +1,71 @@
 import { LayoutModule } from '@angular/cdk/layout';
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatTableModule, MatToolbarModule, MatSnackBarModule, MatTreeModule, MatHorizontalStepper, MatStepperModule, MatBottomSheetModule, MatSortModule, MatRadioModule, MatChipsModule, MatAutocompleteModule, MatMenuModule } from '@angular/material';
+import { MatAutocompleteModule, MatBottomSheetModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDialogModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatPaginatorModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSidenavModule, MatSlideToggleModule, MatSnackBarModule, MatSortModule, MatStepperModule, MatTableModule, MatToolbarModule, MatTreeModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { FormInfoService, MtFormBuilderModule } from 'mt-form-builder';
+import 'mt-wc-product';
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CustomLoader } from './clazz/locale/custom-loader';
+import { enUS } from './clazz/locale/en-US';
+import { zhHans } from './clazz/locale/zh-Hans';
+import { BackButtonComponent } from './components/back-button/back-button.component';
+import { CopyFieldComponent } from './components/copy-field/copy-field.component';
+import { EditableBooleanComponent } from './components/editable-boolean/editable-boolean.component';
+import { EditableFieldComponent } from './components/editable-field/editable-field.component';
+import { EditableInputMultiComponent } from './components/editable-input-multi/editable-input-multi.component';
+import { EditableSelectMultiComponent } from './components/editable-select-multi/editable-select-multi.component';
+import { EditableSelectSingleComponent } from './components/editable-select-single/editable-select-single.component';
+import { LazyImageComponent } from './components/lazy-image/lazy-image.component';
 import { MsgBoxComponent } from './components/msg-box/msg-box.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { OperationConfirmDialogComponent } from './components/operation-confirm-dialog/operation-confirm-dialog.component';
+import { PreviewOutletComponent } from './components/preview-outlet/preview-outlet.component';
+import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
+import { SearchComponent } from './components/search/search.component';
+import { SummaryCommentComponent } from './modules/bbs/pages/summary-comment/summary-comment.component';
+import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
+import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-like.component';
+import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
+import { SummaryPostComponent } from './modules/bbs/pages/summary-post/summary-post.component';
+import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
+import { CatalogTreeComponent } from './modules/mall/components/catalog-tree/catalog-tree.component';
+import { AttributeComponent } from './modules/mall/pages/attribute/attribute.component';
+import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
+import { FilterComponent } from './modules/mall/pages/filter/filter.component';
+import { OrderComponent } from './modules/mall/pages/order/order.component';
+import { ProductComponent } from './modules/mall/pages/product/product.component';
+import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
+import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
+import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
+import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
+import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
+import { ClientComponent } from './modules/my-apps/pages/client/client.component';
+import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
+import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
+import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/resource-owner.component';
+import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
 import { LoginComponent } from './pages/login/login.component';
-import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
+import { SettingComponent } from './pages/setting/setting.component';
+import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 import { AuthService } from './services/auth.service';
 import { ClientService } from './services/client.service';
-import { CustomHttpInterceptor } from './services/http.interceptor';
-import { HttpProxyService } from './services/http-proxy.service';
-import { LoadingInterceptor } from './services/loading.interceptor';
-import { ResourceOwnerService } from './services/resource-owner.service';
-import { EndpointService } from './services/endpoint.service';
-import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
-import { ProductComponent } from './modules/mall/pages/product/product.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
-import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
-import { OrderComponent } from './modules/mall/pages/order/order.component';
-import { FormInfoService, MtFormBuilderModule } from 'mt-form-builder';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { CustomLoader } from './clazz/locale/custom-loader';
-import { ClientComponent } from './modules/my-apps/pages/client/client.component';
-import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
-import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
-import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
-import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
-import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
-import { BackButtonComponent } from './components/back-button/back-button.component';
-import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
-import { AttributeComponent } from './modules/mall/pages/attribute/attribute.component';
-import { CatalogTreeComponent } from './modules/mall/components/catalog-tree/catalog-tree.component';
-import { DeviceService } from './services/device.service';
-import { SummaryPostComponent } from './modules/bbs/pages/summary-post/summary-post.component';
-import { SummaryCommentComponent } from './modules/bbs/pages/summary-comment/summary-comment.component';
-import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-like.component';
-import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
-import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
-import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
-import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
-import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/resource-owner.component';
 import { DeleteConfirmHttpInterceptor } from './services/delete-confirm.interceptor';
-import { DeleteConfirmDialogComponent } from './components/delete-confirm-dialog/delete-confirm-dialog.component';
+import { DeviceService } from './services/device.service';
+import { EndpointService } from './services/endpoint.service';
+import { HttpProxyService } from './services/http-proxy.service';
+import { CustomHttpInterceptor } from './services/http.interceptor';
+import { LoadingInterceptor } from './services/loading.interceptor';
 import { OfflineInterceptor } from './services/offline.interceptor';
-import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
-import { FilterComponent } from './modules/mall/pages/filter/filter.component';
-import { UpdateProdStatusDialogComponent } from './components/update-prod-status-dialog/update-prod-status-dialog.component';
-import { SettingComponent } from './pages/setting/setting.component';
-import { EditableFieldComponent } from './components/editable-field/editable-field.component';
-import { CopyFieldComponent } from './components/copy-field/copy-field.component';
-import { LazyImageComponent } from './components/lazy-image/lazy-image.component';
-import { SearchComponent } from './components/search/search.component';
-import 'mt-wc-product';
-import { PreviewOutletComponent } from './components/preview-outlet/preview-outlet.component'
-import { zhHans } from './clazz/locale/zh-Hans';
-import { enUS } from './clazz/locale/en-US';
-import { EditableSelectMultiComponent } from './components/editable-select-multi/editable-select-multi.component';
-import { EditableBooleanComponent } from './components/editable-boolean/editable-boolean.component';
-import { EditableSelectSingleComponent } from './components/editable-select-single/editable-select-single.component';
+import { ResourceOwnerService } from './services/resource-owner.service';
 
 @NgModule({
   declarations: [
@@ -99,10 +98,9 @@ import { EditableSelectSingleComponent } from './components/editable-select-sing
     AttributeComponent,
     CatalogTreeComponent,
     UpdatePwdComponent,
-    DeleteConfirmDialogComponent,
+    OperationConfirmDialogComponent,
     SummaryFilterComponent,
     FilterComponent,
-    UpdateProdStatusDialogComponent,
     SettingComponent,
     EditableFieldComponent,
     CopyFieldComponent,
@@ -111,7 +109,8 @@ import { EditableSelectSingleComponent } from './components/editable-select-sing
     PreviewOutletComponent,
     EditableSelectMultiComponent,
     EditableBooleanComponent,
-    EditableSelectSingleComponent
+    EditableSelectSingleComponent,
+    EditableInputMultiComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -156,7 +155,7 @@ import { EditableSelectSingleComponent } from './components/editable-select-sing
       }
     }),
   ],
-  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, SecurityProfileComponent, ResourceOwnerComponent, DeleteConfirmDialogComponent, FilterComponent, UpdateProdStatusDialogComponent],
+  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, SecurityProfileComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

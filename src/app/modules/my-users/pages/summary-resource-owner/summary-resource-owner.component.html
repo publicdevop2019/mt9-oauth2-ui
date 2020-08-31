@@ -1,5 +1,5 @@
 <h2>{{'USER_CENTER' |translate}} / {{'RESOURCE_OWNER_DASHBOARD'|translate}}</h2>
-<app-search (search)="doSearch($event)" [fields]="['id']">
+<app-search (search)="doSearch($event)" [fields]="['id','email','grantedAuthorities_user']">
 </app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
@@ -7,7 +7,8 @@
         {{'BATCH_OPERATION'|translate}}
     </mat-slide-toggle>
     <ng-container *ngIf="batchUpdate.checked">
-        <button mat-raised-button color="primary" (click)="doBatchDelete()">{{'BATCH_DELETE'|translate}}</button>
+        <button mat-raised-button color="primary" (click)="doBatchLock()"  style="margin-right: 16px;">{{'BATCH_LOCK'|translate}}</button>
+        <button mat-raised-button color="primary" (click)="doBatchUnlock()">{{'BATCH_UNLOCK'|translate}}</button>
     </ng-container>
 </div>
 <div class="mat-elevation-z8">
@@ -37,6 +38,14 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'EMAIL'|translate}} </th>
                 <td mat-cell *matCellDef="let row"> {{row.email}} </td>
             </ng-container>
+            <ng-container matColumnDef="grantedAuthorities">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'GRANTED_AUTHORITIES'|translate}} </th>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-select-multi [inputOptions]="getAuthorityList(row.grantedAuthorities)"
+                        [list]="roleList" (newValue)="doPatchList(row.id,$event,'grantedAuthorities')">
+                    </app-editable-select-multi>
+                </td>
+            </ng-container>
 
             <ng-container matColumnDef="createAt">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CREATE_AT'|translate}} </th>
@@ -46,8 +55,8 @@
             <ng-container matColumnDef="locked">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'LOCKED'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    <app-editable-boolean [inputValue]="row.locked"
-                    (newValue)="doPatchBoolean(row.id,$event,'locked')"></app-editable-boolean>
+                    <app-editable-boolean [inputValue]="row.locked" (newValue)="doPatchBoolean(row.id,$event,'locked')">
+                    </app-editable-boolean>
                 </td>
             </ng-container>
 

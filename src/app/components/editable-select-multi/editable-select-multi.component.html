@@ -2,9 +2,8 @@
     style="display: flex;flex-wrap: nowrap;align-items: center;">
     <ng-container *ngIf="!editView">
         <mat-chip-list #chipList aria-label="chip list selection">
-            <mat-chip *ngFor="let e of getLabel(inputOptions)" style="margin: 4px;">
+            <mat-chip *ngFor="let e of getLabel(inputOptions)">
                 {{e|translate}}
-                <mat-icon *ngIf="editView" matChipRemove>cancel</mat-icon>
             </mat-chip>
         </mat-chip-list>
     </ng-container>
@@ -12,7 +11,7 @@
         <mat-chip-list #chipList aria-label="chip list selection">
             <mat-chip *ngFor="let e of getLabel(inputOptionsNext)" [selectable]="true" [removable]="true">
                 {{e|translate}}
-                <mat-icon matChipRemove *ngIf="true" (click)="remove(e)">cancel</mat-icon>
+                <mat-icon matChipRemove (click)="remove(e)">cancel</mat-icon>
             </mat-chip>
         </mat-chip-list>
     </div>
@@ -23,9 +22,11 @@
             </mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-            <button *ngFor="let e of list" mat-menu-item (click)="selected(e)">
-                <span>{{e.label|translate}}</span>
-            </button>
+            <ng-template matMenuContent>
+                <button *ngFor="let e of list" mat-menu-item (click)="selected(e)">
+                    <span>{{e.label|translate}}</span>
+                </button>
+            </ng-template>
         </mat-menu>
         <mat-icon [color]="'primary'" (click)="doUpdate()" style="cursor: pointer;">check_circle_outline
         </mat-icon>

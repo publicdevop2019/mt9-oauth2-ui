@@ -116,5 +116,5 @@ export const mockCatalogAdmin = {
 		"catalogType": "BACKEND"
 	  }
 	],
-	"totalProductCount": 13
+	"totalItemCount": 13
   }

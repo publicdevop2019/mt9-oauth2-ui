@@ -27,7 +27,7 @@ export class EditableSelectSingleComponent implements OnInit {
     this.displayEdit = 'hidden';
   }
   doUpdate(newValue: IOption) {
-    this.newValue.emit({ original: (this.inputValue.value as string), next: (newValue.value as string) });
+    this.newValue.emit({ original: (this.inputValue && this.inputValue.value as string), next: (newValue.value as string) });
     this.displayEdit = 'hidden';
   }
 }

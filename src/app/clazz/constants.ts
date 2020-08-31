@@ -8,6 +8,11 @@ export const CONST_ROLES: IOption[] = [
     { label: 'ROLE_TRUST', value: "ROLE_TRUST" },
     { label: 'ROLE_ROOT', value: "ROLE_ROOT" },
 ]
+export const CONST_ROLES_USER: IOption[] = [
+    { label: 'ROLE_ROOT_USER', value: "ROLE_ROOT" },
+    { label: 'ROLE_ADMIN', value: "ROLE_ADMIN" },
+    { label: 'ROLE_USER', value: "ROLE_USER" },
+]
 export const CONST_GRANT_TYPE: IOption[] = [
     { label: 'CLIENT_CREDENTIALS', value: "client_credentials" },
     { label: 'PASSWORD', value: "password" },
@@ -20,4 +25,10 @@ export const CONST_HTTP_METHOD: IOption[] = [
     { label: 'HTTP_PUT', value: "PUT" },
     { label: 'HTTP_DELETE', value: "DELETE" },
     { label: 'HTTP_PATCH', value: "PATCH" },
+]
+export const CONST_ATTR_TYPE: IOption[] = [
+    { label: 'KEY_ATTR', value: "KEY_ATTR" },
+    { label: 'SALES_ATTR', value: "SALES_ATTR" },
+    { label: 'PROD_ATTR', value: "PROD_ATTR" },
+    { label: 'GEN_ATTR', value: "GEN_ATTR" },
 ]

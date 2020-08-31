@@ -8,7 +8,9 @@
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <ng-container *ngIf="viewType==='LIST_VIEW'">
-    <app-search (search)="doSearch($event)" [fields]="['id','name']">
+    <app-search *ngIf="catalogQueryPrefix==='query=type:FRONTEND'" (search)="doSearch($event)" [fields]="['id','name','parentId_front']">
+    </app-search>
+    <app-search *ngIf="catalogQueryPrefix!=='query=type:FRONTEND'" (search)="doSearch($event)" [fields]="['id','name','parentId_back']">
     </app-search>
     <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
         <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
@@ -23,20 +25,21 @@
     <div class="mat-elevation-z8">
         <div class="table-container">
             <table mat-table [dataSource]="dataSource" matSort (matSortChange)="updateTable($event)">
-            <!-- Checkbox Column -->
-            <ng-container matColumnDef="select">
-                <th mat-header-cell *matHeaderCellDef>
-                    <mat-checkbox (change)="$event ? masterToggle() : null"
-                        [checked]="selection.hasValue() && isAllSelected()"
-                        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-                    </mat-checkbox>
-                </th>
-                <td mat-cell *matCellDef="let row">
-                    <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-                        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
-                    </mat-checkbox>
-                </td>
-            </ng-container>
+                <!-- Checkbox Column -->
+                <ng-container matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null" [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
                 <ng-container matColumnDef="id" 　sticky>
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ID' |translate}}</th>
                     <td mat-cell *matCellDef="let row">
@@ -54,7 +57,12 @@
 
                 <ng-container matColumnDef="parentId">
                     <th mat-header-cell *matHeaderCellDef> {{'PARENT_ID' |translate}}</th>
-                    <td mat-cell *matCellDef="let row"> {{getParenteName(row.parentId)}} </td>
+                    <td mat-cell *matCellDef="let row">
+                        <app-editable-select-single *ngIf="mappedParentCatalogs"
+                            [inputValue]="getOption(row.parentId,mappedParentCatalogs)" [list]="fullCatalogsList"
+                            (newValue)="doPatch(row.id,$event,'parentId')">
+                        </app-editable-select-single>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="edit">
@@ -74,11 +82,8 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
         </div>
-
-        <mat-paginator [pageIndex]="entitySvc.currentPageIndex" [showFirstLastButtons]="true"
-            [length]="totoalItemCount"
-            [pageSize]="[(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1 ]"
-            (page)="pageHandler($event)">
+        <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount" [pageIndex]="entitySvc.currentPageIndex"
+            [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
         </mat-paginator>
     </div>
 </ng-container>

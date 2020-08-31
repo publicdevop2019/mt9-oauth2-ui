@@ -1,16 +1,15 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { interval, Observable, Subscription } from 'rxjs';
 import { debounce } from 'rxjs/operators';
+import { CONST_ATTR_TYPE, CONST_GRANT_TYPE, CONST_HTTP_METHOD, CONST_ROLES, CONST_ROLES_USER } from 'src/app/clazz/constants';
 import { IClient } from 'src/app/modules/my-apps/interface/client.interface';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { ClientService } from 'src/app/services/client.service';
-import { CONST_ROLES, CONST_GRANT_TYPE, CONST_HTTP_METHOD } from 'src/app/clazz/constants';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -40,14 +39,20 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   public searchHelper: IOption[] = [
     { label: 'ID', value: "id" },
+    { label: 'PARENT_ID_FRONT', value: "parentId_front" },
+    { label: 'PARENT_ID_BACK', value: "parentId_back" },
     { label: 'NAME', value: "name" },
+    { label: 'CATALOGS', value: "catalogs" },
+    { label: 'EMAIL', value: "email" },
     { label: 'RESOURCE_INDICATOR', value: "resourceIndicator" },
     { label: 'RESOURCE_ID', value: "resourceId" },
     { label: 'GRANTTYPE_ENUMS', value: "grantTypeEnums" },
     { label: 'ACCESS_TOKEN_VALIDITY_SECONDS', value: "accessTokenValiditySeconds" },
     { label: 'GRANTED_AUTHORITIES', value: "grantedAuthorities" },
+    { label: 'GRANTED_AUTHORITIES', value: "grantedAuthorities_user" },
     { label: 'RESOURCEIDS', value: "resourceIds" },
     { label: 'METHOD', value: "method" },
+    { label: 'TYPE', value: "type" },
     { label: 'SEARCH_BY_ATTRIBUTES', value: "attributes" },
     { label: 'SEARCH_BY_CATALOG_FRONT', value: "catalogFront" },
     { label: 'SEARCH_BY_CATALOG_BACK', value: "catalogBack" }
@@ -69,11 +74,13 @@ export class SearchComponent implements OnDestroy, OnInit {
     let sub2 = this.searchQuery.valueChanges.pipe(debounce(() => interval(1000)))
       .subscribe(next => {
         let delimiter = '$'
-        if (['id', 'name','resourceId','method'].includes(this.searchType.value))
+        if (['id', 'name', 'resourceId', 'method', 'parentId', 'type'].includes(this.searchType.value))
           delimiter = '.'
         let prefix = this.searchType.value;
         if (['catalogFront', 'catalogBack'].includes(this.searchType.value))
           prefix = 'attributes'
+        if (['grantedAuthorities_user'].includes(this.searchType.value))
+          prefix = 'grantedAuthorities'
         this.search.emit(prefix + ":" + (<Array<string>>next).join(delimiter));
       });
     this.searchType.valueChanges.subscribe(next => {
@@ -84,13 +91,28 @@ export class SearchComponent implements OnDestroy, OnInit {
       else if (next === 'grantedAuthorities') {
         this.autoCompleteList = CONST_ROLES;
       }
+      else if (next === 'grantedAuthorities_user') {
+        this.autoCompleteList = CONST_ROLES_USER;
+      }
       else if (next === 'method') {
         this.autoCompleteList = CONST_HTTP_METHOD;
       }
-      else if (next === 'resourceIds' ) {
+      else if (next === 'type') {
+        this.autoCompleteList = CONST_ATTR_TYPE;
+      }
+      else if (next === 'catalogs') {
+        this.autoCompleteList = this.catalogsDataFront.map(e => <IOption>{ label: e.name, value: e.id });
+      }
+      else if (next === 'parentId_front') {
+        this.autoCompleteList = this.catalogsDataFront.map(e => <IOption>{ label: e.name, value: e.id });
+      }
+      else if (next === 'parentId_back') {
+        this.autoCompleteList = this.catalogsDataBack.map(e => <IOption>{ label: e.name, value: e.id });
+      }
+      else if (next === 'resourceIds') {
         this.autoCompleteList = this.resourceClients.map(e => <IOption>{ label: e.name, value: e.id });
       }
-      else if (next === 'resourceId' ) {
+      else if (next === 'resourceId') {
         this.autoCompleteList = this.allClients.map(e => <IOption>{ label: e.name, value: e.id });
       }
       else {
@@ -109,7 +131,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.subs.add(sub2)
   }
   ngOnInit(): void {
-    if (this.fields.includes('catalogFront')) {
+    if (this.fields.includes('catalogFront') || this.fields.includes('parentId_front') || this.fields.includes('catalogs')) {
 
       this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:FRONTEND')
         .subscribe(catalogs => {
@@ -117,9 +139,9 @@ export class SearchComponent implements OnDestroy, OnInit {
             this.catalogsDataFront = catalogs.data;
         });
     }
-    if (this.fields.includes('catalogBack')) {
+    if (this.fields.includes('catalogBack') || this.fields.includes('parentId_back')) {
 
-     this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:BACKEND')
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:BACKEND')
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataBack = catalogs.data;
@@ -198,7 +220,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.searchItems.push(event.label);
     this.searchQuery.setValue(this.parseLable(this.searchItems))
   }
-  parseLable(searchItems: string[]): string[]{
-    return searchItems.map(e=>this.autoCompleteList.find(ee=>ee.label===e).value as string)
+  parseLable(searchItems: string[]): string[] {
+    return searchItems.map(e => this.autoCompleteList.find(ee => ee.label === e).value as string)
   }
 }

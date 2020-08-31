@@ -1,8 +1,8 @@
 <h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
     {{'ATTRIBUTE_DASHBOARD' |translate}} <button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-        <app-search (search)="doSearch($event)" [fields]="['id','name']">
-        </app-search>
+<app-search (search)="doSearch($event)" [fields]="['id','name','type']">
+</app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">
@@ -55,12 +55,20 @@
 
             <ng-container matColumnDef="value">
                 <th mat-header-cell *matHeaderCellDef> {{'VALUE'|translate}}</th>
-                <td mat-cell *matCellDef="let row"> {{row.selectValues}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-input-multi [inputOptions]="row.selectValues"
+                        (newValue)="doMultiInputPatch(row.id,$event,'type')">
+                    </app-editable-input-multi>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="type">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'TYPE'|translate}}</th>
-                <td mat-cell *matCellDef="let row"> {{row.type|translate}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-select-single [inputValue]="getOption(row.type,attrTypeList)" [list]="attrTypeList"
+                        (newValue)="doPatch(row.id,$event,'type')">
+                    </app-editable-select-single>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="edit">

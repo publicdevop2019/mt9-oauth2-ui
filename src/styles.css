@@ -92,3 +92,6 @@ th.mat-sort-header-sorted {
 .mat-menu-panel {
   max-height: 250px !important;
 }
+.mat-form-field-infix {
+  width: auto !important;
+}

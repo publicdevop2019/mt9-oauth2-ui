@@ -10,6 +10,7 @@ import { DeviceService } from 'src/app/services/device.service';
 import * as UUID from 'uuid/v1';
 import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
+import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
 export interface IIdBasedEntity {
   id: number
 }
@@ -22,6 +23,7 @@ export interface IEntityService<C extends IIdBasedEntity, D> {
   update: (id: number, s: D, changeId: string) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;
+  patchMultiInput: (id: number, event: IEditInputListEvent, changeId: string, fieldName: string) => void;
   patchBoolean: (id: number, event: IEditBooleanEvent, changeId: string, fieldName: string) => void;
   refreshSummary: Observable<any>;
   currentPageIndex: number;
@@ -146,6 +148,9 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   doPatch(id: number, event: IEditEvent, fieldName: string) {
     this.entitySvc.patch(id, event, UUID(), fieldName)
   }
+  doMultiInputPatch(id: number, event: IEditInputListEvent, fieldName: string) {
+    this.entitySvc.patchMultiInput(id, event, UUID(), fieldName)
+  }
   doPatchBoolean(id: number, event: IEditBooleanEvent, fieldName: string) {
     this.entitySvc.patchBoolean(id, event, UUID(), fieldName)
   }
@@ -156,7 +161,6 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     this.openBottomSheet(id, true)
   }
   doSearch(queryString: string) {
-    console.dir(queryString)
     this.queryString = queryString;
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next)

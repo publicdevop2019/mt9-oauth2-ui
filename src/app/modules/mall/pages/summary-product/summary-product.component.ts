@@ -2,12 +2,12 @@ import { Component, OnDestroy } from '@angular/core';
 import { MatBottomSheet, MatDialog, MatSlideToggle } from '@angular/material';
 import { filter } from 'rxjs/operators';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
-import { UpdateProdStatusDialogComponent } from 'src/app/components/update-prod-status-dialog/update-prod-status-dialog.component';
 import { DeviceService } from 'src/app/services/device.service';
 import { IProductDetail, IProductSimple, ProductService } from 'src/app/services/product.service';
 import { isNullOrUndefined } from 'util';
 import * as UUID from 'uuid/v1';
 import { ProductComponent } from '../product/product.component';
+import { OperationConfirmDialogComponent } from 'src/app/components/operation-confirm-dialog/operation-confirm-dialog.component';
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
@@ -24,7 +24,7 @@ export class SummaryProductComponent extends SummaryEntityComponent<IProductSimp
     super(entitySvc, deviceSvc, bottomSheet,5);
   }
   toggleProductStatus(row: IProductSimple, toggle: MatSlideToggle) {
-    const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
+    const dialogRef = this.dialog.open(OperationConfirmDialogComponent);
     let next: 'AVAILABLE' | 'UNAVAILABLE';
     if (this.isAvaliable(row)) {
       next = 'UNAVAILABLE'
@@ -53,13 +53,13 @@ export class SummaryProductComponent extends SummaryEntityComponent<IProductSimp
 
   }
   doBatchOffline() {
-    const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
+    const dialogRef = this.dialog.open(OperationConfirmDialogComponent);
     let ids = this.selection.selected.map(e => e.id)
     dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.entitySvc.batchUpdateProdStatus(ids, 'UNAVAILABLE', UUID()));
 
   }
   doBatchOnline() {
-    const dialogRef = this.dialog.open(UpdateProdStatusDialogComponent);
+    const dialogRef = this.dialog.open(OperationConfirmDialogComponent);
     let ids = this.selection.selected.map(e => e.id)
     dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.entitySvc.batchUpdateProdStatus(ids, 'AVAILABLE', UUID()));
   }
