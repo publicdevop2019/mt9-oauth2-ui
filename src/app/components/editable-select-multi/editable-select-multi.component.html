@@ -18,7 +18,7 @@
     <ng-container *ngIf="editView">
 
         <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon [color]="'primary'" style="cursor: pointer;">add_circle
+            <mat-icon [color]="'primary'">add_circle
             </mat-icon>
         </button>
         <mat-menu #menu="matMenu">
@@ -28,9 +28,12 @@
                 </button>
             </ng-template>
         </mat-menu>
-        <mat-icon [color]="'primary'" (click)="doUpdate()" style="cursor: pointer;">check_circle_outline
-        </mat-icon>
-        <mat-icon [color]="'error'" (click)="doCancel()" style="cursor: pointer;">cancel</mat-icon>
+        <button mat-icon-button>
+            <mat-icon [color]="'primary'" (click)="doUpdate()">check_circle_outline</mat-icon>
+        </button>
+        <button mat-icon-button>
+            <mat-icon [color]="'error'" (click)="doCancel()" style="margin: auto;">cancel</mat-icon>
+        </button>
     </ng-container>
     <mat-icon *ngIf="!editView" [ngStyle]="{'visibility':displayEdit}" [color]="'primary'" (click)="doEdit()"
         style="padding-right: 8px;cursor: pointer;">edit
