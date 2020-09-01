@@ -105,6 +105,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
       this.dataSource = new MatTableDataSource([]);
       this.totoalItemCount = 0;
     }
+    this.selection.clear();
   }
   updateTable(sort: Sort) {
     this.sortBy = sort.active;

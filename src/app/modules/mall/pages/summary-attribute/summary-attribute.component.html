@@ -53,11 +53,11 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="value">
+            <ng-container matColumnDef="selectValues">
                 <th mat-header-cell *matHeaderCellDef> {{'VALUE'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
                     <app-editable-input-multi [inputOptions]="row.selectValues"
-                        (newValue)="doMultiInputPatch(row.id,$event,'type')">
+                        (newValue)="doMultiInputPatch(row.id,$event,'selectValues')">
                     </app-editable-input-multi>
                 </td>
             </ng-container>

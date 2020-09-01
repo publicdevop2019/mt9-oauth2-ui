@@ -9,7 +9,7 @@ import { ValidateHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
-import { FilterService, IFilter, IFilterItem } from 'src/app/services/filter.service';
+import { FilterService,  IFilterItem, IBizFilter } from 'src/app/services/filter.service';
 import * as UUID from 'uuid/v1';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 @Component({
@@ -18,7 +18,7 @@ import { IBottomSheet } from 'src/app/clazz/summary.component';
   styleUrls: ['./filter.component.css']
 })
 export class FilterComponent implements OnInit {
-  filter: IFilter;
+  filter: IBizFilter;
   formId = 'filters';
   formIdCatalog = 'filtersCatalog';
   formIdFilter = 'filtersFilter';
@@ -37,7 +37,7 @@ export class FilterComponent implements OnInit {
   attrList: IBizAttribute[];
   catalogList: ICatalog[];
   changeId: string;
-  productBottomSheet: IBottomSheet<IFilter>;
+  productBottomSheet: IBottomSheet<IBizFilter>;
   constructor(
     public filterSvc: FilterService,
     private fis: FormInfoService,
@@ -57,7 +57,7 @@ export class FilterComponent implements OnInit {
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
-    this.filter = (data as IBottomSheet<IFilter>).from;
+    this.filter = (data as IBottomSheet<IBizFilter>).from;
 
     combineLatest(this.attrSvc.readByQuery(0,1000), this.categorySvc.readByQuery(0, 1000, 'query=type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
@@ -130,7 +130,7 @@ export class FilterComponent implements OnInit {
     }
     this.fis.add(this.formIdCatalog)
   }
-  convertToPayload(): IFilter {
+  convertToPayload(): IBizFilter {
     let formGroup = this.fis.formGroupCollection[this.formId];
     let varValue = this.fis.formGroupCollection[this.formIdCatalog].value;
     let catalogs = Object.keys(varValue).map(e => varValue[e] as string);

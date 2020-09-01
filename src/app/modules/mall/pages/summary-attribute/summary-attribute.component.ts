@@ -11,7 +11,7 @@ import { CONST_ATTR_TYPE } from 'src/app/clazz/constants';
   templateUrl: './summary-attribute.component.html',
 })
 export class SummaryAttributeComponent extends SummaryEntityComponent<IBizAttribute, IBizAttribute> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'name', 'description', 'value', 'type', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'description', 'selectValues', 'type', 'edit', 'delete'];
   sheetComponent = AttributeComponent;
   attrTypeList=CONST_ATTR_TYPE;
   constructor(

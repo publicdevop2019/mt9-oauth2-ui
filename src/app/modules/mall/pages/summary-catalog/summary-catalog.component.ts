@@ -68,9 +68,10 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
   updateSummaryDataExt(inputs: ISumRep<ICatalog>) {
     this.updateSummaryData(inputs);
     let parentId: number[] = inputs.data.map(e => e.parentId).filter(e => e);
-    this.entitySvc.readByQuery(0, parentId.length, this.catalogQueryPrefix + ',' + parentId.join('.')).subscribe(next => {
-      this.mappedParentCatalogs = next.data.map(e => <IOption>{ label: e.name, value: e.id });
-    });
+    if (parentId.length > 0)
+      this.entitySvc.readByQuery(0, parentId.length, this.catalogQueryPrefix + ',id:' + parentId.join('.')).subscribe(next => {
+        this.mappedParentCatalogs = next.data.map(e => <IOption>{ label: e.name, value: e.id });
+      });
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, 1000, this.catalogQueryPrefix).subscribe(next => {
       this.fullCatalogsList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
     });

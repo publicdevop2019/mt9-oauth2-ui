@@ -8,23 +8,16 @@ export interface IFilterItem {
   name: string,
   values: string[]
 }
-export interface IFilter {
-  id: number
-  catalogs: string[],
-  filters: IFilterItem[]
-}
 export interface IBizFilter {
   id: number,
-  catalogs: string[]
-}
-export interface IFilterSummaryNet {
-  data: IBizFilter[];
-  totalItemCount: number,
+  catalogs: string[],
+  description?:string
+  filters: IFilterItem[]
 }
 @Injectable({
   providedIn: 'root'
 })
-export class FilterService extends EntityCommonService<IFilter, IFilter>{
+export class FilterService extends EntityCommonService<IBizFilter, IBizFilter>{
   private PRODUCT_SVC_NAME = '/product-svc';
   private ENTITY_NAME = '/filters';
   entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;

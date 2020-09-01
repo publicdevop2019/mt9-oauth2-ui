@@ -109,11 +109,11 @@ export class HttpProxyService {
             });
         });
     }
-    batchUpdateUserStatus(ids: number[], status: 'LOCK' | 'UNLOCK', changeId: string) {
+    batchUpdateUserStatus(entityRepo: string, role: string, ids: number[], status: 'LOCK' | 'UNLOCK', changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.patch(environment.serverUri + this.PRODUCT_SVC_NAME + '/users/admin', this.getUserStatusPatch(status, ids), { headers: headerConfig }).subscribe(next => {
+            this._httpClient.patch(entityRepo + '/' + role, this.getUserStatusPatch(status, ids), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -393,7 +393,7 @@ export class HttpProxyService {
     };
     deleteEntityByQuery(entityRepo: string, role: string, query: string): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.delete(entityRepo + '/' + role + '?' + query).subscribe(next => {
+            this._httpClient.delete(entityRepo + '/' + role + '?' + this.addPrefix(query)).subscribe(next => {
                 e.next(true)
             });
         });

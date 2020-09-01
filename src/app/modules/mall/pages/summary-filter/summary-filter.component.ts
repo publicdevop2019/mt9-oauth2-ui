@@ -14,7 +14,7 @@ import { IOption } from 'mt-form-builder/lib/classes/template.interface';
   templateUrl: './summary-filter.component.html',
 })
 export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, IBizFilter> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'catalogs', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'description', 'catalogs', 'edit', 'delete'];
   sheetComponent = FilterComponent;
   public mappedCatalog: ICatalog[]
   public fullCatalog: IOption[]
@@ -46,8 +46,9 @@ export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, I
     inputs.data.forEach(e => {
       var0.push(...e.catalogs)
     })
-    this.catalogSvc.readByQuery(0, var0.length, 'query=type:FRONTEND,id:' + var0.join('.')).subscribe(next => {
-      this.mappedCatalog = next.data
-    })
+    if (var0.length > 0)
+      this.catalogSvc.readByQuery(0, var0.length, 'query=type:FRONTEND,id:' + var0.join('.')).subscribe(next => {
+        this.mappedCatalog = next.data
+      })
   }
 }

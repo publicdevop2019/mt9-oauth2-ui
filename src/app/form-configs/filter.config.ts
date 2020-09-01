@@ -12,6 +12,16 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             }
         },
+        {
+            "type": "text",
+            "display": true,
+            "label": "DESCRIPTION",
+            "key": "description",
+            "position": {
+                "row": "1",
+                "column": "0"
+            }
+        },
     ],
 }
 export const FORM_CATALOG_CONFIG: IForm = {

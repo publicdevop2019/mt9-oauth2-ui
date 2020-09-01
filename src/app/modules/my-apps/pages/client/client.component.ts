@@ -39,9 +39,10 @@ export class ClientComponent implements OnDestroy, OnInit {
     this.client = (data as IBottomSheet<IClient>).from;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
-    combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 20, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
+    combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
-      this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: String(e.id), value: String(e.id) });
+      this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
+      this.fis.formGroupCollection[this.formId].patchValue({resourceId:[]})// keep to trigger checkbox change detect
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         // prevent infinite loop
         if (this.findDelta(e) !== undefined) {
