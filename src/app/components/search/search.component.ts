@@ -20,6 +20,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   @Output() search: EventEmitter<string> = new EventEmitter()
   filteredList: Observable<IOption[]>;
   searchItems: string[] = [];
+  searchItemsShadow: string[] = [];
   autoCompleteList: IOption[] = [];
   selectedItem = new FormControl();
   options: FormGroup;
@@ -60,6 +61,7 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   private subs: Subscription = new Subscription();
+  private queryFinal: string;
   constructor(fb: FormBuilder, private catalogSvc: CatalogService, private attrSvc: AttributeService, public translateSvc: TranslateService, private clientSvc: ClientService) {
     this.options = fb.group({
       searchType: this.searchType,
@@ -74,19 +76,23 @@ export class SearchComponent implements OnDestroy, OnInit {
     let sub2 = this.searchQuery.valueChanges.pipe(filter(e => e !== null && e !== undefined && e !== '' && JSON.stringify(e) !== JSON.stringify([]))).pipe(debounce(() => interval(1000)))
       .subscribe(next => {
         let delimiter = '$'
-        if (['id', 'name', 'resourceId', 'method', 'parentId_front','parentId_back', 'type'].includes(this.searchType.value))
+        if (['id', 'name', 'resourceId', 'method', 'parentId_front', 'parentId_back', 'type', 'email'].includes(this.searchType.value))
           delimiter = '.'
         let prefix = this.searchType.value;
-        if (['catalogFront', 'catalogBack'].includes(this.searchType.value))
-          prefix = 'attributes'
+        if (['catalogFront', 'catalogBack', 'attributes'].includes(this.searchType.value)) {
+          prefix = 'attributes';
+          next = (<Array<string>>next).map(e => e.replace(":", "-"));
+        }
         if (['grantedAuthorities_user'].includes(this.searchType.value))
           prefix = 'grantedAuthorities'
-        if (['parentId_front','parentId_back'].includes(this.searchType.value))
+        if (['parentId_front', 'parentId_back'].includes(this.searchType.value))
           prefix = 'parentId'
-        this.search.emit(prefix + ":" + (<Array<string>>next).join(delimiter));
+        this.queryFinal = prefix + ":" + (<Array<string>>next).join(delimiter)
+        this.search.emit(this.queryFinal);
       });
     this.searchType.valueChanges.subscribe(next => {
       this.searchItems = [];
+      this.searchItemsShadow = [];
       if (next === 'grantTypeEnums') {
         this.autoCompleteList = CONST_GRANT_TYPE;
       }
@@ -118,7 +124,7 @@ export class SearchComponent implements OnDestroy, OnInit {
         this.autoCompleteList = this.allClients.map(e => <IOption>{ label: e.name, value: e.id });
       }
       else {
-
+        this.autoCompleteList = []
       }
       this.options.reset({
         searchType: this.searchType.value,
@@ -176,20 +182,29 @@ export class SearchComponent implements OnDestroy, OnInit {
   }
   appendAttr() {
     let var1 = (this.searchByAttr.value as IBizAttribute);
-    let var2 = var1.id + ":" + (var1.method === 'SELECT' ? this.searchByAttrSelect.value : this.searchByAttrManual.value);
+    let var2 = var1.name + ":" + (var1.method === 'SELECT' ? this.searchByAttrSelect.value : this.searchByAttrManual.value);
+    let var3 = var1.id + ":" + (var1.method === 'SELECT' ? this.searchByAttrSelect.value : this.searchByAttrManual.value);
     this.searchItems.push(var2);
-    this.searchQuery.setValue(this.searchItems)
+    this.searchItemsShadow.push(var3);
+    this.searchQuery.setValue(this.searchItemsShadow)
   }
   searchWithTags(catalog: ICatalog) {
-    this.searchItems.push(...(catalog.attributes || []));
-    this.searchQuery.setValue(this.searchItems)
+    this.searchItems.push(...this.parseAttrId(catalog.attributes));
+    this.searchItemsShadow.push(...(catalog.attributes || []))
+    this.searchQuery.setValue(this.searchItemsShadow)
 
+  }
+  parseAttrId(attributes: string[]): string[] {
+    if (!attributes)
+      return []
+    return attributes.map(e => this.bizAttr.find(ee => ee.id === +e.split(":")[0]).name + ":" + e.split(":")[1])
   }
   overwriteCommon(value: string) {
     this.searchQuery.setValue([value])
   }
   doReset() {
     this.searchItems = [];
+    this.searchItemsShadow = [];
     this.options.reset({
       searchType: '',
       searchQuery: '',
@@ -204,7 +219,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.search.emit('')
   }
   doRefresh() {
-    this.search.emit();
+    this.search.emit(this.queryFinal);
   }
   add(value: string) {
     this.searchItems.push(value);
@@ -214,7 +229,17 @@ export class SearchComponent implements OnDestroy, OnInit {
     const index = this.searchItems.indexOf(item);
     if (index >= 0) {
       this.searchItems.splice(index, 1);
-      this.searchQuery.setValue(this.parseLable(this.searchItems))
+      if (this.searchItemsShadow.length > 0)
+        this.searchItemsShadow.splice(index, 1);
+      if (this.autoCompleteList.length > 0) {
+        this.searchQuery.setValue(this.parseLable(this.searchItems))
+      } else {
+        if (['catalogBack', 'catalogFront'].includes(this.searchType.value)) {
+          this.searchQuery.setValue(this.searchItemsShadow)
+        } else {
+          this.searchQuery.setValue(this.searchItems)
+        }
+      }
     }
   }
 

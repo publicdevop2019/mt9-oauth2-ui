@@ -11,8 +11,8 @@ export const environment = {
   // tokenUrl: 'http://localhost:8111/oauth/token',
   // serverUri: 'http://ec2-18-191-132-78.us-east-2.compute.amazonaws.com',
   // tokenUrl: 'http://ec2-18-191-132-78.us-east-2.compute.amazonaws.com/oauth/token',
-  loginClientId: '3',
-  registerClientId: '5',
+  loginClientId: '838330249904133',
+  registerClientId: '838330249904135',
   clientSecret: '',
 };
 

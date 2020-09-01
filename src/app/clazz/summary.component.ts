@@ -162,6 +162,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     this.openBottomSheet(id, true)
   }
   doSearch(queryString: string) {
+    console.dir(queryString)
     this.queryString = queryString;
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next)

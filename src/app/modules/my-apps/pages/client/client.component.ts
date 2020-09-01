@@ -35,6 +35,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     private fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<ClientComponent>,
+    private cdr:ChangeDetectorRef
   ) {
     this.client = (data as IBottomSheet<IClient>).from;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
@@ -43,6 +44,7 @@ export class ClientComponent implements OnDestroy, OnInit {
       this.resources = next[1].data;
       this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
       this.fis.formGroupCollection[this.formId].patchValue({resourceId:[]})// keep to trigger checkbox change detect
+      this.cdr.markForCheck();
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         // prevent infinite loop
         if (this.findDelta(e) !== undefined) {

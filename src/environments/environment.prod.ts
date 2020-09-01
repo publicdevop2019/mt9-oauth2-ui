@@ -3,7 +3,7 @@ export const environment = {
   mode: 'online' as 'online' | 'offline',
   serverUri: 'http://api.manytreetechnology.com:8111',
   tokenUrl: 'http://api.manytreetechnology.com:8111/auth-svc/oauth/token',
-  loginClientId: 'login-id',
-  registerClientId: 'register-id',
+  loginClientId: '838330249904133',
+  registerClientId: '838330249904135',
   clientSecret: '',
 };

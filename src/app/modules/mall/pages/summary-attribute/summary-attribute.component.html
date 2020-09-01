@@ -89,6 +89,6 @@
     </div>
 
     <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount" [pageIndex]="entitySvc.currentPageIndex"
-        [pageSize]="deviceSvc.pageSize" (page)="pageHandler($event)">
+        [pageSize]="deviceSvc.pageSize - pageSizeOffset" (page)="pageHandler($event)">
     </mat-paginator>
 </div>
