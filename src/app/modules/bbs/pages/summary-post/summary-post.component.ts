@@ -14,6 +14,7 @@ export class SummaryPostComponent implements OnInit {
   displayedColumns: string[] = ['id', 'title', 'topic', 'publishedAt', 'publisherId', 'edit'];
   dataSource: MatTableDataSource<IPostCard>;
   pageNumber = 0;
+  pageSizeOffset=0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   private sub: Subscription;

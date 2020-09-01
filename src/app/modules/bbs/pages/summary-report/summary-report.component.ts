@@ -13,6 +13,7 @@ export class SummaryReportComponent implements OnInit {
   dataSource: MatTableDataSource<IUserReaction>;
   pageNumber = 0;
   totoal = 0;
+  pageSizeOffset=0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(private commentSvc: ReactionService,public deviceSvc:DeviceService) {

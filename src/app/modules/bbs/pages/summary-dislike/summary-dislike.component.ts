@@ -10,7 +10,7 @@ import { DeviceService } from 'src/app/services/device.service';
   styleUrls: ['./summary-dislike.component.css']
 })
 export class SummaryDislikeComponent implements OnInit {
-
+  pageSizeOffset=0;
   displayedColumns: string[] = ['count', 'referenceId', 'referenceType'];
   dataSource: MatTableDataSource<IUserReaction>;
   pageNumber = 0;

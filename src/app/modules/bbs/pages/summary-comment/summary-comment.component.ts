@@ -14,6 +14,7 @@ export class SummaryCommentComponent implements OnInit {
   dataSource: MatTableDataSource<IComment>;
   pageNumber = 0;
   total=0;
+  pageSizeOffset=0;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(public commentSvc: CommentService,public deviceSvc:DeviceService) {

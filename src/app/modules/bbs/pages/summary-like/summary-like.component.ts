@@ -9,7 +9,7 @@ import { DeviceService } from 'src/app/services/device.service';
   styleUrls: ['./summary-like.component.css']
 })
 export class SummaryLikeComponent implements OnInit {
-
+  pageSizeOffset=0;
   displayedColumns: string[] = ['count', 'referenceId', 'referenceType'];
   dataSource: MatTableDataSource<IUserReaction>;
   pageNumber = 0;

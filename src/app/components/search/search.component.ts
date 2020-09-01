@@ -189,10 +189,23 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.searchQuery.setValue(this.searchItemsShadow)
   }
   searchWithTags(catalog: ICatalog) {
-    this.searchItems.push(...this.parseAttrId(catalog.attributes));
-    this.searchItemsShadow.push(...(catalog.attributes || []))
+    this.searchItems.push(...this.parseAttrId(this.loadAttributes(catalog)));
+    this.searchItemsShadow.push(...(this.loadAttributes(catalog) || []))
     this.searchQuery.setValue(this.searchItemsShadow)
 
+  }
+  public loadAttributes(attr: ICatalog) {
+    let tags: string[] = [];
+    tags.push(...attr.attributes);
+    let catalogs = this.catalogsDataFront;
+    if (this.searchType.value === 'catalogBack')
+      catalogs = this.catalogsDataBack;
+    while (attr.parentId !== null && attr.parentId !== undefined) {
+      let nextId = attr.parentId;
+      attr = catalogs.find(e => e.id === nextId);
+      tags.push(...attr.attributes);
+    }
+    return tags;
   }
   parseAttrId(attributes: string[]): string[] {
     if (!attributes)
