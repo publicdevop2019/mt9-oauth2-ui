@@ -82,7 +82,9 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
   }
   doSearch(queryString: string) {
     this.queryString = this.catalogQueryPrefix + ',' + queryString;
-    super.doSearch(this.queryString);
+    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
+      this.updateSummaryDataExt(next)
+    })
   }
   getOption(value: string, options: IOption[]) {
     return options.find(e => e.value == value)

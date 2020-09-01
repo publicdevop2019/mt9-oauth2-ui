@@ -39,7 +39,7 @@
 
             <ng-container matColumnDef="email">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'EMAIL'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.email}} </td>
+                <td mat-cell *matCellDef="let row"> <app-copy-field [inputValue]="row.email"></app-copy-field> </td>
             </ng-container>
             <ng-container matColumnDef="grantedAuthorities">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'GRANTED_AUTHORITIES'|translate}} </th>

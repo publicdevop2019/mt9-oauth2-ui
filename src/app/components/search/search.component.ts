@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { interval, Observable, Subscription } from 'rxjs';
-import { debounce } from 'rxjs/operators';
+import { debounce, filter } from 'rxjs/operators';
 import { CONST_ATTR_TYPE, CONST_GRANT_TYPE, CONST_HTTP_METHOD, CONST_ROLES, CONST_ROLES_USER } from 'src/app/clazz/constants';
 import { IClient } from 'src/app/modules/my-apps/interface/client.interface';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
@@ -71,16 +71,18 @@ export class SearchComponent implements OnDestroy, OnInit {
       searchByAttrSelect: this.searchByAttrSelect,
       searchByAttrManual: this.searchByAttrManual,
     });
-    let sub2 = this.searchQuery.valueChanges.pipe(debounce(() => interval(1000)))
+    let sub2 = this.searchQuery.valueChanges.pipe(filter(e => e !== null && e !== undefined && e !== '' && JSON.stringify(e) !== JSON.stringify([]))).pipe(debounce(() => interval(1000)))
       .subscribe(next => {
         let delimiter = '$'
-        if (['id', 'name', 'resourceId', 'method', 'parentId', 'type'].includes(this.searchType.value))
+        if (['id', 'name', 'resourceId', 'method', 'parentId_front','parentId_back', 'type'].includes(this.searchType.value))
           delimiter = '.'
         let prefix = this.searchType.value;
         if (['catalogFront', 'catalogBack'].includes(this.searchType.value))
           prefix = 'attributes'
         if (['grantedAuthorities_user'].includes(this.searchType.value))
           prefix = 'grantedAuthorities'
+        if (['parentId_front','parentId_back'].includes(this.searchType.value))
+          prefix = 'parentId'
         this.search.emit(prefix + ":" + (<Array<string>>next).join(delimiter));
       });
     this.searchType.valueChanges.subscribe(next => {
@@ -212,7 +214,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     const index = this.searchItems.indexOf(item);
     if (index >= 0) {
       this.searchItems.splice(index, 1);
-      this.searchQuery.setValue(this.searchItems)
+      this.searchQuery.setValue(this.parseLable(this.searchItems))
     }
   }
 
