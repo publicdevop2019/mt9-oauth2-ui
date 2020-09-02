@@ -250,5 +250,8 @@ export const zhHans = {
     "PARENT_ID_BACK": "父类",
     "BATCH_LOCK": "批量锁定",
     "BATCH_UNLOCK": "批量解锁",
+    "LOWEST_PRICE": "最低价格",
+    "ENTER_MIN_VALUE": "输入最小值",
+    "ENTER_MAX_VALUE": "输入最大值",
     "": "",
 }

@@ -7,7 +7,7 @@ export function getCookie(name: string): string {
     if (parts.length == 2) return parts.pop().split(";").shift();
 }
 export function hasValue(input: any): boolean {
-    return input !== null && input !== undefined;
+    return input !== null && input !== undefined && input!=='';
 }
 export function getLabel(e: IBizAttribute): string {
     let lableNew: string[] = [];

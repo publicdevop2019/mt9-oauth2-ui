@@ -245,5 +245,8 @@ export const enUS = {
     "PARENT_ID_BACK": "ParentId",
     "BATCH_LOCK": "Batch lock",
     "BATCH_UNLOCK": "Batch unlock",
+    "LOWEST_PRICE": "Lowest price",
+    "ENTER_MIN_VALUE": "Enter min value",
+    "ENTER_MAX_VALUE": "Enter max value",
     "": "",
 }

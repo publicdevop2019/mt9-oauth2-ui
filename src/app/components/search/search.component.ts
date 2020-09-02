@@ -3,13 +3,15 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { interval, Observable, Subscription } from 'rxjs';
+import { interval, Observable, Subscription, combineLatest } from 'rxjs';
 import { debounce, filter } from 'rxjs/operators';
 import { CONST_ATTR_TYPE, CONST_GRANT_TYPE, CONST_HTTP_METHOD, CONST_ROLES, CONST_ROLES_USER } from 'src/app/clazz/constants';
 import { IClient } from 'src/app/modules/my-apps/interface/client.interface';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { ClientService } from 'src/app/services/client.service';
+import { isNullOrUndefined } from 'util';
+import { hasValue } from 'src/app/clazz/utility';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
@@ -27,6 +29,8 @@ export class SearchComponent implements OnDestroy, OnInit {
   searchType = new FormControl();
   searchQuery = new FormControl({ value: [] });
   searchByString = new FormControl();
+  searchByNumMin = new FormControl();
+  searchByNumMax = new FormControl();
   searchBySelect = new FormControl();
   searchByBoolean = new FormControl();
   searchByAttr = new FormControl();
@@ -47,6 +51,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     { label: 'EMAIL', value: "email" },
     { label: 'RESOURCE_INDICATOR', value: "resourceIndicator" },
     { label: 'RESOURCE_ID', value: "resourceId" },
+    { label: 'LOWEST_PRICE', value: "lowestPrice" },
     { label: 'GRANTTYPE_ENUMS', value: "grantTypeEnums" },
     { label: 'ACCESS_TOKEN_VALIDITY_SECONDS', value: "accessTokenValiditySeconds" },
     { label: 'GRANTED_AUTHORITIES', value: "grantedAuthorities" },
@@ -70,11 +75,29 @@ export class SearchComponent implements OnDestroy, OnInit {
       searchBySelect: this.searchBySelect,
       searchByBoolean: this.searchByBoolean,
       searchByAttr: this.searchByAttr,
+      searchByNumMin: this.searchByNumMin,
+      searchByNumMax: this.searchByNumMax,
       searchByAttrSelect: this.searchByAttrSelect,
       searchByAttrManual: this.searchByAttrManual,
     });
+    let sub3 = combineLatest([this.searchByNumMin.valueChanges, this.searchByNumMax.valueChanges]).subscribe(next => {
+      let min: number = next[0];
+      let max: number = next[1];
+      if (!hasValue(next[0]) && !hasValue(next[1])) {
+        //do nothing
+      } else if (!hasValue(next[0]) && hasValue(next[1])) {
+        this.searchQuery.setValue(["<=" + max])
+      } else if (hasValue(next[0]) && !hasValue(next[1])) {
+        this.searchQuery.setValue([">=" + min])
+      } else {
+        this.searchQuery.setValue(["<=" + max, ">=" + min])
+      }
+    });
+    this.searchByNumMin.setValue('')//make sure at least one value emit for combineLatest to trigger
+    this.searchByNumMax.setValue('')
     let sub2 = this.searchQuery.valueChanges.pipe(filter(e => e !== null && e !== undefined && e !== '' && JSON.stringify(e) !== JSON.stringify([]))).pipe(debounce(() => interval(1000)))
       .subscribe(next => {
+        console.dir(next)
         let delimiter = '$'
         if (['id', 'name', 'resourceId', 'method', 'parentId_front', 'parentId_back', 'type', 'email'].includes(this.searchType.value))
           delimiter = '.'
@@ -133,10 +156,13 @@ export class SearchComponent implements OnDestroy, OnInit {
         searchByName: '',
         searchByAttr: '',
         searchByAttrSelect: '',
+        searchByNumMin: '',
+        searchByNumMax: '',
         searchByAttrManual: '',
       }, { emitEvent: false });
     });
     this.subs.add(sub2)
+    this.subs.add(sub3)
   }
   ngOnInit(): void {
     if (this.fields.includes('catalogFront') || this.fields.includes('parentId_front') || this.fields.includes('catalogs')) {
