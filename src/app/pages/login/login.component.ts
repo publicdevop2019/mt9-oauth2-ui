@@ -15,7 +15,7 @@ import * as UUID from 'uuid/v1';
 export class LoginComponent implements OnInit {
   nextUrl: string = '/dashboard';
   forgetPwd: boolean = false;
-  uuid=UUID();
+  changeId=UUID();
   loginOrRegForm = new FormGroup({
     state: new FormControl('', [
       Validators.required
@@ -62,14 +62,14 @@ export class LoginComponent implements OnInit {
     })
   }
   register() {
-    this.httpProxy.register(this.loginOrRegForm,UUID()).subscribe(next => {
+    this.httpProxy.register(this.loginOrRegForm,this.changeId).subscribe(next => {
       this.loginOrRegForm.get('state').setValue(false);
       this.openDialog('register success, please login');
     })
   }
   getCode() {
     this.httpProxy.currentUserAuthInfo=undefined;
-    this.httpProxy.activate(this.loginOrRegForm,UUID()).subscribe(next => {
+    this.httpProxy.activate(this.loginOrRegForm,this.changeId).subscribe(next => {
       this.openDialog('code send success, please check your email');
     })
 

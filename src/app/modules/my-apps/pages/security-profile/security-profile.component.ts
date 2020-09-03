@@ -18,6 +18,7 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   securityProfile: IEndpoint;
   validator: ValidateHelper;;
   productBottomSheet: IBottomSheet<IEndpoint>;
+  private changeId = UUID()
   constructor(
     public endpointSvc: EndpointService,
     private fis: FormInfoService,
@@ -57,9 +58,9 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
   doUpdate() {
-    this.endpointSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToSecurityProfile(), UUID())
+    this.endpointSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToSecurityProfile(), this.changeId)
   }
   doCreate() {
-    this.endpointSvc.create(this.convertToSecurityProfile(), UUID())
+    this.endpointSvc.create(this.convertToSecurityProfile(), this.changeId)
   }
 }

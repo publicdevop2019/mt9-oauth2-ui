@@ -16,6 +16,7 @@ import { IResourceOwner } from '../../interface/resource-owner.interface';
 export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy {
   resourceOwner: IResourceOwner;
   formId = 'resourceOwner';
+  private changeId = UUID()
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   productBottomSheet: IBottomSheet<IResourceOwner>;
@@ -63,6 +64,6 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
   doUpdate() {
-    this.resourceOwnerService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToResourceOwner(), UUID())
+    this.resourceOwnerService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToResourceOwner(), this.changeId)
   }
 }

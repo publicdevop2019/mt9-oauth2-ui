@@ -112,7 +112,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
-      this.changeId = UUID();
       if (this.productBottomSheet.context !== 'new') {
         this.fis.restore(this.formId, this.productDetail);
         this.fis.formGroupCollection[this.formId].get('startAt').setValue(this.productDetail.startAt ? new Date(this.productDetail.startAt).toLocaleString() : '')

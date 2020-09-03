@@ -13,6 +13,7 @@ import * as UUID from 'uuid/v1';
 })
 export class UpdatePwdComponent implements OnInit, AfterViewInit, OnDestroy {
   formId = 'updatePwd';
+  changeId=UUID();
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   validator: ValidateHelper;
   constructor(
@@ -36,6 +37,6 @@ export class UpdatePwdComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   updatePwd(){
-    this.resourceOwnerService.updateMyPwd(this.convertToIResourceOwnerUpdatePwd(),UUID())
+    this.resourceOwnerService.updateMyPwd(this.convertToIResourceOwnerUpdatePwd(),this.changeId)
   }
 }
