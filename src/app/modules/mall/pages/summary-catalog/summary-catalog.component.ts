@@ -50,9 +50,9 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
     })
     let ob = this.route.queryParamMap.pipe(switchMap(queryMaps => {
       if (queryMaps.get('type') === 'frontend') {
-        this.catalogQueryPrefix = 'query=type:FRONTEND';
+        this.catalogQueryPrefix = 'type:FRONTEND';
       } else {
-        this.catalogQueryPrefix = 'query=type:BACKEND';
+        this.catalogQueryPrefix = 'type:BACKEND';
       }
       return this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.catalogQueryPrefix);
     }));

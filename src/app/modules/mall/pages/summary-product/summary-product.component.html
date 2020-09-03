@@ -1,6 +1,8 @@
-<h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} / {{'PRODUCT_DASHBOARD'|translate}}<button
-    mat-fab color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<app-search (search)="doSearch($event)" [fields]="['id','name','attributes','catalogFront','catalogBack','lowestPrice']"></app-search>
+<h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
+    {{'PRODUCT_DASHBOARD'|translate}}<button mat-fab color="primary"
+        (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
+<app-search (search)="doSearch($event)"
+    [fields]="['id','name','attributes','catalogFront','catalogBack','lowestPrice']"></app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">
@@ -73,9 +75,8 @@
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>{{'AVAILABLE'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
-                    <mat-slide-toggle #slide [color]="'primary'" [checked]="isAvaliable(row)"
-                        (click)="toggleProductStatus(row,slide)">
-                    </mat-slide-toggle>
+                    <app-editable-boolean [inputValue]="isAvaliable(row)" (newValue)="toggleProductStatus(row)">
+                    </app-editable-boolean>
                 </td>
             </ng-container>
 

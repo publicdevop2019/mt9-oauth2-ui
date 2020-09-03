@@ -343,7 +343,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.fis.resetAll();
   }
   ngOnInit() {
-    this.categorySvc.readByQuery(0, 1000, 'query=type:FRONTEND')
+    this.categorySvc.readByQuery(0, 1000, 'type:FRONTEND')
       .subscribe(next => {
         if (next.data) {
           this.catalogs = next;

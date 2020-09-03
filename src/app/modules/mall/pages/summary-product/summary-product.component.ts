@@ -21,9 +21,9 @@ export class SummaryProductComponent extends SummaryEntityComponent<IProductSimp
     public bottomSheet: MatBottomSheet,
     public dialog: MatDialog,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet,5);
+    super(entitySvc, deviceSvc, bottomSheet, 5);
   }
-  toggleProductStatus(row: IProductSimple, toggle: MatSlideToggle) {
+  toggleProductStatus(row: IProductSimple) {
     const dialogRef = this.dialog.open(OperationConfirmDialogComponent);
     let next: 'AVAILABLE' | 'UNAVAILABLE';
     if (this.isAvaliable(row)) {
@@ -32,7 +32,6 @@ export class SummaryProductComponent extends SummaryEntityComponent<IProductSimp
       next = 'AVAILABLE'
     }
     dialogRef.afterClosed().pipe(filter(result => result)).subscribe(() => this.entitySvc.updateProdStatus(row.id, next, UUID()));
-    dialogRef.afterClosed().pipe(filter(result => !result)).subscribe(() => { toggle.toggle() })
   }
   isAvaliable(row: IProductSimple) {
     if (isNullOrUndefined(row.startAt))

@@ -369,11 +369,13 @@ export class HttpProxyService {
         return this._httpClient.get<ISumRep<T>>(entityRepo + '/' + role + this.getQueryParam([this.addPrefix(query), this.getPageParam(num, size, by, order)]))
     }
     addPrefix(query: string): string {
-        if (!query)
-            return undefined
-        if (query.includes('query='))
-            return query
-        return 'query=' + query
+        let var0: string = query;
+        if (!query) {
+            var0 = undefined
+        } else {
+            var0 = 'query=' + var0;
+        }
+        return var0
     }
     updateEntity(entityRepo: string, role: string, id: number, entity: any, changeId: string): Observable<boolean> {
         let headerConfig = new HttpHeaders();

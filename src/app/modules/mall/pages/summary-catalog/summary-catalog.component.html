@@ -1,16 +1,16 @@
-<h2 *ngIf="catalogQueryPrefix==='query=type:FRONTEND'" class="flex-row-space-between" style="margin-bottom: 0px;">
+<h2 *ngIf="catalogQueryPrefix==='type:FRONTEND'" class="flex-row-space-between" style="margin-bottom: 0px;">
     {{'MALL_CENTER' |translate}} /
     {{'CATEGORY_DASHBOARD'|translate}} <button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<h2 *ngIf="catalogQueryPrefix==='query=type:BACKEND'" class="flex-row-space-between" style="margin-bottom: 0px;">
+<h2 *ngIf="catalogQueryPrefix==='type:BACKEND'" class="flex-row-space-between" style="margin-bottom: 0px;">
     {{'MALL_CENTER' |translate}} /
     {{'CATEGORY_ADMIN_DASHBOARD'|translate}} <button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <ng-container *ngIf="viewType==='LIST_VIEW'">
-    <app-search *ngIf="catalogQueryPrefix==='query=type:FRONTEND'" (search)="doSearch($event)" [fields]="['id','name','parentId_front']">
+    <app-search *ngIf="catalogQueryPrefix==='type:FRONTEND'" (search)="doSearch($event)" [fields]="['id','name','parentId_front']">
     </app-search>
-    <app-search *ngIf="catalogQueryPrefix!=='query=type:FRONTEND'" (search)="doSearch($event)" [fields]="['id','name','parentId_back']">
+    <app-search *ngIf="catalogQueryPrefix!=='type:FRONTEND'" (search)="doSearch($event)" [fields]="['id','name','parentId_back']">
     </app-search>
     <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
         <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"

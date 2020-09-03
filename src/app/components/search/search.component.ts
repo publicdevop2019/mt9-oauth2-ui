@@ -10,7 +10,6 @@ import { IClient } from 'src/app/modules/my-apps/interface/client.interface';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { ClientService } from 'src/app/services/client.service';
-import { isNullOrUndefined } from 'util';
 import { hasValue } from 'src/app/clazz/utility';
 @Component({
   selector: 'app-search',
@@ -97,7 +96,6 @@ export class SearchComponent implements OnDestroy, OnInit {
     this.searchByNumMax.setValue('')
     let sub2 = this.searchQuery.valueChanges.pipe(filter(e => e !== null && e !== undefined && e !== '' && JSON.stringify(e) !== JSON.stringify([]))).pipe(debounce(() => interval(1000)))
       .subscribe(next => {
-        console.dir(next)
         let delimiter = '$'
         if (['id', 'name', 'resourceId', 'method', 'parentId_front', 'parentId_back', 'type', 'email'].includes(this.searchType.value))
           delimiter = '.'
@@ -167,7 +165,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     if (this.fields.includes('catalogFront') || this.fields.includes('parentId_front') || this.fields.includes('catalogs')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:FRONTEND')
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'type:FRONTEND')
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataFront = catalogs.data;
@@ -175,7 +173,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     }
     if (this.fields.includes('catalogBack') || this.fields.includes('parentId_back')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'query=type:BACKEND')
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'type:BACKEND')
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataBack = catalogs.data;

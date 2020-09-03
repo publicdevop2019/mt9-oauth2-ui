@@ -69,9 +69,9 @@ export class CatalogComponent implements OnInit, OnDestroy {
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
       let catalogOb: Observable<ISumRep<ICatalog>>;
       if (next === 'FRONTEND') {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, 'query=type:FRONTEND');
+        catalogOb = this.entitySvc.readByQuery(0, 1000, 'type:FRONTEND');
       } else {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, 'query=type:BACKEND')
+        catalogOb = this.entitySvc.readByQuery(0, 1000, 'type:BACKEND')
       }
       catalogOb.subscribe(next1 => {
         this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })

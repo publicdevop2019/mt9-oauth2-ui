@@ -59,7 +59,7 @@ export class FilterComponent implements OnInit {
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
     this.filter = (data as IBottomSheet<IBizFilter>).from;
 
-    combineLatest(this.attrSvc.readByQuery(0,1000), this.categorySvc.readByQuery(0, 1000, 'query=type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
+    combineLatest(this.attrSvc.readByQuery(0,1000), this.categorySvc.readByQuery(0, 1000, 'type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });

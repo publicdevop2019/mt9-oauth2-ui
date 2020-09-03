@@ -29,7 +29,7 @@ export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, I
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => {
       this.updateSummaryDataExt(next);
     })
-    this.catalogSvc.readByQuery(0, 1000, 'query=type:FRONTEND').subscribe(next => {
+    this.catalogSvc.readByQuery(0, 1000, 'type:FRONTEND').subscribe(next => {
       this.fullCatalog = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) })
     })
     this.subs.add(sub)
@@ -47,7 +47,7 @@ export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, I
       var0.push(...e.catalogs)
     })
     if (var0.length > 0)
-      this.catalogSvc.readByQuery(0, var0.length, 'query=type:FRONTEND,id:' + var0.join('.')).subscribe(next => {
+      this.catalogSvc.readByQuery(0, var0.length, 'type:FRONTEND,id:' + var0.join('.')).subscribe(next => {
         this.mappedCatalog = next.data
       })
   }
