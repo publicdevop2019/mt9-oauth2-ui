@@ -66,6 +66,7 @@ import { CustomHttpInterceptor } from './services/http.interceptor';
 import { LoadingInterceptor } from './services/loading.interceptor';
 import { OfflineInterceptor } from './services/offline.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
+import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
 
 @NgModule({
   declarations: [
@@ -157,6 +158,11 @@ import { ResourceOwnerService } from './services/resource-owner.service';
   ],
   entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, SecurityProfileComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: SameRequestHttpInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: DeleteConfirmHttpInterceptor,
