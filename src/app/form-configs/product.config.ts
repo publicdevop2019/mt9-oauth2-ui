@@ -58,22 +58,12 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "file",
+            "type": "imageUpload",
             "display": true,
             "label": "UPLOAD_PRODUCT_IMAGE_SMALL",
-            "key": "imageUrlSmallFile",
-            "position": {
-                "row": "4",
-                "column": "0"
-            },
-        },
-        {
-            "type": "text",
-            "display": true,
-            "label": "COVERAGE_IMAGE_URL",
             "key": "imageUrlSmall",
             "position": {
-                "row": "5",
+                "row": "4",
                 "column": "0"
             },
         },
@@ -235,7 +225,7 @@ export const FORM_CONFIG_IMAGE: IForm = {
     "repeatable": true,
     "inputs": [
         {
-            "type": "text",
+            "type": "imageUpload",
             "display": true,
             "label": "ENTER_IMAGE_URL",
             "key": "imageUrl",
@@ -291,7 +281,7 @@ export const ATTR_SALE_FORM_CONFIG_IMAGE: IForm = {
                 "repeatable": true,
                 "inputs": [
                     {
-                        "type": "text",
+                        "type": "imageUpload",
                         "display": true,
                         "label": "ENTER_IMAGE_URL",
                         "key": "imageUrl",

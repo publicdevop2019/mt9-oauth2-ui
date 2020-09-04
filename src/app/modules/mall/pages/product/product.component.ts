@@ -44,6 +44,16 @@ interface IProductDetailPublic extends IProductSimplePublic {
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit, OnDestroy {
+  subForFileUpload(formId: string) {
+    let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
+      Object.keys(next).forEach(key => {
+        if (typeof next[key] !== 'string') {
+          this.uploadFileCommon((next[key] as FileList), formId, key)
+        }
+      })
+    });
+    this.subscriptions.add(sub);
+  }
   hasEmptyAttrSales(e: ISku): boolean {
     return e.attributesSales.length === 0
   }
@@ -153,6 +163,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.changeDecRef.markForCheck() // this is required to initialize all forms
       return combineLatest(this.prodFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
     })).subscribe(() => {
+      //sub for image update
+      this.subForFileUpload(this.imageFormId);
       if (this.productBottomSheet.context === 'new') {
         let sub = this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
           this.subChangeForForm(this.salesFormIdTempId);
@@ -215,10 +227,12 @@ export class ProductComponent implements OnInit, OnDestroy {
               this.productDetail.attributeSaleImages.forEach((e, index) => {
                 if (index === 0) {
                   this.fis.restoreDynamicForm(this.imageAttrSaleChildFormId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
+                  this.subForFileUpload(this.imageAttrSaleChildFormId);
                 } else {
                   let formId = this.imageAttrSaleChildFormId + '_' + (index - 1);
                   let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
                   let sub = childFormCreated.subscribe(() => {
+                    this.subForFileUpload(formId);
                     this.fis.restoreDynamicForm(formId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
                     this.fis.$refresh.next();
                   });
@@ -254,7 +268,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
       this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);
       this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
-      let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmallFile').valueChanges.subscribe((next) => { this.uploadFile(next) })
+      let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmall').valueChanges.subscribe((next) => { this.uploadFile(next) })
       this.subs['imageUrlSmallFile_valueChange'] = sub3;
       this.subscriptions.add(sub3)
     })
@@ -473,7 +487,14 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   private uploadFile(files: FileList) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
+      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next, { emitEvent: false })
+      this.changeDecRef.detectChanges();
+    })
+  }
+  private uploadFileCommon(files: FileList, formId: string, ctrlName: string) {
+    this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
+      this.fis.formGroupCollection[formId].get(ctrlName).setValue(next, { emitEvent: false })
+      this.changeDecRef.detectChanges();
     })
   }
   public loadAttributes(attr: ICatalog) {

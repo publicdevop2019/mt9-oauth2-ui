@@ -85,7 +85,9 @@ export class HttpProxyService {
         return new Observable<string>(e => {
             const formData: FormData = new FormData();
             formData.append('file', file, file.name);
-            this._httpClient.post<void>(environment.serverUri + this.FILE_UPLOAD_SVC_NAME + '/files', formData, { observe: 'response' }).subscribe(next => {
+            let headerConfig = new HttpHeaders();
+            headerConfig = headerConfig.set('changeId', UUID())
+            this._httpClient.post<void>(environment.serverUri + this.FILE_UPLOAD_SVC_NAME + '/files', formData, { observe: 'response', headers: headerConfig }).subscribe(next => {
                 e.next(next.headers.get('location'));
             });
         })

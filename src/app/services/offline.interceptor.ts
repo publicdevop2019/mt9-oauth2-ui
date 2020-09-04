@@ -1,4 +1,4 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
@@ -37,6 +37,11 @@ export class OfflineInterceptor implements HttpInterceptor {
             refresh_token: 'mockTokenString2'
           };
           return of(new HttpResponse({ status: 200, body: mockedToken })).pipe(delay(this.DEFAULT_DELAY));
+        }
+        if (req.url.includes('/file')) {
+          let header = new HttpHeaders();
+          header = header.set('location', 'mockImageUploadUrl')
+          return of(new HttpResponse({ status: 200, headers: header })).pipe(delay(this.DEFAULT_DELAY));
         }
         return of(new HttpResponse({ status: 200 })).pipe(delay(this.DEFAULT_DELAY));
       }
