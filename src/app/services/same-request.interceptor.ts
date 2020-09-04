@@ -10,8 +10,7 @@ export class SameRequestHttpInterceptor implements HttpInterceptor {
     constructor(public dialog: MatDialog) { }
     private urlMap = new Map<string, string>()
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
-        if (['post', 'put', 'patch'].includes(req.method.toLowerCase())) {
-
+        if (['post', 'put', 'patch'].includes(req.method.toLowerCase()) && !req.url.includes('/oauth/token')) {
             let storedChangeId = this.urlMap.get(req.method + '_' + req.urlWithParams);
             if (req.headers.get('changeId') === storedChangeId) {
                 const dialogRef = this.dialog.open(OperationConfirmDialogComponent);
