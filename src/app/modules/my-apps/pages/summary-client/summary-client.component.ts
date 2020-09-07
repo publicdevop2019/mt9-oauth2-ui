@@ -42,6 +42,8 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
     return inputs.map(e => <IOption>{ label: e, value: e })
   }
   getResourceList(inputs: string[]) {
-    return inputs.map(ee => this.resourceClients.find(e => e.id === +ee)).map(e => <IOption>{ label: e.name, value: e.id })
+    let var0 = inputs.filter(ee => !this.resourceClients.find(e => e.id === +ee)).map(e => <IOption>{ label: e, value: +e })
+    let var1 = inputs.map(ee => this.resourceClients.find(e => e.id === +ee)).filter(e => e).map(e => <IOption>{ label: e.name, value: e.id })
+    return [...var0, ...var1]
   }
 }

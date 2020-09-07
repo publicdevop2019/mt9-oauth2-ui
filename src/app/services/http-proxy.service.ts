@@ -138,7 +138,8 @@ export class HttpProxyService {
     };
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
-            this._httpClient.get<IAutoApprove>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/user?query=clientId:' + clientId).subscribe(next => {
+            this._httpClient.get<IAutoApprove>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/app?query=clientId:' + clientId).subscribe(next => {
+                console.dir(JSON.stringify(next))
                 if (next.data[0].autoApprove)
                     e.next(true)
                 e.next(false)
@@ -388,16 +389,20 @@ export class HttpProxyService {
             });
         });
     };
-    deleteEntityById(entityRepo: string, role: string, id: number): Observable<boolean> {
+    deleteEntityById(entityRepo: string, role: string, id: number, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.delete(entityRepo + '/' + role + '/' + id).subscribe(next => {
+            this._httpClient.delete(entityRepo + '/' + role + '/' + id, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
     };
-    deleteEntityByQuery(entityRepo: string, role: string, query: string): Observable<boolean> {
+    deleteEntityByQuery(entityRepo: string, role: string, query: string, changeId: string): Observable<boolean> {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
-            this._httpClient.delete(entityRepo + '/' + role + '?' + this.addPrefix(query)).subscribe(next => {
+            this._httpClient.delete(entityRepo + '/' + role + '?' + this.addPrefix(query), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

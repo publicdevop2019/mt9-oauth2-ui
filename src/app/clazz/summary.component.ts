@@ -17,8 +17,8 @@ export interface IIdBasedEntity {
 export interface IEntityService<C extends IIdBasedEntity, D> {
   readById: (id: number) => Observable<D>;
   readByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
-  deleteByQuery: (query: string) => void;
-  deleteById: (id: number) => void;
+  deleteByQuery: (query: string, changeId: string) => void;
+  deleteById: (id: number, changeId: string) => void;
   create: (s: D, changeId: string) => void;
   update: (id: number, s: D, changeId: string) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
@@ -60,7 +60,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     if (!skipInitialLoad) {
       let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next) });
       let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
-        this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize())
+        this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
       )).subscribe(next => { this.updateSummaryData(next) })
       this.subs.add(sub)
       this.subs.add(sub0)
@@ -142,9 +142,9 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
-  doBatchDelete() {
+  doBatchDelete(changeId: string) {
     let ids = this.selection.selected.map(e => e.id)
-    this.entitySvc.deleteByQuery(this.getIdQuery(ids))
+    this.entitySvc.deleteByQuery(this.getIdQuery(ids), changeId)
   }
   doPatch(id: number, event: IEditEvent, fieldName: string) {
     this.entitySvc.patch(id, event, UUID(), fieldName)
@@ -161,8 +161,13 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   doClone(id: number) {
     this.openBottomSheet(id, true)
   }
+  doDeleteById(id: number) {
+    this.entitySvc.deleteById(id, UUID())
+  }
+  doDeleteByQuery(query: string) {
+    this.entitySvc.deleteByQuery(query, UUID())
+  }
   doSearch(queryString: string) {
-    console.dir(queryString)
     this.queryString = queryString;
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next)
