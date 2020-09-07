@@ -142,9 +142,9 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
-  doBatchDelete(changeId: string) {
+  doBatchDelete() {
     let ids = this.selection.selected.map(e => e.id)
-    this.entitySvc.deleteByQuery(this.getIdQuery(ids), changeId)
+    this.entitySvc.deleteByQuery(this.getIdQuery(ids), UUID())
   }
   doPatch(id: number, event: IEditEvent, fieldName: string) {
     this.entitySvc.patch(id, event, UUID(), fieldName)

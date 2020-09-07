@@ -38,7 +38,7 @@
             <ng-container matColumnDef="changeId">
                 <th mat-header-cell *matHeaderCellDef> {{'CHANGE_ID'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.changeId}}
+                    <app-copy-field [inputValue]="row.changeId"></app-copy-field>
                 </td>
             </ng-container>
 
@@ -59,21 +59,24 @@
             <ng-container matColumnDef="createDeleteCommand">
                 <th mat-header-cell *matHeaderCellDef> {{'CREATE_DELETE_COMMANDS'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    {{parse(row.createDeleteCommand)}}
+                    <mat-chip >
+                        {{"OPT_"+row.operationType|translate}}
+                    </mat-chip>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="createDeleteCommandQuery">
                 <th mat-header-cell *matHeaderCellDef> {{'CREATE_DELETE_COMMANDS_QUERY'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    {{parseQuery(row.createDeleteCommand)}}
+                    <app-copy-field [inputValue]="row.query"></app-copy-field>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="revoke">
                 <th mat-header-cell *matHeaderCellDef class="table-icon">{{'REVOKE'|translate}}</th>
                 <td mat-cell *matCellDef="let row" class="table-icon">
-                    <mat-icon (click)="doDeleteById(row.id)" [color]="'warn'">undo</mat-icon>
+                    <mat-icon *ngIf="supportRollback(row)" (click)="doDeleteById(row.id)" [color]="'warn'">undo</mat-icon>
+                    <mat-icon *ngIf="!supportRollback(row)" [color]="'primary'" style="cursor:auto;">block</mat-icon>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>

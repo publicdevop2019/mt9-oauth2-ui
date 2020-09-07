@@ -195,12 +195,6 @@ export const FORM_CONFIG: IForm = {
             },
             "options": [
             ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
         },
         {
             "type": "text",

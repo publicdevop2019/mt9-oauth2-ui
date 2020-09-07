@@ -8,24 +8,22 @@ export interface IChangeRecord {
   changeId: string,
   entityType: number,
   patchCommands?: IPatchCommand[],
-  createDeleteCommand?: ICreateDeleteCommand,
+  operationType: 'POST' | 'PATCH_BATCH' | 'PATCH_BY_ID' | 'PUT' | 'RESTORE' | 'DELETE_BY_ID' | 'DELETE_BY_QUERY',
+  query?:string
 }
+
 export interface IPatchCommand {
   op: string,
   path: string,
   value: Object,
   expect?: number,
 }
-export interface ICreateDeleteCommand {
-  query: string,
-  operationType: 'CREATE' | 'DELETE',
-}
 @Injectable({
   providedIn: 'root'
 })
 export class OperationHistoryService extends EntityCommonService<IChangeRecord, IChangeRecord>{
-  private PRODUCT_SVC_NAME = '/auth-svc';
-  private ENTITY_NAME = '/changes';
+  public PRODUCT_SVC_NAME = '/auth-svc';
+  public ENTITY_NAME = '/changes';
   entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;
   role: string = 'root';
   constructor(private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {

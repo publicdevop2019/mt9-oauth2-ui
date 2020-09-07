@@ -59,7 +59,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   productDetail: IProductDetail;
   productBottomSheet: IBottomSheet<IProductDetail>;
-  changeId: string;
+  changeId: string = UUID();
   salesFormIdTempId = 'attrSalesFormChild';
   formId = 'product';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));

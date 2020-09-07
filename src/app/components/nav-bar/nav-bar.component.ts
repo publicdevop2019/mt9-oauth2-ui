@@ -65,13 +65,6 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
-      link: 'operation-history',
-      display: 'OPERATION_DASHBOARD',
-      icon: 'edit',
-      params: {
-      },
-    },
-    {
       link: '/login',
       display: 'LOGOUT',
       icon: 'exit_to_app',
@@ -177,6 +170,32 @@ export class NavBarComponent implements OnInit {
     },
 
   ];
+  menuOpt: INavElement[] =[
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_AUTH',
+      icon: 'edit',
+      params: {
+        type:'auth'
+      },
+    },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_PROXY',
+      icon: 'edit',
+      params: {
+        type:'proxy'
+      },
+    },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_PRODUCT',
+      icon: 'edit',
+      params: {
+        type:'product'
+      },
+    },
+  ]
   private _mobileQueryListener: () => void;
   @ViewChild("snav", { static: true }) snav: MatSidenav;
   constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, public translate: TranslateService,public deviceSvc:DeviceService) {

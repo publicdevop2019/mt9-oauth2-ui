@@ -92,7 +92,7 @@
                 <th mat-header-cell *matHeaderCellDef> {{'RESOURCEIDS'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
                     <app-editable-select-multi *ngIf="resourceClients" [inputOptions]="getResourceList(row.resourceIds)"
-                        [list]="roleList" (newValue)="doPatchList(row.id,$event,'resourceIds')">
+                        [list]="resourceClientList" (newValue)="doPatchList(row.id,$event,'resourceIds')">
                     </app-editable-select-multi>
                 </td>
             </ng-container>
