@@ -67,6 +67,7 @@ import { LoadingInterceptor } from './services/loading.interceptor';
 import { OfflineInterceptor } from './services/offline.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
 import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
+import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +112,8 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
     EditableSelectMultiComponent,
     EditableBooleanComponent,
     EditableSelectSingleComponent,
-    EditableInputMultiComponent
+    EditableInputMultiComponent,
+    OperationHistoryComponent
   ],
   imports: [
     BrowserAnimationsModule,

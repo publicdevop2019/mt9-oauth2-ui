@@ -253,5 +253,12 @@ export const zhHans = {
     "LOWEST_PRICE": "最低价格",
     "ENTER_MIN_VALUE": "输入最小值",
     "ENTER_MAX_VALUE": "输入最大值",
+    "OPERATION_DASHBOARD": "操作记录",
+    "REVOKE": "撤销",
+    "CREATE_DELETE_COMMANDS": "创建/删除",
+    "PATCH_COMMAND": "Patch操作",
+    "ENTITY_TYPE": "聚合根",
+    "CHANGE_ID": "事务编号",
+    "CREATE_DELETE_COMMANDS_QUERY": "条件",
     "": "",
 }

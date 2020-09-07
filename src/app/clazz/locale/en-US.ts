@@ -248,5 +248,12 @@ export const enUS = {
     "LOWEST_PRICE": "Lowest price",
     "ENTER_MIN_VALUE": "Enter min value",
     "ENTER_MAX_VALUE": "Enter max value",
+    "OPERATION_DASHBOARD": "Operation History",
+    "REVOKE": "Revoke",
+    "CREATE_DELETE_COMMANDS": "Create/Delete",
+    "PATCH_COMMAND": "Patch Opt",
+    "ENTITY_TYPE": "Root",
+    "CHANGE_ID": "Change Id",
+    "CREATE_DELETE_COMMANDS_QUERY": "Query",
     "": "",
 }

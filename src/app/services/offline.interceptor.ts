@@ -20,6 +20,7 @@ import { mockClient1 } from 'src/assets/mocks/mock-client';
 import { mockSP } from 'src/assets/mocks/mock-endpoints';
 import { mockResourceO } from 'src/assets/mocks/mock-users';
 import { mockResource1 } from 'src/assets/mocks/mock-user';
+import { mockChanges } from 'src/assets/mocks/mock-changes';
 /**
  * use refresh token if call failed
  */
@@ -55,6 +56,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('/products/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockProductDetails })).pipe(delay(this.DEFAULT_DELAY))
           // return of(new HttpResponse({ status: 200, body: mockProductDetail })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('/changes/admin')) {
+          return of(new HttpResponse({ status: 200, body: mockChanges })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('products/admin')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))

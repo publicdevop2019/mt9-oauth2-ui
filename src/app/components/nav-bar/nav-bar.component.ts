@@ -65,6 +65,13 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD',
+      icon: 'edit',
+      params: {
+      },
+    },
+    {
       link: '/login',
       display: 'LOGOUT',
       icon: 'exit_to_app',
