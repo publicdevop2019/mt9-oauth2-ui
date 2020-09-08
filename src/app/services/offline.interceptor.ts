@@ -21,6 +21,15 @@ import { mockSP } from 'src/assets/mocks/mock-endpoints';
 import { mockResourceO } from 'src/assets/mocks/mock-users';
 import { mockResource1 } from 'src/assets/mocks/mock-user';
 import { mockChanges } from 'src/assets/mocks/mock-changes';
+import { mockBizClientOpt } from 'src/assets/mocks/mock-biz-client-opt';
+import { mockBizUserOpt } from 'src/assets/mocks/mock-biz-user-opt';
+import { mockBizEndpointOpt } from 'src/assets/mocks/mock-biz-ep-opt';
+import { mockRevokeTokenOpt } from 'src/assets/mocks/mock-revoke-token-opt';
+import { mockProductOpt } from 'src/assets/mocks/mock-product-opt';
+import { mockBizCatalogOpt } from 'src/assets/mocks/mock-biz-catalog-opt';
+import { mockBizAttributeOpt } from 'src/assets/mocks/mock-biz-attribute-opt';
+import { mockBizFilterOpt } from 'src/assets/mocks/mock-biz-filter-opt';
+import { mockRevokeTokens } from 'src/assets/mocks/mock-revoke-tokens';
 /**
  * use refresh token if call failed
  */
@@ -47,6 +56,33 @@ export class OfflineInterceptor implements HttpInterceptor {
         return of(new HttpResponse({ status: 200 })).pipe(delay(this.DEFAULT_DELAY));
       }
       if (['get'].includes(req.method.toLowerCase())) {
+        if (req.url.includes('changes/root?query=entityType:BizClient')) {
+          return of(new HttpResponse({ status: 200, body: mockBizClientOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:BizUser')) {
+          return of(new HttpResponse({ status: 200, body: mockBizUserOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:BizEndpoint')) {
+          return of(new HttpResponse({ status: 200, body: mockBizEndpointOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:RevokeToken')) {
+          return of(new HttpResponse({ status: 200, body: mockRevokeTokenOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:Product')) {
+          return of(new HttpResponse({ status: 200, body: mockProductOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:BizCatalog')) {
+          return of(new HttpResponse({ status: 200, body: mockBizCatalogOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:BizAttribute')) {
+          return of(new HttpResponse({ status: 200, body: mockBizAttributeOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:BizFilter')) {
+          return of(new HttpResponse({ status: 200, body: mockBizFilterOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('revoke-tokens/root')) {
+          return of(new HttpResponse({ status: 200, body: mockRevokeTokens })).pipe(delay(this.DEFAULT_DELAY))
+        }
         if (req.url.includes('attributes/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockAttr })).pipe(delay(this.DEFAULT_DELAY))
         }

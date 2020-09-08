@@ -1,9 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { MediaMatcher, BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { environment } from 'src/environments/environment';
-import { ActivatedRouteSnapshot, ActivatedRoute, Router } from '@angular/router';
+import { MediaMatcher } from '@angular/cdk/layout';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { DeviceService } from 'src/app/services/device.service';
 export interface INavElement {
@@ -36,6 +34,13 @@ export class NavBarComponent implements OnInit {
       link: 'security-profiles',
       display: 'SECURITY_PROFILE_DASHBOARD',
       icon: 'security',
+      params: {
+      },
+    },
+    {
+      link: 'revoke-token',
+      display: 'REVOKE_TOKEN_DASHBOARD',
+      icon: 'stars',
       params: {
       },
     },
@@ -173,26 +178,74 @@ export class NavBarComponent implements OnInit {
   menuOpt: INavElement[] =[
     {
       link: 'operation-history',
-      display: 'OPERATION_DASHBOARD_AUTH',
-      icon: 'edit',
+      display: 'OPERATION_DASHBOARD_CLIENT',
+      icon: 'apps',
       params: {
-        type:'auth'
+        type:'auth',
+        entity:'client'
       },
     },
     {
       link: 'operation-history',
-      display: 'OPERATION_DASHBOARD_PROXY',
-      icon: 'edit',
+      display: 'OPERATION_DASHBOARD_USER',
+      icon: 'perm_identity',
       params: {
-        type:'proxy'
+        type:'auth',
+        entity:'user'
+      },
+    },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_EP',
+      icon: 'security',
+      params: {
+        type:'proxy',
+        entity:'endpoint'
+      },
+    },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_TOKEN',
+      icon: 'stars',
+      params: {
+        type:'proxy',
+        entity:'token'
       },
     },
     {
       link: 'operation-history',
       display: 'OPERATION_DASHBOARD_PRODUCT',
-      icon: 'edit',
+      icon: 'storefront',
       params: {
-        type:'product'
+        type:'product',
+        entity:'product'
+      },
+    },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_CATALOG',
+      icon: 'category',
+      params: {
+        type:'product',
+        entity:'catalog'
+      },
+    },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_ATTR',
+      icon: 'subject',
+      params: {
+        type:'product',
+        entity:'attribute'
+      },
+    },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_FILTER',
+      icon: 'filter_list',
+      params: {
+        type:'product',
+        entity:'filter'
       },
     },
   ]

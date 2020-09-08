@@ -27,6 +27,7 @@ import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
 import { SettingComponent } from './pages/setting/setting.component';
 import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
+import { SummaryRevokeTokenComponent } from './modules/mall/pages/summary-revoke-token/summary-revoke-token.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -53,6 +54,7 @@ const routes: Routes = [
       { path: 'notInterested', component: SummaryNotInterestedComponent },
       { path: 'settings', component: SettingComponent},
       { path: 'operation-history', component: OperationHistoryComponent},
+      { path: 'revoke-token', component: SummaryRevokeTokenComponent},
       { path: '**', component: SummarySecurityProfileComponent }
     ]
   },

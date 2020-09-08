@@ -150,7 +150,7 @@ export class HttpProxyService {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": id, "type": "User" }, { headers: headerConfig }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": id, "type": "USER" }, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -159,7 +159,7 @@ export class HttpProxyService {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": clientId, "type": "Client" }, { headers: headerConfig }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": clientId, "type": "CLIENT" }, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

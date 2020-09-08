@@ -68,6 +68,7 @@ import { OfflineInterceptor } from './services/offline.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
 import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
 import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
+import { SummaryRevokeTokenComponent } from './modules/mall/pages/summary-revoke-token/summary-revoke-token.component';
 
 @NgModule({
   declarations: [
@@ -113,7 +114,8 @@ import { OperationHistoryComponent } from './pages/operation-history/operation-h
     EditableBooleanComponent,
     EditableSelectSingleComponent,
     EditableInputMultiComponent,
-    OperationHistoryComponent
+    OperationHistoryComponent,
+    SummaryRevokeTokenComponent
   ],
   imports: [
     BrowserAnimationsModule,
