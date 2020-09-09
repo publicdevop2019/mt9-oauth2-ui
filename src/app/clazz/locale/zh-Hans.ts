@@ -281,5 +281,11 @@ export const zhHans = {
     "ISSUE_AT": "无效至",
     "TARGET_CLIENT": "应用",
     "TARGET_USER": "用户",
+    "SKU_DASHBOARD": "库存管理",
+    "REFERENCE_ID": "关联产品编号",
+    "STORAGE_ORDER": "订单库存",
+    "STORAGE_ACTUAL": "实际库存",
+    "PRICE": "价格",
+    "SALES": "销量",
     "": "",
 }

@@ -68,7 +68,8 @@ import { OfflineInterceptor } from './services/offline.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
 import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
 import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
-import { SummaryRevokeTokenComponent } from './modules/mall/pages/summary-revoke-token/summary-revoke-token.component';
+import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
+import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
 
 @NgModule({
   declarations: [
@@ -115,7 +116,8 @@ import { SummaryRevokeTokenComponent } from './modules/mall/pages/summary-revoke
     EditableSelectSingleComponent,
     EditableInputMultiComponent,
     OperationHistoryComponent,
-    SummaryRevokeTokenComponent
+    SummaryRevokeTokenComponent,
+    SummarySkuComponent
   ],
   imports: [
     BrowserAnimationsModule,

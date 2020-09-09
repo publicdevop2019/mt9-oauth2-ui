@@ -87,6 +87,13 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
+      link: 'sku',
+      display: 'SKU_DASHBOARD',
+      icon: 'storage',
+      params: {
+      },
+    },
+    {
       link: 'catalogs',
       display: 'CATEGORY_DASHBOARD',
       icon: 'category',

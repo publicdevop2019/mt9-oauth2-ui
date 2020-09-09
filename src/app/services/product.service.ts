@@ -33,6 +33,15 @@ export interface ISku {
   increaseActualStorage?: number;
   decreaseActualStorage?: number;
 }
+export interface ISkuNew {
+  id:number
+  referenceId:number,
+  description:string,
+  storageOrder: number;
+  storageActual: number;
+  price: number;
+  sales: number;
+}
 export interface IProductDetail {
   id: number;
   name: string;

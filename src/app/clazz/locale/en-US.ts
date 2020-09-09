@@ -276,5 +276,11 @@ export const enUS = {
     "ISSUE_AT": "Issu At",
     "TARGET_CLIENT": "App",
     "TARGET_USER": "User",
+    "SKU_DASHBOARD": "Sku Management",
+    "REFERENCE_ID": "Reference Id",
+    "STORAGE_ORDER": "Order Storage",
+    "STORAGE_ACTUAL": "Actual Storage",
+    "PRICE": "Price",
+    "SALES": "Sales",
     "": "",
 }

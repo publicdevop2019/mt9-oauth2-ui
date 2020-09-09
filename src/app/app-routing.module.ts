@@ -1,33 +1,29 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
+import { RouterModule, Routes } from '@angular/router';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
-import { AuthService } from './services/auth.service';
-import { AuthorizeComponent } from './pages/authorize/authorize.component';
-import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
-import { ProductComponent } from './modules/mall/pages/product/product.component';
-import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
-import { OrderComponent } from './modules/mall/pages/order/order.component';
-import { ClientComponent } from './modules/my-apps/pages/client/client.component';
-import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
-import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
-import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
-import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
-import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
-import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
-import { AttributeComponent } from './modules/mall/pages/attribute/attribute.component';
-import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
-import { SummaryPostComponent } from './modules/bbs/pages/summary-post/summary-post.component';
 import { SummaryCommentComponent } from './modules/bbs/pages/summary-comment/summary-comment.component';
-import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
-import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-like.component';
 import { SummaryDislikeComponent } from './modules/bbs/pages/summary-dislike/summary-dislike.component';
+import { SummaryLikeComponent } from './modules/bbs/pages/summary-like/summary-like.component';
 import { SummaryNotInterestedComponent } from './modules/bbs/pages/summary-not-interested/summary-not-interested.component';
-import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
+import { SummaryPostComponent } from './modules/bbs/pages/summary-post/summary-post.component';
+import { SummaryReportComponent } from './modules/bbs/pages/summary-report/summary-report.component';
+import { OrderComponent } from './modules/mall/pages/order/order.component';
+import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
+import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
 import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
-import { SettingComponent } from './pages/setting/setting.component';
+import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
+import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
+import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
+import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
+import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
+import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
+import { AuthorizeComponent } from './pages/authorize/authorize.component';
+import { LoginComponent } from './pages/login/login.component';
 import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
-import { SummaryRevokeTokenComponent } from './modules/mall/pages/summary-revoke-token/summary-revoke-token.component';
+import { SettingComponent } from './pages/setting/setting.component';
+import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
+import { AuthService } from './services/auth.service';
+import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -55,6 +51,7 @@ const routes: Routes = [
       { path: 'settings', component: SettingComponent},
       { path: 'operation-history', component: OperationHistoryComponent},
       { path: 'revoke-token', component: SummaryRevokeTokenComponent},
+      { path: 'sku', component: SummarySkuComponent},
       { path: '**', component: SummarySecurityProfileComponent }
     ]
   },
