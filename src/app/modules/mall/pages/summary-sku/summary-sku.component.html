@@ -1,8 +1,7 @@
 <h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
     {{'SKU_DASHBOARD'|translate}}<button mat-fab color="primary"
         (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<app-search (search)="doSearch($event)"
-    [fields]="['id']"></app-search>
+<app-search (search)="doSearch($event)" [fields]="['id']"></app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">
@@ -47,25 +46,36 @@
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef>{{'DESCRIPTION'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.description}}
+                    <app-editable-field [inputValue]="row.description"
+                        (newValue)="doPatch(row.id,$event,'description')">
+                    </app-editable-field>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="storageOrder">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'STORAGE_ORDER'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.storageOrder}}
+                    <app-editable-field [inputValue]="row.storageOrder"
+                        (newValue)="doPatchAtomicNum(row.id,$event,'storageOrder')">
+                    </app-editable-field>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="storageActual">
                 <th mat-header-cell *matHeaderCellDef> {{'STORAGE_ACTUAL'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.storageActual}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-field [inputValue]="row.storageActual"
+                        (newValue)="doPatchAtomicNum(row.id,$event,'storageActual')">
+                    </app-editable-field>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="price">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'PRICE'|translate}}</th>
-                <td mat-cell *matCellDef="let row"> {{row.price}} </td>
+                <td mat-cell *matCellDef="let row">
+                    <app-editable-field [inputValue]="row.price" (newValue)="doPatch(row.id,$event,'price')">
+                    </app-editable-field>
+                </td>
             </ng-container>
 
 

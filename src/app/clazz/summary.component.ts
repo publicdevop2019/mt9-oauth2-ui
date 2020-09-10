@@ -22,6 +22,7 @@ export interface IEntityService<C extends IIdBasedEntity, D> {
   create: (s: D, changeId: string) => void;
   update: (id: number, s: D, changeId: string) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
+  patchAtomicNum: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;
   patchMultiInput: (id: number, event: IEditInputListEvent, changeId: string, fieldName: string) => void;
   patchBoolean: (id: number, event: IEditBooleanEvent, changeId: string, fieldName: string) => void;
@@ -154,6 +155,9 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   }
   doPatchBoolean(id: number, event: IEditBooleanEvent, fieldName: string) {
     this.entitySvc.patchBoolean(id, event, UUID(), fieldName)
+  }
+  doPatchAtomicNum(id: number, event: IEditEvent, fieldName: string) {
+    this.entitySvc.patchAtomicNum(id, event, UUID(), fieldName)
   }
   doPatchList(id: number, event: IEditListEvent, fieldName: string) {
     this.entitySvc.patchList(id, event, UUID(), fieldName)

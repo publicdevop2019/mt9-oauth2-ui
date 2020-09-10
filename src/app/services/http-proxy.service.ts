@@ -21,6 +21,9 @@ export interface IPatch {
     path: string,
     value?: any,
 }
+export interface IPatchCommand extends IPatch {
+    expect: number,
+}
 @Injectable({
     providedIn: 'root'
 })
@@ -321,6 +324,19 @@ export class HttpProxyService {
         re.push(startAt)
         return re;
     }
+    private getPatchPayloadAtomicNum(id: number, fieldName: string, fieldValue: IEditEvent): IPatchCommand[] {
+        let re: IPatchCommand[] = [];
+        let type = undefined;
+
+        if (fieldValue.original >= fieldValue.next) {
+            type = 'diff'
+        } else {
+            type = 'sum'
+        }
+        let startAt = <IPatchCommand>{ op: type, path: "/" + id + "/" + fieldName, value: Math.abs(+fieldValue.next - +fieldValue.original), expect: 1 }
+        re.push(startAt)
+        return re;
+    }
     private getPatchListPayload(fieldName: string, fieldValue: IEditListEvent): IPatch[] {
         let re: IPatch[] = [];
         let type = 'replace';
@@ -413,6 +429,16 @@ export class HttpProxyService {
         headerConfig = headerConfig.set('changeId', changeId);
         return new Observable<boolean>(e => {
             this._httpClient.patch(entityRepo + '/' + role + '/' + id, this.getPatchPayload(fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    patchEntityAtomicById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditEvent, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
+        headerConfig = headerConfig.set('changeId', changeId);
+        return new Observable<boolean>(e => {
+            this._httpClient.patch(entityRepo + '/' + role, this.getPatchPayloadAtomicNum(id, fieldName, editEvent), { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

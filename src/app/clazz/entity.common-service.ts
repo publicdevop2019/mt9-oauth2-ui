@@ -55,6 +55,12 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
             this.refreshSummary.next();
         })
     };
+    patchAtomicNum(id: number, event: IEditEvent, changeId: string, fieldName: string) {
+        this.httpProxySvc.patchEntityAtomicById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
+            this.notify(next)
+            this.refreshSummary.next();
+        })
+    };
     patchList(id: number, event: IEditListEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityListById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
