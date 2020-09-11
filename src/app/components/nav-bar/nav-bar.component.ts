@@ -230,6 +230,15 @@ export class NavBarComponent implements OnInit {
     },
     {
       link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_SKU',
+      icon: 'storage',
+      params: {
+        type:'product',
+        entity:'sku'
+      },
+    },
+    {
+      link: 'operation-history',
       display: 'OPERATION_DASHBOARD_CATALOG',
       icon: 'category',
       params: {

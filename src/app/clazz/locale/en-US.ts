@@ -282,5 +282,6 @@ export const enUS = {
     "STORAGE_ACTUAL": "Actual Storage",
     "PRICE": "Price",
     "SALES": "Sales",
+    "OPERATION_DASHBOARD_SKU": "Storage Operation",
     "": "",
 }
