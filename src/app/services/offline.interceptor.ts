@@ -30,6 +30,8 @@ import { mockBizCatalogOpt } from 'src/assets/mocks/mock-biz-catalog-opt';
 import { mockBizAttributeOpt } from 'src/assets/mocks/mock-biz-attribute-opt';
 import { mockBizFilterOpt } from 'src/assets/mocks/mock-biz-filter-opt';
 import { mockRevokeTokens } from 'src/assets/mocks/mock-revoke-tokens';
+import { mockSku } from 'src/assets/mocks/mock-sku';
+import { mockBizSkuOpt } from 'src/assets/mocks/mock-biz-sku-opt';
 /**
  * use refresh token if call failed
  */
@@ -79,6 +81,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('changes/root?query=entityType:BizFilter')) {
           return of(new HttpResponse({ status: 200, body: mockBizFilterOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:BizSku')) {
+          return of(new HttpResponse({ status: 200, body: mockBizSkuOpt })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('revoke-tokens/root')) {
           return of(new HttpResponse({ status: 200, body: mockRevokeTokens })).pipe(delay(this.DEFAULT_DELAY))
@@ -137,6 +142,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('filters/admin')) {
           return of(new HttpResponse({ status: 200, body: mockFilters })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('sku/admin')) {
+          return of(new HttpResponse({ status: 200, body: mockSku })).pipe(delay(this.DEFAULT_DELAY))
         }
       }
     }
