@@ -70,6 +70,7 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
 import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
 import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
 import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
+import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
 
 @NgModule({
   declarations: [
@@ -117,7 +118,8 @@ import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-rev
     EditableInputMultiComponent,
     OperationHistoryComponent,
     SummaryRevokeTokenComponent,
-    SummarySkuComponent
+    SummarySkuComponent,
+    SummaryTaskComponent
   ],
   imports: [
     BrowserAnimationsModule,

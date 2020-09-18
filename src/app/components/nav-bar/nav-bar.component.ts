@@ -87,7 +87,7 @@ export class NavBarComponent implements OnInit {
       },
     },
     {
-      link: 'sku',
+      link: 'skus',
       display: 'SKU_DASHBOARD',
       icon: 'storage',
       params: {
@@ -127,6 +127,13 @@ export class NavBarComponent implements OnInit {
       link: 'orders',
       display: 'ORDER_DASHBOARD',
       icon: 'assignment',
+      params: {
+      },
+    },
+    {
+      link: 'tasks',
+      display: 'TASK_DASHBOARD',
+      icon: 'import_contacts',
       params: {
       },
     },

@@ -24,6 +24,7 @@ import { SettingComponent } from './pages/setting/setting.component';
 import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 import { AuthService } from './services/auth.service';
 import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
+import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -41,6 +42,7 @@ const routes: Routes = [
       { path: 'products', component: SummaryProductComponent },
       { path: 'catalogs', component: SummaryCatalogComponent },
       { path: 'filters', component: SummaryFilterComponent },
+      { path: 'tasks', component: SummaryTaskComponent },
       { path: 'attributes', component: SummaryAttributeComponent },
       { path: 'posts', component: SummaryPostComponent },
       { path: 'comments', component: SummaryCommentComponent },
@@ -51,7 +53,7 @@ const routes: Routes = [
       { path: 'settings', component: SettingComponent},
       { path: 'operation-history', component: OperationHistoryComponent},
       { path: 'revoke-token', component: SummaryRevokeTokenComponent},
-      { path: 'sku', component: SummarySkuComponent},
+      { path: 'skus', component: SummarySkuComponent},
       { path: '**', component: SummarySecurityProfileComponent }
     ]
   },

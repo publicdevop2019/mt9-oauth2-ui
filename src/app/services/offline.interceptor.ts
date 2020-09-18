@@ -32,6 +32,7 @@ import { mockBizFilterOpt } from 'src/assets/mocks/mock-biz-filter-opt';
 import { mockRevokeTokens } from 'src/assets/mocks/mock-revoke-tokens';
 import { mockSku } from 'src/assets/mocks/mock-sku';
 import { mockBizSkuOpt } from 'src/assets/mocks/mock-biz-sku-opt';
+import { mockBizTask } from 'src/assets/mocks/mock-biz-task';
 /**
  * use refresh token if call failed
  */
@@ -87,6 +88,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('revoke-tokens/root')) {
           return of(new HttpResponse({ status: 200, body: mockRevokeTokens })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('tasks/admin')) {
+          return of(new HttpResponse({ status: 200, body: mockBizTask })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('attributes/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockAttr })).pipe(delay(this.DEFAULT_DELAY))
