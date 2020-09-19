@@ -57,6 +57,13 @@
                 </td>
             </ng-container>
 
+            <ng-container matColumnDef="rollbackReason">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ROLLBACK_REASON'|translate}} </th>
+                <td mat-cell *matCellDef="let row">
+                    {{row.rollbackReason}} 
+                </td>
+            </ng-container>
+
             <ng-container matColumnDef="transactionId">
                 <th mat-header-cell *matHeaderCellDef> {{'TRANSACTION_ID'|translate}} </th>
                 <td mat-cell *matCellDef="let row">

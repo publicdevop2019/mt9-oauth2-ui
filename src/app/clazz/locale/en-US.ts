@@ -296,5 +296,6 @@ export const enUS = {
     "COMPLETED": "Completed",
     "STARTED": "Started",
     "ROLLBACK": "Rollback",
+    "ROLLBACK_REASON": "Rollback Reason",
     "": "",
 }

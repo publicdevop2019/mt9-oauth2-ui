@@ -10,7 +10,7 @@ import { IBizTask, TaskService } from 'src/app/services/task.service';
 })
 export class SummaryTaskComponent extends SummaryEntityComponent<IBizTask, IBizTask> implements OnDestroy {
 
-  displayedColumns: string[] = ['id', 'referenceId', 'taskName','taskStatus', 'transactionId', 'createAt', 'createdBy', 'modifiedAt', 'modifiedBy'];
+  displayedColumns: string[] = ['id', 'referenceId', 'taskName', 'taskStatus', 'rollbackReason', 'transactionId', 'createAt', 'createdBy', 'modifiedAt', 'modifiedBy'];
   constructor(
     public entitySvc: TaskService,
     public deviceSvc: DeviceService,
