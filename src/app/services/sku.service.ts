@@ -10,7 +10,7 @@ import { ISkuNew } from './product.service';
 })
 export class SkuService extends EntityCommonService<ISkuNew, ISkuNew>{
     private AUTH_SVC_NAME = '/product-svc';
-    private ENTITY_NAME = '/sku';
+    private ENTITY_NAME = '/skus';
     entityRepo: string = environment.serverUri + this.AUTH_SVC_NAME + this.ENTITY_NAME;
     role: string = 'admin';
     constructor(private router: Router, private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
