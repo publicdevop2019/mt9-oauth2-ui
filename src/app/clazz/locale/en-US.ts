@@ -297,5 +297,11 @@ export const enUS = {
     "STARTED": "Started",
     "ROLLBACK": "Rollback",
     "ROLLBACK_REASON": "Rollback Reason",
+    "RESERVE": "Reserve",
+    "PAID_RESERVED": "Paid Reserved",
+    "NOT_PAID_RECYCLED": "Not Paid Recycled",
+    "PAID_RECYCLED": "Paid Recycled",
+    "NOT_PAID_RESERVED": "Not Paid Reserved",
+    "CONFIRMED": "Comfirmed",
     "": "",
 }

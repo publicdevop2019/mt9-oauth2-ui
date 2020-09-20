@@ -302,5 +302,11 @@ export const zhHans = {
     "STARTED": "已开始",
     "ROLLBACK": "已回滚",
     "ROLLBACK_REASON": "回滚原因",
+    "RESERVE": "重下订单",
+    "PAID_RESERVED": "已支付已预留",
+    "NOT_PAID_RECYCLED": "未支付未预留",
+    "PAID_RECYCLED": "已支付未预留",
+    "NOT_PAID_RESERVED": "未支付已预留",
+    "CONFIRMED": "已确认",
     "": "",
 }

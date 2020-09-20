@@ -28,7 +28,7 @@ export class OrderComponent implements OnInit, AfterViewInit, OnDestroy {
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
     this.order$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) =>
-        this.clientService.getOrderById(params.get('id')))
+        this.clientService.readById(+params.get('id')))
     );
     this.route.queryParamMap.subscribe(
       queryMaps => {

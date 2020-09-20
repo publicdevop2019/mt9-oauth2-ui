@@ -23,7 +23,7 @@ interface IClientUserRep {
   clientId: string;
 }
 export interface IOrder {
-  id: string;
+  id: number;
   productList: ICartItem[];
   address: IAddress;
   paymentType: string;

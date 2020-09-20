@@ -1,35 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpProxyService } from './http-proxy.service';
-import { MatDialog } from '@angular/material';
-import { CustomHttpInterceptor } from './http.interceptor';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { EntityCommonService } from '../clazz/entity.common-service';
 import { IOrder } from '../interfaze/commom.interface';
+import { HttpProxyService } from './http-proxy.service';
+import { CustomHttpInterceptor } from './http.interceptor';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OrderService {
-
-  currentPageIndex: number;
-  constructor(private router: Router, private httpProxy: HttpProxyService, public dialog: MatDialog, private _httpInterceptor: CustomHttpInterceptor) { }
-  getOrders(): Observable<IOrder[]> {
-    return this.httpProxy.getOrders()
-  }
-  getOrderById(id: string): Observable<IOrder> {
-    return this.getOrders().pipe(switchMap(orders => {
-      return of(orders.find(el => el.id == id))
-    }))
-  }
-  updateOrder(client: IOrder): void {
-  }
-  deleteOrder(id: number): void {
-  }
-  notify(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
-  }
-  notifyTokenRevocation(result: boolean) {
-    result ? this._httpInterceptor.openSnackbar('OPERATION_SUCCESS, old token has been revoked') : this._httpInterceptor.openSnackbar('OPERATION_FAILED');
+export class OrderService extends EntityCommonService<IOrder, IOrder> {
+  private SVC_NAME = '/profile-svc';
+  private ENTITY_NAME = '/orders';
+  entityRepo: string = environment.serverUri + this.SVC_NAME + this.ENTITY_NAME;
+  role: string = 'admin';
+  constructor(httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
+      super(httpProxy, interceptor);
   }
 }

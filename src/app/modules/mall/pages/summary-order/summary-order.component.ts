@@ -1,38 +1,24 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort, MatTableDataSource, PageEvent } from '@angular/material';
+import { Component } from '@angular/core';
+import { MatBottomSheet, MatDialog } from '@angular/material';
+import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { IOrder } from 'src/app/interfaze/commom.interface';
-import { OrderService } from 'src/app/services/order.service';
 import { DeviceService } from 'src/app/services/device.service';
+import { OrderService } from 'src/app/services/order.service';
+import { OrderComponent } from '../order/order.component';
 
 @Component({
   selector: 'app-summary-order',
   templateUrl: './summary-order.component.html',
 })
-export class SummaryOrderComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'productList', 'paymentAmt','orderState','edit'];
-  dataSource: MatTableDataSource<IOrder>;
-
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  constructor(public orderSvc: OrderService,public deviceSvc:DeviceService) {
-    this.orderSvc.getOrders().subscribe(orders => {
-      this.dataSource = new MatTableDataSource(orders)
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-    })
-  }
-
-  ngOnInit() {
-  }
-
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-  pageHandler(e: PageEvent) {
-    this.orderSvc.currentPageIndex = e.pageIndex
+export class SummaryOrderComponent extends SummaryEntityComponent<IOrder, IOrder> {
+  displayedColumns: string[] = ['id', 'paymentAmt', 'orderState', 'edit'];
+  sheetComponent = OrderComponent;
+  constructor(
+    public entitySvc: OrderService,
+    public deviceSvc: DeviceService,
+    public bottomSheet: MatBottomSheet,
+    public dialog: MatDialog,
+  ) {
+    super(entitySvc, deviceSvc, bottomSheet, 5);
   }
 }
