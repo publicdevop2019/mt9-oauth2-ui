@@ -12,6 +12,7 @@ export interface IEditListEvent {
 export class EditableSelectMultiComponent implements OnInit {
   @Input() inputOptions: IOption[] = [];
   @Input() list: IOption[] = [];
+  @Input() readonly: boolean = false;
   @Output() newValue: EventEmitter<IEditListEvent> = new EventEmitter();
   inputOptionsNext: IOption[] = [];
   displayEdit = 'hidden';

@@ -1,4 +1,4 @@
-<div (mouseenter)="showEditIcon()" (mouseleave)="hideEditIcon()"
+<div (mouseenter)="!readonly&&showEditIcon()" (mouseleave)="!readonly&&hideEditIcon()"
     style="display: flex;flex-wrap: nowrap;align-items: center;">
     <ng-container *ngIf="!editView">
         <mat-chip-list #chipList aria-label="chip list selection">

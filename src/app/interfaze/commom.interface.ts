@@ -31,12 +31,14 @@ export interface IOrder {
   orderState: string;
 }
 export interface ICartItem {
-  id: string;
-  finalPrice: string;
-  selectedOptions: IProductOptions[];
-  imageUrlSmall: string;
-  productId: string;
-  name: string;
+    id: string;
+    finalPrice: string;
+    selectedOptions: IProductOptions[];
+    attributesSales: string[]
+    attrIdMap: { [key: number]: string }
+    imageUrlSmall: string;
+    productId: number;
+    name: string;
 }
 export interface IAddress {
   id: string;

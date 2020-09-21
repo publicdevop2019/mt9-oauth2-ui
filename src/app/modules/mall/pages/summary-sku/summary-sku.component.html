@@ -1,6 +1,5 @@
 <h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
-    {{'SKU_DASHBOARD'|translate}}<button mat-fab color="primary"
-        (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
+    {{'SKU_DASHBOARD'|translate}}</h2>
 <app-search (search)="doSearch($event)" [fields]="['id']"></app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
@@ -102,7 +101,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
     </div>
-    <mat-paginator [showFirstLastButtons]="true" [pageIndex]="entitySvc.currentPageIndex"
-        [pageSize]="(deviceSvc.pageSize - pageSizeOffset)>0?(deviceSvc.pageSize - pageSizeOffset):1"
-        [length]="totoalItemCount" (page)="pageHandler($event)"></mat-paginator>
+    <mat-paginator [showFirstLastButtons]="true" [length]="totoalItemCount" [pageIndex]="entitySvc.currentPageIndex"
+        [pageSize]="deviceSvc.pageSize - pageSizeOffset" (page)="pageHandler($event)">
+    </mat-paginator>
 </div>

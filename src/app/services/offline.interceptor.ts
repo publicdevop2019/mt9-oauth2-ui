@@ -8,7 +8,7 @@ import { mockCatalogCustomer } from 'src/assets/mocks/mock-catalog-customer';
 import { mockClient } from 'src/assets/mocks/mock-clients';
 import { mockFilter } from 'src/assets/mocks/mock-filter';
 import { mockFilters } from 'src/assets/mocks/mock-filters';
-import { mockOrders } from 'src/assets/mocks/mock-order';
+import { mockOrders } from 'src/assets/mocks/mock-orders';
 import { mockProductDetails } from 'src/assets/mocks/mock-product';
 import { mockProducts } from 'src/assets/mocks/mock-products';
 import { mockSP1 } from 'src/assets/mocks/mock-endpoint';
@@ -33,6 +33,7 @@ import { mockRevokeTokens } from 'src/assets/mocks/mock-revoke-tokens';
 import { mockSku } from 'src/assets/mocks/mock-sku';
 import { mockBizSkuOpt } from 'src/assets/mocks/mock-biz-sku-opt';
 import { mockBizTask } from 'src/assets/mocks/mock-biz-task';
+import { mockOrder } from 'src/assets/mocks/mock-order';
 /**
  * use refresh token if call failed
  */
@@ -138,7 +139,10 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('users/admin')) {
           return of(new HttpResponse({ status: 200, body: mockResourceO })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('orders')) {
+        if (req.url.includes('orders/admin/')) {
+          return of(new HttpResponse({ status: 200, body: JSON.parse(JSON.stringify(mockOrder)) })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('orders/admin')) {
           return of(new HttpResponse({ status: 200, body: mockOrders })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('filters/admin/')) {

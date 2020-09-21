@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { MatBottomSheet, MatDialog } from '@angular/material';
+import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
-import { IOrder } from 'src/app/interfaze/commom.interface';
+import { ICartItem, IOrder } from 'src/app/interfaze/commom.interface';
 import { DeviceService } from 'src/app/services/device.service';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderComponent } from '../order/order.component';
@@ -11,7 +12,7 @@ import { OrderComponent } from '../order/order.component';
   templateUrl: './summary-order.component.html',
 })
 export class SummaryOrderComponent extends SummaryEntityComponent<IOrder, IOrder> {
-  displayedColumns: string[] = ['id', 'paymentAmt', 'orderState', 'edit'];
+  displayedColumns: string[] = ['id', 'productList', 'paymentAmt', 'orderState', 'view'];
   sheetComponent = OrderComponent;
   constructor(
     public entitySvc: OrderService,
@@ -19,6 +20,9 @@ export class SummaryOrderComponent extends SummaryEntityComponent<IOrder, IOrder
     public bottomSheet: MatBottomSheet,
     public dialog: MatDialog,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 5);
+    super(entitySvc, deviceSvc, bottomSheet, 2);
+  }
+  public parse(items: ICartItem[]): IOption[] {
+    return items.map(e => <IOption>{ label: e.name, value: e.productId });
   }
 }
