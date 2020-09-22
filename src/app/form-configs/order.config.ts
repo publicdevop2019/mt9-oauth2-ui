@@ -185,7 +185,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_PAYMENT_TYPE",
             "key": "paymentType",
             "position": {
-                "row": "0",
+                "row": "1",
                 "column": "0"
             },
         },
@@ -196,7 +196,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_PAYMENT_LINK",
             "key": "paymentLink",
             "position": {
-                "row": "1",
+                "row": "2",
                 "column": "0"
             },
         },
@@ -207,7 +207,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_PAYMENT_AMT",
             "key": "paymentAmt",
             "position": {
-                "row": "2",
+                "row": "3",
                 "column": "0"
             },
         },
@@ -218,7 +218,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_PAID",
             "key": "paid",
             "position": {
-                "row": "3",
+                "row": "4",
                 "column": "0"
             },
         },
@@ -229,7 +229,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_ORDER_STATE",
             "key": "orderState",
             "position": {
-                "row": "4",
+                "row": "5",
                 "column": "0"
             },
         },
@@ -240,7 +240,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_MODIFIED_BY_USER_AT",
             "key": "modifiedByUserAt",
             "position": {
-                "row": "5",
+                "row": "6",
                 "column": "0"
             },
         },
@@ -251,7 +251,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_CREATED_BY",
             "key": "createdBy",
             "position": {
-                "row": "6",
+                "row": "7",
                 "column": "0"
             },
         },
@@ -262,7 +262,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_CREATED_AT",
             "key": "createdAt",
             "position": {
-                "row": "7",
+                "row": "8",
                 "column": "0"
             },
         },
@@ -273,7 +273,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_MODIFIED_BY",
             "key": "modifiedBy",
             "position": {
-                "row": "8",
+                "row": "9",
                 "column": "0"
             },
         },
@@ -283,6 +283,121 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "readonly":true,
             "label": "ORDER_DETAIL_MODIFIED_AT",
             "key": "modifiedAt",
+            "position": {
+                "row": "10",
+                "column": "0"
+            },
+        },
+    ],
+}
+export const ORDER_TASK_CONFIG: IForm = {
+    "repeatable": true,
+    "inputs": [
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_ID",
+            "key": "id",
+            "position": {
+                "row": "0",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_NAME",
+            "key": "taskName",
+            "position": {
+                "row": "1",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_STATUS",
+            "key": "taskStatus",
+            "position": {
+                "row": "2",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_TX_ID",
+            "key": "transactionId",
+            "position": {
+                "row": "3",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_CREATED_AT",
+            "key": "createdAt",
+            "position": {
+                "row": "4",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_CREATED_BY",
+            "key": "createdBy",
+            "position": {
+                "row": "5",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_MODIFIED_AT",
+            "key": "modifiedAt",
+            "position": {
+                "row": "6",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_MODIFIED_BY",
+            "key": "modifiedBy",
+            "position": {
+                "row": "7",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_REFERENCE_ID",
+            "key": "referenceId",
+            "position": {
+                "row": "8",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_TASK_VERSION",
+            "key": "version",
             "position": {
                 "row": "9",
                 "column": "0"

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
-import { IBizFilter } from './filter.service';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IBizTask {
@@ -11,9 +10,10 @@ export interface IBizTask {
     transactionId: string,
     referenceId: number,
     createdBy: string,
-    createAt: string,
+    createdAt: string,
     modifiedBy: string,
-    modifiedAt: string
+    modifiedAt: string,
+    version:number
 }
 @Injectable({
     providedIn: 'root'
