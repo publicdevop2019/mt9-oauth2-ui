@@ -164,3 +164,129 @@ export const ORDER_ADDRESS_CONFIG: IForm = {
         },
     ],
 }
+export const ORDER_DETAIL_CONFIG: IForm = {
+    "repeatable": false,
+    "inputs": [
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_ID",
+            "key": "id",
+            "position": {
+                "row": "0",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_PAYMENT_TYPE",
+            "key": "paymentType",
+            "position": {
+                "row": "0",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_PAYMENT_LINK",
+            "key": "paymentLink",
+            "position": {
+                "row": "1",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_PAYMENT_AMT",
+            "key": "paymentAmt",
+            "position": {
+                "row": "2",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_PAID",
+            "key": "paid",
+            "position": {
+                "row": "3",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_ORDER_STATE",
+            "key": "orderState",
+            "position": {
+                "row": "4",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_MODIFIED_BY_USER_AT",
+            "key": "modifiedByUserAt",
+            "position": {
+                "row": "5",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_CREATED_BY",
+            "key": "createdBy",
+            "position": {
+                "row": "6",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_CREATED_AT",
+            "key": "createdAt",
+            "position": {
+                "row": "7",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_MODIFIED_BY",
+            "key": "modifiedBy",
+            "position": {
+                "row": "8",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "readonly":true,
+            "label": "ORDER_DETAIL_MODIFIED_AT",
+            "key": "modifiedAt",
+            "position": {
+                "row": "9",
+                "column": "0"
+            },
+        },
+    ],
+}

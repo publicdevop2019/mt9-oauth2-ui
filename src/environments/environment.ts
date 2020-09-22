@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  mode: 'offline' as 'online' | 'offline',
+  mode: 'online' as 'online' | 'offline',
   serverUri: 'http://localhost:8111',
   tokenUrl: 'http://localhost:8111/auth-svc/oauth/token',
   // serverUri: 'http://localhost:8083/v1',

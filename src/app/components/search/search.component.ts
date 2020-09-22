@@ -43,6 +43,7 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   public searchHelper: IOption[] = [
     { label: 'ID', value: "id" },
+    { label: 'REFERENCE_ID', value: "referenceId" },
     { label: 'PARENT_ID_FRONT', value: "parentId_front" },
     { label: 'PARENT_ID_BACK', value: "parentId_back" },
     { label: 'NAME', value: "name" },
@@ -97,7 +98,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     let sub2 = this.searchQuery.valueChanges.pipe(filter(e => e !== null && e !== undefined && e !== '' && JSON.stringify(e) !== JSON.stringify([]))).pipe(debounce(() => interval(1000)))
       .subscribe(next => {
         let delimiter = '$'
-        if (['id', 'name', 'resourceId', 'method', 'parentId_front', 'parentId_back', 'type', 'email'].includes(this.searchType.value))
+        if (['id', 'name', 'resourceId', 'method', 'parentId_front', 'parentId_back', 'type', 'email','referenceId'].includes(this.searchType.value))
           delimiter = '.'
         let prefix = this.searchType.value;
         if (['catalogFront', 'catalogBack', 'attributes'].includes(this.searchType.value)) {
