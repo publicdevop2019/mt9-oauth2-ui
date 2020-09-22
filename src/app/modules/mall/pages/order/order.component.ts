@@ -1,13 +1,12 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
-import { ActivatedRoute, ParamMap } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
-import { ORDER_PRODUCT_CONFIG, ORDER_ADDRESS_CONFIG, ORDER_DETAIL_CONFIG, ORDER_TASK_CONFIG } from 'src/app/form-configs/order.config';
+import { ORDER_ADDRESS_CONFIG, ORDER_DETAIL_CONFIG, ORDER_PRODUCT_CONFIG, ORDER_TASK_CONFIG } from 'src/app/form-configs/order.config';
 import { ICartItem, IOrder } from 'src/app/interfaze/commom.interface';
 import { OrderService } from 'src/app/services/order.service';
 import { TaskService } from 'src/app/services/task.service';
@@ -45,7 +44,20 @@ export class OrderComponent implements OnDestroy {
     this.formCreatedOb3 = this.fis.$ready.pipe(filter(e => e === this.formIdProduct));
     this.formCreatedOb4 = this.fis.$ready.pipe(filter(e => e === this.formIdTask));
     combineLatest(this.formCreatedOb1, this.formCreatedOb2, this.formCreatedOb3).pipe(take(1)).subscribe(next => {
-      this.fis.formGroupCollection[this.formIdOrder].patchValue(this.orderBottomSheet.from);
+      let parsedPayload: any = {}
+      Object.assign(parsedPayload, this.orderBottomSheet.from);
+      let ob: Observable<any>;
+      if (this.orderBottomSheet.from.paid) {
+        ob = this.tSvc.get('PAID')
+      } else {
+        ob = this.tSvc.get('NOT_PAID')
+      }
+      let ob2 = this.tSvc.get(this.orderBottomSheet.from.orderState);
+      combineLatest(ob, ob2).subscribe(e => {
+        parsedPayload['paid'] = e[0];
+        parsedPayload['orderState'] = e[1];
+        this.fis.formGroupCollection[this.formIdOrder].patchValue(parsedPayload);
+      });
       this.fis.formGroupCollection[this.formIdAddress].patchValue(this.orderBottomSheet.from.address);
       let var0 = this.beforePatchProduct(this.orderBottomSheet.from.productList);
       let value0 = this.fis.parsePayloadArr(var0.map(e => e.productId), 'productId');

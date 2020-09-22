@@ -22,23 +22,31 @@ interface IClientUserRep {
   autoApprove?: boolean;
   clientId: string;
 }
-export interface IOrder {
+export interface IOrder extends IAuditable {
   id: number;
   productList: ICartItem[];
   address: IAddress;
   paymentType: string;
   paymentAmt: string;
   orderState: string;
+  modifiedByUserAt: string;
+  paid: boolean;
+}
+export interface IAuditable {
+  modifiedAt: string;
+  modifiedBy: string;
+  createdAt: string;
+  createdBy: string;
 }
 export interface ICartItem {
-    id: string;
-    finalPrice: string;
-    selectedOptions: IProductOptions[];
-    attributesSales: string[]
-    attrIdMap: { [key: number]: string }
-    imageUrlSmall: string;
-    productId: number;
-    name: string;
+  id: string;
+  finalPrice: string;
+  selectedOptions: IProductOptions[];
+  attributesSales: string[]
+  attrIdMap: { [key: number]: string }
+  imageUrlSmall: string;
+  productId: number;
+  name: string;
 }
 export interface IAddress {
   id: string;

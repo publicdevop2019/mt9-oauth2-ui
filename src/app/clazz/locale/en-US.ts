@@ -344,5 +344,7 @@ export const enUS = {
     "ORDER_TASK_TX_ID": "Transaction id",
     "ORDER_TASK_VERSION": "version",
     "ORDER_TASK": "Order task",
+    "PAID": "Paid",
+    "NOT_PAID": "Not paid",
     "": "",
 }
