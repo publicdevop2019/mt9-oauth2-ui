@@ -36,6 +36,7 @@ import { mockBizTask } from 'src/assets/mocks/mock-biz-task';
 import { mockOrder } from 'src/assets/mocks/mock-order';
 import { mockProductsSearch } from 'src/assets/mocks/mock-products-search';
 import { mockAttrsSearch } from 'src/assets/mocks/mock-attributes-search';
+import { mockResourceSearch } from 'src/assets/mocks/mock-users-search';
 /**
  * use refresh token if call failed
  */
@@ -143,6 +144,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('users/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockResource1 })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('users/admin?query=id:')) {
+          return of(new HttpResponse({ status: 200, body: mockResourceSearch })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('users/admin')) {
           return of(new HttpResponse({ status: 200, body: mockResourceO })).pipe(delay(this.DEFAULT_DELAY))

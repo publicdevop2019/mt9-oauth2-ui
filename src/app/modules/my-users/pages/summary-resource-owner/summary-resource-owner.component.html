@@ -50,9 +50,9 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="createAt">
+            <ng-container matColumnDef="createdAt">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'CREATE_AT'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.createAt | date:'shortDate'}} </td>
+                <td mat-cell *matCellDef="let row"> {{row.createdAt | date:'shortDate'}} </td>
             </ng-container>
 
             <ng-container matColumnDef="locked">

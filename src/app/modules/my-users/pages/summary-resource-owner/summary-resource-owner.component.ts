@@ -15,7 +15,7 @@ import * as UUID from 'uuid/v1';
   templateUrl: './summary-resource-owner.component.html',
 })
 export class SummaryResourceOwnerComponent extends SummaryEntityComponent<IResourceOwner, IResourceOwner> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'email', 'grantedAuthorities', 'locked', 'createAt', 'edit', 'token', 'delete'];
+  displayedColumns: string[] = ['id', 'email', 'grantedAuthorities', 'locked', 'createdAt', 'edit', 'token', 'delete'];
   sheetComponent = ResourceOwnerComponent;
   roleList = CONST_ROLES_USER;
   constructor(

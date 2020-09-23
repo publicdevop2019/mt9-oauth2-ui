@@ -9,7 +9,7 @@ export interface IResourceOwner {
     locked: boolean;
     subscription?: boolean;
     grantedAuthorities: string[];
-    createAt?:number;
+    createdAt?:number;
 }
 export interface IPendingResourceOwner {
     email: string;
