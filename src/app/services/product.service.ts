@@ -12,7 +12,8 @@ export interface IProductSimple {
   attributesKey: string[];
   priceList: number[];
   totalSales: number;
-  coverImage: string
+  coverImage: string;
+  attrSalesMap: { [key: string]: number }
 }
 export interface IProductOptions {
   title: string;
@@ -34,9 +35,9 @@ export interface ISku {
   decreaseActualStorage?: number;
 }
 export interface ISkuNew {
-  id:number
-  referenceId:number,
-  description:string,
+  id: number
+  referenceId: string,
+  description: string,
   storageOrder: number;
   storageActual: number;
   price: number;

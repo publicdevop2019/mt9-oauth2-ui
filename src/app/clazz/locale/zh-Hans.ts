@@ -338,7 +338,7 @@ export const zhHans = {
     "ORDER_DETAIL_MODIFIED_AT": "更新于",
     "ORDER_DETAIL": "订单明细",
     "ORDER_DETAIL_ID": "订单编号",
-    "ORDER_TASK_CREATED_AT": "创建与",
+    "ORDER_TASK_CREATED_AT": "创建于",
     "ORDER_TASK_CREATED_BY": "创建者",
     "ORDER_TASK_ID": "编号",
     "ORDER_TASK_MODIFIED_AT": "更新于",

@@ -34,6 +34,8 @@ import { mockSku } from 'src/assets/mocks/mock-sku';
 import { mockBizSkuOpt } from 'src/assets/mocks/mock-biz-sku-opt';
 import { mockBizTask } from 'src/assets/mocks/mock-biz-task';
 import { mockOrder } from 'src/assets/mocks/mock-order';
+import { mockProductsSearch } from 'src/assets/mocks/mock-products-search';
+import { mockAttrsSearch } from 'src/assets/mocks/mock-attributes-search';
 /**
  * use refresh token if call failed
  */
@@ -96,6 +98,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('attributes/admin/')) {
           return of(new HttpResponse({ status: 200, body: mockAttr })).pipe(delay(this.DEFAULT_DELAY))
         }
+        if (req.url.includes('attributes/admin?query=id:')) {
+          return of(new HttpResponse({ status: 200, body: mockAttrsSearch })).pipe(delay(this.DEFAULT_DELAY))
+        }
         if (req.url.includes('attributes/admin')) {
           return of(new HttpResponse({ status: 200, body: mockAttrs })).pipe(delay(this.DEFAULT_DELAY))
         }
@@ -105,6 +110,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('/changes/admin')) {
           return of(new HttpResponse({ status: 200, body: mockChanges })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('products/admin?query=id:')) {
+          return of(new HttpResponse({ status: 200, body: mockProductsSearch })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('products/admin')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))
@@ -151,7 +159,7 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('filters/admin')) {
           return of(new HttpResponse({ status: 200, body: mockFilters })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('sku/admin')) {
+        if (req.url.includes('skus/admin')) {
           return of(new HttpResponse({ status: 200, body: mockSku })).pipe(delay(this.DEFAULT_DELAY))
         }
       }

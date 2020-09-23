@@ -56,11 +56,6 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="priceList">
-                <th mat-header-cell *matHeaderCellDef> {{'PRICE_LIST'|translate}} </th>
-                <td mat-cell *matCellDef="let row"> {{row.priceList}} </td>
-            </ng-container>
-
             <ng-container matColumnDef="sales">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'TOTAL_SALES'|translate}}</th>
                 <td mat-cell *matCellDef="let row"> {{row.totalSales}} </td>
