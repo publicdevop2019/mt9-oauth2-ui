@@ -19,7 +19,4 @@ export class SummaryTaskComponent extends SummaryEntityComponent<IBizTask, IBizT
   ) {
     super(entitySvc, deviceSvc, bottomSheet, 5);
   }
-  parseDate(date:string){
-    return date.split('.')[0]
-  }
 }
