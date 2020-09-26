@@ -19,7 +19,7 @@ export interface IBizTask {
     providedIn: 'root'
 })
 export class TaskService extends EntityCommonService<IBizTask, IBizTask> {
-    private SVC_NAME = '/profile-svc';
+    private SVC_NAME = '/saga-svc';
     private ENTITY_NAME = '/tasks';
     entityRepo: string = environment.serverUri + this.SVC_NAME + this.ENTITY_NAME;
     role: string = 'admin';

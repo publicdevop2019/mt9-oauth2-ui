@@ -282,7 +282,7 @@ export const zhHans = {
     "TARGET_CLIENT": "应用",
     "TARGET_USER": "用户",
     "SKU_DASHBOARD": "库存列表",
-    "REFERENCE_ID": "关联产品编号",
+    "REFERENCE_ID": "关联编号",
     "STORAGE_ORDER": "订单库存",
     "STORAGE_ACTUAL": "实际库存",
     "PRICE": "价格",
@@ -351,5 +351,6 @@ export const zhHans = {
     "ORDER_TASK": "订单任务历史",
     "PAID": "已支付",
     "NOT_PAID": "未支付",
+    "CONFIRM_PAYMENT": "确认支付",
     "": "",
 }

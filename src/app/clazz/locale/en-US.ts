@@ -346,5 +346,6 @@ export const enUS = {
     "ORDER_TASK": "Order task",
     "PAID": "Paid",
     "NOT_PAID": "Not paid",
+    "CONFIRM_PAYMENT": "Confirm payment",
     "": "",
 }
