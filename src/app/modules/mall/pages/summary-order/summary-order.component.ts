@@ -34,17 +34,19 @@ export class SummaryOrderComponent extends SummaryEntityComponent<IOrder, IOrder
   }
   public parsedUserId: { [key: number]: IResourceOwner } = {}
   loadUser(orders: ISumRep<IOrder>) {
-    let ids = orders.data.map(e => e.createdBy);
-    let unique = new Array(...new Set(ids));
-    let query = "id:" + unique.join('.');
-    let parsedUserId: { [key: number]: IResourceOwner } = {}
-
-    this.roSvc.readByQuery(0, unique.length, query).subscribe(next => {
-      next.data.forEach(e => {
-        parsedUserId[e.id] = e
+    if(orders.data.length>0){
+      let ids = orders.data.map(e => e.createdBy);
+      let unique = new Array(...new Set(ids));
+      let query = "id:" + unique.join('.');
+      let parsedUserId: { [key: number]: IResourceOwner } = {}
+  
+      this.roSvc.readByQuery(0, unique.length, query).subscribe(next => {
+        next.data.forEach(e => {
+          parsedUserId[e.id] = e
+        })
+        this.parsedUserId = parsedUserId;
       })
-      this.parsedUserId = parsedUserId;
-    })
+    }
   }
   public parse(items: ICartItem[]): IOption[] {
     return items.map(e => <IOption>{ label: e.name, value: e.productId });
