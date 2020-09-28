@@ -352,5 +352,6 @@ export const zhHans = {
     "PAID": "已支付",
     "NOT_PAID": "未支付",
     "CONFIRM_PAYMENT": "确认支付",
+    "RECYCLE_ORDER_STORAGE": "回收订单库存",
     "": "",
 }

@@ -347,5 +347,6 @@ export const enUS = {
     "PAID": "Paid",
     "NOT_PAID": "Not paid",
     "CONFIRM_PAYMENT": "Confirm payment",
+    "RECYCLE_ORDER_STORAGE": "Recycle order storage",
     "": "",
 }
