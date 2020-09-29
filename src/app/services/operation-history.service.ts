@@ -22,7 +22,7 @@ export interface IPatchCommand {
   providedIn: 'root'
 })
 export class OperationHistoryService extends EntityCommonService<IChangeRecord, IChangeRecord>{
-  public PRODUCT_SVC_NAME = '/auth-svc';
+  public PRODUCT_SVC_NAME = '';
   public ENTITY_NAME = '/changes';
   entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;
   role: string = 'root';

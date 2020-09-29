@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet, PageEvent } from '@angular/material';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { DeviceService } from 'src/app/services/device.service';
 import { IChangeRecord, OperationHistoryService } from 'src/app/services/operation-history.service';
@@ -25,6 +25,8 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
   ) {
     super(entitySvc, deviceSvc, bottomSheet, 3, true);
     let ob = this.route.queryParamMap.pipe(switchMap(queryMaps => {
+      this.entitySvc.currentPageIndex = 0;//reset var
+      this.queryString = undefined;
       if (queryMaps.get('type') === 'auth') {
         this.entitySvc.PRODUCT_SVC_NAME = '/auth-svc';
         if (queryMaps.get('entity') === 'client') {
