@@ -172,9 +172,11 @@ export class ProductComponent implements OnInit, OnDestroy {
         this.subscriptions.add(sub)
       } else {
         if (this.productDetail.attributesProd) {
+          this.subChangeForForm(this.attrProdFormId);
           this.updateValueForForm(this.productDetail.attributesProd, this.attrProdFormId);
         }
         if (this.productDetail.attributesGen) {
+          this.subChangeForForm(this.attrGeneralFormId);
           this.updateValueForForm(this.productDetail.attributesGen, this.attrGeneralFormId);
         }
         if (this.productDetail.skus.filter(e => this.hasEmptyAttrSales(e)).length === 0) {
