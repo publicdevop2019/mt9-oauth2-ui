@@ -85,4 +85,15 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
   supportRollback(row: IChangeRecord) {
     return ['POST', 'DELETE_BY_ID', 'DELETE_BY_QUERY'].includes(row.operationType);
   }
+  doSearch(queryString: string) {
+    this.queryString = this.queryPrefix + (queryString ? queryString : '');
+    super.doSearch(this.queryString);
+  }
+  pageHandler(e: PageEvent) {
+    if (this.queryString && this.queryString.includes('entityType')) {
+    } else {
+      this.queryString = this.queryPrefix + (this.queryString ? this.queryString : '');
+    }
+    super.pageHandler(e);
+  }
 }
