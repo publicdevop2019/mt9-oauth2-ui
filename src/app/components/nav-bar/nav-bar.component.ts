@@ -271,6 +271,15 @@ export class NavBarComponent implements OnInit {
         entity:'filter'
       },
     },
+    {
+      link: 'operation-history',
+      display: 'OPERATION_DASHBOARD_ORDER',
+      icon: 'assignment',
+      params: {
+        type:'profile',
+        entity:'order'
+      },
+    },
   ]
   private _mobileQueryListener: () => void;
   @ViewChild("snav", { static: true }) snav: MatSidenav;

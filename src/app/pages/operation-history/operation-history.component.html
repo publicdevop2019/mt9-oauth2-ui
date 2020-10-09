@@ -1,7 +1,6 @@
 <h2 class="flex-row-space-between">{{'OPT_CENTER' |translate}} / {{label|translate}}</h2>
 <app-search (search)="doSearch($event)" [fields]="['id']">
 </app-search>
-<div>{{queryPrefix}}</div>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
         style="margin-right: 16px;" (click)="showOptions()">

@@ -69,7 +69,13 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
           this.label = 'OPERATION_DASHBOARD_FILTER'
           this.queryPrefix = 'entityType:BizFilter'
         }
-      } else {
+      } else if(queryMaps.get('type') === 'profile'){
+        this.entitySvc.PRODUCT_SVC_NAME = '/profile-svc';
+        if (queryMaps.get('entity') === 'order') {
+          this.label = 'OPERATION_DASHBOARD_ORDER'
+          this.queryPrefix = 'entityType:BizOrder'
+        }
+      }else {
 
       }
       this.entitySvc.entityRepo = environment.serverUri + this.entitySvc.PRODUCT_SVC_NAME + this.entitySvc.ENTITY_NAME;
