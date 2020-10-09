@@ -37,6 +37,7 @@ import { mockOrder } from 'src/assets/mocks/mock-order';
 import { mockProductsSearch } from 'src/assets/mocks/mock-products-search';
 import { mockAttrsSearch } from 'src/assets/mocks/mock-attributes-search';
 import { mockResourceSearch } from 'src/assets/mocks/mock-users-search';
+import { mockBizOrderOpt } from 'src/assets/mocks/mock-biz-order-opt';
 /**
  * use refresh token if call failed
  */
@@ -89,6 +90,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('changes/root?query=entityType:BizSku')) {
           return of(new HttpResponse({ status: 200, body: mockBizSkuOpt })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('changes/root?query=entityType:BizOrder')) {
+          return of(new HttpResponse({ status: 200, body: mockBizOrderOpt })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('revoke-tokens/root')) {
           return of(new HttpResponse({ status: 200, body: mockRevokeTokens })).pipe(delay(this.DEFAULT_DELAY))
