@@ -48,15 +48,16 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="patchCommand">
-                <th mat-header-cell *matHeaderCellDef> {{'PATCH_COMMAND'|translate}} </th>
+            <ng-container matColumnDef="requestBody">
+                <th mat-header-cell *matHeaderCellDef> {{'REQUEST_DETAIL'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    {{row.patchCommand}}
+                    <mat-icon *ngIf="row.requestBody" (click)="launchOverlay(origin,row.requestBody)" #origin [color]="'primary'">
+                        remove_red_eye</mat-icon>
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="createDeleteCommand">
-                <th mat-header-cell *matHeaderCellDef> {{'CREATE_DELETE_COMMANDS'|translate}} </th>
+            <ng-container matColumnDef="optName">
+                <th mat-header-cell *matHeaderCellDef> {{'OPT_NAME'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
                     <mat-chip>
                         {{"OPT_"+row.operationType|translate}}
@@ -64,8 +65,8 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="createDeleteCommandQuery">
-                <th mat-header-cell *matHeaderCellDef> {{'CREATE_DELETE_COMMANDS_QUERY'|translate}} </th>
+            <ng-container matColumnDef="query">
+                <th mat-header-cell *matHeaderCellDef> {{'REQUEST_QUERY'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
                     <app-copy-field [inputValue]="row.query"></app-copy-field>
                 </td>

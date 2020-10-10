@@ -71,6 +71,8 @@ import { OperationHistoryComponent } from './pages/operation-history/operation-h
 import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
 import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
 import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
+import { ObjectDetailComponent } from './components/object-detail/object-detail.component';
+import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [
@@ -119,7 +121,8 @@ import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-
     OperationHistoryComponent,
     SummaryRevokeTokenComponent,
     SummarySkuComponent,
-    SummaryTaskComponent
+    SummaryTaskComponent,
+    ObjectDetailComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -156,6 +159,7 @@ import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-
     MatSortModule,
     MatAutocompleteModule,
     MtFormBuilderModule,
+    OverlayModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     TranslateModule.forRoot({
       loader: {
@@ -164,7 +168,7 @@ import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-
       }
     }),
   ],
-  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, SecurityProfileComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent],
+  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, SecurityProfileComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent,ObjectDetailComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

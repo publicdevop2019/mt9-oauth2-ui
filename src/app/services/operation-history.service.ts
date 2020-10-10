@@ -7,7 +7,8 @@ export interface IChangeRecord {
   id: number,
   changeId: string,
   entityType: number,
-  patchCommands?: IPatchCommand[],
+  // request?: IPatchCommand[],
+  requestBody?: {},
   operationType: 'POST' | 'PATCH_BATCH' | 'PATCH_BY_ID' | 'PUT' | 'RESTORE' | 'DELETE_BY_ID' | 'DELETE_BY_QUERY',
   query?:string
 }

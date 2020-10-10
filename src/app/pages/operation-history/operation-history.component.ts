@@ -1,11 +1,15 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet, PageEvent } from '@angular/material';
+import { MatBottomSheet, MatIcon, PageEvent } from '@angular/material';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { DeviceService } from 'src/app/services/device.service';
 import { IChangeRecord, OperationHistoryService } from 'src/app/services/operation-history.service';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { OverlayConfig, ConnectionPositionPair, Overlay } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { ObjectDetailComponent } from 'src/app/components/object-detail/object-detail.component';
+import { OverlayService } from 'src/app/services/overlay.service';
 
 @Component({
   selector: 'app-operation-history',
@@ -13,7 +17,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./operation-history.component.css']
 })
 export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRecord, IChangeRecord> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'changeId', 'entityType', 'createDeleteCommand', 'createDeleteCommandQuery', 'patchCommand', 'revoke'];
+  displayedColumns: string[] = ['id', 'changeId', 'entityType','optName', 'query', 'requestBody', 'revoke'];
   // sheetComponent = ClientComponent;
   label: string;
   queryPrefix: string;
@@ -22,6 +26,8 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
     private route: ActivatedRoute,
+    private overlay: Overlay,
+    private overlaySvc: OverlayService,
   ) {
     super(entitySvc, deviceSvc, bottomSheet, 3, true);
     let ob = this.route.queryParamMap.pipe(switchMap(queryMaps => {
@@ -69,13 +75,13 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
           this.label = 'OPERATION_DASHBOARD_FILTER'
           this.queryPrefix = 'entityType:BizFilter'
         }
-      } else if(queryMaps.get('type') === 'profile'){
+      } else if (queryMaps.get('type') === 'profile') {
         this.entitySvc.PRODUCT_SVC_NAME = '/profile-svc';
         if (queryMaps.get('entity') === 'order') {
           this.label = 'OPERATION_DASHBOARD_ORDER'
           this.queryPrefix = 'entityType:BizOrder'
         }
-      }else {
+      } else {
 
       }
       this.entitySvc.entityRepo = environment.serverUri + this.entitySvc.PRODUCT_SVC_NAME + this.entitySvc.ENTITY_NAME;
@@ -101,5 +107,36 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
       this.queryString = this.queryPrefix + (this.queryString ? this.queryString : '');
     }
     super.pageHandler(e);
+  }
+  launchOverlay(el: MatIcon, data: any) {
+    this.overlaySvc.data = data;
+    let config = new OverlayConfig()
+    config.hasBackdrop = true;
+    config.positionStrategy = this.overlay.position().flexibleConnectedTo(el._elementRef).withPositions(this.getPositions())
+      .withPush(false);;
+    config.scrollStrategy = this.overlay.scrollStrategies.reposition();
+    const overlayRef = this.overlay.create(config);
+    const filePreviewPortal = new ComponentPortal(ObjectDetailComponent);
+    overlayRef.attach(filePreviewPortal);
+    overlayRef.backdropClick().subscribe(() => {
+      overlayRef.dispose();
+    })
+
+  }
+  private getPositions(): ConnectionPositionPair[] {
+    return [
+      {
+        originX: 'center',
+        originY: 'top',
+        overlayX: 'center',
+        overlayY: 'bottom'
+      },
+      {
+        originX: 'center',
+        originY: 'bottom',
+        overlayX: 'center',
+        overlayY: 'top',
+      },
+    ]
   }
 }
