@@ -95,3 +95,7 @@ th.mat-sort-header-sorted {
 .mat-form-field-infix {
   width: auto !important;
 }
+.marker-boarder .form-body {
+  margin-bottom: 24px !important;
+  border-left: 2px solid #673ab7 !important;
+}

@@ -32,8 +32,8 @@ export const ORDER_PRODUCT_CONFIG: IForm = {
             "label": "ORDER_PRODUCT_NAME",
             "key": "name",
             "position": {
-                "row": "2",
-                "column": "0"
+                "row": "1",
+                "column": "1"
             },
         },
         {
@@ -43,8 +43,8 @@ export const ORDER_PRODUCT_CONFIG: IForm = {
             "label": "ORDER_PRODUCT_FINAL_PRICE",
             "key": "finalPrice",
             "position": {
-                "row": "3",
-                "column": "0"
+                "row": "1",
+                "column": "2"
             },
         },
         {
@@ -54,7 +54,7 @@ export const ORDER_PRODUCT_CONFIG: IForm = {
             "label": "ORDER_PRODUCT_SELECT_OPTIONS",
             "key": "selectedOptions",
             "position": {
-                "row": "4",
+                "row": "2",
                 "column": "0"
             },
         },
@@ -65,8 +65,8 @@ export const ORDER_PRODUCT_CONFIG: IForm = {
             "label": "ORDER_PRODUCT_SALES_ATTR",
             "key": "attributesSales",
             "position": {
-                "row": "5",
-                "column": "0"
+                "row": "1",
+                "column": "3"
             },
         },
     ],
@@ -103,8 +103,8 @@ export const ORDER_ADDRESS_CONFIG: IForm = {
             "label": "ORDER_ADDRESS_LINE2",
             "key": "orderAddressLine2",
             "position": {
-                "row": "2",
-                "column": "0"
+                "row": "1",
+                "column": "1"
             },
         },
         {
@@ -114,8 +114,8 @@ export const ORDER_ADDRESS_CONFIG: IForm = {
             "label": "ORDER_ADDRESS_POSTAL_CODE",
             "key": "orderAddressPostalCode",
             "position": {
-                "row": "3",
-                "column": "0"
+                "row": "1",
+                "column": "2"
             },
         },
         {
@@ -125,8 +125,8 @@ export const ORDER_ADDRESS_CONFIG: IForm = {
             "label": "ORDER_ADDRESS_PHONE_NUMBER",
             "key": "orderAddressPhoneNumber",
             "position": {
-                "row": "4",
-                "column": "0"
+                "row": "0",
+                "column": "1"
             },
         },
         {
@@ -136,7 +136,7 @@ export const ORDER_ADDRESS_CONFIG: IForm = {
             "label": "ORDER_ADDRESS_CITY",
             "key": "orderAddressCity",
             "position": {
-                "row": "5",
+                "row": "2",
                 "column": "0"
             },
         },
@@ -147,8 +147,8 @@ export const ORDER_ADDRESS_CONFIG: IForm = {
             "label": "ORDER_ADDRESS_PROVINCE",
             "key": "orderAddressProvince",
             "position": {
-                "row": "6",
-                "column": "0"
+                "row": "2",
+                "column": "1"
             },
         },
         {
@@ -158,8 +158,8 @@ export const ORDER_ADDRESS_CONFIG: IForm = {
             "label": "ORDER_ADDRESS_COUNTRY",
             "key": "orderAddressCountry",
             "position": {
-                "row": "7",
-                "column": "0"
+                "row": "2",
+                "column": "2"
             },
         },
     ],
@@ -196,8 +196,8 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_PAYMENT_LINK",
             "key": "paymentLink",
             "position": {
-                "row": "2",
-                "column": "0"
+                "row": "1",
+                "column": "1"
             },
         },
         {
@@ -207,8 +207,8 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_PAYMENT_AMT",
             "key": "paymentAmt",
             "position": {
-                "row": "3",
-                "column": "0"
+                "row": "0",
+                "column": "1"
             },
         },
         {
@@ -218,8 +218,8 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_PAID",
             "key": "paid",
             "position": {
-                "row": "4",
-                "column": "0"
+                "row": "0",
+                "column": "2"
             },
         },
         {
@@ -229,8 +229,8 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_ORDER_STATE",
             "key": "orderState",
             "position": {
-                "row": "5",
-                "column": "0"
+                "row": "0",
+                "column": "3"
             },
         },
         {
@@ -240,13 +240,13 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_MODIFIED_BY_USER_AT",
             "key": "modifiedByUserAt",
             "position": {
-                "row": "6",
+                "row": "3",
                 "column": "0"
             },
         },
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "readonly":true,
             "label": "ORDER_DETAIL_CREATED_BY",
             "key": "createdBy",
@@ -262,7 +262,7 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_CREATED_AT",
             "key": "createdAt",
             "position": {
-                "row": "8",
+                "row": "2",
                 "column": "0"
             },
         },
@@ -273,8 +273,8 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_MODIFIED_BY",
             "key": "modifiedBy",
             "position": {
-                "row": "9",
-                "column": "0"
+                "row": "3",
+                "column": "1"
             },
         },
         {
@@ -284,8 +284,8 @@ export const ORDER_DETAIL_CONFIG: IForm = {
             "label": "ORDER_DETAIL_MODIFIED_AT",
             "key": "modifiedAt",
             "position": {
-                "row": "10",
-                "column": "0"
+                "row": "2",
+                "column": "1"
             },
         },
     ],
@@ -295,7 +295,7 @@ export const ORDER_TASK_CONFIG: IForm = {
     "inputs": [
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "readonly":true,
             "label": "ORDER_TASK_ID",
             "key": "id",
@@ -322,8 +322,8 @@ export const ORDER_TASK_CONFIG: IForm = {
             "label": "ORDER_TASK_STATUS",
             "key": "taskStatus",
             "position": {
-                "row": "2",
-                "column": "0"
+                "row": "1",
+                "column": "1"
             },
         },
         {
@@ -333,8 +333,8 @@ export const ORDER_TASK_CONFIG: IForm = {
             "label": "ORDER_TASK_TX_ID",
             "key": "transactionId",
             "position": {
-                "row": "3",
-                "column": "0"
+                "row": "1",
+                "column": "2"
             },
         },
         {
@@ -344,13 +344,13 @@ export const ORDER_TASK_CONFIG: IForm = {
             "label": "ORDER_TASK_CREATED_AT",
             "key": "createdAt",
             "position": {
-                "row": "4",
+                "row": "2",
                 "column": "0"
             },
         },
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "readonly":true,
             "label": "ORDER_TASK_CREATED_BY",
             "key": "createdBy",
@@ -366,13 +366,13 @@ export const ORDER_TASK_CONFIG: IForm = {
             "label": "ORDER_TASK_MODIFIED_AT",
             "key": "modifiedAt",
             "position": {
-                "row": "6",
-                "column": "0"
+                "row": "2",
+                "column": "1"
             },
         },
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "readonly":true,
             "label": "ORDER_TASK_MODIFIED_BY",
             "key": "modifiedBy",
@@ -383,7 +383,7 @@ export const ORDER_TASK_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "readonly":true,
             "label": "ORDER_TASK_REFERENCE_ID",
             "key": "referenceId",
@@ -394,7 +394,7 @@ export const ORDER_TASK_CONFIG: IForm = {
         },
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "readonly":true,
             "label": "ORDER_TASK_VERSION",
             "key": "version",

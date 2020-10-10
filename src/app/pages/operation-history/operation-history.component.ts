@@ -110,10 +110,9 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
   }
   launchOverlay(el: MatIcon, data: any) {
     this.overlaySvc.data = data;
-    let config = new OverlayConfig()
+    let config = new OverlayConfig();
     config.hasBackdrop = true;
-    config.positionStrategy = this.overlay.position().flexibleConnectedTo(el._elementRef).withPositions(this.getPositions())
-      .withPush(false);;
+    config.positionStrategy = this.overlay.position().global().centerVertically().centerHorizontally();
     config.scrollStrategy = this.overlay.scrollStrategies.reposition();
     const overlayRef = this.overlay.create(config);
     const filePreviewPortal = new ComponentPortal(ObjectDetailComponent);
@@ -122,21 +121,5 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
       overlayRef.dispose();
     })
 
-  }
-  private getPositions(): ConnectionPositionPair[] {
-    return [
-      {
-        originX: 'center',
-        originY: 'top',
-        overlayX: 'center',
-        overlayY: 'bottom'
-      },
-      {
-        originX: 'center',
-        originY: 'bottom',
-        overlayX: 'center',
-        overlayY: 'top',
-      },
-    ]
   }
 }

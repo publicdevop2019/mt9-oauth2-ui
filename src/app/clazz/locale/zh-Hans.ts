@@ -348,7 +348,7 @@ export const zhHans = {
     "ORDER_TASK_STATUS": "状态",
     "ORDER_TASK_TX_ID": "事务ID",
     "ORDER_TASK_VERSION": "版本号",
-    "ORDER_TASK": "订单任务历史",
+    "ORDER_TASK": "订单事务历史",
     "PAID": "已支付",
     "NOT_PAID": "未支付",
     "CONFIRM_PAYMENT": "确认支付",
