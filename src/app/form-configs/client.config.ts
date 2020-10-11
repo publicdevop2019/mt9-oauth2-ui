@@ -72,9 +72,9 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                { label: 'CLIENT_CREDENTIALS', value: "client_credentials" },
-                { label: 'PASSWORD', value: "password" },
-                { label: 'AUTHORIZATION_CODE', value: "authorization_code" },
+                { label: 'CLIENT_CREDENTIALS', value: "CLIENT_CREDENTIALS" },
+                { label: 'PASSWORD', value: "PASSWORD" },
+                { label: 'AUTHORIZATION_CODE', value: "AUTHORIZATION_CODE" },
             ],
             "attributes": [
                 {
@@ -173,9 +173,9 @@ export const FORM_CONFIG: IForm = {
             },
             "direction": 'row',
             "options": [
-                { label: 'READ', value: "read" },
-                { label: 'WRITE', value: "write" },
-                { label: 'TRUST', value: "trust" },
+                { label: 'READ', value: "READ" },
+                { label: 'WRITE', value: "WRITE" },
+                { label: 'TRUST', value: "TRUST" },
             ],
             "attributes": [
                 {

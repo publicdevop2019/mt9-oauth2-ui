@@ -1,13 +1,13 @@
 export enum grantTypeEnums {
-  refresh_token = 'refresh_token',
-  password = 'password',
-  client_credentials = 'client_credentials',
-  authorization_code = 'authorization_code'
+  refresh_token = 'REFRESH_TOKEN',
+  password = 'PASSWORD',
+  client_credentials = 'CLIENT_CREDENTIALS',
+  authorization_code = 'AUTHORIZATION_CODE'
 }
 export enum scopeEnums {
-  read = 'read',
-  write = 'write',
-  trust = 'trust'
+  read = 'READ',
+  write = 'WRITE',
+  trust = 'TRUST'
 }
 export interface IClient {
   name: string;
