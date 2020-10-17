@@ -214,18 +214,18 @@ export class HttpProxyService {
     private _createUser(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
         let headers = this._getAuthHeader(false, token);
         headers = headers.append("changeId", changeId)
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public', this._getRegPayload(registerFG), { headers: headers })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app', this._getRegPayload(registerFG), { headers: headers })
     }
     private _getActivationCode(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
         let headers = this._getAuthHeader(false, token);
         headers = headers.append("changeId", changeId)
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/pending-users/public', this._getActivatePayload(registerFG), { headers: headers })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/pending-users/app', this._getActivatePayload(registerFG), { headers: headers })
     }
     private _resetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _forgetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/public/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
     private _getRegPayload(fg: FormGroup): IPendingResourceOwner {
         return {
