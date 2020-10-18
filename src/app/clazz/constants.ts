@@ -14,10 +14,10 @@ export const CONST_ROLES_USER: IOption[] = [
     { label: 'ROLE_USER', value: "ROLE_USER" },
 ]
 export const CONST_GRANT_TYPE: IOption[] = [
-    { label: 'CLIENT_CREDENTIALS', value: "client_credentials" },
-    { label: 'PASSWORD', value: "password" },
-    { label: 'AUTHORIZATION_CODE', value: "authorization_code" },
-    { label: 'REFRESH_TOKEN', value: "refresh_token" }
+    { label: 'CLIENT_CREDENTIALS', value: "CLIENT_CREDENTIALS" },
+    { label: 'PASSWORD', value: "PASSWORD" },
+    { label: 'AUTHORIZATION_CODE', value: "AUTHORIZATION_CODE" },
+    { label: 'REFRESH_TOKEN', value: "REFRESH_TOKEN" }
 ]
 export const CONST_HTTP_METHOD: IOption[] = [
     { label: 'HTTP_GET', value: "GET" },
