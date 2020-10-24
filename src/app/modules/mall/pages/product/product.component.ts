@@ -55,7 +55,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.subscriptions.add(sub);
   }
   hasEmptyAttrSales(e: ISku): boolean {
-    return e.attributesSales.length === 0
+    return e.attributesSales.length === 0 || (e.attributesSales.length === 1 && e.attributesSales[0] === '')
   }
   productDetail: IProductDetail;
   productBottomSheet: IBottomSheet<IProductDetail>;
@@ -517,14 +517,16 @@ export class ProductComponent implements OnInit, OnDestroy {
     let attrFormValue = this.fis.formGroupCollection[formId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
       let selected = this.attrList.find(e => e.id === attrFormValue[idKey]);
-      let append = idKey.replace('attributeId', '');
-      let attrValue: string;
-      if (selected.method === 'SELECT') {
-        attrValue = this.fis.formGroupCollection[formId].get('attributeValueSelect' + append).value;
-      } else {
-        attrValue = this.fis.formGroupCollection[formId].get('attributeValueManual' + append).value;
+      if (selected) {
+        let append = idKey.replace('attributeId', '');
+        let attrValue: string;
+        if (selected.method === 'SELECT') {
+          attrValue = this.fis.formGroupCollection[formId].get('attributeValueSelect' + append).value;
+        } else {
+          attrValue = this.fis.formGroupCollection[formId].get('attributeValueManual' + append).value;
+        }
+        return selected.id + ':' + attrValue
       }
-      return selected.id + ':' + attrValue
     });
   }
   private getAddedAttrsForCtrl(ctrlName: string): string {
