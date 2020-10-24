@@ -52,12 +52,14 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
       })
       let var2 = new Set(reqAttrIds);
       let var3 = new Array(...var2);
-      this.attrSvc.readByQuery(0, var3.length, "id:" + var3.join('.')).subscribe(next2 => {
+      this.attrSvc.readByQuery(0, var3.length, "id:" + var3.filter(e=>e).join('.')).subscribe(next2 => {
         Object.keys(parsedRefAttr).forEach(e => {
           let attr = parsedRefAttr[+e];
           let parsed = attr.split(',').map(ee => {
-            let attrId = ee.split(':')[0];
-            return next2.data.find(eee => eee.id === +attrId).name + ":" + ee.split(':')[1];
+            if(ee){
+              let attrId = ee.split(':')[0];
+              return next2.data.find(eee => eee.id === +attrId).name + ":" + ee.split(':')[1];
+            }
           }).join(',')
           parsedRefAttr[+e] = parsed;
         })
