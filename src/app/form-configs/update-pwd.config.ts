@@ -5,6 +5,8 @@ export const FORM_CONFIG: IForm = {
     "inputs": [
         {
             "type": "text",
+            "sensitive":true,
+            "autocomplete":'current-password',
             "display": true,
             "label": "ENTER_YOUR_CURRENT_PASSWORD",
             "key": "currentPwd",
@@ -22,6 +24,8 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
+            "sensitive":true,
+            "autocomplete":'new-password',
             "label": "ENTER_YOUR_NEW_PASSWORD",
             "key": "pwd",
             "position": {
@@ -37,7 +41,9 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
+            "sensitive":true,
             "display": true,
+            "autocomplete":'new-password',
             "label": "REENTER_YOUR_NEW_PASSWORD",
             "key": "confirmPwd",
             "position": {

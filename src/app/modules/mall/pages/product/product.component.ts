@@ -124,6 +124,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
       if (this.productBottomSheet.context !== 'new') {
+        this.attrSalesFormInfo.disabled=true;
         this.fis.restore(this.formId, this.productDetail);
         this.fis.formGroupCollection[this.formId].get('startAt').setValue(this.productDetail.startAt ? new Date(this.productDetail.startAt).toLocaleString() : '')
         this.fis.formGroupCollection[this.formId].get('endAt').setValue(this.productDetail.endAt ? new Date(this.productDetail.endAt).toLocaleString() : '')
