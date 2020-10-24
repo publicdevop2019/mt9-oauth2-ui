@@ -90,7 +90,7 @@ export class HttpProxyService {
             formData.append('file', file, file.name);
             let headerConfig = new HttpHeaders();
             headerConfig = headerConfig.set('changeId', UUID())
-            this._httpClient.post<void>(environment.serverUri + this.FILE_UPLOAD_SVC_NAME + '/files', formData, { observe: 'response', headers: headerConfig }).subscribe(next => {
+            this._httpClient.post<void>(environment.serverUri + this.FILE_UPLOAD_SVC_NAME + '/files/app', formData, { observe: 'response', headers: headerConfig }).subscribe(next => {
                 e.next(next.headers.get('location'));
             });
         })

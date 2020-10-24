@@ -16,6 +16,7 @@ import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IProductSimple } from 'src/app/services/product.service';
 import * as UUID from 'uuid/v1';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
+import { environment } from 'src/environments/environment';
 interface IProductSimplePublic {
   imageUrlSmall: string;
   name: string;
@@ -489,13 +490,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   private uploadFile(files: FileList) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next, { emitEvent: false })
+      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri+'/file-upload-svc/files/public/'+ next, { emitEvent: false })
       this.changeDecRef.detectChanges();
     })
   }
   private uploadFileCommon(files: FileList, formId: string, ctrlName: string) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[formId].get(ctrlName).setValue(next, { emitEvent: false })
+      this.fis.formGroupCollection[formId].get(ctrlName).setValue(environment.serverUri+'/file-upload-svc/files/public/'+next, { emitEvent: false })
       this.changeDecRef.detectChanges();
     })
   }
