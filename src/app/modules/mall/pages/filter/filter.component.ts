@@ -38,6 +38,8 @@ export class FilterComponent implements OnInit {
   catalogList: ICatalog[];
   changeId: string = UUID();
   productBottomSheet: IBottomSheet<IBizFilter>;
+  catalogIndex: number = 0;
+  catalogChunkSize: number = 100;
   constructor(
     public filterSvc: FilterService,
     private fis: FormInfoService,
@@ -57,8 +59,23 @@ export class FilterComponent implements OnInit {
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
     this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
     this.filter = (data as IBottomSheet<IBizFilter>).from;
-
-    combineLatest(this.attrSvc.readByQuery(0, 1000), this.categorySvc.readByQuery(0, 1000, 'type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
+    this.fis.$loadNextPage.subscribe(e => {
+      if (e.formId === this.formIdCatalog && e.ctrlKey.includes('catalogId')) {
+        this.catalogIndex++;
+        this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND').subscribe(next => {
+          if (next.data.length === 0) {
+            this.fis.completeLoading = [...this.fis.completeLoading, e];
+          } else {
+            this.catalogList = [...this.catalogList, ...next.data];
+            this.formInfoCatalog.inputs.filter(el => el.key === e.ctrlKey)[0].options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
+            this.fis.formGroupCollection_template[this.formIdCatalog].inputs[0].options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
+            this.fis.$refresh.next();
+            this.fis.$loadNextPageComplete.next(e);
+          }
+        })
+      }
+    })
+    combineLatest(this.attrSvc.readByQuery(0, 1000), this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });

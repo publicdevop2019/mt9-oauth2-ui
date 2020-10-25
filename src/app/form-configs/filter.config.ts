@@ -28,7 +28,7 @@ export const FORM_CATALOG_CONFIG: IForm = {
     "repeatable": true,
     "inputs": [
         {
-            "type": "select",
+            "type": "paginated-select",
             "display": true,
             "label": "ENTER_LINKED_CATALOG_IDS",
             "key": "catalogId",
