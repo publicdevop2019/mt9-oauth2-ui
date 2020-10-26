@@ -67,7 +67,9 @@ export class FilterComponent implements OnInit {
             this.fis.completeLoading = [...this.fis.completeLoading, e];
           } else {
             this.catalogList = [...this.catalogList, ...next.data];
-            this.formInfoCatalog.inputs.filter(el => el.key === e.ctrlKey)[0].options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
+            this.formInfoCatalog.inputs.filter(el => el.key.includes(e.ctrlKey.replace(new RegExp("_.*$"), ''))).forEach(a => {
+              a.options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
+            })
             this.fis.formGroupCollection_template[this.formIdCatalog].inputs[0].options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
             this.fis.$refresh.next();
             this.fis.$loadNextPageComplete.next(e);
@@ -86,7 +88,14 @@ export class FilterComponent implements OnInit {
       if (this.filter) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.filter.id);
         if (this.filter.catalogs && this.filter.catalogs.length !== 0) {
-          this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.filter.catalogs, 'catalogId'), this.filter.catalogs.length);
+          this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND,id:' + this.filter.catalogs.join('.')).subscribe(next => {
+            this.catalogList = [...next.data, ...this.catalogList];
+            this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.filter.catalogs, 'catalogId'), this.filter.catalogs.length);
+            this.formInfoCatalog.inputs.forEach(a => {
+              a.options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
+            })
+          })
+
         }
         if (this.filter.filters && this.filter.filters.length !== 0) {
           this.fis.restoreDynamicForm(this.formIdFilter, this.fis.parsePayloadArr(this.filter.filters.map(e => e.id), 'attributeId'), this.filter.filters.length);
@@ -133,7 +142,6 @@ export class FilterComponent implements OnInit {
     this.subscriptions.unsubscribe()
     this.fis.resetAll();
   }
-  private transKeyMap: Map<string, string> = new Map();
   ngOnInit() {
   }
   public updateSelectCatalogs(catalog: ICatalog) {
@@ -164,6 +172,7 @@ export class FilterComponent implements OnInit {
       id: formGroup.get('id').value,
       catalogs: catalogs,
       filters: filters,
+      description: formGroup.get('description').value
     }
   }
   private subChangeForForm(formId: string) {
