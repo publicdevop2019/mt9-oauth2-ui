@@ -29,7 +29,7 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "select",
+            "type": "virtual-select",
             "display": false,
             "label": "ENTER_PARENT_ID",
             "key": "parentId",
