@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { ComponentType } from '@angular/cdk/portal';
-import { OnDestroy, ViewChild } from '@angular/core';
+import { OnDestroy, ViewChild, Directive } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetConfig, MatPaginator, MatTableDataSource, PageEvent, Sort } from '@angular/material';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -37,6 +37,7 @@ export interface IBottomSheet<S> {
   context: 'clone' | 'new' | 'edit';
   from: S;
 }
+@Directive()
 export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDestroy {
   sheetComponent: ComponentType<any>;
   displayedColumns: string[] = [];

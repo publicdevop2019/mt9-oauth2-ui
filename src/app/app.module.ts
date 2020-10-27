@@ -1,4 +1,5 @@
 import { LayoutModule } from '@angular/cdk/layout';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -25,6 +26,7 @@ import { EditableSelectSingleComponent } from './components/editable-select-sing
 import { LazyImageComponent } from './components/lazy-image/lazy-image.component';
 import { MsgBoxComponent } from './components/msg-box/msg-box.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { ObjectDetailComponent } from './components/object-detail/object-detail.component';
 import { OperationConfirmDialogComponent } from './components/operation-confirm-dialog/operation-confirm-dialog.component';
 import { PreviewOutletComponent } from './components/preview-outlet/preview-outlet.component';
 import { ProgressSpinnerComponent } from './components/progress-spinner/progress-spinner.component';
@@ -46,14 +48,18 @@ import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/su
 import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
 import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summary-order.component';
 import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
+import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
+import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
 import { ClientComponent } from './modules/my-apps/pages/client/client.component';
 import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
 import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
+import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
 import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/resource-owner.component';
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
 import { LoginComponent } from './pages/login/login.component';
+import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
 import { SettingComponent } from './pages/setting/setting.component';
 import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 import { AuthService } from './services/auth.service';
@@ -67,12 +73,6 @@ import { LoadingInterceptor } from './services/loading.interceptor';
 import { OfflineInterceptor } from './services/offline.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
 import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
-import { OperationHistoryComponent } from './pages/operation-history/operation-history.component';
-import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
-import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
-import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
-import { ObjectDetailComponent } from './components/object-detail/object-detail.component';
-import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [

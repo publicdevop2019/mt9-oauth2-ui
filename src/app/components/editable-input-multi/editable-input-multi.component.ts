@@ -15,7 +15,7 @@ export class EditableInputMultiComponent implements OnInit {
 
   @Input() inputOptions: string[] = [];
   @Output() newValue: EventEmitter<IEditInputListEvent> = new EventEmitter();
-  @ViewChild("userInput", { static: false }) userInput: ElementRef<HTMLInputElement>;
+  @ViewChild("userInput") userInput: ElementRef<HTMLInputElement>;
   inputOptionsNext: string[] = [];
   displayEdit = 'hidden';
   editView = false;

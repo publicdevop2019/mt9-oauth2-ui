@@ -7,7 +7,7 @@ import { IProductDetail } from 'src/app/services/product.service';
 })
 export class PreviewOutletComponent implements OnInit, AfterContentInit {
   @Input() productDetai: IProductDetail;
-  @ViewChild('productView', { static: false }) productRef: ElementRef;
+  @ViewChild('productView') productRef: ElementRef;
   @ViewChild('screenW', { static: true }) widthRef: ElementRef;
   constructor(private changeDecRef: ChangeDetectorRef) { }
   ngAfterContentInit(): void {
