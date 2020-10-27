@@ -87,6 +87,7 @@ export class FilterComponent implements OnInit {
       this.cdr.detectChanges()
       if (this.filter) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.filter.id);
+        this.fis.formGroupCollection[this.formId].get('description').setValue(this.filter.description);
         if (this.filter.catalogs && this.filter.catalogs.length !== 0) {
           this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND,id:' + this.filter.catalogs.join('.')).subscribe(next => {
             this.catalogList = [...next.data, ...this.catalogList];
