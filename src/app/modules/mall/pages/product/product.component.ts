@@ -124,20 +124,25 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
       if (this.productBottomSheet.context !== 'new') {
-        this.attrSalesFormInfo.disabled=true;
+        this.attrSalesFormInfo.disabled = true;
         this.fis.restore(this.formId, this.productDetail);
-        this.fis.formGroupCollection[this.formId].get('startAt').setValue(this.productDetail.startAt ? new Date(this.productDetail.startAt).toLocaleString() : '')
-        this.fis.formGroupCollection[this.formId].get('endAt').setValue(this.productDetail.endAt ? new Date(this.productDetail.endAt).toLocaleString() : '')
+        this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.productDetail.startAt ? new Date(this.productDetail.startAt) : '')
+        this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.productDetail.startAt ? this.getTime(new Date(this.productDetail.startAt)) : '')
+        this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(this.productDetail.endAt ? new Date(this.productDetail.endAt) : '')
+        this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.productDetail.endAt ? this.getTime(new Date(this.productDetail.endAt)) : '')
         this.formInfo.inputs.find(e => e.key === 'status').display = false;
-        this.formInfo.inputs.find(e => e.key === 'startAt').display = true;
+        this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
+        this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
       } else {
         let sub = this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
           if (next === 'AVAILABLE') {
-            this.fis.formGroupCollection[this.formId].get('startAt').setValue(new Date().toLocaleString())
-            this.formInfo.inputs.find(e => e.key === 'startAt').display = false;
+            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(new Date())
+            this.formInfo.inputs.find(e => e.key === 'startAtDate').display = false;
+            this.formInfo.inputs.find(e => e.key === 'startAtTime').display = false;
           } else {
-            this.fis.formGroupCollection[this.formId].get('startAt').setValue('')
-            this.formInfo.inputs.find(e => e.key === 'startAt').display = true;
+            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue('')
+            this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
+            this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
           }
         });
         this.subscriptions.add(sub);
@@ -280,6 +285,18 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.subs[this.formId + '_formCreate'] = sub0;
     this.subscriptions.add(sub0)
     this.subscriptions.add(sub1)
+  }
+  getTime(arg0: Date): string {
+    let hour = arg0.getUTCHours() + '';
+    if (arg0.getUTCHours() < 10)
+      hour = '0' + arg0.getUTCHours()
+    let minutes = arg0.getUTCMinutes() + '';
+    if (arg0.getUTCMinutes() < 10)
+      minutes = '0' + arg0.getUTCMinutes()
+    let sec = arg0.getUTCSeconds() + '';
+    if (arg0.getUTCSeconds() < 10)
+      sec = '0' + arg0.getUTCSeconds()
+    return hour + ':' + minutes + ':' + sec
   }
   private updateChildFormProductOption(option: IProductOptions, childFormId: string) {
     let value = this.fis.parsePayloadArr(option.options.map(e => e.optionValue), 'optionValue');
@@ -468,36 +485,28 @@ export class ProductComponent implements OnInit, OnDestroy {
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
       skus: skusCalc,
-      endAt: formGroup.get('endAt').value ? this.parseDate(formGroup.get('endAt').value) : undefined,
-      startAt: formGroup.get('startAt').value ? this.parseDate(formGroup.get('startAt').value) : undefined,
+      endAt: formGroup.get('endAtDate').value ? this.parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
+      startAt: formGroup.get('startAtDate').value ? this.parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
       attributeSaleImages: attrSaleImages,
     }
   }
-  parseDate(value: string): number {
-    if (this.productDetail) {
-      if (this.productDetail.startAt && new Date(this.productDetail.startAt).toLocaleString() === value) {
-        return this.productDetail.startAt
-      }
-      if (this.productDetail.endAt && new Date(this.productDetail.endAt).toLocaleString() === value) {
-        return this.productDetail.endAt
-      }
-    }
-    let date = value.split(', ')[0]
-    let time = value.split(', ')[1]
-    let utcDate = date.split('/')[2] + '-' + date.split('/')[1] + '-' + date.split('/')[0] + 'T';
-    let utcTime = time.split(':')[0] + ':' + time.split(':')[1] + ':' + time.split(':')[2] + 'Z';
-    return Date.parse(utcDate + utcTime) + new Date().getTimezoneOffset() * 60 * 1000
+  parseDate(value: Date, time: string): number {
+    let split: string[] = time.split(':');
+    let hoursInSec = (+split[0]) * 60 * 60
+    let minuteInSec = (+split[1]) * 60
+    let totalSec = hoursInSec + minuteInSec + (+split[2])
+    return value.getTime() + totalSec * 1000
 
   }
   private uploadFile(files: FileList) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri+'/file-upload-svc/files/public/'+ next, { emitEvent: false })
+      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
       this.changeDecRef.detectChanges();
     })
   }
   private uploadFileCommon(files: FileList, formId: string, ctrlName: string) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[formId].get(ctrlName).setValue(environment.serverUri+'/file-upload-svc/files/public/'+next, { emitEvent: false })
+      this.fis.formGroupCollection[formId].get(ctrlName).setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
       this.changeDecRef.detectChanges();
     })
   }

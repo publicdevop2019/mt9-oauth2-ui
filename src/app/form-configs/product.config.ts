@@ -98,10 +98,10 @@ export const FORM_CONFIG: IForm = {
             ]
         },
         {
-            "type": "text",
+            "type": "date-picker",
             "display": false,
             "label": "CONFIG_START_DATE",
-            "key": "startAt",
+            "key": "startAtDate",
             "position": {
                 "row": "8",
                 "column": "0"
@@ -109,9 +109,29 @@ export const FORM_CONFIG: IForm = {
         },
         {
             "type": "text",
+            "display": false,
+            "label": "CONFIG_START_TIME",
+            "key": "startAtTime",
+            "position": {
+                "row": "8",
+                "column": "0"
+            },
+        },
+        {
+            "type": "date-picker",
             "display": true,
             "label": "CONFIG_END_DATE",
-            "key": "endAt",
+            "key": "endAtDate",
+            "position": {
+                "row": "9",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": true,
+            "label": "CONFIG_END_TIME",
+            "key": "endAtTime",
             "position": {
                 "row": "9",
                 "column": "0"
