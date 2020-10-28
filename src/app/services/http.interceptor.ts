@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, mergeMap, retry, filter, take, finalize } from 'rxjs/operators';

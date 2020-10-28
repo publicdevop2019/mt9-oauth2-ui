@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { MatBottomSheet, MatDialog } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { switchMap } from 'rxjs/operators';
 import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';

@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet, MatDialog } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { DeviceService } from 'src/app/services/device.service';
 import { IBizTask, TaskService } from 'src/app/services/task.service';

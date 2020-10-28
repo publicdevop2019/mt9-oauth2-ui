@@ -1,5 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet, MatDialog, MatSlideToggle } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { filter } from 'rxjs/operators';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { DeviceService } from 'src/app/services/device.service';

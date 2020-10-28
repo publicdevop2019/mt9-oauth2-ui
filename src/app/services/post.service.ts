@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpProxyService } from './http-proxy.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IPostSummary {
   results: IPostCard[]

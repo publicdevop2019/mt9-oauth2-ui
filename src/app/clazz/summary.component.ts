@@ -1,7 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { ComponentType } from '@angular/cdk/portal';
 import { OnDestroy, ViewChild, Directive } from '@angular/core';
-import { MatBottomSheet, MatBottomSheetConfig, MatPaginator, MatTableDataSource, PageEvent, Sort } from '@angular/material';
+import { MatBottomSheet, MatBottomSheetConfig } from '@angular/material/bottom-sheet';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { hasValue } from 'src/app/clazz/utility';

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { CONST_GRANT_TYPE, CONST_ROLES } from 'src/app/clazz/constants';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';

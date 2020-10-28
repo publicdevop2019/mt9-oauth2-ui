@@ -1,5 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet, MatIcon, PageEvent } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatIcon } from '@angular/material/icon';
+import { PageEvent } from '@angular/material/paginator';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { DeviceService } from 'src/app/services/device.service';
 import { IChangeRecord, OperationHistoryService } from 'src/app/services/operation-history.service';

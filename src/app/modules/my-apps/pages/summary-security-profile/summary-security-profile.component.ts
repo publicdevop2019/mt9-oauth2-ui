@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { DeviceService } from 'src/app/services/device.service';
 import { EndpointService, IEndpoint } from 'src/app/services/endpoint.service';

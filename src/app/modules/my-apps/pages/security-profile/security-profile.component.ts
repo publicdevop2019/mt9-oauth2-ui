@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';

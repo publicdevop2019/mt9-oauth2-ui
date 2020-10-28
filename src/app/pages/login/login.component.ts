@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators, FormGroup, Form } from '@angular/forms';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MsgBoxComponent } from 'src/app/components/msg-box/msg-box.component';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';

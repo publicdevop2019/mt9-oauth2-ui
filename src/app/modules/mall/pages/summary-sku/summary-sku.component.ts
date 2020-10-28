@@ -1,5 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
-import { MatBottomSheet, MatDialog, PageEvent } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { AttributeService } from 'src/app/services/attribute.service';

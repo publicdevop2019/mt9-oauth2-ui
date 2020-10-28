@@ -1,6 +1,6 @@
 import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 import { OperationConfirmDialogComponent } from '../components/operation-confirm-dialog/operation-confirm-dialog.component';
