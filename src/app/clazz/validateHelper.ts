@@ -1,6 +1,6 @@
 import { FormInfoService } from "mt-form-builder";
 import { FormGroup } from "@angular/forms";
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { IForm, IInputConfig } from 'mt-form-builder/lib/classes/template.interface';
 
 export class ValidateHelper {
   private previousPayload: any;
@@ -25,7 +25,7 @@ export class ValidateHelper {
     this._formInfo.inputs.filter(e => e.display).forEach(input => this._fis.validateInput(this._formId, input));
     return this.noErrorPresent(this._formInfo.inputs);
   }
-  private noErrorPresent(inputs: any[]): boolean {
+  private noErrorPresent(inputs: IInputConfig[]): boolean {
     return inputs.filter(e => e.display).find(input => input.errorMsg !== null && input.errorMsg !== undefined) === undefined
   }
   private findDelta(newPayload: any): string[] {

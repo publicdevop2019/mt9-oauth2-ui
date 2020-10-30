@@ -11,6 +11,7 @@ import { ClientService } from 'src/app/services/client.service';
 import { grantTypeEnums, IClient, scopeEnums } from '../../interface/client.interface';
 import * as UUID from 'uuid/v1';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
+import { ClientValidator, ErrorMessage } from 'src/app/clazz/validation/validator-client';
 
 @Component({
   selector: 'app-client',
@@ -36,7 +37,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     private fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private _bottomSheetRef: MatBottomSheetRef<ClientComponent>,
-    private cdr:ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {
     this.client = (data as IBottomSheet<IClient>).from;
     this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
@@ -44,7 +45,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
       this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
-      this.fis.formGroupCollection[this.formId].patchValue({resourceId:[]})// keep to trigger checkbox change detect
+      this.fis.formGroupCollection[this.formId].patchValue({ resourceId: [] })// keep to trigger checkbox change detect
       this.cdr.markForCheck();
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         // prevent infinite loop
@@ -140,6 +141,40 @@ export class ClientComponent implements OnDestroy, OnInit {
     this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(), this.changeId)
   }
   doCreate() {
-    this.clientService.create(this.convertToClient(), this.changeId)
+    console.dir(ClientValidator.validate(this.convertToClient()))
+    let errors = ClientValidator.validate(this.convertToClient());
+    if (errors.length > 0) {
+      let uniqueError: ErrorMessage[] = []
+      errors.forEach(e => {
+        if (uniqueError.some(ee => ee.ctrlKey === e.ctrlKey)) {
+          //do nothing
+        } else {
+          uniqueError.push(e)
+        }
+      });
+      uniqueError.forEach(e => {
+        this.formInfo.inputs.find(ee => ee.key === e.ctrlKey).errorMsg = e.message;
+        this.fis.getFormGroup(this.formId).get(e.ctrlKey).valueChanges.subscribe(next => {
+          //sub for same key valueChange
+          let newErrors = ClientValidator.validateField(e.ctrlKey, next);
+          if(newErrors.length>0){
+            let uniqueError: ErrorMessage[] = []
+            newErrors.forEach(e => {
+              if (uniqueError.some(ee => ee.ctrlKey === e.ctrlKey)) {
+                //do nothing
+              } else {
+                uniqueError.push(e)
+              }
+            });
+            this.formInfo.inputs.find(ee => ee.key === e.ctrlKey).errorMsg = uniqueError[0].message;
+          }else{
+            this.formInfo.inputs.find(ee => ee.key === e.ctrlKey).errorMsg = undefined;
+          }
+        })
+      })
+      console.dir(this.formInfo)
+    } else {
+      this.clientService.create(this.convertToClient(), this.changeId)
+    }
   }
 }
