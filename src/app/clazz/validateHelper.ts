@@ -1,6 +1,7 @@
 import { FormInfoService } from "mt-form-builder";
 import { FormGroup } from "@angular/forms";
 import { IForm, IInputConfig } from 'mt-form-builder/lib/classes/template.interface';
+import { ErrorMessage, IAggregateValidator, TValidatorContext } from './validation/validator-common';
 
 export class ValidateHelper {
   private previousPayload: any;
@@ -44,5 +45,50 @@ export class ValidateHelper {
       }
     }
     return changeKeys;
+  }
+  public static checkThenPerform(validator: IAggregateValidator, getPayload: any,context:TValidatorContext, formgGroup: FormGroup, formInfo: IForm): boolean {
+    let errors = validator.validate(getPayload(formgGroup),context);
+    if (errors.length > 0) {
+      let uniqueError: ErrorMessage[] = []
+      errors.forEach(e => {
+        if (uniqueError.some(ee => ee.ctrlKey === e.ctrlKey)) {
+          //do nothing
+        } else {
+          uniqueError.push(e)
+        }
+      });
+      uniqueError.forEach(e => {
+        formInfo.inputs.find(ee => ee.key === e.ctrlKey).errorMsg = e.message;
+      })
+      console.dir('uniqueError')
+      console.dir(uniqueError)
+      formgGroup.valueChanges.subscribe(next => {
+        let newErrors = validator.validate(getPayload(formgGroup),context)
+        //sub for same key valueChange
+        if (newErrors.length > 0) {
+          let uniqueError2: ErrorMessage[] = []
+          newErrors.forEach(e => {
+            if (uniqueError2.some(ee => ee.ctrlKey === e.ctrlKey)) {
+              //do nothing
+            } else {
+              uniqueError2.push(e)
+            }
+          });
+          let keys = uniqueError2.map(e => e.ctrlKey);
+          formInfo.inputs.forEach(input => {
+            if (keys.includes(input.key)) {
+              input.errorMsg = uniqueError2.find(e => e.ctrlKey === input.key).message;
+            } else {
+              input.errorMsg = undefined;
+            }
+          })
+        } else {
+          formInfo.inputs.forEach(e => e.errorMsg = undefined);
+        }
+      })
+      return false
+    } else {
+      return true
+    }
   }
 }

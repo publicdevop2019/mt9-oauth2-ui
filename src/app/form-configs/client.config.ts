@@ -1,5 +1,30 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-
+export const grantTypeList = [
+    { label: 'CLIENT_CREDENTIALS', value: "CLIENT_CREDENTIALS" },
+    { label: 'PASSWORD', value: "PASSWORD" },
+    { label: 'AUTHORIZATION_CODE', value: "AUTHORIZATION_CODE" },
+]
+export const grantTypeListExt = [
+    ...grantTypeList,
+    { label: 'REFRESH_TOKEN', value: "REFRESH_TOKEN" },
+]
+export const clientRoleList = [
+    { label: 'ROLE_FRONTEND', value: "ROLE_FRONTEND" },
+    { label: 'ROLE_BACKEND', value: "ROLE_BACKEND" },
+    { label: 'ROLE_FIRST_PARTY', value: "ROLE_FIRST_PARTY" },
+    { label: 'ROLE_THIRD_PARTY', value: "ROLE_THIRD_PARTY" },
+    { label: 'ROLE_TRUST', value: "ROLE_TRUST" },
+    { label: 'ROLE_ROOT', value: "ROLE_ROOT" },
+]
+export const resourceClientRoleList = [
+    { label: 'ROLE_BACKEND', value: "ROLE_BACKEND" },
+    { label: 'ROLE_FIRST_PARTY', value: "ROLE_FIRST_PARTY" },
+]
+export const scopeList=[
+    { label: 'READ', value: "READ" },
+    { label: 'WRITE', value: "WRITE" },
+    { label: 'TRUST', value: "TRUST" },
+]
 export const FORM_CONFIG: IForm = {
     "repeatable": false,
     "inputs": [
@@ -71,11 +96,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "5",
                 "column": "0"
             },
-            "options": [
-                { label: 'CLIENT_CREDENTIALS', value: "CLIENT_CREDENTIALS" },
-                { label: 'PASSWORD', value: "PASSWORD" },
-                { label: 'AUTHORIZATION_CODE', value: "AUTHORIZATION_CODE" },
-            ],
+            "options": grantTypeList,
             "attributes": [
                 {
                     "type": "required",
@@ -147,14 +168,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "10",
                 "column": "0"
             },
-            "options": [
-                { label: 'ROLE_FRONTEND', value: "ROLE_FRONTEND" },
-                { label: 'ROLE_BACKEND', value: "ROLE_BACKEND" },
-                { label: 'ROLE_FIRST_PARTY', value: "ROLE_FIRST_PARTY" },
-                { label: 'ROLE_THIRD_PARTY', value: "ROLE_THIRD_PARTY" },
-                { label: 'ROLE_TRUST', value: "ROLE_TRUST" },
-                { label: 'ROLE_ROOT', value: "ROLE_ROOT" },
-            ],
+            "options": clientRoleList,
             "attributes": [
                 {
                     "type": "required",
@@ -172,11 +186,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "direction": 'row',
-            "options": [
-                { label: 'READ', value: "READ" },
-                { label: 'WRITE', value: "WRITE" },
-                { label: 'TRUST', value: "TRUST" },
-            ],
+            "options": scopeList,
             "attributes": [
                 {
                     "type": "required",

@@ -1,17 +1,18 @@
-import { Component, Inject, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ClientValidator } from 'src/app/clazz/validation/validator-client';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
-import { grantTypeEnums, IClient, scopeEnums } from '../../interface/client.interface';
 import * as UUID from 'uuid/v1';
-import { IBottomSheet } from 'src/app/clazz/summary.component';
-import { ClientValidator, ErrorMessage } from 'src/app/clazz/validation/validator-client';
+import { grantTypeEnums, IClient, scopeEnums } from '../../interface/client.interface';
 
 @Component({
   selector: 'app-client',
@@ -26,11 +27,11 @@ export class ClientComponent implements OnDestroy, OnInit {
   client: IClient;
   formId = 'client'
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  validator: ValidateHelper;
   productBottomSheet: IBottomSheet<IClient>;
   private formCreatedOb: Observable<string>;
   private previousPayload: any = {};
-  private changeId = UUID()
+  private changeId = UUID();
+  private clientValidator = new ClientValidator()
   constructor(
     public clientService: ClientService,
     public dialog: MatDialog,
@@ -40,7 +41,6 @@ export class ClientComponent implements OnDestroy, OnInit {
     private cdr: ChangeDetectorRef
   ) {
     this.client = (data as IBottomSheet<IClient>).from;
-    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
@@ -52,10 +52,10 @@ export class ClientComponent implements OnDestroy, OnInit {
         if (this.findDelta(e) !== undefined) {
           // clear form value on display = false
           this.formInfo.inputs.find(e => e.key === 'clientSecret').display = e['hasSecret'];
-          this.formInfo.inputs.find(e => e.key === 'registeredRedirectUri').display = (e['grantType'] as string[] || []).indexOf('authorization_code') > -1;
-          this.formInfo.inputs.find(e => e.key === 'refreshToken').display = (e['grantType'] as string[] || []).indexOf('password') > -1;
-          this.formInfo.inputs.find(e => e.key === 'autoApprove').display = (e['grantType'] as string[] || []).indexOf('authorization_code') > -1;
-          this.formInfo.inputs.find(e => e.key === 'refreshTokenValiditySeconds').display = (e['grantType'] as string[] || []).indexOf('password') > -1 && e['refreshToken'];
+          this.formInfo.inputs.find(e => e.key === 'registeredRedirectUri').display = (e['grantType'] as string[] || []).indexOf('AUTHORIZATION_CODE') > -1;
+          this.formInfo.inputs.find(e => e.key === 'refreshToken').display = (e['grantType'] as string[] || []).indexOf('PASSWORD') > -1;
+          this.formInfo.inputs.find(e => e.key === 'autoApprove').display = (e['grantType'] as string[] || []).indexOf('AUTHORIZATION_CODE') > -1;
+          this.formInfo.inputs.find(e => e.key === 'refreshTokenValiditySeconds').display = (e['grantType'] as string[] || []).indexOf('PASSWORD') > -1 && e['refreshToken'];
         }
         this.previousPayload = e;
         // update form config
@@ -70,7 +70,7 @@ export class ClientComponent implements OnDestroy, OnInit {
           description: this.client.description,
           grantType: grantType,
           registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
-          refreshToken: grantType === 'password' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
+          refreshToken: grantType === 'PASSWORD' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
           resourceIndicator: this.client.resourceIndicator,
           autoApprove: this.client.autoApprove,
           authority: this.client.grantedAuthorities,
@@ -92,8 +92,7 @@ export class ClientComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.fis.resetAll();
   }
-  convertToClient(): IClient {
-    let formGroup = this.fis.formGroupCollection[this.formId];
+  convertToClient(formGroup: FormGroup): IClient {
     let grants: grantTypeEnums[] = [];
     let authority: string[] = [];
     let scopes: scopeEnums[] = [];
@@ -106,23 +105,22 @@ export class ClientComponent implements OnDestroy, OnInit {
 
     if (formGroup.get('scope').value)
       scopes = (formGroup.get('scope').value as scopeEnums[]);
-
     return {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
       description: formGroup.get('description').value,
-      hasSecret: formGroup.get('clientSecret').value ? true : false,
+      hasSecret: formGroup.get('hasSecret').value ? true : false,
       clientSecret: formGroup.get('clientSecret').value == '*****' ? '' : formGroup.get('clientSecret').value,
       grantTypeEnums: grants,
       scopeEnums: scopes,
       grantedAuthorities: authority,
-      accessTokenValiditySeconds: formGroup.get('accessTokenValiditySeconds').value as number,
+      accessTokenValiditySeconds: +formGroup.get('accessTokenValiditySeconds').value,
       refreshTokenValiditySeconds: formGroup.get('refreshTokenValiditySeconds').value !== undefined && formGroup.get('refreshTokenValiditySeconds').value !== null && formGroup.get('refreshTokenValiditySeconds').value as number > 0
-        ? formGroup.get('refreshTokenValiditySeconds').value as number : null,
-      resourceIndicator: formGroup.get('resourceIndicator').value,
+        ? +formGroup.get('refreshTokenValiditySeconds').value : null,
+      resourceIndicator: !!formGroup.get('resourceIndicator').value,
       resourceIds: formGroup.get('resourceId').value as string[],
       registeredRedirectUri: formGroup.get('registeredRedirectUri').value ? (formGroup.get('registeredRedirectUri').value as string).split(',') : null,
-      autoApprove: formGroup.get('grantType').value === grantTypeEnums.authorization_code ? formGroup.get('autoApprove').value : null
+      autoApprove: formGroup.get('grantType').value === grantTypeEnums.authorization_code ? !!formGroup.get('autoApprove').value : null
     }
   }
 
@@ -138,43 +136,12 @@ export class ClientComponent implements OnDestroy, OnInit {
     return changeKeys[0];
   }
   doUpdate() {
-    this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(), this.changeId)
+    if (ValidateHelper.checkThenPerform(this.clientValidator, this.convertToClient, 'UPDATE', this.fis.getFormGroup(this.formId), this.formInfo))
+      this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(this.fis.formGroupCollection[this.formId]), this.changeId)
   }
   doCreate() {
-    console.dir(ClientValidator.validate(this.convertToClient()))
-    let errors = ClientValidator.validate(this.convertToClient());
-    if (errors.length > 0) {
-      let uniqueError: ErrorMessage[] = []
-      errors.forEach(e => {
-        if (uniqueError.some(ee => ee.ctrlKey === e.ctrlKey)) {
-          //do nothing
-        } else {
-          uniqueError.push(e)
-        }
-      });
-      uniqueError.forEach(e => {
-        this.formInfo.inputs.find(ee => ee.key === e.ctrlKey).errorMsg = e.message;
-        this.fis.getFormGroup(this.formId).get(e.ctrlKey).valueChanges.subscribe(next => {
-          //sub for same key valueChange
-          let newErrors = ClientValidator.validateField(e.ctrlKey, next);
-          if(newErrors.length>0){
-            let uniqueError: ErrorMessage[] = []
-            newErrors.forEach(e => {
-              if (uniqueError.some(ee => ee.ctrlKey === e.ctrlKey)) {
-                //do nothing
-              } else {
-                uniqueError.push(e)
-              }
-            });
-            this.formInfo.inputs.find(ee => ee.key === e.ctrlKey).errorMsg = uniqueError[0].message;
-          }else{
-            this.formInfo.inputs.find(ee => ee.key === e.ctrlKey).errorMsg = undefined;
-          }
-        })
-      })
-      console.dir(this.formInfo)
-    } else {
-      this.clientService.create(this.convertToClient(), this.changeId)
-    }
+    if (ValidateHelper.checkThenPerform(this.clientValidator, this.convertToClient, 'CREATE', this.fis.getFormGroup(this.formId), this.formInfo))
+      this.clientService.create(this.convertToClient(this.fis.getFormGroup(this.formId)), this.changeId)
   }
+
 }
