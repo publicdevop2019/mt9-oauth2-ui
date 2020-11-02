@@ -5,7 +5,7 @@ import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
@@ -27,7 +27,6 @@ export class FilterComponent implements OnInit {
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   formInfoCatalog: IForm = JSON.parse(JSON.stringify(FORM_CATALOG_CONFIG));
   formInfoFilter: IForm = JSON.parse(JSON.stringify(FORM_FILTER_ITEM_CONFIG));
-  validator: ValidateHelper;
   private formCreatedOb: Observable<string>;
   private catalogFormCreatedOb: Observable<string>;
   private filterFormCreatedOb: Observable<string>;
@@ -57,7 +56,6 @@ export class FilterComponent implements OnInit {
     this.catalogFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdCatalog));
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
-    this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
     this.filter = (data as IBottomSheet<IBizFilter>).from;
     this.fis.$loadNextPage.subscribe(e => {
       if (e.formId === this.formIdCatalog && e.ctrlKey.includes('catalogId')) {
@@ -126,7 +124,6 @@ export class FilterComponent implements OnInit {
       }
       this.subChangeForForm(this.formIdFilter);
 
-      this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     })
   }
   private updateChildFormFilter(option: IFilterItem, childFormId: string) {

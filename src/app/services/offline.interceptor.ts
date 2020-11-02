@@ -58,7 +58,7 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('/file')) {
           let header = new HttpHeaders();
-          header = header.set('location', 'mockImageUploadUrl')
+          header = header.set('location', 'https://img.alicdn.com/imgextra/i3/3191337305/O1CN01X11Ad123pjrtuTsDT_!!3191337305-0-lubanu-s.jpg_430x430q90.jpg')
           return of(new HttpResponse({ status: 200, headers: header })).pipe(delay(this.DEFAULT_DELAY));
         }
         return of(new HttpResponse({ status: 200 })).pipe(delay(this.DEFAULT_DELAY));

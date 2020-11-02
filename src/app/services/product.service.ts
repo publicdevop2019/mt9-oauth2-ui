@@ -51,7 +51,6 @@ export interface IProductDetail {
   attributesKey: string[];
   imageUrlLarge?: string[];
   selectedOptions?: IProductOptions[];
-  specification?: string[];
   attributesProd?: string[];
   attributesGen?: string[];
   attributeSaleImages?: IAttrImage[]

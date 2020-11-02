@@ -3,7 +3,7 @@ import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bott
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/resource-owner.config';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import * as UUID from 'uuid/v1';
@@ -18,7 +18,6 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
   formId = 'resourceOwner';
   private changeId = UUID()
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  validator: ValidateHelper;
   productBottomSheet: IBottomSheet<IResourceOwner>;
   constructor(
     public resourceOwnerService: ResourceOwnerService,
@@ -27,14 +26,12 @@ export class ResourceOwnerComponent implements OnInit, AfterViewInit, OnDestroy 
     private _bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>
   ) {
     this.resourceOwner = (data as IBottomSheet<IResourceOwner>).from;
-    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
     event.preventDefault();
   }
   ngAfterViewInit(): void {
-    this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     if (this.resourceOwner) {
       this.fis.formGroupCollection[this.formId].get('id').setValue(this.resourceOwner.id)
       this.fis.formGroupCollection[this.formId].get('email').setValue(this.resourceOwner.email)

@@ -7,7 +7,6 @@ export const mockProductDetails:IProductDetail={
 	"imageUrlLarge": ["https://img.alicdn.com/imgextra/i2/2891951486/TB2XbmDd4tnkeRjSZSgXXXAuXXa_!!2891951486.jpg_430x430q90.jpg","https://img.alicdn.com/imgextra/i2/2891951486/TB2XbmDd4tnkeRjSZSgXXXAuXXa_!!2891951486.jpg_430x430q90.jpg"],
 	"description": "新品上市 15天试用全面屏大键盘约5mm微边框",
 	"endAt": 1603858163289,
-	"specification": [],
 	"attributesKey": [
 	  "基础分类:其它"
 	],

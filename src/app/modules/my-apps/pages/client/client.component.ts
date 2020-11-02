@@ -7,7 +7,7 @@ import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { ClientValidator } from 'src/app/clazz/validation/validator-client';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
@@ -32,6 +32,7 @@ export class ClientComponent implements OnDestroy, OnInit {
   private previousPayload: any = {};
   private changeId = UUID();
   private clientValidator = new ClientValidator()
+  private validateHelper = new ValidatorHelper()
   constructor(
     public clientService: ClientService,
     public dialog: MatDialog,
@@ -92,7 +93,8 @@ export class ClientComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.fis.resetAll();
   }
-  convertToClient(formGroup: FormGroup): IClient {
+  convertToClient(clientCmpt: ClientComponent): IClient {
+    let formGroup = clientCmpt.fis.getFormGroup(clientCmpt.formId);
     let grants: grantTypeEnums[] = [];
     let authority: string[] = [];
     let scopes: scopeEnums[] = [];
@@ -136,12 +138,12 @@ export class ClientComponent implements OnDestroy, OnInit {
     return changeKeys[0];
   }
   doUpdate() {
-    if (ValidateHelper.checkThenPerform(this.clientValidator, this.convertToClient, 'UPDATE', this.fis.getFormGroup(this.formId), this.formInfo))
-      this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(this.fis.formGroupCollection[this.formId]), this.changeId)
+    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'UPDATE', this.fis.getFormGroup(this.formId), this.formInfo,this,ValidatorHelper.doNothingErrorMapper))
+      this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(this), this.changeId)
   }
   doCreate() {
-    if (ValidateHelper.checkThenPerform(this.clientValidator, this.convertToClient, 'CREATE', this.fis.getFormGroup(this.formId), this.formInfo))
-      this.clientService.create(this.convertToClient(this.fis.getFormGroup(this.formId)), this.changeId)
+    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'CREATE', this.fis.getFormGroup(this.formId), this.formInfo,this,ValidatorHelper.doNothingErrorMapper))
+      this.clientService.create(this.convertToClient(this), this.changeId)
   }
 
 }

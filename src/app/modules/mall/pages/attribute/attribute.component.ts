@@ -4,7 +4,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import * as UUID from 'uuid/v1';
@@ -22,7 +22,6 @@ export class AttributeComponent implements OnInit, OnDestroy {
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   formIdAttrValue = 'attributesValue';
   formInfoAttrValue: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
-  validator: ValidateHelper;
   productBottomSheet: IBottomSheet<IBizAttribute>;
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
@@ -39,7 +38,6 @@ export class AttributeComponent implements OnInit, OnDestroy {
     this.subs.add(sub)
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
-    this.validator = new ValidateHelper(this.formId, this.formInfo, fis)
     this.attribute = (data as IBottomSheet<IBizAttribute>).from;
     combineLatest(this.formCreatedOb).pipe(take(1)).subscribe(() => {
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
@@ -53,7 +51,6 @@ export class AttributeComponent implements OnInit, OnDestroy {
           }
         })
       }
-      this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     })
   }
   dismiss(event: MouseEvent) {

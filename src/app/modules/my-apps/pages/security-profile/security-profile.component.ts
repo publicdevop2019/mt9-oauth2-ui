@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/co
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { FORM_CONFIG } from 'src/app/form-configs/security-profile.config';
 import { EndpointService, IEndpoint } from 'src/app/services/endpoint.service';
 import * as UUID from 'uuid/v1';
@@ -16,7 +16,6 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
   formId = 'securityProfile';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   securityProfile: IEndpoint;
-  validator: ValidateHelper;;
   productBottomSheet: IBottomSheet<IEndpoint>;
   private changeId = UUID()
   constructor(
@@ -26,7 +25,6 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     private _bottomSheetRef: MatBottomSheetRef<SecurityProfileComponent>
   ) {
     this.securityProfile = (data as IBottomSheet<IEndpoint>).from;
-    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis)
   }
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
@@ -36,7 +34,6 @@ export class SecurityProfileComponent implements OnInit, AfterViewInit, OnDestro
     this.fis.resetAll();
   }
   ngAfterViewInit(): void {
-    this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
     if (this.securityProfile) {
       this.fis.restore(this.formId, this.securityProfile)
     }

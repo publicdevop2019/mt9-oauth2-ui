@@ -1,8 +1,8 @@
 <div style="display: flex;flex-direction: row;justify-content: space-between;align-items: baseline;">
     <button mat-raised-button color="primary" *ngIf="productBottomSheet.context==='edit'" style="margin-top: 10px;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&updateProduct()">{{'UPDATE'|translate}}</button>
+        (click)="updateProduct()">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 10px;"
-        (click)="validator.valid()&&imageFormvalidator.valid()&&createProduct()"
+        (click)="createProduct()"
         *ngIf="productBottomSheet.context==='new' || productBottomSheet.context==='clone'">{{'CREATE'|translate}}</button>
     <mat-slide-toggle style="margin-left: 24px;" [color]="'accent'" [checked]="'false'" (change)="doPreview()">
         {{'PREVIEW' | translate}}

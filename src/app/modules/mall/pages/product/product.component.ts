@@ -4,8 +4,8 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
-import { ValidateHelper } from 'src/app/clazz/validateHelper';
+import { getLabel, getLayeredLabel, hasValue, parseAttributePayload } from 'src/app/clazz/utility';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
@@ -17,6 +17,10 @@ import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, Prod
 import * as UUID from 'uuid/v1';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 import { environment } from 'src/environments/environment';
+import { ProductValidator } from 'src/app/clazz/validation/validator-product';
+import { isNullOrUndefined } from 'util';
+import { FormGroup } from '@angular/forms';
+import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
 interface IProductSimplePublic {
   imageUrlSmall: string;
   name: string;
@@ -70,16 +74,13 @@ export class ProductComponent implements OnInit, OnDestroy {
   attrSalesFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_SALES_FORM_CONFIG));
   attrGeneralFormId = 'attributesGeneral';
   attrGeneralFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_GEN_FORM_CONFIG));
-  validator: ValidateHelper;
   imageAttrSaleFormId = 'productAttrSaleImage';
   imageAttrSaleChildFormId = 'imageChildForm';
   imageAttrSaleFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_SALE_FORM_CONFIG_IMAGE));
   imageFormId = 'product_image';
   imageFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_IMAGE));
-  imageFormvalidator: ValidateHelper;
   optionFormId = 'product_option';
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
-  optionFormvalidator: ValidateHelper;
   public attrList: IBizAttribute[];
   private subs: { [key: string]: Subscription } = {};
   private subscriptions: Subscription = new Subscription();
@@ -93,6 +94,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   private salesFormIdTempFormCreatedOb: Observable<string>;
   private imageAttrSaleChildFormCreatedOb: Observable<string>;
   public hasSku: boolean = false;
+  private productValidator = new ProductValidator()
+  private validateHelper = new ValidatorHelper()
   constructor(
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
@@ -112,9 +115,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.subscriptions.add(sub);
     this.productBottomSheet = data;
     this.productDetail = this.productBottomSheet.from;
-    this.validator = new ValidateHelper(this.formId, this.formInfo, this.fis);
-    this.imageFormvalidator = new ValidateHelper(this.imageFormId, this.imageFormInfo, this.fis);
-    this.optionFormvalidator = new ValidateHelper(this.optionFormId, this.optionFormInfo, this.fis);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.prodFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrProdFormId));
     this.salesFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrSalesFormId));
@@ -274,9 +274,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.subChangeForForm(this.attrProdFormId);
       this.subChangeForForm(this.attrGeneralFormId);
 
-      this.validator.updateErrorMsg(this.fis.formGroupCollection[this.formId]);
-      this.imageFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.imageFormId]);
-      this.optionFormvalidator.updateErrorMsg(this.fis.formGroupCollection[this.optionFormId]);
       let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmall').valueChanges.subscribe((next) => { this.uploadFile(next) })
       this.subs['imageUrlSmallFile_valueChange'] = sub3;
       this.subscriptions.add(sub3)
@@ -389,107 +386,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   private isLeafNode(catalogs: ICatalog[], catalog: ICatalog): boolean {
     return catalogs.filter(node => node.parentId === catalog.id).length == 0
   }
-  convertToPayload(): IProductDetail {
-    let formGroup = this.fis.formGroupCollection[this.formId];
-    let valueSnapshot = this.fis.formGroupCollection[this.imageFormId].value;
-    let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string).filter(e => e !== '');
-    let selectedOptions: IProductOptions[] = [];
-    Object.keys(this.fis.formGroupCollection[this.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((ctrlName) => {
-      let var1 = <IProductOptions>{};
-      var1.title = this.fis.formGroupCollection[this.optionFormId].get(ctrlName).value;
-      var1.options = [];
-      let fg = this.fis.formGroupCollection['optionForm' + ctrlName.replace('productOption', '')];
-      var1.options = Object.keys(fg.controls).filter(e => e.indexOf('optionValue') > -1).map(e => {
-        return <IProductOption>{
-          optionValue: fg.get(e).value,
-          priceVar: fg.get(e.replace('optionValue', 'optionPriceChange')).value,
-        }
-      });
-      selectedOptions.push(var1)
-    });
-    let skusCalc: ISku[] = [];
-    if (this.hasSku) {
-      Object.keys(this.fis.formGroupCollection[this.attrSalesFormId].controls).filter(e => e.indexOf('storageOrder') > -1).forEach((ctrlName) => {
-        let var1 = <ISku>{};
-        let suffix = ctrlName.replace('storageOrder', '');
-        var1.attributesSales = this.getAddedAttrs(this.salesFormIdTempId + suffix);
-        var1.price = this.fis.formGroupCollection[this.attrSalesFormId].get('price' + suffix).value;
-        if (this.productBottomSheet.context === 'new' || this.productBottomSheet.context === 'clone') {
-          //create
-          var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
-          var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
-          var1.sales = this.fis.formGroupCollection[this.attrSalesFormId].get('sales' + suffix).value;
-        } else if (this.productDetail && this.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
-          let var11 = this.fis.formGroupCollection[this.attrSalesFormId].get('storage_OrderIncreaseBy' + suffix).value;
-          if (var11)
-            var1.increaseOrderStorage = var11;
-          let var12 = this.fis.formGroupCollection[this.attrSalesFormId].get('storage_OrderDecreaseBy' + suffix).value;
-          if (var12)
-            var1.decreaseOrderStorage = var12;
-          let var13 = this.fis.formGroupCollection[this.attrSalesFormId].get('storage_ActualIncreaseBy' + suffix).value;
-          if (var13)
-            var1.increaseActualStorage = var13;
-          let var14 = this.fis.formGroupCollection[this.attrSalesFormId].get('storage_ActualDecreaseBy' + suffix).value;
-          if (var14)
-            var1.decreaseActualStorage = var14;
-        } else if (this.productDetail && this.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
-          //new sku during update product
-          var1.storageOrder = this.fis.formGroupCollection[this.attrSalesFormId].get('storageOrder' + suffix).value;
-          var1.storageActual = this.fis.formGroupCollection[this.attrSalesFormId].get('storageActual' + suffix).value;
-          var1.sales = this.fis.formGroupCollection[this.attrSalesFormId].get('sales' + suffix).value;
-        } else {
-
-        }
-        skusCalc.push(var1)
-      });
-    } else {
-      let var1 = <ISku>{};
-      var1.attributesSales = [];
-      if (!this.productDetail) {
-        //create
-        var1.storageOrder = formGroup.get('storageOrder').value
-        var1.storageActual = formGroup.get('storageActual').value
-        var1.price = formGroup.get('price').value;
-        var1.sales = formGroup.get('sales').value;
-        skusCalc.push(var1)
-      } else {
-        //update
-        var1.increaseOrderStorage = formGroup.get('storage_OrderIncreaseBy').value
-        var1.decreaseOrderStorage = formGroup.get('storage_OrderDecreaseBy').value
-        var1.increaseActualStorage = formGroup.get('storage_ActualIncreaseBy').value
-        var1.decreaseActualStorage = formGroup.get('storage_ActualDecreaseBy').value
-        var1.price = formGroup.get('price').value;
-        var1.sales = formGroup.get('sales').value;
-        skusCalc.push(var1)
-      }
-    }
-    let attrSaleImages = [];
-    if (this.hasSku && this.hasAttrsForCtrl()) {
-      Object.keys(this.fis.formGroupCollection[this.imageAttrSaleFormId].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
-        let var1 = <IAttrImage>{};
-        var1.attributeSales = this.getAddedAttrsForCtrl(ctrlName)
-        let append = ctrlName.replace('attributeId', '');
-        let childFormValue = this.fis.formGroupCollection[this.imageAttrSaleChildFormId + append].value;
-        var1.imageUrls = Object.keys(childFormValue).map(e => childFormValue[e] as string).filter(e => e !== '');;
-        attrSaleImages.push(var1)
-      });
-    }
-    return {
-      id: formGroup.get('id').value,
-      attributesKey: formGroup.get('attributesKey').value,
-      attributesProd: this.hasAttr(this.attrProdFormId) ? this.getAddedAttrs(this.attrProdFormId) : null,
-      attributesGen: this.hasAttr(this.attrGeneralFormId) ? this.getAddedAttrs(this.attrGeneralFormId) : null,
-      name: formGroup.get('name').value,
-      imageUrlSmall: formGroup.get('imageUrlSmall').value,
-      description: formGroup.get('description').value,
-      imageUrlLarge: imagesUrl,
-      selectedOptions: selectedOptions.filter(e => e.title !== ''),
-      skus: skusCalc,
-      endAt: formGroup.get('endAtDate').value ? this.parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
-      startAt: formGroup.get('startAtDate').value ? this.parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
-      attributeSaleImages: attrSaleImages,
-    }
-  }
   parseDate(value: Date, time: string): number {
     let split: string[] = time.split(':');
     let hoursInSec = (+split[0]) * 60 * 60
@@ -500,7 +396,11 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   private uploadFile(files: FileList) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
+      if (next.includes('http')) {
+        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next, { emitEvent: false })
+      } else {
+        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
+      }
       this.changeDecRef.detectChanges();
     })
   }
@@ -552,8 +452,10 @@ export class ProductComponent implements OnInit, OnDestroy {
     return selected.id + ':' + attrValue
   }
   private hasAttrsForCtrl(): boolean {
-    let attrFormValue = this.fis.formGroupCollection[this.imageAttrSaleFormId].value;
-    return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
+    let attrFormValue = this.fis.formGroupCollection[this.imageAttrSaleFormId] && this.fis.formGroupCollection[this.imageAttrSaleFormId].value;
+    if (attrFormValue)
+      return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
+    return false;
   }
   private updateValueForForm(attrs: string[], formId: string) {
     this.fis.restoreDynamicForm(formId, parseAttributePayload(attrs, this.attrList), attrs.length);
@@ -583,18 +485,56 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.subscriptions.add(sub)
     }
   }
+  checkInput(key: string) {
+    if (!hasValue(this.fis.getFormGroup(this.formId).get(key).value)) {
+      this.formInfo.inputs.find(e => e.key === key).errorMsg = "REQUIRED";
+      this.fis.getFormGroup(this.formId).get(key).valueChanges.subscribe(next => {
+        if (!hasValue(next)) {
+          this.formInfo.inputs.find(e => e.key === key).errorMsg = "REQUIRED";
+        } else {
+          this.formInfo.inputs.find(e => e.key === key).errorMsg = undefined
+        }
+      })
+    } else {
+      this.formInfo.inputs.find(e => e.key === key).errorMsg = undefined
+    }
+  }
   createProduct() {
-    this.productSvc.create(this.convertToPayload(), this.changeId)
+    console.dir(this.convertToPayload(this))
+    this.checkInput('status')
+    this.checkInput('hasSku')
+    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis.getFormGroup(this.formId), this.formInfo, this, this.productErrorMapper)) {
+      this.productSvc.create(this.convertToPayload(this), this.changeId);
+    }
+  }
+  productErrorMapper(original: ErrorMessage[], cmpt: ProductComponent) {
+    console.dir(original)
+    if (cmpt.fis.getFormGroup(cmpt.formId).get('hasSku')) {
+      let next = original.map(e => {
+        if (['0_price', '0_storageActual', '0_storageOrder', '0_decreaseActualStorage', '0_decreaseOrderStorage', '0_increaseActualStorage', '0_increaseOrderStorage'].includes(e.ctrlKey)) {
+          return {
+            ...e,
+            ctrlKey: e.ctrlKey.replace('0_', '')
+          }
+        } else {
+          return e
+        }
+      })
+      return next
+    } else {
+      return original;
+    }
   }
   updateProduct() {
-    this.productSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(), this.changeId)
+    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'UPDATE', this.fis.getFormGroup(this.formId), this.formInfo, this, ValidatorHelper.doNothingErrorMapper))
+      this.productSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   previewFlag: boolean = false;
   doPreview() {
     this.previewFlag = !this.previewFlag;
   }
   parseProductForm() {
-    let beforeParse = this.convertToPayload();
+    let beforeParse = this.convertToPayload(this);
     let var1: IProductSkuPublic[] = [];
     let skuIds = new Set<string>();
     let lowestPrice = 0;
@@ -629,5 +569,105 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
     return afterParse;
   }
+  convertToPayload(productCmpt: ProductComponent): IProductDetail {
+    let formGroup = productCmpt.fis.formGroupCollection[productCmpt.formId];
+    let valueSnapshot = productCmpt.fis.formGroupCollection[productCmpt.imageFormId].value;
+    let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string).filter(e => e !== '');
+    let selectedOptions: IProductOptions[] = [];
+    Object.keys(productCmpt.fis.formGroupCollection[productCmpt.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((ctrlName) => {
+      let var1 = <IProductOptions>{};
+      var1.title = productCmpt.fis.formGroupCollection[productCmpt.optionFormId].get(ctrlName).value;
+      var1.options = [];
+      let fg = productCmpt.fis.formGroupCollection['optionForm' + ctrlName.replace('productOption', '')];
+      var1.options = Object.keys(fg.controls).filter(e => e.indexOf('optionValue') > -1).map(e => {
+        return <IProductOption>{
+          optionValue: fg.get(e).value,
+          priceVar: fg.get(e.replace('optionValue', 'optionPriceChange')).value,
+        }
+      });
+      selectedOptions.push(var1)
+    });
+    let skusCalc: ISku[] = [];
+    if (productCmpt.hasSku && productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId]) {
+      Object.keys(productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].controls).filter(e => e.indexOf('storageOrder') > -1).forEach((ctrlName) => {
+        let var1 = <ISku>{};
+        let suffix = ctrlName.replace('storageOrder', '');
+        var1.attributesSales = productCmpt.getAddedAttrs(productCmpt.salesFormIdTempId + suffix);
+        var1.price = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('price' + suffix).value;
+        if (productCmpt.productBottomSheet.context === 'new' || productCmpt.productBottomSheet.context === 'clone') {
+          //create
+          var1.storageOrder = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageOrder' + suffix).value;
+          var1.storageActual = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageActual' + suffix).value;
+          var1.sales = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('sales' + suffix).value;
+        } else if (productCmpt.productDetail && productCmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
+          let var11 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_OrderIncreaseBy' + suffix).value;
+          if (var11)
+            var1.increaseOrderStorage = var11;
+          let var12 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_OrderDecreaseBy' + suffix).value;
+          if (var12)
+            var1.decreaseOrderStorage = var12;
+          let var13 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_ActualIncreaseBy' + suffix).value;
+          if (var13)
+            var1.increaseActualStorage = var13;
+          let var14 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_ActualDecreaseBy' + suffix).value;
+          if (var14)
+            var1.decreaseActualStorage = var14;
+        } else if (productCmpt.productDetail && productCmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
+          //new sku during update product
+          var1.storageOrder = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageOrder' + suffix).value;
+          var1.storageActual = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageActual' + suffix).value;
+          var1.sales = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('sales' + suffix).value;
+        } else {
 
+        }
+        skusCalc.push(var1)
+      });
+    } else {
+      let var1 = <ISku>{};
+      var1.attributesSales = [];
+      if (!productCmpt.productDetail) {
+        //create
+        var1.storageOrder = +formGroup.get('storageOrder').value
+        var1.storageActual = +formGroup.get('storageActual').value
+        var1.price = +formGroup.get('price').value;
+        var1.sales = +formGroup.get('sales').value;
+        skusCalc.push(var1)
+      } else {
+        //update
+        var1.increaseOrderStorage = +formGroup.get('storage_OrderIncreaseBy').value
+        var1.decreaseOrderStorage = +formGroup.get('storage_OrderDecreaseBy').value
+        var1.increaseActualStorage = +formGroup.get('storage_ActualIncreaseBy').value
+        var1.decreaseActualStorage = +formGroup.get('storage_ActualDecreaseBy').value
+        var1.price = formGroup.get('price').value;
+        var1.sales = formGroup.get('sales').value;
+        skusCalc.push(var1)
+      }
+    }
+    let attrSaleImages = [];
+    if (productCmpt.hasSku && productCmpt.hasAttrsForCtrl()) {
+      Object.keys(productCmpt.fis.formGroupCollection[productCmpt.imageAttrSaleFormId].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
+        let var1 = <IAttrImage>{};
+        var1.attributeSales = productCmpt.getAddedAttrsForCtrl(ctrlName)
+        let append = ctrlName.replace('attributeId', '');
+        let childFormValue = productCmpt.fis.formGroupCollection[productCmpt.imageAttrSaleChildFormId + append].value;
+        var1.imageUrls = Object.keys(childFormValue).map(e => childFormValue[e] as string).filter(e => e !== '');;
+        attrSaleImages.push(var1)
+      });
+    }
+    return {
+      id: formGroup.get('id').value,
+      attributesKey: formGroup.get('attributesKey').value,
+      attributesProd: productCmpt.hasAttr(productCmpt.attrProdFormId) ? productCmpt.getAddedAttrs(productCmpt.attrProdFormId) : null,
+      attributesGen: productCmpt.hasAttr(productCmpt.attrGeneralFormId) ? productCmpt.getAddedAttrs(productCmpt.attrGeneralFormId) : null,
+      name: formGroup.get('name').value,
+      imageUrlSmall: formGroup.get('imageUrlSmall').value,
+      description: formGroup.get('description').value,
+      imageUrlLarge: imagesUrl,
+      selectedOptions: selectedOptions.filter(e => e.title !== ''),
+      skus: skusCalc,
+      endAt: formGroup.get('endAtDate').value ? productCmpt.parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
+      startAt: formGroup.get('startAtDate').value ? productCmpt.parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
+      attributeSaleImages: attrSaleImages,
+    }
+  }
 }
