@@ -9,6 +9,7 @@ import { filter, take } from 'rxjs/operators';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { ClientValidator } from 'src/app/clazz/validation/validator-client';
+import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
 import * as UUID from 'uuid/v1';
@@ -138,12 +139,19 @@ export class ClientComponent implements OnDestroy, OnInit {
     return changeKeys[0];
   }
   doUpdate() {
-    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'UPDATE', this.fis.getFormGroup(this.formId), this.formInfo,this,ValidatorHelper.doNothingErrorMapper))
+    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'UPDATE', this.fis, this, this.productErrorMapper))
       this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(this), this.changeId)
   }
   doCreate() {
-    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'CREATE', this.fis.getFormGroup(this.formId), this.formInfo,this,ValidatorHelper.doNothingErrorMapper))
+    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'CREATE', this.fis, this, this.productErrorMapper))
       this.clientService.create(this.convertToClient(this), this.changeId)
   }
-
+  productErrorMapper(original: ErrorMessage[], cmpt: ClientComponent) {
+    return original.map(e => {
+      return {
+        ...e,
+        formId: cmpt.formId
+      }
+    })
+  }
 }

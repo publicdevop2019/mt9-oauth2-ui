@@ -94,7 +94,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   private salesFormIdTempFormCreatedOb: Observable<string>;
   private imageAttrSaleChildFormCreatedOb: Observable<string>;
   public hasSku: boolean = false;
-  private productValidator = new ProductValidator()
+  private productValidator = new ProductValidator(this.formId)
   private validateHelper = new ValidatorHelper()
   constructor(
     public productSvc: ProductService,
@@ -500,16 +500,42 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
   createProduct() {
-    console.dir(this.convertToPayload(this))
     this.checkInput('status')
     this.checkInput('hasSku')
-    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis.getFormGroup(this.formId), this.formInfo, this, this.productErrorMapper)) {
+    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis, this, this.productErrorMapper)) {
       this.productSvc.create(this.convertToPayload(this), this.changeId);
     }
   }
   productErrorMapper(original: ErrorMessage[], cmpt: ProductComponent) {
-    console.dir(original)
-    if (cmpt.fis.getFormGroup(cmpt.formId).get('hasSku')) {
+    let next = cmpt.pareseOptionFormError(original, cmpt);
+    let next2 = cmpt.pareseSkuFormError(next, cmpt);
+    return next2
+  }
+  public pareseOptionFormError(original: ErrorMessage[], cmpt: ProductComponent) {
+    if (original.some(e => e.formId === cmpt.optionFormId)) {
+      return original.map(e => {
+        if (e.formId === cmpt.optionFormId) {
+          if (e.ctrlKey.includes('optionValue')) {
+            let var0 = e.ctrlKey.split('_')[0] === '0' ? '' : "_" + (+e.ctrlKey.split('_')[0] - 1);
+            let var1 = e.ctrlKey.split('_')[1] === '0' ? '' : "_" + (+e.ctrlKey.split('_')[1] - 1);
+            return {
+              ...e,
+              ctrlKey: 'optionValue' + var1,
+              formId: 'optionForm' + var0
+            }
+          } else {
+            return e
+          }
+        } else {
+          return e
+        }
+      })
+    } else {
+      return original
+    }
+  }
+  public pareseSkuFormError(original: ErrorMessage[], cmpt: ProductComponent) {
+    if (!cmpt.hasSku) {
       let next = original.map(e => {
         if (['0_price', '0_storageActual', '0_storageOrder', '0_decreaseActualStorage', '0_decreaseOrderStorage', '0_increaseActualStorage', '0_increaseOrderStorage'].includes(e.ctrlKey)) {
           return {
@@ -526,7 +552,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
   }
   updateProduct() {
-    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'UPDATE', this.fis.getFormGroup(this.formId), this.formInfo, this, ValidatorHelper.doNothingErrorMapper))
+    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'UPDATE', this.fis, this, ValidatorHelper.doNothingErrorMapper))
       this.productSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   previewFlag: boolean = false;

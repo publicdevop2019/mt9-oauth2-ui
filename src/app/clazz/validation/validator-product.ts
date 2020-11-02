@@ -1,124 +1,106 @@
-import { clientRoleList, grantTypeListExt, resourceClientRoleList, scopeList } from 'src/app/form-configs/client.config';
-import { grantTypeEnums, IClient } from 'src/app/modules/my-apps/interface/client.interface';
 import { IAttrImage, IProductDetail, IProductOptions, ISku } from 'src/app/services/product.service';
-import { IAggregateValidator, TValidatorContext, ErrorMessage, Validator, BooleanValidator, ListValidator, StringValidator, NumberValidator, DefaultValidator } from './validator-common';
+import { hasValue } from '../utility';
+import { DefaultValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidator, TValidatorContext, Validator } from './validator-common';
 
 export class ProductValidator implements IAggregateValidator {
-    public rules = new Map<string, Validator>();
-    constructor() {
-        this.rules.set('name', new ProductNameValidator())
-        this.rules.set('description', new ProductDescriptionValidator())
-        this.rules.set('imageUrlSmall', new ProductImageUrlSmallValidator())
-        this.rules.set('startAt', new ProductStartAtValidator())
-        this.rules.set('endAt', new ProductEndAtValidator())
-        this.rules.set('skus', new ProductSkusCreateValidator())
-        this.rules.set('attributeSaleImages', new ProductAttributeSaleImagesCreateValidator())
-        this.rules.set('imageUrlLarge', new ProductImageUrlLargeValidator())
-        this.rules.set('selectedOptions', new ProductSelectedOptionsValidator())
-        this.rules.set('attributesKey', new ProductAttributesKeyValidator())
-        this.rules.set('attributesGen', new ProductAttributesGenValidator())
-        this.rules.set('attributesProd', new ProductAttributesProdValidator())
+    private formId: string;
+    public rules = new Map<string, TValidator>();
+    constructor(formId: string) {
+        this.formId = formId;
+        this.rules.set('name', this.nameValidator)
+        this.rules.set('description', this.descriptionValidator)
+        this.rules.set('imageUrlSmall', this.imageUrlSmallValidator)
+        this.rules.set('startAt', this.startAtValidator)
+        this.rules.set('endAt', this.endAtValidator)
+        this.rules.set('skus', this.skusCreateValidator)
+        this.rules.set('attributeSaleImages', this.attributeSaleImagesCreateValidator)
+        this.rules.set('imageUrlLarge', this.imageUrlLargeValidator)
+        this.rules.set('selectedOptions', this.selectedOptionsValidator)
+        this.rules.set('attributesKey', this.attributesKeyValidator)
+        this.rules.set('attributesGen', this.attributesGenValidator)
+        this.rules.set('attributesProd', this.attributesProdValidator)
 
     }
     public validate(payload: IProductDetail, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
-        errors.push(...this.rules.get('name').validate(payload.name, payload))
-        errors.push(...this.rules.get('description').validate(payload.description))
-        errors.push(...this.rules.get('imageUrlSmall').validate(payload.imageUrlSmall))
-        errors.push(...this.rules.get('startAt').validate(payload.startAt, payload))
-        errors.push(...this.rules.get('endAt').validate(payload.endAt, payload))
-        errors.push(...this.rules.get('skus').validate(payload.skus, payload))
-        errors.push(...this.rules.get('attributeSaleImages').validate(payload.attributeSaleImages))
-        errors.push(...this.rules.get('imageUrlLarge').validate(payload.imageUrlLarge))
-        errors.push(...this.rules.get('selectedOptions').validate(payload.selectedOptions, payload))
-        errors.push(...this.rules.get('attributesKey').validate(payload.attributesKey))
-        errors.push(...this.rules.get('attributesGen').validate(payload.attributesGen))
-        errors.push(...this.rules.get('attributesProd').validate(payload.attributesProd, payload))
-
-
+        errors.push(...this.rules.get('name')(payload.name, payload))
+        errors.push(...this.rules.get('description')(payload.description))
+        errors.push(...this.rules.get('imageUrlSmall')(payload.imageUrlSmall))
+        errors.push(...this.rules.get('startAt')(payload.startAt, payload))
+        errors.push(...this.rules.get('endAt')(payload.endAt, payload))
+        errors.push(...this.rules.get('skus')(payload.skus, payload))
+        errors.push(...this.rules.get('attributeSaleImages')(payload.attributeSaleImages))
+        errors.push(...this.rules.get('imageUrlLarge')(payload.imageUrlLarge))
+        errors.push(...this.rules.get('selectedOptions')(payload.selectedOptions, payload))
+        errors.push(...this.rules.get('attributesKey')(payload.attributesKey))
+        errors.push(...this.rules.get('attributesGen')(payload.attributesGen))
+        errors.push(...this.rules.get('attributesProd')(payload.attributesProd, payload))
         return errors.filter(e => e);
     }
-}
-export class ProductNameValidator extends Validator {
-    validate = (value: any) => {
+    nameValidator: TValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         StringValidator.lessThanOrEqualTo(value, 50, results);
         StringValidator.greaterThanOrEqualTo(value, 1, results);
-        return results.map(e => { return { ...e, ctrlKey: "name" } });
+        return appendCtrlKey(results, 'name', this.formId)
     }
-}
-export class ProductAttributesKeyValidator extends Validator {
-    validate = (value: string[]) => {
+    attributesKeyValidator: TValidator = (value: string[]) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
-        return results.map(e => { return { ...e, ctrlKey: "attributesKey" } });
+        return appendCtrlKey(results, 'attributesKey', this.formId)
     }
-}
-export class ProductAttributesProdValidator extends Validator {
-    validate = (value: string[]) => {
+    attributesProdValidator = (value: string[]) => {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(value, results)) {
 
         } else {
             results = []
         }
-        return results.map(e => { return { ...e, ctrlKey: "attributesProd" } });
+        return appendCtrlKey(results, 'attributesProd', this.formId)
     }
-}
-export class ProductAttributesGenValidator extends Validator {
-    validate = (value: string[]) => {
+    attributesGenValidator = (value: string[]) => {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(value, results)) {
 
         } else {
             results = []
         }
-        return results.map(e => { return { ...e, ctrlKey: "attributesGen" } });
+        return appendCtrlKey(results, 'attributesGen', this.formId)
     }
-}
-export class ProductSelectedOptionsValidator extends Validator {
-    validate = (value: IProductOptions[]) => {
+    selectedOptionsValidator = (value: IProductOptions[]) => {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(value, results)) {
-            value.forEach(e => {
-                StringValidator.hasValue(e.title, results);
-                ListValidator.hasValue(e.options, results)
-                e.options.forEach(ee => {
-                    StringValidator.hasValue(ee.optionValue, results);
+            value.forEach((e, index) => {
+                StringValidator.hasValue(e.title, results, index + "_title");
+                ListValidator.hasValue(e.options, results, index + "_options")
+                e.options.forEach((ee, i) => {
+                    StringValidator.hasValue(ee.optionValue, results, index + "_" + i + "_optionValue");
                 })
             })
         } else {
             results = [];
         }
-        return results.map(e => { return { ...e, ctrlKey: "selectedOptions" } });
+        return appendCtrlKey(results, 'selectedOptions', 'product_option')
     }
-}
-export class ProductStartAtValidator extends Validator {
-    validate = (value: any) => {
+
+    startAtValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         NumberValidator.hasValue(value, results);
-        return results.map(e => { return { ...e, ctrlKey: "startAt" } });
+        return appendCtrlKey(results, 'startAt', this.formId)
     }
-}
-export class ProductEndAtValidator extends Validator {
-    validate = (value: any) => {
+    endAtValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         if (value) {
             NumberValidator.hasValue(value, results);
             NumberValidator.greaterThanOrEqualTo(value, new Date().getTime(), results);
         }
-        return results.map(e => { return { ...e, ctrlKey: "endAt" } });
+        return appendCtrlKey(results, 'endAt', this.formId)
     }
-}
-export class ProductImageUrlSmallValidator extends Validator {
-    validate = (value: any) => {
+    imageUrlSmallValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         StringValidator.hasValue(value, results);
-        return results.map(e => { return { ...e, ctrlKey: "imageUrlSmall" } });
+        return appendCtrlKey(results, 'imageUrlSmall', this.formId)
     }
-}
-export class ProductSkusCreateValidator extends Validator {
-    validate = (value: ISku[]) => {
+    skusCreateValidator = (value: ISku[]) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results)
         value.forEach((e, index) => {
@@ -139,21 +121,9 @@ export class ProductSkusCreateValidator extends Validator {
             DefaultValidator.notExist(e.increaseActualStorage, results, index + '_increaseActualStorage')
             DefaultValidator.notExist(e.increaseOrderStorage, results, index + '_increaseOrderStorage')
         })
-        return results.map(e => {
-            if (e.ctrlKey) {
-                return e
-            }
-            else {
-                return {
-                    ...e,
-                    ctrlKey: 'sku'
-                }
-            }
-        });
+        return appendCtrlKey(results, 'sku', this.formId)
     }
-}
-export class ProductAttributeSaleImagesCreateValidator extends Validator {
-    validate = (value: IAttrImage[]) => {
+    attributeSaleImagesCreateValidator = (value: IAttrImage[]) => {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(value, results)) {
             value.forEach(e => {
@@ -163,31 +133,39 @@ export class ProductAttributeSaleImagesCreateValidator extends Validator {
         } else {
             results = [];
         }
-
-        return results.map(e => { return { ...e, ctrlKey: "attributeSaleImages" } });
+        return appendCtrlKey(results, 'attributeSaleImages', this.formId)
     }
-}
-export class ProductImageUrlLargeValidator extends Validator {
-    validate = (value: string[]) => {
+    imageUrlLargeValidator = (value: string[]) => {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(value, results)) {
 
         } else {
             results = [];
         }
-
-        return results.map(e => { return { ...e, ctrlKey: "imageUrlLarge" } });
+        return appendCtrlKey(results, 'imageUrlLarge', this.formId)
     }
-}
-export class ProductDescriptionValidator extends Validator {
-    validate = (value: any) => {
+    descriptionValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         if (StringValidator.hasValue(value, results)) {
             StringValidator.lessThanOrEqualTo(value, 50, results)
         } else {
             results = [];
         }
-        return results.map(e => { return { ...e, ctrlKey: "description" } });
+        return appendCtrlKey(results, 'description', this.formId)
     }
-}
 
+}
+export function appendCtrlKey(results: ErrorMessage[], key: string, id: string) {
+    return results.map(e => {
+        if (hasValue(e.ctrlKey) && hasValue(e.formId)) {
+            return e
+        }
+        else {
+            return {
+                ...e,
+                ctrlKey: hasValue(e.ctrlKey) ? e.ctrlKey : key,
+                formId: hasValue(e.formId) ? e.formId : id,
+            }
+        }
+    });
+}

@@ -2,8 +2,10 @@ export type TValidatorContext = 'CREATE' | 'UPDATE' | 'DELETE'
 export interface ErrorMessage {
     type: string,
     ctrlKey?: string
+    formId?: string
     message?: string
 }
+export type TValidator = (value: any, payload?: any) => ErrorMessage[];
 export abstract class Validator {
     validate: (value: any, payload?: any) => ErrorMessage[];
 }
