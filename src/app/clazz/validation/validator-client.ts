@@ -1,164 +1,150 @@
 import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from './constant';
 import { grantTypeEnums, IClient } from './interfaze-client';
-import { IAggregateValidator, TValidatorContext, ErrorMessage, BooleanValidator, ListValidator, StringValidator, NumberValidator, TValidator } from './validator-common';
+import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidatorContext } from './validator-common';
 
 export class ClientValidator implements IAggregateValidator {
-    public rules = new Map<string, TValidator>();
     constructor() {
-        this.rules.set('name', this.clientNameValidator)
-        this.rules.set('description', this.clientDescriptionValidator)
-        this.rules.set('hasSecret', this.clientHasSecretValidator)
-        this.rules.set('clientSecret', this.clientClientSecretValidator)
-        this.rules.set('grantType', this.clientGrantTypeValidator)
-        this.rules.set('resourceIndicator', this.clientResourceIndicatorValidator)
-        this.rules.set('authority', this.clientAuthorityValidator)
-        this.rules.set('scope', this.clientScopeValidator)
-        this.rules.set('resourceId', this.clientResourceIdValidator)
-        this.rules.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator)
-        this.rules.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator)
-        this.rules.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator)
-        this.rules.set('autoApprove', this.clientAutoApproveValidator)
     }
     public validate(client: IClient, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
-        errors.push(...this.rules.get('name')(client.name))
-        errors.push(...this.rules.get('description')(client.description))
-        errors.push(...this.rules.get('hasSecret')(client.hasSecret))
-        errors.push(...this.rules.get('clientSecret')(client.clientSecret, client))
-        errors.push(...this.rules.get('grantType')(client.grantTypeEnums))
-        errors.push(...this.rules.get('resourceIndicator')(client.resourceIndicator, client))
-        errors.push(...this.rules.get('authority')(client.grantedAuthorities))
-        errors.push(...this.rules.get('scope')(client.scopeEnums))
-        errors.push(...this.rules.get('resourceId')(client.resourceIds))
-        errors.push(...this.rules.get('accessTokenValiditySeconds')(client.accessTokenValiditySeconds))
-        errors.push(...this.rules.get('refreshTokenValiditySeconds')(client.refreshTokenValiditySeconds, client))
-        errors.push(...this.rules.get('registeredRedirectUri')(client.registeredRedirectUri, client))
-        errors.push(...this.rules.get('autoApprove')(client.autoApprove, client))
+        errors.push(...this.clientNameValidator('name', client))
+        errors.push(...this.clientDescriptionValidator('description', client))
+        errors.push(...this.clientHasSecretValidator('hasSecret', client))
+        errors.push(...this.clientClientSecretValidator('clientSecret', client))
+        errors.push(...this.clientGrantTypeValidator('grantTypeEnums', client))
+        errors.push(...this.clientResourceIndicatorValidator('resourceIndicator', client))
+        errors.push(...this.clientAuthorityValidator('grantedAuthorities', client))
+        errors.push(...this.clientScopeValidator('scopeEnums', client))
+        errors.push(...this.clientResourceIdValidator('resourceIds', client))
+        errors.push(...this.clientAccessTokenValiditySecondsValidator('accessTokenValiditySeconds', client))
+        errors.push(...this.clientRefreshTokenValiditySecondsValidator('refreshTokenValiditySeconds', client))
+        errors.push(...this.clientRegisteredRedirectUriValidator('registeredRedirectUri', client))
+        errors.push(...this.clientAutoApproveValidator('autoApprove', client))
         return errors.filter(e => e);
     }
-    clientAutoApproveValidator = (value: any, client: IClient) => {
+    clientAutoApproveValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        if (client.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
-            BooleanValidator.isBoolean(value, results);
+        if (payload.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
+            BooleanValidator.isBoolean(payload[key], results, key);
         } else {
-            if (value === null) {
+            if (payload[key] === null) {
             } else {
-                results.push({ type: 'autoApproveRequiresAuthorizationCodeGrant', message: 'AUTO_APPROVE_REQUIRES_AUTHORIZATION_CODE_GRANT' })
+                results.push({ type: 'autoApproveRequiresAuthorizationCodeGrant', message: 'AUTO_APPROVE_REQUIRES_AUTHORIZATION_CODE_GRANT', key: key })
             }
         }
-        return results.map(e => { return { ...e, key: "autoApprove" } });
+        return results
     }
-    clientRegisteredRedirectUriValidator = (value: any, client: IClient) => {
+    clientRegisteredRedirectUriValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        if (client.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
-            ListValidator.hasValue(value, results);
+        if (payload.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
+            ListValidator.hasValue(payload[key], results, key);
         } else {
-            if (value) {
-                results.push({ type: 'redirectUriRequiresAuthorizationCodeGrant', message: 'REDIRECT_URI_REQUIRES_AUTHORIZATION_CODE_GRANT' })
+            if (payload[key]) {
+                results.push({ type: 'redirectUriRequiresAuthorizationCodeGrant', message: 'REDIRECT_URI_REQUIRES_AUTHORIZATION_CODE_GRANT', key: key })
             } else {
             }
         }
-        return results.map(e => { return { ...e, key: "registeredRedirectUri" } });
+        return results
     }
-    clientNameValidator = (value: any) => {
+    clientNameValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        StringValidator.lessThanOrEqualTo(value, 50, results);
-        StringValidator.greaterThanOrEqualTo(value, 1, results);
-        return results.map(e => { return { ...e, key: "name" } });
+        StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
+        StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
+        return results
     }
-    clientAccessTokenValiditySecondsValidator = (value: any) => {
+    clientAccessTokenValiditySecondsValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        NumberValidator.hasValue(value, results);
-        NumberValidator.greaterThanOrEqualTo(value, 120, results);
-        return results.map(e => { return { ...e, key: "accessTokenValiditySeconds" } });
+        NumberValidator.hasValue(payload[key], results, key);
+        NumberValidator.greaterThanOrEqualTo(payload[key], 120, results, key);
+        return results
     }
-    clientRefreshTokenValiditySecondsValidator = (value: any, client: IClient) => {
+    clientRefreshTokenValiditySecondsValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        if (client.grantTypeEnums.includes(grantTypeEnums.password) && client.grantTypeEnums.includes(grantTypeEnums.refresh_token)) {
-            NumberValidator.hasValue(value, results);
-            NumberValidator.greaterThanOrEqualTo(value, 120, results);
+        if (payload.grantTypeEnums.includes(grantTypeEnums.password) && payload.grantTypeEnums.includes(grantTypeEnums.refresh_token)) {
+            NumberValidator.hasValue(payload[key], results, key);
+            NumberValidator.greaterThanOrEqualTo(payload[key], 120, results, key);
         } else {
-            if (value > 0) {
-                results.push({ type: 'requiresRefreshTokenAndPasswordGrant', message: 'REQUIRES_REFRESH_TOKEN_AND_PASSWORD_GRANT' })
+            if (payload[key] > 0) {
+                results.push({ type: 'requiresRefreshTokenAndPasswordGrant', message: 'REQUIRES_REFRESH_TOKEN_AND_PASSWORD_GRANT', key: key })
             } else {
 
             }
         }
-        return results.map(e => { return { ...e, key: "refreshTokenValiditySeconds" } });
+        return results
     }
-    clientResourceIdValidator = (value: any) => {
+    clientResourceIdValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        ListValidator.hasValue(value, results);
-        return results.map(e => { return { ...e, key: "resourceId" } });
+        ListValidator.hasValue(payload[key], results, key);
+        return results
     }
-    clientAuthorityValidator = (value: any) => {
+    clientAuthorityValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        ListValidator.hasValue(value, results);
-        ListValidator.isSubListOf(value, CLIENT_ROLE_LIST.map(e => e.value), results);
-        return results.map(e => { return { ...e, key: "authority" } });
+        ListValidator.hasValue(payload[key], results, key);
+        ListValidator.isSubListOf(payload[key], CLIENT_ROLE_LIST.map(e => e.value), results, key);
+        return results
     }
-    clientScopeValidator = (value: any) => {
+    clientScopeValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        ListValidator.hasValue(value, results);
-        ListValidator.isSubListOf(value, SCOPE_LIST.map(e => e.value), results);
-        return results.map(e => { return { ...e, key: "scope" } });
+        ListValidator.hasValue(payload[key], results, key);
+        ListValidator.isSubListOf(payload[key], SCOPE_LIST.map(e => e.value), results, key);
+        return results
     }
-    clientResourceIndicatorValidator = (value: any, client: IClient) => {
+    clientResourceIndicatorValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        BooleanValidator.isBoolean(value, results);
-        if (value === true) {
+        BooleanValidator.isBoolean(payload[key], results, key);
+        if (payload[key] === true) {
             let var0 = RESOURCE_CLIENT_ROLE_LIST.map(e => e.value);
-            if (var0.some(e => !client.grantedAuthorities.includes(e))) {
-                results.push({ type: 'resourceIndicatorRequiresRole', message: 'RESOURCE_INDICATOR_REQUIRES_ROLE' })
+            if (var0.some(e => !payload.grantedAuthorities.includes(e))) {
+                results.push({ type: 'resourceIndicatorRequiresRole', message: 'RESOURCE_INDICATOR_REQUIRES_ROLE', key: key })
             }
         }
-        return results.map(e => { return { ...e, key: "resourceIndicator" } });
+        return results
     }
-    clientGrantTypeValidator = (value: string[]) => {
+    clientGrantTypeValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        ListValidator.hasValue(value, results);
-        ListValidator.isSubListOf(value, GRANT_TYPE_LIST_EXT.map(e => e.value), results);
+        ListValidator.hasValue(payload[key], results, key);
+        ListValidator.isSubListOf(payload[key], GRANT_TYPE_LIST_EXT.map(e => e.value), results, key);
         // can only be one of the below cases
         // password
         // password + refresh_token
         // client_credentials
         // authorization_code
-        if (value.length === 1 && value[0] === grantTypeEnums.password) { }
-        else if (value.length === 1 && value[0] === grantTypeEnums.client_credentials) { }
-        else if (value.length === 1 && value[0] === grantTypeEnums.authorization_code) { }
-        else if (value.length === 2 && value.includes(grantTypeEnums.password) && value.includes(grantTypeEnums.refresh_token)) { }
+        if (payload[key].length === 1 && payload[key][0] === grantTypeEnums.password) { }
+        else if (payload[key].length === 1 && payload[key][0] === grantTypeEnums.client_credentials) { }
+        else if (payload[key].length === 1 && payload[key][0] === grantTypeEnums.authorization_code) { }
+        else if (payload[key].length === 2 && payload[key].includes(grantTypeEnums.password) && payload[key].includes(grantTypeEnums.refresh_token)) { }
         else {
-            results.push({ type: 'invalidGrantTypeValue', message: 'INVALID_GRANT_TYPE_VALUE' })
+            results.push({ type: 'invalidGrantTypeValue', message: 'INVALID_GRANT_TYPE_VALUE', key: key })
         }
-        return results.map(e => { return { ...e, key: "grantType" } });
+        return results
     }
-    clientHasSecretValidator = (value: any) => {
+    clientHasSecretValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        BooleanValidator.isBoolean(value, results)
-        return results.map(e => { return { ...e, key: "hasSecret" } });
+        BooleanValidator.isBoolean(payload[key], results, key)
+        return results
     }
-    clientClientSecretValidator = (value: any, client: IClient) => {
+    clientClientSecretValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        if (client.hasSecret === true) {
-            StringValidator.lessThanOrEqualTo(value, 50, results);
-            StringValidator.greaterThanOrEqualTo(value, 1, results);
+        if (payload.hasSecret === true) {
+            StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
+            StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
         } else {
-            if (value) {
-                results.push({ type: 'secretRequiresHasSecret', message: 'SECRET_REQUIRES_HAS_SECRET' })
+            if (payload[key]) {
+                results.push({ type: 'secretRequiresHasSecret', message: 'SECRET_REQUIRES_HAS_SECRET', key: key })
             } else {
 
             }
         }
-        return results.map(e => { return { ...e, key: "clientSecret" } });
+        return results
     }
-    clientDescriptionValidator = (value: any) => {
+    clientDescriptionValidator = (key: string, payload: any) => {
         let results: ErrorMessage[] = [];
-        if (StringValidator.hasValue(value, results)) {
-            StringValidator.lessThanOrEqualTo(value, 50, results)
+        if (StringValidator.hasValue(payload[key], results, key)) {
+            StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
             results = [];
         }
-        return results.map(e => { return { ...e, key: "description" } });
+        return results
     }
 }
 

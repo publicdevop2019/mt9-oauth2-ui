@@ -98,7 +98,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     let grants: grantTypeEnums[] = [];
     let authority: string[] = [];
     let scopes: scopeEnums[] = [];
-    if(formGroup.get('grantType').value as grantTypeEnums){
+    if (formGroup.get('grantType').value as grantTypeEnums) {
       grants.push(formGroup.get('grantType').value as grantTypeEnums);
     }
     if (formGroup.get('refreshToken').value)
@@ -149,9 +149,35 @@ export class ClientComponent implements OnDestroy, OnInit {
   }
   productErrorMapper(original: ErrorMessage[], cmpt: ClientComponent) {
     return original.map(e => {
-      return {
-        ...e,
-        formId: cmpt.formId
+      if (e.key === 'resourceIds') {
+        return {
+          ...e,
+          key: 'resourceId',
+          formId: cmpt.formId
+        }
+      }else if(e.key === 'grantedAuthorities'){
+          return {
+            ...e,
+            key: 'authority',
+            formId: cmpt.formId
+          }
+      }else if(e.key === 'scopeEnums'){
+          return {
+            ...e,
+            key: 'scope',
+            formId: cmpt.formId
+          }
+      }else if(e.key === 'grantTypeEnums'){
+          return {
+            ...e,
+            key: 'grantType',
+            formId: cmpt.formId
+          }
+      } else {
+        return {
+          ...e,
+          formId: cmpt.formId
+        }
       }
     })
   }

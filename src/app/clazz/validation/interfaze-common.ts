@@ -1,3 +1,4 @@
+import { IProductOptions } from './interfaze-product';
 
 export interface ITokenResponse {
   access_token: string;
@@ -66,12 +67,4 @@ export interface IPayment {
   accountHolderName: string;
   expireDate: string;
   cvv?: string;
-}
-export interface IProductOptions {
-  title: string;
-  options: IProductOption[];
-}
-export interface IProductOption {
-  optionValue: string;
-  priceVar?: string;
 }
