@@ -7,7 +7,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { ORDER_ADDRESS_CONFIG, ORDER_DETAIL_CONFIG, ORDER_PRODUCT_CONFIG, ORDER_TASK_CONFIG } from 'src/app/form-configs/order.config';
-import { ICartItem, IOrder } from 'src/app/interfaze/commom.interface';
+import { ICartItem, IOrder } from 'src/app/clazz/validation/interfaze-common';
 import { OrderService } from 'src/app/services/order.service';
 import { TaskService } from 'src/app/services/task.service';
 

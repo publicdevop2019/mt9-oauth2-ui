@@ -8,7 +8,7 @@ import * as UUID from 'uuid/v1';
 import { ISumRep } from '../clazz/summary.component';
 import { getCookie } from '../clazz/utility';
 import { IEditEvent } from '../components/editable-field/editable-field.component';
-import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../interfaze/commom.interface';
+import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../clazz/validation/interfaze-common';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
 import { ICommentSummary } from './comment.service';
 import { IPostSummary } from './post.service';

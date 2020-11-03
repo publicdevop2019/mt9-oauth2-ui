@@ -1,5 +1,5 @@
-import { IAttrImage, IProductDetail, IProductOptions, ISku } from 'src/app/services/product.service';
-import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidator, TValidatorContext, Validator } from './validator-common';
+import { IProductDetail, ISku, IAttrImage, IProductOptions } from './interfaze-product';
+import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidator, TValidatorContext } from './validator-common';
 
 export class ProductValidator implements IAggregateValidator {
     private formId: string;
@@ -156,13 +156,13 @@ export class ProductValidator implements IAggregateValidator {
 }
 export function appendCtrlKey(results: ErrorMessage[], key: string, id: string) {
     return results.map(e => {
-        if (hasValue(e.ctrlKey) && hasValue(e.formId)) {
+        if (hasValue(e.key) && hasValue(e.formId)) {
             return e
         }
         else {
             return {
                 ...e,
-                ctrlKey: hasValue(e.ctrlKey) ? e.ctrlKey : key,
+                key: hasValue(e.key) ? e.key : key,
                 formId: hasValue(e.formId) ? e.formId : id,
             }
         }

@@ -13,7 +13,7 @@ import { mockProductDetails } from 'src/app/mocks/mock-product';
 import { mockProducts } from 'src/app/mocks/mock-products';
 import { mockSP1 } from 'src/app/mocks/mock-endpoint';
 import { environment } from 'src/environments/environment';
-import { IAuthorizeCode } from '../interfaze/commom.interface';
+import { IAuthorizeCode } from '../clazz/validation/interfaze-common';
 import { mockCatalog } from 'src/app/mocks/mock-catalog';
 import { mockAttr } from 'src/app/mocks/mock-attribute';
 import { mockClient1 } from 'src/app/mocks/mock-client';
@@ -47,6 +47,8 @@ export class OfflineInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (environment.mode === 'offline') {
       if (['delete', 'put', 'post', 'patch'].includes(req.method.toLowerCase())) {
+        console.dir('log req body in offline for dev purpose')
+        console.dir(req.body)
         if (req.url.includes('/authorize'))
           return of(new HttpResponse({ status: 200, body: { authorize_code: 'dummyCode' } as IAuthorizeCode })).pipe(delay(this.DEFAULT_DELAY))
         if (req.url.includes('/oauth/token')) {

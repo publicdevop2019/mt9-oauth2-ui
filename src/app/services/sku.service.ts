@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
+import { ISkuNew } from '../clazz/validation/interfaze-product';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-import { ISkuNew } from './product.service';
 @Injectable({
     providedIn: 'root'
 })

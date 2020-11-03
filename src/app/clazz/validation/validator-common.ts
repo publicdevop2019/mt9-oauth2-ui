@@ -1,21 +1,18 @@
 export type TValidatorContext = 'CREATE' | 'UPDATE' | 'DELETE'
 export interface ErrorMessage {
     type: string,
-    ctrlKey?: string
+    key?: string
     formId?: string
     message?: string
 }
 export type TValidator = (value: any, payload?: any) => ErrorMessage[];
-export abstract class Validator {
-    validate: (value: any, payload?: any) => ErrorMessage[];
-}
 export interface IAggregateValidator {
     validate: (payload: any, context: TValidatorContext) => ErrorMessage[];
 }
 export class StringValidator {
     public static greaterThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key?: string): boolean {
         if (var0.length < arg1 || typeof var0 !== 'string') {
-            results.push({ type: "greaterThanOrEqualTo", message: 'STRING_GREATER_THAN_OR_EQUAL_TO', ctrlKey: key })
+            results.push({ type: "greaterThanOrEqualTo", message: 'STRING_GREATER_THAN_OR_EQUAL_TO', key: key })
             return false
         } else {
             return true
@@ -23,7 +20,7 @@ export class StringValidator {
     }
     public static lessThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key?: string): boolean {
         if (var0.length > arg1 || typeof var0 !== 'string') {
-            results.push({ type: "lessThanOrEqualTo", message: 'STRING_LESS_THAN_OR_EQUAL_TO', ctrlKey: key });
+            results.push({ type: "lessThanOrEqualTo", message: 'STRING_LESS_THAN_OR_EQUAL_TO', key: key });
             return false
         } else {
             return true
@@ -31,7 +28,7 @@ export class StringValidator {
     }
     public static isString(var0: string, results: ErrorMessage[], key?: string): boolean {
         if (typeof var0 !== 'string') {
-            results.push({ type: "typeMatch", message: 'STRING_TYPE_MATCH', ctrlKey: key })
+            results.push({ type: "typeMatch", message: 'STRING_TYPE_MATCH', key: key })
             return false
         } else {
             return true
@@ -39,7 +36,7 @@ export class StringValidator {
     }
     public static lessThan(var0: string, length: number, results: ErrorMessage[], key?: string): boolean {
         if (var0.length >= length || typeof var0 !== 'string') {
-            results.push({ type: "lessThan", message: 'STRING_LESS_THAN', ctrlKey: key })
+            results.push({ type: "lessThan", message: 'STRING_LESS_THAN', key: key })
             return false
         } else {
             return true
@@ -47,7 +44,7 @@ export class StringValidator {
     }
     public static greaterThan(var0: string, length: number, results: ErrorMessage[], key?: string): boolean {
         if (var0.length <= length || typeof var0 !== 'string') {
-            results.push({ type: "greaterThan", message: 'STRING_GREATER_THAN', ctrlKey: key })
+            results.push({ type: "greaterThan", message: 'STRING_GREATER_THAN', key: key })
             return false
         } else {
             return true
@@ -55,7 +52,7 @@ export class StringValidator {
     }
     public static notEmpty(var0: string | undefined | null, results: ErrorMessage[], key?: string): boolean {
         if (var0 === '' || typeof var0 !== 'string') {
-            results.push({ type: "notEmptyString", message: 'STRING_NOT_EMPTY_STRING', ctrlKey: key })
+            results.push({ type: "notEmptyString", message: 'STRING_NOT_EMPTY_STRING', key: key })
             return false;
         } else {
             return true;
@@ -63,7 +60,7 @@ export class StringValidator {
     }
     public static hasValue(var0: string | undefined | null, results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined || var0 === null || var0 === '' || typeof var0 !== 'string') {
-            results.push({ type: "hasStringValue", message: 'STRING_HAS_VALUE', ctrlKey: key })
+            results.push({ type: "hasStringValue", message: 'STRING_HAS_VALUE', key: key })
             return false;
         } else {
             return true;
@@ -73,7 +70,7 @@ export class StringValidator {
 export class DefaultValidator {
     public static notNull(var0: string | undefined | null, results: ErrorMessage[], key?: string): boolean {
         if (var0 === null) {
-            results.push({ type: "notNull", message: 'DEFAULT_NOT_NULL', ctrlKey: key })
+            results.push({ type: "notNull", message: 'DEFAULT_NOT_NULL', key: key })
             return false;
         } else {
             return true;
@@ -81,7 +78,7 @@ export class DefaultValidator {
     }
     public static notUndefined(var0: string | undefined | null, results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined) {
-            results.push({ type: "notUndefined", message: 'DEFAULT_NOT_NULL', ctrlKey: key })
+            results.push({ type: "notUndefined", message: 'DEFAULT_NOT_NULL', key: key })
             return false;
         } else {
             return true;
@@ -89,7 +86,7 @@ export class DefaultValidator {
     }
     public static hasValue(var0: any, results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined || var0 === null) {
-            results.push({ type: "hasValue", message: 'DEFAULT_NOT_NULL', ctrlKey: key })
+            results.push({ type: "hasValue", message: 'DEFAULT_NOT_NULL', key: key })
             return false;
         } else {
             return true;
@@ -97,7 +94,7 @@ export class DefaultValidator {
     }
     public static notExist(var0: any, results: ErrorMessage[], key?: string): boolean {
         if (var0 !== undefined && var0 !== null) {
-            results.push({ type: "shouldNotExist", message: 'DEFAULT_SHOULD_NOT_EXIST', ctrlKey: key })
+            results.push({ type: "shouldNotExist", message: 'DEFAULT_SHOULD_NOT_EXIST', key: key })
             return false;
         } else {
             return true;
@@ -107,7 +104,7 @@ export class DefaultValidator {
 export class BooleanValidator {
     public static isBoolean(var0: boolean | undefined | null, results: ErrorMessage[], key?: string): boolean {
         if (typeof var0 !== 'boolean') {
-            results.push({ type: "isBoolean", message: 'IS_BOOLEAN', ctrlKey: key })
+            results.push({ type: "isBoolean", message: 'IS_BOOLEAN', key: key })
             return false;
         } else {
             return true;
@@ -115,7 +112,7 @@ export class BooleanValidator {
     }
     public static isTrue(var0: boolean | undefined | null, results: ErrorMessage[], key?: string): boolean {
         if (typeof var0 !== 'boolean' || var0 !== true) {
-            results.push({ type: "isTrue", message: 'IS_TRUE', ctrlKey: key })
+            results.push({ type: "isTrue", message: 'IS_TRUE', key: key })
             return false;
         } else {
             return true;
@@ -123,7 +120,7 @@ export class BooleanValidator {
     }
     public static isFalse(var0: boolean | undefined | null, results: ErrorMessage[], key?: string): boolean {
         if (typeof var0 !== 'boolean' || var0 !== true) {
-            results.push({ type: "isFalse", message: 'IS_FALSE', ctrlKey: key })
+            results.push({ type: "isFalse", message: 'IS_FALSE', key: key })
             return false;
         } else {
             return true;
@@ -133,7 +130,7 @@ export class BooleanValidator {
 export class ListValidator {
     public static belongsTo(var0: string, list: string[], results: ErrorMessage[], key?: string): boolean {
         if (list.length === 0 || typeof list[0] !== typeof var0 || !list.includes(var0)) {
-            results.push({ type: "belongsTo", message: 'LIST_BELONGS_TO', ctrlKey: key })
+            results.push({ type: "belongsTo", message: 'LIST_BELONGS_TO', key: key })
             return false;
         } else {
             return true;
@@ -141,7 +138,7 @@ export class ListValidator {
     }
     public static isSubListOf(var0: string[], list: string[], results: ErrorMessage[], key?: string): boolean {
         if (list.length === 0 || (typeof list !== typeof var0) || var0.some(e => !list.includes(e))) {
-            results.push({ type: "isSubListOf", message: 'LIST_IS_SUB_LIST_OF', ctrlKey: key })
+            results.push({ type: "isSubListOf", message: 'LIST_IS_SUB_LIST_OF', key: key })
             return false;
         } else {
             return true;
@@ -149,7 +146,7 @@ export class ListValidator {
     }
     public static hasValue(var0: any[], results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined || var0 === null || var0.length === 0) {
-            results.push({ type: "hasValue", message: 'LIST_HAS_VALUE', ctrlKey: key })
+            results.push({ type: "hasValue", message: 'LIST_HAS_VALUE', key: key })
             return false;
         } else {
             return true;
@@ -157,7 +154,7 @@ export class ListValidator {
     }
     public static isEmpty(var0: any[], results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined || var0 === null || var0.length !== 0) {
-            results.push({ type: "isEmpty", message: 'LIST_IS_EMPTY', ctrlKey: key })
+            results.push({ type: "isEmpty", message: 'LIST_IS_EMPTY', key: key })
             return false;
         } else {
             return true;
@@ -165,7 +162,7 @@ export class ListValidator {
     }
     public static lengthIs(var0: any[], len: number, results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined || var0 === null || var0.length !== len) {
-            results.push({ type: "lengthIs", message: 'LIST_LENGTH_IS', ctrlKey: key })
+            results.push({ type: "lengthIs", message: 'LIST_LENGTH_IS', key: key })
             return false;
         } else {
             return true;
@@ -175,7 +172,7 @@ export class ListValidator {
 export class NumberValidator {
     public static hasValue(var0: any, results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined || var0 === null || typeof var0 !== 'number') {
-            results.push({ type: "hasValue", message: 'NUMBER_HAS_VALUE', ctrlKey: key })
+            results.push({ type: "hasValue", message: 'NUMBER_HAS_VALUE', key: key })
             return false;
         } else {
             return true;
@@ -183,7 +180,7 @@ export class NumberValidator {
     }
     public static isInteger(var0: any, results: ErrorMessage[], key?: string): boolean {
         if (var0 === undefined || var0 === null || typeof var0 !== 'number' || !Number.isInteger(var0)) {
-            results.push({ type: "isInteger", message: 'NUMBER_IS_INTEGER', ctrlKey: key })
+            results.push({ type: "isInteger", message: 'NUMBER_IS_INTEGER', key: key })
             return false;
         } else {
             return true;
@@ -191,7 +188,7 @@ export class NumberValidator {
     }
     public static greaterThan(var0: any, var1: number, results: ErrorMessage[], key?: string): boolean {
         if (var0 <= var1) {
-            results.push({ type: "greaterThan", message: 'NUMBER_GREATER_THAN', ctrlKey: key })
+            results.push({ type: "greaterThan", message: 'NUMBER_GREATER_THAN', key: key })
             return false;
         } else {
             return true;
@@ -199,7 +196,7 @@ export class NumberValidator {
     }
     public static greaterThanOrEqualTo(var0: any, var1: number, results: ErrorMessage[], key?: string): boolean {
         if (var0 < var1) {
-            results.push({ type: "greaterThanOrEqualTo", message: 'NUMBER_GREATER_THAN_OREQUAL_TO', ctrlKey: key })
+            results.push({ type: "greaterThanOrEqualTo", message: 'NUMBER_GREATER_THAN_OREQUAL_TO', key: key })
             return false;
         } else {
             return true;
@@ -207,7 +204,7 @@ export class NumberValidator {
     }
     public static lessThan(var0: any, var1: number, results: ErrorMessage[], key?: string): boolean {
         if (var0 >= var1) {
-            results.push({ type: "lessThan", message: 'NUMBER_LESS_THAN', ctrlKey: key })
+            results.push({ type: "lessThan", message: 'NUMBER_LESS_THAN', key: key })
             return false;
         } else {
             return true;
@@ -215,7 +212,7 @@ export class NumberValidator {
     }
     public static lessThanOrEqualTo(var0: any, var1: number, results: ErrorMessage[], key?: string): boolean {
         if (var0 > var1) {
-            results.push({ type: "lessThanOrEqualTo", message: 'NUMBER_LESS_THAN_OR_EQUAL_TO', ctrlKey: key })
+            results.push({ type: "lessThanOrEqualTo", message: 'NUMBER_LESS_THAN_OR_EQUAL_TO', key: key })
             return false;
         } else {
             return true;

@@ -1,44 +1,42 @@
 import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from './constant';
 import { grantTypeEnums, IClient } from './interfaze-client';
-import { IAggregateValidator, TValidatorContext, ErrorMessage, Validator, BooleanValidator, ListValidator, StringValidator, NumberValidator } from './validator-common';
+import { IAggregateValidator, TValidatorContext, ErrorMessage, BooleanValidator, ListValidator, StringValidator, NumberValidator, TValidator } from './validator-common';
 
 export class ClientValidator implements IAggregateValidator {
-    public rules = new Map<string, Validator>();
+    public rules = new Map<string, TValidator>();
     constructor() {
-        this.rules.set('name', new ClientNameValidator())
-        this.rules.set('description', new ClientDescriptionValidator())
-        this.rules.set('hasSecret', new ClientHasSecretValidator())
-        this.rules.set('clientSecret', new ClientClientSecretValidator())
-        this.rules.set('grantType', new ClientGrantTypeValidator())
-        this.rules.set('resourceIndicator', new ClientResourceIndicatorValidator())
-        this.rules.set('authority', new ClientAuthorityValidator())
-        this.rules.set('scope', new ClientScopeValidator())
-        this.rules.set('resourceId', new ClientResourceIdValidator())
-        this.rules.set('accessTokenValiditySeconds', new ClientAccessTokenValiditySecondsValidator())
-        this.rules.set('refreshTokenValiditySeconds', new ClientRefreshTokenValiditySecondsValidator())
-        this.rules.set('registeredRedirectUri', new ClientRegisteredRedirectUriValidator())
-        this.rules.set('autoApprove', new ClientAutoApproveValidator())
+        this.rules.set('name', this.clientNameValidator)
+        this.rules.set('description', this.clientDescriptionValidator)
+        this.rules.set('hasSecret', this.clientHasSecretValidator)
+        this.rules.set('clientSecret', this.clientClientSecretValidator)
+        this.rules.set('grantType', this.clientGrantTypeValidator)
+        this.rules.set('resourceIndicator', this.clientResourceIndicatorValidator)
+        this.rules.set('authority', this.clientAuthorityValidator)
+        this.rules.set('scope', this.clientScopeValidator)
+        this.rules.set('resourceId', this.clientResourceIdValidator)
+        this.rules.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator)
+        this.rules.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator)
+        this.rules.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator)
+        this.rules.set('autoApprove', this.clientAutoApproveValidator)
     }
-    public validate(client: IClient,context:TValidatorContext): ErrorMessage[] {
+    public validate(client: IClient, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
-        errors.push(...this.rules.get('name').validate(client.name))
-        errors.push(...this.rules.get('description').validate(client.description))
-        errors.push(...this.rules.get('hasSecret').validate(client.hasSecret))
-        errors.push(...this.rules.get('clientSecret').validate(client.clientSecret, client))
-        errors.push(...this.rules.get('grantType').validate(client.grantTypeEnums))
-        errors.push(...this.rules.get('resourceIndicator').validate(client.resourceIndicator, client))
-        errors.push(...this.rules.get('authority').validate(client.grantedAuthorities))
-        errors.push(...this.rules.get('scope').validate(client.scopeEnums))
-        errors.push(...this.rules.get('resourceId').validate(client.resourceIds))
-        errors.push(...this.rules.get('accessTokenValiditySeconds').validate(client.accessTokenValiditySeconds))
-        errors.push(...this.rules.get('refreshTokenValiditySeconds').validate(client.refreshTokenValiditySeconds, client))
-        errors.push(...this.rules.get('registeredRedirectUri').validate(client.registeredRedirectUri, client))
-        errors.push(...this.rules.get('autoApprove').validate(client.autoApprove, client))
+        errors.push(...this.rules.get('name')(client.name))
+        errors.push(...this.rules.get('description')(client.description))
+        errors.push(...this.rules.get('hasSecret')(client.hasSecret))
+        errors.push(...this.rules.get('clientSecret')(client.clientSecret, client))
+        errors.push(...this.rules.get('grantType')(client.grantTypeEnums))
+        errors.push(...this.rules.get('resourceIndicator')(client.resourceIndicator, client))
+        errors.push(...this.rules.get('authority')(client.grantedAuthorities))
+        errors.push(...this.rules.get('scope')(client.scopeEnums))
+        errors.push(...this.rules.get('resourceId')(client.resourceIds))
+        errors.push(...this.rules.get('accessTokenValiditySeconds')(client.accessTokenValiditySeconds))
+        errors.push(...this.rules.get('refreshTokenValiditySeconds')(client.refreshTokenValiditySeconds, client))
+        errors.push(...this.rules.get('registeredRedirectUri')(client.registeredRedirectUri, client))
+        errors.push(...this.rules.get('autoApprove')(client.autoApprove, client))
         return errors.filter(e => e);
     }
-}
-export class ClientAutoApproveValidator extends Validator {
-    validate = (value: any, client: IClient) => {
+    clientAutoApproveValidator = (value: any, client: IClient) => {
         let results: ErrorMessage[] = [];
         if (client.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
             BooleanValidator.isBoolean(value, results);
@@ -48,11 +46,9 @@ export class ClientAutoApproveValidator extends Validator {
                 results.push({ type: 'autoApproveRequiresAuthorizationCodeGrant', message: 'AUTO_APPROVE_REQUIRES_AUTHORIZATION_CODE_GRANT' })
             }
         }
-        return results.map(e => { return { ...e, ctrlKey: "autoApprove" } });
+        return results.map(e => { return { ...e, key: "autoApprove" } });
     }
-}
-export class ClientRegisteredRedirectUriValidator extends Validator {
-    validate = (value: any, client: IClient) => {
+    clientRegisteredRedirectUriValidator = (value: any, client: IClient) => {
         let results: ErrorMessage[] = [];
         if (client.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
             ListValidator.hasValue(value, results);
@@ -62,27 +58,21 @@ export class ClientRegisteredRedirectUriValidator extends Validator {
             } else {
             }
         }
-        return results.map(e => { return { ...e, ctrlKey: "registeredRedirectUri" } });
+        return results.map(e => { return { ...e, key: "registeredRedirectUri" } });
     }
-}
-export class ClientNameValidator extends Validator {
-    validate = (value: any) => {
+    clientNameValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         StringValidator.lessThanOrEqualTo(value, 50, results);
         StringValidator.greaterThanOrEqualTo(value, 1, results);
-        return results.map(e => { return { ...e, ctrlKey: "name" } });
+        return results.map(e => { return { ...e, key: "name" } });
     }
-}
-export class ClientAccessTokenValiditySecondsValidator extends Validator {
-    validate = (value: any) => {
+    clientAccessTokenValiditySecondsValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         NumberValidator.hasValue(value, results);
         NumberValidator.greaterThanOrEqualTo(value, 120, results);
-        return results.map(e => { return { ...e, ctrlKey: "accessTokenValiditySeconds" } });
+        return results.map(e => { return { ...e, key: "accessTokenValiditySeconds" } });
     }
-}
-export class ClientRefreshTokenValiditySecondsValidator extends Validator {
-    validate = (value: any, client: IClient) => {
+    clientRefreshTokenValiditySecondsValidator = (value: any, client: IClient) => {
         let results: ErrorMessage[] = [];
         if (client.grantTypeEnums.includes(grantTypeEnums.password) && client.grantTypeEnums.includes(grantTypeEnums.refresh_token)) {
             NumberValidator.hasValue(value, results);
@@ -94,34 +84,26 @@ export class ClientRefreshTokenValiditySecondsValidator extends Validator {
 
             }
         }
-        return results.map(e => { return { ...e, ctrlKey: "refreshTokenValiditySeconds" } });
+        return results.map(e => { return { ...e, key: "refreshTokenValiditySeconds" } });
     }
-}
-export class ClientResourceIdValidator extends Validator {
-    validate = (value: any) => {
+    clientResourceIdValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
-        return results.map(e => { return { ...e, ctrlKey: "resourceId" } });
+        return results.map(e => { return { ...e, key: "resourceId" } });
     }
-}
-export class ClientAuthorityValidator extends Validator {
-    validate = (value: any) => {
+    clientAuthorityValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
         ListValidator.isSubListOf(value, CLIENT_ROLE_LIST.map(e => e.value), results);
-        return results.map(e => { return { ...e, ctrlKey: "authority" } });
+        return results.map(e => { return { ...e, key: "authority" } });
     }
-}
-export class ClientScopeValidator extends Validator {
-    validate = (value: any) => {
+    clientScopeValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
         ListValidator.isSubListOf(value, SCOPE_LIST.map(e => e.value), results);
-        return results.map(e => { return { ...e, ctrlKey: "scope" } });
+        return results.map(e => { return { ...e, key: "scope" } });
     }
-}
-export class ClientResourceIndicatorValidator extends Validator {
-    validate = (value: any, client: IClient) => {
+    clientResourceIndicatorValidator = (value: any, client: IClient) => {
         let results: ErrorMessage[] = [];
         BooleanValidator.isBoolean(value, results);
         if (value === true) {
@@ -130,11 +112,9 @@ export class ClientResourceIndicatorValidator extends Validator {
                 results.push({ type: 'resourceIndicatorRequiresRole', message: 'RESOURCE_INDICATOR_REQUIRES_ROLE' })
             }
         }
-        return results.map(e => { return { ...e, ctrlKey: "resourceIndicator" } });
+        return results.map(e => { return { ...e, key: "resourceIndicator" } });
     }
-}
-export class ClientGrantTypeValidator extends Validator {
-    validate = (value: string[]) => {
+    clientGrantTypeValidator = (value: string[]) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
         ListValidator.isSubListOf(value, GRANT_TYPE_LIST_EXT.map(e => e.value), results);
@@ -150,18 +130,14 @@ export class ClientGrantTypeValidator extends Validator {
         else {
             results.push({ type: 'invalidGrantTypeValue', message: 'INVALID_GRANT_TYPE_VALUE' })
         }
-        return results.map(e => { return { ...e, ctrlKey: "grantType" } });
+        return results.map(e => { return { ...e, key: "grantType" } });
     }
-}
-export class ClientHasSecretValidator extends Validator {
-    validate = (value: any) => {
+    clientHasSecretValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         BooleanValidator.isBoolean(value, results)
-        return results.map(e => { return { ...e, ctrlKey: "hasSecret" } });
+        return results.map(e => { return { ...e, key: "hasSecret" } });
     }
-}
-export class ClientClientSecretValidator extends Validator {
-    validate = (value: any, client: IClient) => {
+    clientClientSecretValidator = (value: any, client: IClient) => {
         let results: ErrorMessage[] = [];
         if (client.hasSecret === true) {
             StringValidator.lessThanOrEqualTo(value, 50, results);
@@ -173,18 +149,16 @@ export class ClientClientSecretValidator extends Validator {
 
             }
         }
-        return results.map(e => { return { ...e, ctrlKey: "clientSecret" } });
+        return results.map(e => { return { ...e, key: "clientSecret" } });
     }
-}
-export class ClientDescriptionValidator extends Validator {
-    validate = (value: any) => {
+    clientDescriptionValidator = (value: any) => {
         let results: ErrorMessage[] = [];
         if (StringValidator.hasValue(value, results)) {
             StringValidator.lessThanOrEqualTo(value, 50, results)
         } else {
             results = [];
         }
-        return results.map(e => { return { ...e, ctrlKey: "description" } });
+        return results.map(e => { return { ...e, key: "description" } });
     }
 }
 

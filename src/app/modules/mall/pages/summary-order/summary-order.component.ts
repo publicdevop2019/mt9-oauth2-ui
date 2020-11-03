@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { switchMap } from 'rxjs/operators';
 import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';
-import { ICartItem, IOrder } from 'src/app/interfaze/commom.interface';
+import { ICartItem, IOrder } from 'src/app/clazz/validation/interfaze-common';
 import { IResourceOwner } from 'src/app/modules/my-users/interface/resource-owner.interface';
 import { DeviceService } from 'src/app/services/device.service';
 import { OrderService } from 'src/app/services/order.service';

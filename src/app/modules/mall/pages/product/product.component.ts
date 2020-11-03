@@ -4,23 +4,23 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
+import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { ValidatorHelper } from 'src/app/clazz/validateHelper';
+import { IAttrImage, IProductDetail, ISku } from 'src/app/clazz/validation/interfaze-product';
+import { ErrorMessage, hasValue } from 'src/app/clazz/validation/validator-common';
+import { ProductValidator } from 'src/app/clazz/validation/validator-product';
 import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { ATTR_SALES_FORM_CONFIG } from 'src/app/form-configs/attribute-sales-dynamic.config';
 import { ATTR_SALE_FORM_CONFIG_IMAGE, FORM_CONFIG, FORM_CONFIG_IMAGE, FORM_CONFIG_OPTIONS } from 'src/app/form-configs/product.config';
+import { IProductOption, IProductOptions } from 'src/app/clazz/validation/interfaze-common';
 import { AttributeService, IBizAttribute as IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku, ProductService, IProductSimple } from 'src/app/services/product.service';
-import * as UUID from 'uuid/v1';
-import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
+import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
-import { ProductValidator } from 'src/app/clazz/validation/validator-product';
-import { isNullOrUndefined } from 'util';
-import { FormGroup } from '@angular/forms';
-import { ErrorMessage, hasValue } from 'src/app/clazz/validation/validator-common';
+import * as UUID from 'uuid/v1';
 interface IProductSimplePublic {
   imageUrlSmall: string;
   name: string;
@@ -517,12 +517,12 @@ export class ProductComponent implements OnInit, OnDestroy {
     if (original.some(e => e.formId === cmpt.optionFormId)) {
       return original.map(e => {
         if (e.formId === cmpt.optionFormId) {
-          if (e.ctrlKey.includes('optionValue')) {
-            let var0 = e.ctrlKey.split('_')[0] === '0' ? '' : "_" + (+e.ctrlKey.split('_')[0] - 1);
-            let var1 = e.ctrlKey.split('_')[1] === '0' ? '' : "_" + (+e.ctrlKey.split('_')[1] - 1);
+          if (e.key.includes('optionValue')) {
+            let var0 = e.key.split('_')[0] === '0' ? '' : "_" + (+e.key.split('_')[0] - 1);
+            let var1 = e.key.split('_')[1] === '0' ? '' : "_" + (+e.key.split('_')[1] - 1);
             return {
               ...e,
-              ctrlKey: 'optionValue' + var1,
+              key: 'optionValue' + var1,
               formId: 'optionForm' + var0
             }
           } else {
@@ -538,12 +538,12 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   public parseProductFormError(original: ErrorMessage[], cmpt: ProductComponent) {
 
-    if (original.some(e=>e.ctrlKey==='attributesKey')) {
+    if (original.some(e=>e.key==='attributesKey')) {
       let next = original.map(e => {
-        if (['attributesKey'].includes(e.ctrlKey)) {
+        if (['attributesKey'].includes(e.key)) {
           return {
             ...e,
-            ctrlKey: 'selectBackendCatalog'
+            key: 'selectBackendCatalog'
           }
         } else {
           return e
@@ -557,10 +557,10 @@ export class ProductComponent implements OnInit, OnDestroy {
   public pareseSkuFormError(original: ErrorMessage[], cmpt: ProductComponent) {
     if (!cmpt.hasSku) {
       let next = original.map(e => {
-        if (['0_price', '0_storageActual', '0_storageOrder', '0_decreaseActualStorage', '0_decreaseOrderStorage', '0_increaseActualStorage', '0_increaseOrderStorage'].includes(e.ctrlKey)) {
+        if (['0_price', '0_storageActual', '0_storageOrder', '0_decreaseActualStorage', '0_decreaseOrderStorage', '0_increaseActualStorage', '0_increaseOrderStorage'].includes(e.key)) {
           return {
             ...e,
-            ctrlKey: e.ctrlKey.replace('0_', '')
+            key: e.key.replace('0_', '')
           }
         } else {
           return e

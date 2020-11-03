@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, mergeMap, retry, filter, take, finalize } from 'rxjs/operators';
 import { HttpProxyService } from './http-proxy.service';
-import { ITokenResponse } from '../interfaze/commom.interface';
+import { ITokenResponse } from '../clazz/validation/interfaze-common';
 import { TranslateService } from '@ngx-translate/core';
 /**
  * use refresh token if call failed

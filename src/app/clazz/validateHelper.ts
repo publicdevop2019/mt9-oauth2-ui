@@ -11,20 +11,20 @@ export class ValidatorHelper {
     if (errors.length > 0) {
       let uniqueError: ErrorMessage[] = []
       errors.forEach(e => {
-        if (uniqueError.some(ee => ee.ctrlKey === e.ctrlKey && ee.formId === e.formId)) {
+        if (uniqueError.some(ee => ee.key === e.key && ee.formId === e.formId)) {
           //do nothing
         } else {
           uniqueError.push(e)
         }
       });
       let mapped = errorMapper(uniqueError, cmpt);
-      let keys = mapped.map(e => e.formId + "_" + e.ctrlKey);
+      let keys = mapped.map(e => e.formId + "_" + e.key);
       let uniqueFormIds = new Array(...new Set([...mapped.map(e => e.formId), ...this.previousErrors.map(e => e.formId)])).filter(e => e);
-      let var1 = this.previousErrors.map(e => e.formId + "_" + e.ctrlKey);
+      let var1 = this.previousErrors.map(e => e.formId + "_" + e.key);
       uniqueFormIds.forEach(id => {
         fis.formGroupCollection_formInfo[id].inputs.forEach(input => {
           if (keys.includes(id + "_" + input.key)) {
-            input.errorMsg = mapped.find(e => e.formId + "_" + e.ctrlKey === id + "_" + input.key).message;
+            input.errorMsg = mapped.find(e => e.formId + "_" + e.key === id + "_" + input.key).message;
           } else {
             if (var1.includes(id + "_" + input.key)) {
               input.errorMsg = undefined;
@@ -43,19 +43,19 @@ export class ValidatorHelper {
         if (newErrors.length > 0) {
           let uniqueError2: ErrorMessage[] = []
           newErrors.forEach(e => {
-            if (uniqueError2.some(ee => ee.ctrlKey === e.ctrlKey && ee.formId === e.formId)) {
+            if (uniqueError2.some(ee => ee.key === e.key && ee.formId === e.formId)) {
               //do nothing
             } else {
               uniqueError2.push(e)
             }
           });
           let mapped2 = errorMapper(uniqueError2, cmpt);
-          let keys2 = mapped2.map(e => e.formId + "_" + e.ctrlKey);
-          let var0 = this.previousErrors.map(e => e.formId + "_" + e.ctrlKey);
+          let keys2 = mapped2.map(e => e.formId + "_" + e.key);
+          let var0 = this.previousErrors.map(e => e.formId + "_" + e.key);
           uniqueFormIds.forEach(id => {
             fis.formGroupCollection_formInfo[id].inputs.forEach(input => {
               if (keys2.includes(id + "_" + input.key)) {
-                input.errorMsg = mapped2.find(e => e.formId + "_" + e.ctrlKey === id + "_" + input.key).message;
+                input.errorMsg = mapped2.find(e => e.formId + "_" + e.key === id + "_" + input.key).message;
               } else {
                 if (var0.includes(id + "_" + input.key))
                   input.errorMsg = undefined;
@@ -66,7 +66,7 @@ export class ValidatorHelper {
         } else {
           if (this.previousErrors.length > 0) {
             this.previousErrors.forEach(e => {
-              fis.formGroupCollection_formInfo[e.formId].inputs.find(ee => ee.key === e.ctrlKey).errorMsg = undefined;
+              fis.formGroupCollection_formInfo[e.formId].inputs.find(ee => ee.key === e.key).errorMsg = undefined;
             })
           }
         }
