@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as UUID from 'uuid/v1';
 import { ISumRep } from '../clazz/summary.component';
-import { getCookie, hasValue } from '../clazz/utility';
+import { getCookie } from '../clazz/utility';
 import { IEditEvent } from '../components/editable-field/editable-field.component';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../interfaze/commom.interface';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
@@ -16,6 +16,7 @@ import { IUserReactionResult } from './reaction.service';
 import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
+import { hasValue } from '../clazz/validation/validator-common';
 export interface IPatch {
     op: string,
     path: string,

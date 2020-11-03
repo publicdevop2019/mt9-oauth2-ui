@@ -1,13 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { CONST_HTTP_METHOD } from 'src/app/clazz/constants';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
+import { ClientService } from 'src/app/services/client.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { EndpointService, IEndpoint } from 'src/app/services/endpoint.service';
 import { SecurityProfileComponent } from '../security-profile/security-profile.component';
-import { CONST_HTTP_METHOD } from 'src/app/clazz/constants';
-import { IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { ClientService } from 'src/app/services/client.service';
-import { IClient } from '../../interface/client.interface';
 @Component({
   selector: 'app-summary-security-profile',
   templateUrl: './summary-security-profile.component.html',

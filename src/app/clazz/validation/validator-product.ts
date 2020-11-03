@@ -1,6 +1,5 @@
 import { IAttrImage, IProductDetail, IProductOptions, ISku } from 'src/app/services/product.service';
-import { hasValue } from '../utility';
-import { DefaultValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidator, TValidatorContext, Validator } from './validator-common';
+import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidator, TValidatorContext, Validator } from './validator-common';
 
 export class ProductValidator implements IAggregateValidator {
     private formId: string;

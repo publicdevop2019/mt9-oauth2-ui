@@ -7,13 +7,13 @@ import { Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { hasValue } from 'src/app/clazz/utility';
 import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
 import { DeviceService } from 'src/app/services/device.service';
 import * as UUID from 'uuid/v1';
 import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
+import { hasValue } from './validation/validator-common';
 export interface IIdBasedEntity {
   id: number
 }

@@ -4,7 +4,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { getLabel, getLayeredLabel, hasValue, parseAttributePayload } from 'src/app/clazz/utility';
+import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { ATTR_GEN_FORM_CONFIG } from 'src/app/form-configs/attribute-general-dynamic.config';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
@@ -20,7 +20,7 @@ import { environment } from 'src/environments/environment';
 import { ProductValidator } from 'src/app/clazz/validation/validator-product';
 import { isNullOrUndefined } from 'util';
 import { FormGroup } from '@angular/forms';
-import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
+import { ErrorMessage, hasValue } from 'src/app/clazz/validation/validator-common';
 interface IProductSimplePublic {
   imageUrlSmall: string;
   name: string;

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { EntityCommonService } from '../clazz/entity.common-service';
-import { IClient } from '../modules/my-apps/interface/client.interface';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 import { environment } from 'src/environments/environment';
+import { IClient } from '../clazz/validation/interfaze-client';
 @Injectable({
   providedIn: 'root'
 })

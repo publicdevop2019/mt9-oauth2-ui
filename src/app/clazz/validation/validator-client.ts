@@ -1,5 +1,5 @@
-import { clientRoleList, grantTypeListExt, resourceClientRoleList, scopeList } from 'src/app/form-configs/client.config';
-import { grantTypeEnums, IClient } from 'src/app/modules/my-apps/interface/client.interface';
+import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from './constant';
+import { grantTypeEnums, IClient } from './interfaze-client';
 import { IAggregateValidator, TValidatorContext, ErrorMessage, Validator, BooleanValidator, ListValidator, StringValidator, NumberValidator } from './validator-common';
 
 export class ClientValidator implements IAggregateValidator {
@@ -108,7 +108,7 @@ export class ClientAuthorityValidator extends Validator {
     validate = (value: any) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
-        ListValidator.isSubListOf(value, clientRoleList.map(e => e.value), results);
+        ListValidator.isSubListOf(value, CLIENT_ROLE_LIST.map(e => e.value), results);
         return results.map(e => { return { ...e, ctrlKey: "authority" } });
     }
 }
@@ -116,7 +116,7 @@ export class ClientScopeValidator extends Validator {
     validate = (value: any) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
-        ListValidator.isSubListOf(value, scopeList.map(e => e.value), results);
+        ListValidator.isSubListOf(value, SCOPE_LIST.map(e => e.value), results);
         return results.map(e => { return { ...e, ctrlKey: "scope" } });
     }
 }
@@ -125,7 +125,7 @@ export class ClientResourceIndicatorValidator extends Validator {
         let results: ErrorMessage[] = [];
         BooleanValidator.isBoolean(value, results);
         if (value === true) {
-            let var0 = resourceClientRoleList.map(e => e.value);
+            let var0 = RESOURCE_CLIENT_ROLE_LIST.map(e => e.value);
             if (var0.some(e => !client.grantedAuthorities.includes(e))) {
                 results.push({ type: 'resourceIndicatorRequiresRole', message: 'RESOURCE_INDICATOR_REQUIRES_ROLE' })
             }
@@ -137,7 +137,7 @@ export class ClientGrantTypeValidator extends Validator {
     validate = (value: string[]) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(value, results);
-        ListValidator.isSubListOf(value, grantTypeListExt.map(e => e.value), results);
+        ListValidator.isSubListOf(value, GRANT_TYPE_LIST_EXT.map(e => e.value), results);
         // can only be one of the below cases
         // password
         // password + refresh_token
