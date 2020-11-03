@@ -1,4 +1,4 @@
-import { IProductDetail, IProductOptions } from './interfaze-product';
+import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
 import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidatorContext } from './validator-common';
 
 export class ProductValidator implements IAggregateValidator {
@@ -87,8 +87,8 @@ export class ProductValidator implements IAggregateValidator {
     }
     skusCreateValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
-        ListValidator.hasValue(payload[key], results, key)
-        payload[key].forEach((e, index) => {
+        ListValidator.hasValue(payload[key], results, key);
+        (payload[key] as ISku[]).forEach((e, index) => {
             if ((!e.attributesSales) || e.attributesSales.length == 0) {
                 ListValidator.lengthIs(payload[key], 1, results, key);
             } else {
