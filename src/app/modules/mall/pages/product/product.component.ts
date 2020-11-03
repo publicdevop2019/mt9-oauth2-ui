@@ -401,6 +401,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       } else {
         this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
       }
+      this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis, this, this.productErrorMapper)
       this.changeDecRef.detectChanges();
     })
   }
@@ -509,7 +510,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   productErrorMapper(original: ErrorMessage[], cmpt: ProductComponent) {
     let next = cmpt.pareseOptionFormError(original, cmpt);
     let next2 = cmpt.pareseSkuFormError(next, cmpt);
-    return next2
+    let next3 = cmpt.parseProductFormError(next2, cmpt);
+    return next3
   }
   public pareseOptionFormError(original: ErrorMessage[], cmpt: ProductComponent) {
     if (original.some(e => e.formId === cmpt.optionFormId)) {
@@ -532,6 +534,24 @@ export class ProductComponent implements OnInit, OnDestroy {
       })
     } else {
       return original
+    }
+  }
+  public parseProductFormError(original: ErrorMessage[], cmpt: ProductComponent) {
+
+    if (original.some(e=>e.ctrlKey==='attributesKey')) {
+      let next = original.map(e => {
+        if (['attributesKey'].includes(e.ctrlKey)) {
+          return {
+            ...e,
+            ctrlKey: 'selectBackendCatalog'
+          }
+        } else {
+          return e
+        }
+      })
+      return next
+    } else {
+      return original;
     }
   }
   public pareseSkuFormError(original: ErrorMessage[], cmpt: ProductComponent) {

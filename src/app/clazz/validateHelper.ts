@@ -1,8 +1,5 @@
-import { Component } from '@angular/core';
-import { FormGroup } from "@angular/forms";
 import { FormInfoService } from 'mt-form-builder';
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, forkJoin, merge } from 'rxjs';
+import { merge } from 'rxjs';
 import { ErrorMessage, IAggregateValidator, TValidatorContext } from './validation/validator-common';
 
 export class ValidatorHelper {
@@ -74,6 +71,8 @@ export class ValidatorHelper {
           }
         }
       })
+      console.dir('errors')
+      console.dir(mapped)
       return false
     } else {
       return true

@@ -22,12 +22,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "1",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -48,12 +43,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "3",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "select",
@@ -71,12 +61,7 @@ export const FORM_CONFIG: IForm = {
                 { label: 'HTTP_DELETE', value: "DELETE" },
                 { label: 'HTTP_PATCH', value: "PATCH" },
             ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -87,12 +72,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "5",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
     ],
 }

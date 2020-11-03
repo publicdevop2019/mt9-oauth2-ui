@@ -22,11 +22,12 @@ export const FORM_CONFIG: IForm = {
                 "row": "1",
                 "column": "0"
             },
+            required:true,
             "options": [],
         },
         {
             "type": "text",
-            "display": true,
+            "display": false,
             "disabled": false,
             "label": "INHERIT_ATTR",
             "key": "attributesKey",
@@ -34,12 +35,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "2",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -50,12 +46,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "3",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "imageUpload",
@@ -66,6 +57,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "4",
                 "column": "0"
             },
+            required:true,
         },
         {
             "type": "text",
@@ -90,12 +82,7 @@ export const FORM_CONFIG: IForm = {
                 { label: 'YES', value: "AVAILABLE" },
                 { label: 'NO', value: "UNAVAILABLE" },
             ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "date-picker",
@@ -150,12 +137,7 @@ export const FORM_CONFIG: IForm = {
                 { label: 'YES', value: "YES" },
                 { label: 'NO', value: "NO" },
             ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",

@@ -21,12 +21,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "1",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "virtual-select",

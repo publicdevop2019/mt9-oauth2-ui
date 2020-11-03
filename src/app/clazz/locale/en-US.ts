@@ -352,5 +352,13 @@ export const enUS = {
     "OPERATION_DASHBOARD_ORDER": "Order Operation",
     "OPT_RESTORE_LAST_VERSION": "Restore last version",
     "VIEW_DETAIL": "View detail",
+    "REQUIRED": "Required",
+    "STRING_GREATER_THAN_OR_EQUAL_TO": "Value is too short",
+    "LIST_HAS_VALUE": "Required",
+    "STRING_HAS_VALUE": "Required",
+    "NUMBER_GREATER_THAN": "Value too small",
+    "NUMBER_IS_INTEGER": "Need integer",
+    "NUMBER_GREATER_THAN_OREQUAL_TO": "Value too small",
+    "LIST_IS_SUB_LIST_OF": "Wrong list value",
     "": "",
 }

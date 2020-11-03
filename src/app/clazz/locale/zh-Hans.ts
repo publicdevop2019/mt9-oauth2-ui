@@ -358,5 +358,13 @@ export const zhHans = {
     "OPERATION_DASHBOARD_ORDER": "订单操作",
     "OPT_RESTORE_LAST_VERSION": "回滚",
     "VIEW_DETAIL": "详情",
+    "REQUIRED": "必填",
+    "STRING_GREATER_THAN_OR_EQUAL_TO": "值过短",
+    "LIST_HAS_VALUE": "不能为空",
+    "STRING_HAS_VALUE": "不能为空",
+    "NUMBER_GREATER_THAN": "值过小",
+    "NUMBER_IS_INTEGER": "必须为整数",
+    "NUMBER_GREATER_THAN_OREQUAL_TO": "值过小",
+    "LIST_IS_SUB_LIST_OF": "错误值",
     "": "",
 }

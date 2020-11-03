@@ -80,12 +80,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "4",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "select",
@@ -97,12 +92,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": grantTypeList,
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -113,12 +103,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "6",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "checkbox",
@@ -169,12 +154,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": clientRoleList,
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                },
-            ]
+            required:true,
         },
         {
             "type": "checkbox",
@@ -187,17 +167,13 @@ export const FORM_CONFIG: IForm = {
             },
             "direction": 'row',
             "options": scopeList,
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                },
-            ]
+            required:true,
         },
         {
             "type": "checkbox",
             "display": true,
             "label": "PLEASE_SELECT_RESOUCE_ID(S)",
+            required:true,
             "key": "resourceId",
             "position": {
                 "row": "12",
@@ -215,16 +191,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "13",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                },
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "only number is allowed"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -235,16 +202,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "14",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                },
-                {
-                    "type": "numberOnly",
-                    "errorMsg": "only number is allowed"
-                }
-            ]
+            required:true,
         },
     ],
 }

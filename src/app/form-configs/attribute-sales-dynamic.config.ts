@@ -71,12 +71,7 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
                 "row": "3",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -87,12 +82,7 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
                 "row": "4",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "form",
@@ -113,12 +103,7 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
                         },
                         "options": [
                         ],
-                        "attributes": [
-                            {
-                                "type": "required",
-                                "errorMsg": "field cannot be empty"
-                            }
-                        ]
+                        required:true,
                     },
                     {
                         "type": "select",
@@ -131,12 +116,7 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
                         },
                         "options": [
                         ],
-                        "attributes": [
-                            {
-                                "type": "required",
-                                "errorMsg": "field cannot be empty"
-                            }
-                        ]
+                        required:true,
                     },
                     {
                         "type": "text",
@@ -147,12 +127,7 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
                             "row": "0",
                             "column": "1"
                         },
-                        "attributes": [
-                            {
-                                "type": "required",
-                                "errorMsg": "field cannot be empty"
-                            }
-                        ]
+                        required:true,
                     }
                 ]
             },

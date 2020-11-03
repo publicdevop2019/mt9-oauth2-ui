@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { FormInfoService } from 'mt-form-builder';
@@ -99,7 +98,9 @@ export class ClientComponent implements OnDestroy, OnInit {
     let grants: grantTypeEnums[] = [];
     let authority: string[] = [];
     let scopes: scopeEnums[] = [];
-    grants.push(formGroup.get('grantType').value as grantTypeEnums);
+    if(formGroup.get('grantType').value as grantTypeEnums){
+      grants.push(formGroup.get('grantType').value as grantTypeEnums);
+    }
     if (formGroup.get('refreshToken').value)
       grants.push(grantTypeEnums.refresh_token);
 

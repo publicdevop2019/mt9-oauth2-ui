@@ -54,12 +54,7 @@ export const FORM_FILTER_ITEM_CONFIG: IForm = {
             },
             "options": [
             ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "form",

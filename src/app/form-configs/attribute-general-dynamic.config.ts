@@ -13,12 +13,7 @@ export const ATTR_GEN_FORM_CONFIG: IForm = {
             },
             "options": [
             ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "select",
@@ -31,12 +26,7 @@ export const ATTR_GEN_FORM_CONFIG: IForm = {
             },
             "options": [
             ],
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -47,12 +37,7 @@ export const ATTR_GEN_FORM_CONFIG: IForm = {
                 "row": "0",
                 "column": "1"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
     ],
 }

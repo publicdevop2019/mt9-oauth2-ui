@@ -21,12 +21,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "1",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ]
+            required:true,
         },
         {
             "type": "text",
@@ -47,12 +42,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "3",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ],
+            required:true,
             "options": [
                 { label: 'MANUAL', value: "MANUAL" },
                 { label: 'SELECT', value: "SELECT" },
@@ -67,12 +57,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "4",
                 "column": "0"
             },
-            "attributes": [
-                {
-                    "type": "required",
-                    "errorMsg": "field cannot be empty"
-                }
-            ],
+            required:true,
             "options": [
                 { label: 'KEY_ATTR', value: "KEY_ATTR" },
                 { label: 'SALES_ATTR', value: "SALES_ATTR" },
