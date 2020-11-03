@@ -20,7 +20,7 @@ export class ProductValidator implements IAggregateValidator {
         errors.push(...this.attributesKeyValidator('attributesKey', payload))
         errors.push(...this.attributesGenValidator('attributesGen', payload))
         errors.push(...this.attributesProdValidator('attributesProd', payload))
-        return errors.filter(e => e);
+        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
     }
     nameValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
@@ -88,24 +88,29 @@ export class ProductValidator implements IAggregateValidator {
     skusCreateValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
         ListValidator.hasValue(payload[key], results, key);
-        (payload[key] as ISku[]).forEach((e, index) => {
-            if ((!e.attributesSales) || e.attributesSales.length == 0) {
-                ListValidator.lengthIs(payload[key], 1, results, key);
-            } else {
-                ListValidator.hasValue(e.attributesSales, results, key);
-            }
+        if (Array.isArray(payload[key])) {
+            (payload[key] as ISku[]).forEach((e, index) => {
+                if ((!e.attributesSales) || e.attributesSales.length == 0) {
+                    ListValidator.lengthIs(payload[key], 1, results, key);
+                } else {
+                    ListValidator.hasValue(e.attributesSales, results, key);
+                }
 
-            NumberValidator.hasValue(e.price, results, index + '_price');
-            NumberValidator.greaterThan(e.price, 0, results, index + '_price')
-            NumberValidator.isInteger(e.storageActual, results, index + '_storageActual')
-            NumberValidator.greaterThan(e.storageActual, 0, results, index + '_storageActual')
-            NumberValidator.isInteger(e.storageOrder, results, index + '_storageOrder')
-            NumberValidator.greaterThan(e.storageOrder, 0, results, index + '_storageOrder')
-            DefaultValidator.notExist(e.decreaseActualStorage, results, index + '_decreaseActualStorage')
-            DefaultValidator.notExist(e.decreaseOrderStorage, results, index + '_decreaseOrderStorage')
-            DefaultValidator.notExist(e.increaseActualStorage, results, index + '_increaseActualStorage')
-            DefaultValidator.notExist(e.increaseOrderStorage, results, index + '_increaseOrderStorage')
-        })
+                NumberValidator.hasValue(e.price, results, index + '_price');
+                NumberValidator.greaterThan(e.price, 0, results, index + '_price')
+                NumberValidator.isInteger(e.storageActual, results, index + '_storageActual')
+                NumberValidator.greaterThan(e.storageActual, 0, results, index + '_storageActual')
+                NumberValidator.isInteger(e.storageOrder, results, index + '_storageOrder')
+                NumberValidator.greaterThan(e.storageOrder, 0, results, index + '_storageOrder')
+                DefaultValidator.notExist(e.decreaseActualStorage, results, index + '_decreaseActualStorage')
+                DefaultValidator.notExist(e.decreaseOrderStorage, results, index + '_decreaseOrderStorage')
+                DefaultValidator.notExist(e.increaseActualStorage, results, index + '_increaseActualStorage')
+                DefaultValidator.notExist(e.increaseOrderStorage, results, index + '_increaseOrderStorage')
+            })
+
+        } else {
+            results.push({ type: 'skusNotArray', message: 'SKUS_NOT_ARRAY', key: key })
+        }
         return appendCtrlKey(results, this.formId)
     }
     attributeSaleImagesCreateValidator = (key: string, payload: IProductDetail) => {

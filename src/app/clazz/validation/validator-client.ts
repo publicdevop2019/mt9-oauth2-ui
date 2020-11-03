@@ -20,19 +20,19 @@ export class ClientValidator implements IAggregateValidator {
         errors.push(...this.clientRefreshTokenValiditySecondsValidator('refreshTokenValiditySeconds', client))
         errors.push(...this.clientRegisteredRedirectUriValidator('registeredRedirectUri', client))
         errors.push(...this.clientAutoApproveValidator('autoApprove', client))
-        return errors.filter(e => e);
+        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
     }
     clientAutoApproveValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
         if (payload.grantTypeEnums) {
-        if (payload.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
-            BooleanValidator.isBoolean(payload[key], results, key);
-        } else {
-            if (payload[key] === null) {
+            if (payload.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
+                BooleanValidator.isBoolean(payload[key], results, key);
             } else {
-                results.push({ type: 'autoApproveRequiresAuthorizationCodeGrant', message: 'AUTO_APPROVE_REQUIRES_AUTHORIZATION_CODE_GRANT', key: key })
+                if (payload[key] === null) {
+                } else {
+                    results.push({ type: 'autoApproveRequiresAuthorizationCodeGrant', message: 'AUTO_APPROVE_REQUIRES_AUTHORIZATION_CODE_GRANT', key: key })
+                }
             }
-        }
         } else {
             results.push({ type: 'noGrantTypeEnumsFoundForAutoApprove', message: 'NO_GRANT_TYPE_ENUMS_FOUND_FOR_AUTO_APPROVE', key: key })
         }
@@ -71,7 +71,7 @@ export class ClientValidator implements IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (payload.grantTypeEnums) {
             if (payload.grantTypeEnums.includes(grantTypeEnums.password) && payload.grantTypeEnums.includes(grantTypeEnums.refresh_token)) {
-                NumberValidator.hasValue(payload[key], results, key);
+                NumberValidator.isNumber(payload[key], results, key);
                 NumberValidator.greaterThanOrEqualTo(payload[key], 120, results, key);
             } else {
                 if (payload[key] > 0) {
@@ -158,10 +158,10 @@ export class ClientValidator implements IAggregateValidator {
     }
     clientDescriptionValidator = (key: string, payload: any) => {
         let results: ErrorMessage[] = [];
-        if (StringValidator.hasValue(payload[key], results, key)) {
+        if (payload[key] !== null && payload[key] !== undefined) {
+            StringValidator.hasValue(payload[key], results, key)
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
-            results = [];
         }
         return results
     }
