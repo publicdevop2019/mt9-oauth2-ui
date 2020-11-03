@@ -11,15 +11,15 @@ export interface IAggregateValidator {
 }
 export class StringValidator {
     public static greaterThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key: string): boolean {
-        if (var0.length < arg1 || typeof var0 !== 'string') {
+        if (typeof var0 !== 'string' || var0.length < arg1) {
             results.push({ type: "greaterThanOrEqualTo", message: 'STRING_GREATER_THAN_OR_EQUAL_TO', key: key })
             return false
         } else {
             return true
         }
     }
-    public static lessThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key: string): boolean {
-        if (var0.length > arg1 || typeof var0 !== 'string') {
+    public static lessThanOrEqualTo(var0: any, arg1: number, results: ErrorMessage[], key: string): boolean {
+        if (typeof var0 !== 'string' || var0.length > arg1) {
             results.push({ type: "lessThanOrEqualTo", message: 'STRING_LESS_THAN_OR_EQUAL_TO', key: key });
             return false
         } else {
@@ -35,7 +35,7 @@ export class StringValidator {
         }
     }
     public static lessThan(var0: string, length: number, results: ErrorMessage[], key: string): boolean {
-        if (var0.length >= length || typeof var0 !== 'string') {
+        if (typeof var0 !== 'string' || var0.length >= length) {
             results.push({ type: "lessThan", message: 'STRING_LESS_THAN', key: key })
             return false
         } else {
@@ -43,7 +43,7 @@ export class StringValidator {
         }
     }
     public static greaterThan(var0: string, length: number, results: ErrorMessage[], key: string): boolean {
-        if (var0.length <= length || typeof var0 !== 'string') {
+        if (typeof var0 !== 'string' || var0.length <= length) {
             results.push({ type: "greaterThan", message: 'STRING_GREATER_THAN', key: key })
             return false
         } else {
@@ -51,7 +51,7 @@ export class StringValidator {
         }
     }
     public static notEmpty(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
-        if (var0 === '' || typeof var0 !== 'string') {
+        if (typeof var0 !== 'string' || var0 === '') {
             results.push({ type: "notEmptyString", message: 'STRING_NOT_EMPTY_STRING', key: key })
             return false;
         } else {
@@ -59,7 +59,7 @@ export class StringValidator {
         }
     }
     public static hasValue(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
-        if (var0 === undefined || var0 === null || var0 === '' || typeof var0 !== 'string') {
+        if (typeof var0 !== 'string' || var0 === undefined || var0 === null || var0 === '') {
             results.push({ type: "hasStringValue", message: 'STRING_HAS_VALUE', key: key })
             return false;
         } else {
@@ -129,7 +129,7 @@ export class BooleanValidator {
 }
 export class ListValidator {
     public static belongsTo(var0: string, list: string[], results: ErrorMessage[], key: string): boolean {
-        if (list.length === 0 || typeof list[0] !== typeof var0 || !list.includes(var0)) {
+        if (typeof list[0] !== typeof var0 || list.length === 0 || !list.includes(var0)) {
             results.push({ type: "belongsTo", message: 'LIST_BELONGS_TO', key: key })
             return false;
         } else {
@@ -137,7 +137,7 @@ export class ListValidator {
         }
     }
     public static isSubListOf(var0: string[], list: string[], results: ErrorMessage[], key: string): boolean {
-        if (list.length === 0 || (typeof list !== typeof var0) || var0.some(e => !list.includes(e))) {
+        if (typeof list !== typeof var0 || list.length === 0 || var0.some(e => !list.includes(e))) {
             results.push({ type: "isSubListOf", message: 'LIST_IS_SUB_LIST_OF', key: key })
             return false;
         } else {
@@ -145,7 +145,7 @@ export class ListValidator {
         }
     }
     public static hasValue(var0: any[], results: ErrorMessage[], key: string): boolean {
-        if (var0 === undefined || var0 === null || var0.length === 0) {
+        if (var0 === undefined || var0 === null || !Array.isArray(var0) || var0.length === 0) {
             results.push({ type: "hasValue", message: 'LIST_HAS_VALUE', key: key })
             return false;
         } else {
@@ -220,5 +220,5 @@ export class NumberValidator {
     }
 }
 export function hasValue(input: any): boolean {
-    return input !== null && input !== undefined && input!=='';
+    return input !== null && input !== undefined && input !== '';
 }

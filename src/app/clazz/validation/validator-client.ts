@@ -1,6 +1,6 @@
 import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from './constant';
 import { grantTypeEnums, IClient } from './interfaze-client';
-import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidatorContext } from './validator-common';
+import { BooleanValidator, DefaultValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidatorContext } from './validator-common';
 
 export class ClientValidator implements IAggregateValidator {
     constructor() {
@@ -24,6 +24,7 @@ export class ClientValidator implements IAggregateValidator {
     }
     clientAutoApproveValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
+        if (payload.grantTypeEnums) {
         if (payload.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
             BooleanValidator.isBoolean(payload[key], results, key);
         } else {
@@ -32,22 +33,30 @@ export class ClientValidator implements IAggregateValidator {
                 results.push({ type: 'autoApproveRequiresAuthorizationCodeGrant', message: 'AUTO_APPROVE_REQUIRES_AUTHORIZATION_CODE_GRANT', key: key })
             }
         }
+        } else {
+            results.push({ type: 'noGrantTypeEnumsFoundForAutoApprove', message: 'NO_GRANT_TYPE_ENUMS_FOUND_FOR_AUTO_APPROVE', key: key })
+        }
         return results
     }
     clientRegisteredRedirectUriValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        if (payload.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
-            ListValidator.hasValue(payload[key], results, key);
-        } else {
-            if (payload[key]) {
-                results.push({ type: 'redirectUriRequiresAuthorizationCodeGrant', message: 'REDIRECT_URI_REQUIRES_AUTHORIZATION_CODE_GRANT', key: key })
+        if (payload.grantTypeEnums) {
+            if (payload.grantTypeEnums.includes(grantTypeEnums.authorization_code)) {
+                ListValidator.hasValue(payload[key], results, key);
             } else {
+                if (payload[key]) {
+                    results.push({ type: 'redirectUriRequiresAuthorizationCodeGrant', message: 'REDIRECT_URI_REQUIRES_AUTHORIZATION_CODE_GRANT', key: key })
+                } else {
+                }
             }
+        } else {
+            results.push({ type: 'noGrantTypeEnumsFoundForRedirectUri', message: 'NO_GRANT_TYPE_ENUMS_FOUND_FOR_REDIRECT_URI', key: key })
         }
         return results
     }
     clientNameValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
+        DefaultValidator.hasValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
         StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
         return results
@@ -60,15 +69,19 @@ export class ClientValidator implements IAggregateValidator {
     }
     clientRefreshTokenValiditySecondsValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        if (payload.grantTypeEnums.includes(grantTypeEnums.password) && payload.grantTypeEnums.includes(grantTypeEnums.refresh_token)) {
-            NumberValidator.hasValue(payload[key], results, key);
-            NumberValidator.greaterThanOrEqualTo(payload[key], 120, results, key);
-        } else {
-            if (payload[key] > 0) {
-                results.push({ type: 'requiresRefreshTokenAndPasswordGrant', message: 'REQUIRES_REFRESH_TOKEN_AND_PASSWORD_GRANT', key: key })
+        if (payload.grantTypeEnums) {
+            if (payload.grantTypeEnums.includes(grantTypeEnums.password) && payload.grantTypeEnums.includes(grantTypeEnums.refresh_token)) {
+                NumberValidator.hasValue(payload[key], results, key);
+                NumberValidator.greaterThanOrEqualTo(payload[key], 120, results, key);
             } else {
+                if (payload[key] > 0) {
+                    results.push({ type: 'requiresRefreshTokenAndPasswordGrant', message: 'REQUIRES_REFRESH_TOKEN_AND_PASSWORD_GRANT', key: key })
+                } else {
 
+                }
             }
+        } else {
+            results.push({ type: 'noGrantTypeEnumsFoundForRefreshToken', message: 'NO_GRANT_TYPE_ENUMS_FOUND_FOR_REFRESH_TOKEN', key: key })
         }
         return results
     }
@@ -102,19 +115,25 @@ export class ClientValidator implements IAggregateValidator {
     }
     clientGrantTypeValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        ListValidator.hasValue(payload[key], results, key);
-        ListValidator.isSubListOf(payload[key], GRANT_TYPE_LIST_EXT.map(e => e.value), results, key);
+        let value = payload[key];
+        ListValidator.hasValue(value, results, key);
+        ListValidator.isSubListOf(value, GRANT_TYPE_LIST_EXT.map(e => e.value), results, key);
         // can only be one of the below cases
         // password
         // password + refresh_token
         // client_credentials
         // authorization_code
-        if (payload[key].length === 1 && payload[key][0] === grantTypeEnums.password) { }
-        else if (payload[key].length === 1 && payload[key][0] === grantTypeEnums.client_credentials) { }
-        else if (payload[key].length === 1 && payload[key][0] === grantTypeEnums.authorization_code) { }
-        else if (payload[key].length === 2 && payload[key].includes(grantTypeEnums.password) && payload[key].includes(grantTypeEnums.refresh_token)) { }
-        else {
-            results.push({ type: 'invalidGrantTypeValue', message: 'INVALID_GRANT_TYPE_VALUE', key: key })
+        if (Array.isArray(value)) {
+
+            if (value.length === 1 && value[0] === grantTypeEnums.password) { }
+            else if (value.length === 1 && value[0] === grantTypeEnums.client_credentials) { }
+            else if (value.length === 1 && value[0] === grantTypeEnums.authorization_code) { }
+            else if (value.length === 2 && value.includes(grantTypeEnums.password) && value.includes(grantTypeEnums.refresh_token)) { }
+            else {
+                results.push({ type: 'invalidGrantTypeValue', message: 'INVALID_GRANT_TYPE_VALUE', key: key })
+            }
+        } else {
+            results.push({ type: 'grantTypeNotArray', message: 'GRANT_TYPE_NOT_ARRAY', key: key })
         }
         return results
     }
