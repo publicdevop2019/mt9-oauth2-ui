@@ -1,25 +1,44 @@
 import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from './constant';
 import { grantTypeEnums, IClient } from './interfaze-client';
-import { BooleanValidator, DefaultValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TValidatorContext } from './validator-common';
+import { BooleanValidator, DefaultValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from './validator-common';
 
 export class ClientValidator implements IAggregateValidator {
-    constructor() {
+    private validators: Map<string, TValidator> = new Map();
+    private platform: TPlatform = 'CLIENT';
+    constructor(platform?: TPlatform) {
+        if (platform) {
+            this.platform = platform;
+        }
+        this.validators.set('name', this.clientNameValidator);
+        this.validators.set('description', this.clientDescriptionValidator);
+        this.validators.set('hasSecret', this.clientHasSecretValidator);
+        this.validators.set('clientSecret', this.clientClientSecretValidator);
+        this.validators.set('grantTypeEnums', this.clientGrantTypeValidator);
+        this.validators.set('resourceIndicator', this.clientResourceIndicatorValidator);
+        this.validators.set('grantedAuthorities', this.clientAuthorityValidator);
+        this.validators.set('scopeEnums', this.clientScopeValidator);
+        this.validators.set('resourceIds', this.clientResourceIdValidator);
+        this.validators.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
+        this.validators.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
+        this.validators.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
+        this.validators.set('autoApprove', this.clientAutoApproveValidator);
     }
     public validate(client: IClient, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
-        errors.push(...this.clientNameValidator('name', client))
-        errors.push(...this.clientDescriptionValidator('description', client))
-        errors.push(...this.clientHasSecretValidator('hasSecret', client))
-        errors.push(...this.clientClientSecretValidator('clientSecret', client))
-        errors.push(...this.clientGrantTypeValidator('grantTypeEnums', client))
-        errors.push(...this.clientResourceIndicatorValidator('resourceIndicator', client))
-        errors.push(...this.clientAuthorityValidator('grantedAuthorities', client))
-        errors.push(...this.clientScopeValidator('scopeEnums', client))
-        errors.push(...this.clientResourceIdValidator('resourceIds', client))
-        errors.push(...this.clientAccessTokenValiditySecondsValidator('accessTokenValiditySeconds', client))
-        errors.push(...this.clientRefreshTokenValiditySecondsValidator('refreshTokenValiditySeconds', client))
-        errors.push(...this.clientRegisteredRedirectUriValidator('registeredRedirectUri', client))
-        errors.push(...this.clientAutoApproveValidator('autoApprove', client))
+        if (this.platform === 'CLIENT') {
+            this.validators.forEach((fn, field) => {
+                errors.push(...fn(field, client))
+            })
+        } else {
+            //fail fast for server
+            this.validators.forEach((fn, field) => {
+                if (errors.length === 0) {
+                    if (fn(field, client).length > 0) {
+                        errors = fn(field, client);
+                    }
+                }
+            })
+        }
         return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
     }
     clientAutoApproveValidator = (key: string, payload: IClient) => {

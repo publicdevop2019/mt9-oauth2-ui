@@ -1,42 +1,80 @@
 import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
-import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, notNullOrUndefined, NumberValidator, StringValidator, TValidatorContext } from './validator-common';
+import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, notNullOrUndefined, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from './validator-common';
 
 export class ProductValidator implements IAggregateValidator {
     private formId: string;
-    constructor(formId: string) {
+    private platform: TPlatform = 'CLIENT';
+    private validatorsCreate: Map<string, TValidator> = new Map();
+    private validatorsUpdate: Map<string, TValidator> = new Map();
+    constructor(formId: string, platform?: TPlatform) {
         this.formId = formId;
+        if (platform) {
+            this.platform = platform;
+        }
+        this.validatorsCreate.set('name', this.nameValidator);
+        this.validatorsCreate.set('description', this.descriptionValidator);
+        this.validatorsCreate.set('imageUrlSmall', this.imageUrlSmallValidator);
+        this.validatorsCreate.set('startAt', this.startAtValidator);
+        this.validatorsCreate.set('endAt', this.endAtValidator);
+        this.validatorsCreate.set('skus', this.skusCreateValidator);
+        this.validatorsCreate.set('attributeSaleImages', this.attributeSaleImagesCreateValidator);
+        this.validatorsCreate.set('imageUrlLarge', this.imageUrlLargeValidator);
+        this.validatorsCreate.set('selectedOptions', this.selectedOptionsValidator);
+        this.validatorsCreate.set('attributesKey', this.attributesKeyValidator);
+        this.validatorsCreate.set('attributesGen', this.attributesGenValidator);
+        this.validatorsCreate.set('attributesProd', this.attributesProdValidator);
+
+        this.validatorsUpdate.set('name', this.nameValidator);
+        this.validatorsUpdate.set('description', this.descriptionValidator);
+        this.validatorsUpdate.set('imageUrlSmall', this.imageUrlSmallValidator);
+        this.validatorsUpdate.set('startAt', this.startAtValidator);
+        this.validatorsUpdate.set('endAt', this.endAtValidator);
+        this.validatorsUpdate.set('skus', this.skusUpdateValidator);
+        this.validatorsUpdate.set('attributeSaleImages', this.attributeSaleImagesCreateValidator);
+        this.validatorsUpdate.set('imageUrlLarge', this.imageUrlLargeValidator);
+        this.validatorsUpdate.set('selectedOptions', this.selectedOptionsValidator);
+        this.validatorsUpdate.set('attributesKey', this.attributesKeyValidator);
+        this.validatorsUpdate.set('attributesGen', this.attributesGenValidator);
+        this.validatorsUpdate.set('attributesProd', this.attributesProdValidator);
     }
     public validate(payload: IProductDetail, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
-        if (context === 'CREATE') {
-            errors.push(...this.nameValidator('name', payload))
-            errors.push(...this.descriptionValidator('description', payload))
-            errors.push(...this.imageUrlSmallValidator('imageUrlSmall', payload))
-            errors.push(...this.startAtValidator('startAt', payload))
-            errors.push(...this.endAtValidator('endAt', payload))
-            errors.push(...this.skusCreateValidator('skus', payload))
-            errors.push(...this.attributeSaleImagesCreateValidator('attributeSaleImages', payload))
-            errors.push(...this.imageUrlLargeValidator('imageUrlLarge', payload))
-            errors.push(...this.selectedOptionsValidator('selectedOptions', payload))
-            errors.push(...this.attributesKeyValidator('attributesKey', payload))
-            errors.push(...this.attributesGenValidator('attributesGen', payload))
-            errors.push(...this.attributesProdValidator('attributesProd', payload))
-        } else if (context === 'UPDATE') {
-            errors.push(...this.nameValidator('name', payload))
-            errors.push(...this.descriptionValidator('description', payload))
-            errors.push(...this.imageUrlSmallValidator('imageUrlSmall', payload))
-            errors.push(...this.startAtValidator('startAt', payload))
-            errors.push(...this.endAtValidator('endAt', payload))
-            errors.push(...this.skusUpdateValidator('skus', payload))
-            errors.push(...this.attributeSaleImagesCreateValidator('attributeSaleImages', payload))
-            errors.push(...this.imageUrlLargeValidator('imageUrlLarge', payload))
-            errors.push(...this.selectedOptionsValidator('selectedOptions', payload))
-            errors.push(...this.attributesKeyValidator('attributesKey', payload))
-            errors.push(...this.attributesGenValidator('attributesGen', payload))
-            errors.push(...this.attributesProdValidator('attributesProd', payload))
+        if (this.platform === 'CLIENT') {
+            if (context === 'CREATE') {
+                this.validatorsCreate.forEach((fn, field) => {
+                    errors.push(...fn(field, payload))
+                })
+            } else if (context === 'UPDATE') {
+                this.validatorsUpdate.forEach((fn, field) => {
+                    errors.push(...fn(field, payload))
+                })
+            } else {
+                console.error('unsupportted context type :: ' + context)
+            }
         } else {
-            console.error('unsupportted context type :: ' + context)
+            //fail fast for server
+            if (context === 'CREATE') {
+                this.validatorsCreate.forEach((fn, field) => {
+                    if (errors.length === 0) {
+                        if (fn(field, payload).length > 0) {
+                            errors = fn(field, payload);
+                        }
+                    }
+                })
+            } else if (context === 'UPDATE') {
+                this.validatorsUpdate.forEach((fn, field) => {
+                    if (errors.length === 0) {
+                        if (fn(field, payload).length > 0) {
+                            errors = fn(field, payload);
+                        }
+                    }
+                })
+            } else {
+                console.error('unsupportted context type :: ' + context)
+            }
+
         }
+
         return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
     }
     nameValidator = (key: string, payload: IProductDetail) => {

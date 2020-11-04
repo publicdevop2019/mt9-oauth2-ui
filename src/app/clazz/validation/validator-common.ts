@@ -5,7 +5,8 @@ export interface ErrorMessage {
     formId?: string
     message?: string
 }
-export type TValidator = (value: any, payload?: any) => ErrorMessage[];
+export type TValidator = (value: any, payload: any) => ErrorMessage[];
+export type TPlatform = 'CLIENT'|'SERVER';
 export interface IAggregateValidator {
     validate: (payload: any, context: TValidatorContext) => ErrorMessage[];
 }
