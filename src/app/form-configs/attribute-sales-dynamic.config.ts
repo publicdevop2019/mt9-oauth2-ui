@@ -82,7 +82,6 @@ export const ATTR_SALES_FORM_CONFIG: IForm = {
                 "row": "4",
                 "column": "0"
             },
-            required:true,
         },
         {
             "type": "form",

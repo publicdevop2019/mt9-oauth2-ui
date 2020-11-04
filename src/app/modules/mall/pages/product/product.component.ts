@@ -123,7 +123,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
       if (this.productBottomSheet.context !== 'new') {
-        this.attrSalesFormInfo.disabled = true;
+        // this.attrSalesFormInfo.disabled = true;
         this.fis.restore(this.formId, this.productDetail);
         this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.productDetail.startAt ? new Date(this.productDetail.startAt) : '')
         this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.productDetail.startAt ? this.getTime(new Date(this.productDetail.startAt)) : '')
@@ -136,10 +136,12 @@ export class ProductComponent implements OnInit, OnDestroy {
         let sub = this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
           if (next === 'AVAILABLE') {
             this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(new Date())
+            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('00:00:00')
             this.formInfo.inputs.find(e => e.key === 'startAtDate').display = false;
             this.formInfo.inputs.find(e => e.key === 'startAtTime').display = false;
           } else {
-            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue('')
+            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(null)
+            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('')
             this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
             this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
           }
@@ -425,6 +427,9 @@ export class ProductComponent implements OnInit, OnDestroy {
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
   }
   private getAddedAttrs(formId: string): string[] {
+    if (!this.fis.formGroupCollection[formId]) {
+      return []
+    }
     let attrFormValue = this.fis.formGroupCollection[formId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
       let selected = this.attrList.find(e => e.id === attrFormValue[idKey]);
@@ -438,7 +443,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
         return selected.id + ':' + attrValue
       }
-    });
+    }).filter(e => e);
   }
   private getAddedAttrsForCtrl(ctrlName: string): string {
     let selected = this.attrList.find(e => e.id === this.fis.formGroupCollection[this.imageAttrSaleFormId].get(ctrlName).value);
@@ -485,26 +490,71 @@ export class ProductComponent implements OnInit, OnDestroy {
       this.subscriptions.add(sub)
     }
   }
-  checkInput(key: string) {
-    if (!hasValue(this.fis.getFormGroup(this.formId).get(key).value)) {
-      this.formInfo.inputs.find(e => e.key === key).errorMsg = "REQUIRED";
-      this.fis.getFormGroup(this.formId).get(key).valueChanges.subscribe(next => {
-        if (!hasValue(next)) {
-          this.formInfo.inputs.find(e => e.key === key).errorMsg = "REQUIRED";
-        } else {
-          this.formInfo.inputs.find(e => e.key === key).errorMsg = undefined
-        }
-      })
-    } else {
-      this.formInfo.inputs.find(e => e.key === key).errorMsg = undefined
+  checkInput(key: string, formId: string) {
+    if (this.fis.formGroupCollection[formId]) {
+      if (!hasValue(this.fis.getFormGroup(formId).get(key).value)) {
+        this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = "REQUIRED";
+        this.fis.getFormGroup(formId).get(key).valueChanges.subscribe(next => {
+          if (!hasValue(next)) {
+            this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = "REQUIRED";
+          } else {
+            this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = undefined
+          }
+        })
+      } else {
+        this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = undefined
+      }
     }
   }
+  requiredInput(key: string, formId: string) {
+    return hasValue(this.fis.getFormGroup(formId).get(key).value)
+  }
   createProduct() {
-    this.checkInput('status')
-    this.checkInput('hasSku')
-    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis, this, this.productErrorMapper)) {
-      this.productSvc.create(this.convertToPayload(this), this.changeId);
+    this.checkInput('status', this.formId)
+    this.checkInput('hasSku', this.formId)
+    if (this.hasSku) {
+      Object.keys(this.fis.formGroupCollection_formInfo).filter(e => e.includes('attrSalesFormChild')).forEach(e => {
+        this.fis.formGroupCollection_formInfo[e].inputs.forEach(ee => {
+          if (ee.key.includes('attributeId')) {
+            this.checkInput(ee.key, e)
+          } else if (ee.key.includes('attributeValueSelect')) {
+            this.checkInput(ee.key, e)
+          } else if (ee.key.includes('attributeValueManual')) {
+            this.checkInput(ee.key, e)
+          } else {
+
+          }
+
+        })
+      })
     }
+    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis, this, this.productErrorMapper)) {
+      if (this.hasSku) {
+        if (this.requiredInput('status', this.formId)
+          && this.requiredInput('hasSku', this.formId)
+          && this.checkInputs()
+        ) {
+          this.productSvc.create(this.convertToPayload(this), this.changeId);
+        }
+      } else {
+        if (this.requiredInput('status', this.formId)
+          && this.requiredInput('hasSku', this.formId)
+        ) {
+          this.productSvc.create(this.convertToPayload(this), this.changeId);
+        }
+      }
+    }
+  }
+  checkInputs(): boolean {
+    let output = true;
+    Object.keys(this.fis.formGroupCollection_formInfo).forEach(formId => {
+      this.fis.formGroupCollection_formInfo[formId].inputs.forEach(ee => {
+        if (ee.display && ee.errorMsg) {
+          output = false;
+        }
+      })
+    })
+    return output;
   }
   productErrorMapper(original: ErrorMessage[], cmpt: ProductComponent) {
     let next = cmpt.pareseOptionFormError(original, cmpt);
@@ -537,7 +587,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
   public parseProductFormError(original: ErrorMessage[], cmpt: ProductComponent) {
 
-    if (original.some(e=>e.key==='attributesKey')) {
+    if (original.some(e => e.key === 'attributesKey')) {
       let next = original.map(e => {
         if (['attributesKey'].includes(e.key)) {
           return {
@@ -556,7 +606,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   public pareseSkuFormError(original: ErrorMessage[], cmpt: ProductComponent) {
     if (!cmpt.hasSku) {
       let next = original.map(e => {
-        if (['0_price', '0_storageActual', '0_storageOrder', '0_decreaseActualStorage', '0_decreaseOrderStorage', '0_increaseActualStorage', '0_increaseOrderStorage'].includes(e.key)) {
+        if (['0_sales', '0_price', '0_storageActual', '0_storageOrder', '0_decreaseActualStorage', '0_decreaseOrderStorage', '0_increaseActualStorage', '0_increaseOrderStorage'].includes(e.key)) {
           return {
             ...e,
             key: e.key.replace('0_', '')
@@ -567,11 +617,65 @@ export class ProductComponent implements OnInit, OnDestroy {
       })
       return next
     } else {
-      return original;
+      let next = original.map(e => {
+        if (e.key.includes('_sales')) {
+          return {
+            ...e,
+            key: (e.key.split('_')[1] + "_" + e.key.split('_')[0]) === 'sales_0' ? 'sales' : e.key.split('_')[1] + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else if (e.key.includes('_price')) {
+          return {
+            ...e,
+            key: (e.key.split('_')[1] + "_" + e.key.split('_')[0]) === 'price_0' ? 'price' : e.key.split('_')[1] + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else if (e.key.includes('_storageActual')) {
+          return {
+            ...e,
+            key: ('storageActual' + "_" + e.key.split('_')[0]) === 'storageActual_0' ? 'storageActual' : 'storageActual' + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else if (e.key.includes('_storageOrder')) {
+          return {
+            ...e,
+            key: ('storageOrder' + "_" + e.key.split('_')[0]) === 'storageOrder_0' ? 'storageOrder' : 'storageOrder' + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else if (e.key.includes('_increaseOrderStorage')) {
+          return {
+            ...e,
+            key: ('storage_OrderIncreaseBy' + "_" + e.key.split('_')[0]) === 'storage_OrderIncreaseBy_0' ? 'storage_OrderIncreaseBy' : 'storage_OrderIncreaseBy' + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else if (e.key.includes('_increaseActualStorage')) {
+          return {
+            ...e,
+            key: ('storage_ActualIncreaseBy' + "_" + e.key.split('_')[0]) === 'storage_ActualIncreaseBy_0' ? 'storage_ActualIncreaseBy' : 'storage_ActualIncreaseBy' + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else if (e.key.includes('_decreaseOrderStorage')) {
+          return {
+            ...e,
+            key: ('storage_OrderDecreaseBy' + "_" + e.key.split('_')[0]) === 'storage_OrderDecreaseBy_0' ? 'storage_OrderDecreaseBy' : 'storage_OrderDecreaseBy' + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else if (e.key.includes('_decreaseActualStorage')) {
+          return {
+            ...e,
+            key: ('storage_ActualDecreaseBy' + "_" + e.key.split('_')[0]) === 'storage_ActualDecreaseBy_0' ? 'storage_ActualDecreaseBy' : 'storage_ActualDecreaseBy' + "_" + (+e.key.split('_')[0] - 1),
+            formId: this.attrSalesFormId
+          }
+        } else {
+          return e
+        }
+      })
+
+      return next;
     }
   }
   updateProduct() {
-    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'UPDATE', this.fis, this, ValidatorHelper.doNothingErrorMapper))
+    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'UPDATE', this.fis, this, this.productErrorMapper))
       this.productSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   previewFlag: boolean = false;
@@ -614,16 +718,16 @@ export class ProductComponent implements OnInit, OnDestroy {
     }
     return afterParse;
   }
-  convertToPayload(productCmpt: ProductComponent): IProductDetail {
-    let formGroup = productCmpt.fis.formGroupCollection[productCmpt.formId];
-    let valueSnapshot = productCmpt.fis.formGroupCollection[productCmpt.imageFormId].value;
+  convertToPayload(cmpt: ProductComponent): IProductDetail {
+    let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
+    let valueSnapshot = cmpt.fis.formGroupCollection[cmpt.imageFormId].value;
     let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string).filter(e => e !== '');
     let selectedOptions: IProductOptions[] = [];
-    Object.keys(productCmpt.fis.formGroupCollection[productCmpt.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((ctrlName) => {
+    Object.keys(cmpt.fis.formGroupCollection[cmpt.optionFormId].controls).filter(e => e.indexOf('productOption') > -1).forEach((ctrlName) => {
       let var1 = <IProductOptions>{};
-      var1.title = productCmpt.fis.formGroupCollection[productCmpt.optionFormId].get(ctrlName).value;
+      var1.title = cmpt.fis.formGroupCollection[cmpt.optionFormId].get(ctrlName).value;
       var1.options = [];
-      let fg = productCmpt.fis.formGroupCollection['optionForm' + ctrlName.replace('productOption', '')];
+      let fg = cmpt.fis.formGroupCollection['optionForm' + ctrlName.replace('productOption', '')];
       var1.options = Object.keys(fg.controls).filter(e => e.indexOf('optionValue') > -1).map(e => {
         return <IProductOption>{
           optionValue: fg.get(e).value,
@@ -633,35 +737,35 @@ export class ProductComponent implements OnInit, OnDestroy {
       selectedOptions.push(var1)
     });
     let skusCalc: ISku[] = [];
-    if (productCmpt.hasSku && productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId]) {
-      Object.keys(productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].controls).filter(e => e.indexOf('storageOrder') > -1).forEach((ctrlName) => {
+    if (cmpt.hasSku && cmpt.fis.formGroupCollection[cmpt.attrSalesFormId]) {
+      Object.keys(cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].controls).filter(e => e.indexOf('storageOrder') > -1).forEach((ctrlName) => {
         let var1 = <ISku>{};
         let suffix = ctrlName.replace('storageOrder', '');
-        var1.attributesSales = productCmpt.getAddedAttrs(productCmpt.salesFormIdTempId + suffix);
-        var1.price = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('price' + suffix).value;
-        if (productCmpt.productBottomSheet.context === 'new' || productCmpt.productBottomSheet.context === 'clone') {
+        var1.attributesSales = cmpt.getAddedAttrs(cmpt.salesFormIdTempId + suffix);
+        var1.price = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('price' + suffix)?.value;
+        if (cmpt.productBottomSheet.context === 'new' || cmpt.productBottomSheet.context === 'clone') {
           //create
-          var1.storageOrder = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageOrder' + suffix).value;
-          var1.storageActual = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageActual' + suffix).value;
-          var1.sales = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('sales' + suffix).value;
-        } else if (productCmpt.productDetail && productCmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
-          let var11 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_OrderIncreaseBy' + suffix).value;
+          var1.storageOrder = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageOrder' + suffix)?.value;
+          var1.storageActual = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageActual' + suffix)?.value;
+          var1.sales = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('sales' + suffix)?.value;
+        } else if (cmpt.productDetail && cmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
+          let var11 = cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storage_OrderIncreaseBy' + suffix).value;
           if (var11)
-            var1.increaseOrderStorage = var11;
-          let var12 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_OrderDecreaseBy' + suffix).value;
+            var1.increaseOrderStorage = +var11;
+          let var12 = cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storage_OrderDecreaseBy' + suffix).value;
           if (var12)
-            var1.decreaseOrderStorage = var12;
-          let var13 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_ActualIncreaseBy' + suffix).value;
+            var1.decreaseOrderStorage = +var12;
+          let var13 = cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storage_ActualIncreaseBy' + suffix).value;
           if (var13)
-            var1.increaseActualStorage = var13;
-          let var14 = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storage_ActualDecreaseBy' + suffix).value;
+            var1.increaseActualStorage = +var13;
+          let var14 = cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storage_ActualDecreaseBy' + suffix).value;
           if (var14)
-            var1.decreaseActualStorage = var14;
-        } else if (productCmpt.productDetail && productCmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
+            var1.decreaseActualStorage = +var14;
+        } else if (cmpt.productDetail && cmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
           //new sku during update product
-          var1.storageOrder = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageOrder' + suffix).value;
-          var1.storageActual = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('storageActual' + suffix).value;
-          var1.sales = productCmpt.fis.formGroupCollection[productCmpt.attrSalesFormId].get('sales' + suffix).value;
+          var1.storageOrder = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageOrder' + suffix).value;
+          var1.storageActual = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageActual' + suffix).value;
+          var1.sales = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('sales' + suffix).value;
         } else {
 
         }
@@ -670,7 +774,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     } else {
       let var1 = <ISku>{};
       var1.attributesSales = [];
-      if (!productCmpt.productDetail) {
+      if (!cmpt.productDetail) {
         //create
         var1.storageOrder = +formGroup.get('storageOrder').value
         var1.storageActual = +formGroup.get('storageActual').value
@@ -689,12 +793,12 @@ export class ProductComponent implements OnInit, OnDestroy {
       }
     }
     let attrSaleImages = [];
-    if (productCmpt.hasSku && productCmpt.hasAttrsForCtrl()) {
-      Object.keys(productCmpt.fis.formGroupCollection[productCmpt.imageAttrSaleFormId].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
+    if (cmpt.hasSku && cmpt.hasAttrsForCtrl()) {
+      Object.keys(cmpt.fis.formGroupCollection[cmpt.imageAttrSaleFormId].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
         let var1 = <IAttrImage>{};
-        var1.attributeSales = productCmpt.getAddedAttrsForCtrl(ctrlName)
+        var1.attributeSales = cmpt.getAddedAttrsForCtrl(ctrlName)
         let append = ctrlName.replace('attributeId', '');
-        let childFormValue = productCmpt.fis.formGroupCollection[productCmpt.imageAttrSaleChildFormId + append].value;
+        let childFormValue = cmpt.fis.formGroupCollection[cmpt.imageAttrSaleChildFormId + append].value;
         var1.imageUrls = Object.keys(childFormValue).map(e => childFormValue[e] as string).filter(e => e !== '');;
         attrSaleImages.push(var1)
       });
@@ -702,16 +806,16 @@ export class ProductComponent implements OnInit, OnDestroy {
     return {
       id: formGroup.get('id').value,
       attributesKey: formGroup.get('attributesKey').value,
-      attributesProd: productCmpt.hasAttr(productCmpt.attrProdFormId) ? productCmpt.getAddedAttrs(productCmpt.attrProdFormId) : null,
-      attributesGen: productCmpt.hasAttr(productCmpt.attrGeneralFormId) ? productCmpt.getAddedAttrs(productCmpt.attrGeneralFormId) : null,
+      attributesProd: cmpt.hasAttr(cmpt.attrProdFormId) ? cmpt.getAddedAttrs(cmpt.attrProdFormId) : null,
+      attributesGen: cmpt.hasAttr(cmpt.attrGeneralFormId) ? cmpt.getAddedAttrs(cmpt.attrGeneralFormId) : null,
       name: formGroup.get('name').value,
       imageUrlSmall: formGroup.get('imageUrlSmall').value,
       description: formGroup.get('description').value,
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
       skus: skusCalc,
-      endAt: formGroup.get('endAtDate').value ? productCmpt.parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
-      startAt: formGroup.get('startAtDate').value ? productCmpt.parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
+      endAt: formGroup.get('endAtDate').value ? cmpt.parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
+      startAt: formGroup.get('startAtDate').value ? cmpt.parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
       attributeSaleImages: attrSaleImages,
     }
   }

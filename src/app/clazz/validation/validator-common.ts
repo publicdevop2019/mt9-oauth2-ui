@@ -93,7 +93,7 @@ export class DefaultValidator {
         }
     }
     public static notExist(var0: any, results: ErrorMessage[], key: string): boolean {
-        if (var0 !== undefined && var0 !== null) {
+        if (notNullOrUndefined(var0)) {
             results.push({ type: "shouldNotExist", message: 'DEFAULT_SHOULD_NOT_EXIST', key: key })
             return false;
         } else {
@@ -178,16 +178,8 @@ export class ListValidator {
     }
 }
 export class NumberValidator {
-    public static hasValue(var0: any, results: ErrorMessage[], key: string): boolean {
-        if (!NumberValidator.isNumber(var0, results, key) || var0 === undefined || var0 === null || typeof var0 !== 'number') {
-            results.push({ type: "hasValue", message: 'NUMBER_HAS_VALUE', key: key })
-            return false;
-        } else {
-            return true;
-        }
-    }
     public static isInteger(var0: any, results: ErrorMessage[], key: string): boolean {
-        if (!NumberValidator.isNumber(var0, results, key) || var0 === undefined || var0 === null || typeof var0 !== 'number' || !Number.isInteger(var0)) {
+        if (!NumberValidator.isNumber(var0, results, key) || !Number.isInteger(var0)) {
             results.push({ type: "isInteger", message: 'NUMBER_IS_INTEGER', key: key })
             return false;
         } else {
@@ -237,4 +229,7 @@ export class NumberValidator {
 }
 export function hasValue(input: any): boolean {
     return input !== null && input !== undefined && input !== '';
+}
+export function notNullOrUndefined(value: any) {
+    return value !== undefined && value !== null;
 }

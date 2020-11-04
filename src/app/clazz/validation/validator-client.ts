@@ -63,7 +63,7 @@ export class ClientValidator implements IAggregateValidator {
     }
     clientAccessTokenValiditySecondsValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        NumberValidator.hasValue(payload[key], results, key);
+        NumberValidator.isNumber(payload[key], results, key);
         NumberValidator.greaterThanOrEqualTo(payload[key], 120, results, key);
         return results
     }
