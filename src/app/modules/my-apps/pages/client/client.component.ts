@@ -112,7 +112,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     return {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
-      description: formGroup.get('description').value,
+      description: formGroup.get('description').value?formGroup.get('description').value:null,
       hasSecret: formGroup.get('hasSecret').value ? true : false,
       clientSecret: formGroup.get('clientSecret').value == '*****' ? '' : formGroup.get('clientSecret').value,
       grantTypeEnums: grants,

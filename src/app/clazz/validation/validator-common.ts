@@ -6,7 +6,7 @@ export interface ErrorMessage {
     message?: string
 }
 export type TValidator = (value: any, payload: any) => ErrorMessage[];
-export type TPlatform = 'CLIENT'|'SERVER';
+export type TPlatform = 'CLIENT' | 'SERVER';
 export interface IAggregateValidator {
     validate: (payload: any, context: TValidatorContext) => ErrorMessage[];
 }
@@ -62,6 +62,16 @@ export class StringValidator {
     public static hasValue(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
         if (!StringValidator.isString(var0, results, key) || var0 === undefined || var0 === null || var0 === '') {
             results.push({ type: "hasStringValue", message: 'STRING_HAS_VALUE', key: key })
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public static isHttpUrl(var0: any, results: ErrorMessage[], key: string): boolean {
+        let regex = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/)
+        let regex2 = new RegExp(/^https?:\/\/localhost:[0-9]{1,5}\/([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/)
+        if (!StringValidator.isString(var0, results, key) || !(regex2.test(var0) || regex.test(var0))) {
+            results.push({ type: "isUrl", message: 'STRING_IS_URL', key: key })
             return false;
         } else {
             return true;

@@ -3,41 +3,78 @@ import { grantTypeEnums, IClient } from './interfaze-client';
 import { BooleanValidator, DefaultValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from './validator-common';
 
 export class ClientValidator implements IAggregateValidator {
-    private validators: Map<string, TValidator> = new Map();
+    private createValidators: Map<string, TValidator> = new Map();
+    private updateValidators: Map<string, TValidator> = new Map();
     private platform: TPlatform = 'CLIENT';
     constructor(platform?: TPlatform) {
         if (platform) {
             this.platform = platform;
         }
-        this.validators.set('name', this.clientNameValidator);
-        this.validators.set('description', this.clientDescriptionValidator);
-        this.validators.set('hasSecret', this.clientHasSecretValidator);
-        this.validators.set('clientSecret', this.clientClientSecretValidator);
-        this.validators.set('grantTypeEnums', this.clientGrantTypeValidator);
-        this.validators.set('resourceIndicator', this.clientResourceIndicatorValidator);
-        this.validators.set('grantedAuthorities', this.clientAuthorityValidator);
-        this.validators.set('scopeEnums', this.clientScopeValidator);
-        this.validators.set('resourceIds', this.clientResourceIdValidator);
-        this.validators.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
-        this.validators.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
-        this.validators.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
-        this.validators.set('autoApprove', this.clientAutoApproveValidator);
+        this.createValidators.set('name', this.clientNameValidator);
+        this.createValidators.set('description', this.clientDescriptionValidator);
+        this.createValidators.set('hasSecret', this.clientHasSecretValidator);
+        this.createValidators.set('clientSecret', this.clientClientSecretValidator);
+        this.createValidators.set('grantTypeEnums', this.clientGrantTypeValidator);
+        this.createValidators.set('resourceIndicator', this.clientResourceIndicatorValidator);
+        this.createValidators.set('grantedAuthorities', this.clientAuthorityValidator);
+        this.createValidators.set('scopeEnums', this.clientScopeValidator);
+        this.createValidators.set('resourceIds', this.clientResourceIdValidator);
+        this.createValidators.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
+        this.createValidators.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
+        this.createValidators.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
+        this.createValidators.set('autoApprove', this.clientAutoApproveValidator);
+
+        this.updateValidators.set('name', this.clientNameValidator);
+        this.updateValidators.set('description', this.clientDescriptionValidator);
+        this.updateValidators.set('hasSecret', this.clientHasSecretValidator);
+        this.updateValidators.set('clientSecret', this.clientUpdateClientSecretValidator);
+        this.updateValidators.set('grantTypeEnums', this.clientGrantTypeValidator);
+        this.updateValidators.set('resourceIndicator', this.clientResourceIndicatorValidator);
+        this.updateValidators.set('grantedAuthorities', this.clientAuthorityValidator);
+        this.updateValidators.set('scopeEnums', this.clientScopeValidator);
+        this.updateValidators.set('resourceIds', this.clientResourceIdValidator);
+        this.updateValidators.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
+        this.updateValidators.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
+        this.updateValidators.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
+        this.updateValidators.set('autoApprove', this.clientAutoApproveValidator);
     }
     public validate(client: IClient, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
         if (this.platform === 'CLIENT') {
-            this.validators.forEach((fn, field) => {
-                errors.push(...fn(field, client))
-            })
+            if (context === 'CREATE') {
+                this.createValidators.forEach((fn, field) => {
+                    errors.push(...fn(field, client))
+                })
+            } else if (context === 'UPDATE') {
+                this.updateValidators.forEach((fn, field) => {
+                    errors.push(...fn(field, client))
+                })
+            } else {
+                console.error('unsupportted context type :: ' + context)
+            }
         } else {
-            //fail fast for server
-            this.validators.forEach((fn, field) => {
-                if (errors.length === 0) {
-                    if (fn(field, client).length > 0) {
-                        errors = fn(field, client);
+            if (context === 'CREATE') {
+                //fail fast for server
+                this.createValidators.forEach((fn, field) => {
+                    if (errors.length === 0) {
+                        if (fn(field, client).length > 0) {
+                            errors = fn(field, client);
+                        }
                     }
-                }
-            })
+                })
+            } else if (context === 'UPDATE') {
+                //fail fast for server
+                this.updateValidators.forEach((fn, field) => {
+                    if (errors.length === 0) {
+                        if (fn(field, client).length > 0) {
+                            errors = fn(field, client);
+                        }
+                    }
+                })
+            } else {
+                console.error('unsupportted context type :: ' + context)
+            }
+
         }
         return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
     }
@@ -75,7 +112,7 @@ export class ClientValidator implements IAggregateValidator {
     }
     clientNameValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        DefaultValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
         StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
         return results
@@ -106,7 +143,13 @@ export class ClientValidator implements IAggregateValidator {
     }
     clientResourceIdValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        ListValidator.hasValue(payload[key], results, key);
+        if (ListValidator.hasValue(payload[key], results, key)) {
+            (payload[key] as string[]).forEach((e, index) => {
+                StringValidator.hasValue(e, results, index + "_" + key)
+            })
+        } else {
+            results = [];
+        }
         return results
     }
     clientAuthorityValidator = (key: string, payload: IClient) => {
@@ -166,6 +209,18 @@ export class ClientValidator implements IAggregateValidator {
         if (payload.hasSecret === true) {
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
             StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
+        } else {
+            if (payload[key]) {
+                results.push({ type: 'secretRequiresHasSecret', message: 'SECRET_REQUIRES_HAS_SECRET', key: key })
+            } else {
+
+            }
+        }
+        return results
+    }
+    clientUpdateClientSecretValidator = (key: string, payload: IClient) => {
+        let results: ErrorMessage[] = [];
+        if (payload.hasSecret === true) {
         } else {
             if (payload[key]) {
                 results.push({ type: 'secretRequiresHasSecret', message: 'SECRET_REQUIRES_HAS_SECRET', key: key })

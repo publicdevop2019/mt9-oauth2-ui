@@ -19,6 +19,7 @@ export const FORM_CONFIG: IForm = {
             "display": true,
             "label": "ENTER_NAME",
             "key": "name",
+            required:true,
             "position": {
                 "row": "1",
                 "column": "0"
@@ -149,7 +150,6 @@ export const FORM_CONFIG: IForm = {
             "type": "checkbox",
             "display": true,
             "label": "PLEASE_SELECT_RESOUCE_ID(S)",
-            required:true,
             "key": "resourceId",
             "position": {
                 "row": "12",

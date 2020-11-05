@@ -1,6 +1,7 @@
 import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
 import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, notNullOrUndefined, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from './validator-common';
 
+
 export class ProductValidator implements IAggregateValidator {
     private formId: string;
     private platform: TPlatform = 'CLIENT';
@@ -141,6 +142,7 @@ export class ProductValidator implements IAggregateValidator {
     imageUrlSmallValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
         StringValidator.hasValue(payload[key], results, key);
+        StringValidator.isHttpUrl(payload[key], results, key);
         return appendCtrlKey(results, this.formId)
     }
     skusCreateValidator = (key: string, payload: IProductDetail) => {
@@ -236,7 +238,10 @@ export class ProductValidator implements IAggregateValidator {
     imageUrlLargeValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
-
+            (payload[key] as string[]).forEach((e, index) => {
+                StringValidator.hasValue(payload[key], results, index + "_" + key);
+                StringValidator.isHttpUrl(payload[key], results, index + "_" + key);
+            })
         } else {
             results = [];
         }
