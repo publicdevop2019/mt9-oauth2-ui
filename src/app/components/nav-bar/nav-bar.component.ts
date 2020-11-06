@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { logout } from 'src/app/clazz/utility';
 import { DeviceService } from 'src/app/services/device.service';
 export interface INavElement {
   link: string;
@@ -69,14 +70,6 @@ export class NavBarComponent implements OnInit {
       params: {
       },
     },
-    {
-      link: '/login',
-      display: 'LOGOUT',
-      icon: 'exit_to_app',
-      params: {
-
-      },
-    }
   ];
   menuMall: INavElement[] = [
     {
@@ -303,5 +296,7 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit() {
   }
-  
+  doLogout(){
+    logout()
+  }  
 }

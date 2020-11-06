@@ -6,6 +6,10 @@ export function getCookie(name: string): string {
     let parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
 }
+export function logout(){
+    sessionStorage.clear();
+    window.location.assign('/login')
+}
 export function getLabel(e: IBizAttribute): string {
     let lableNew: string[] = [];
     lableNew.push(e.name)

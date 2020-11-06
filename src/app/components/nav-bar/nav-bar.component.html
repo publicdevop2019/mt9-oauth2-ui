@@ -84,6 +84,11 @@
                     <mat-icon style="padding-right:8px">{{nav.icon}}</mat-icon>{{nav.display| translate}}
                 </mat-list-item>
             </mat-nav-list>
+            <mat-nav-list>
+                <mat-list-item mat-list-item  style="font-size: 14px;"  (click)="doLogout()"                   >
+                    <mat-icon style="padding-right:8px">exit_to_app</mat-icon>{{'LOGOUT'| translate}}
+                </mat-list-item>
+            </mat-nav-list>
         </mat-sidenav>
 
         <mat-sidenav-content [style.padding-left.px]="mobileQuery.matches ? 15 : 30"

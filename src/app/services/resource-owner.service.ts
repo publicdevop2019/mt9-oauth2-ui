@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
+import { logout } from '../clazz/utility';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
@@ -26,7 +27,7 @@ export class ResourceOwnerService extends EntityCommonService<IResourceOwner, IR
       result ? this.interceptor.openSnackbar('OPERATION_SUCCESS_LOGIN') : this.interceptor.openSnackbar('OPERATION_FAILED');
       /** clear authentication info */
       this.httpProxy.currentUserAuthInfo = undefined;
-      this.router.navigateByUrl('/login');
+      logout()
     });
   }
   batchUpdateUserStatus(ids: number[], status: 'LOCK' | 'UNLOCK', changeId: string) {
