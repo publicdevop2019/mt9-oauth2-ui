@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';
-import { ISkuNew, IProductSimple } from 'src/app/clazz/validation/interfaze-product';
+import { ISkuNew, IProductSimple } from 'src/app/clazz/validation/aggregate/product/interfaze-product';
 import { AttributeService } from 'src/app/services/attribute.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { ProductService } from 'src/app/services/product.service';

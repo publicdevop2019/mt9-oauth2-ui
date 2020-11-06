@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, AfterContentInit, ChangeDetectorRef } from '@angular/core';
-import { IProductDetail } from 'src/app/clazz/validation/interfaze-product';
+import { IProductDetail } from 'src/app/clazz/validation/aggregate/product/interfaze-product';
 @Component({
   selector: 'app-preview-outlet',
   templateUrl: './preview-outlet.component.html',

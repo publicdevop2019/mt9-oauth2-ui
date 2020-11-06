@@ -1,4 +1,4 @@
-import { IProductOptions } from './interfaze-product';
+import { IProductOptions } from './aggregate/product/interfaze-product';
 
 export interface ITokenResponse {
   access_token: string;

@@ -1,4 +1,4 @@
-import { IProductDetail } from '../clazz/validation/interfaze-product';
+import { IProductDetail } from '../clazz/validation/aggregate/product/interfaze-product';
 
 export const mockProductDetails:IProductDetail={
 	"id": 835654087368704,

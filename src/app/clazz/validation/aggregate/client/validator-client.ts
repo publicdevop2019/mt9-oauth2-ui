@@ -1,6 +1,6 @@
-import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from './constant';
+import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from '../../constant';
 import { grantTypeEnums, IClient } from './interfaze-client';
-import { BooleanValidator, DefaultValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from './validator-common';
+import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from '../../validator-common';
 
 export class ClientValidator implements IAggregateValidator {
     private createValidators: Map<string, TValidator> = new Map();

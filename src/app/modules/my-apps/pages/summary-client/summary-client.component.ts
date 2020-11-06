@@ -3,7 +3,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { CONST_GRANT_TYPE, CONST_ROLES } from 'src/app/clazz/constants';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
-import { IClient } from 'src/app/clazz/validation/interfaze-client';
+import { IClient } from 'src/app/clazz/validation/aggregate/client/interfaze-client';
 import { ClientService } from 'src/app/services/client.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { ClientComponent } from '../client/client.component';

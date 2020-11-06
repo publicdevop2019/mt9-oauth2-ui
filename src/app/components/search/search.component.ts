@@ -9,7 +9,7 @@ import { CONST_ATTR_TYPE, CONST_GRANT_TYPE, CONST_HTTP_METHOD, CONST_ROLES, CONS
 import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
 import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
 import { ClientService } from 'src/app/services/client.service';
-import { IClient } from 'src/app/clazz/validation/interfaze-client';
+import { IClient } from 'src/app/clazz/validation/aggregate/client/interfaze-client';
 import { hasValue } from 'src/app/clazz/validation/validator-common';
 @Component({
   selector: 'app-search',

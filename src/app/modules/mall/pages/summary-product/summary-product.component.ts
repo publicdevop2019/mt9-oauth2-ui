@@ -9,7 +9,7 @@ import { isNullOrUndefined } from 'util';
 import * as UUID from 'uuid/v1';
 import { ProductComponent } from '../product/product.component';
 import { OperationConfirmDialogComponent } from 'src/app/components/operation-confirm-dialog/operation-confirm-dialog.component';
-import { IProductSimple, IProductDetail } from 'src/app/clazz/validation/interfaze-product';
+import { IProductSimple, IProductDetail } from 'src/app/clazz/validation/aggregate/product/interfaze-product';
 import { ProductService } from 'src/app/services/product.service';
 @Component({
   selector: 'app-summary-product',

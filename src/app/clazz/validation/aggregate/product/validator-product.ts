@@ -1,5 +1,5 @@
+import { IAggregateValidator, TPlatform, TValidator, TValidatorContext, ErrorMessage, StringValidator, ListValidator, notNullOrUndefined, NumberValidator, DefaultValidator, hasValue } from '../../validator-common';
 import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
-import { DefaultValidator, ErrorMessage, hasValue, IAggregateValidator, ListValidator, notNullOrUndefined, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from './validator-common';
 
 
 export class ProductValidator implements IAggregateValidator {
