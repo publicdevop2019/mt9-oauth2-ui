@@ -140,14 +140,14 @@ export class ClientComponent implements OnDestroy, OnInit {
     return changeKeys[0];
   }
   doUpdate() {
-    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'UPDATE', this.fis, this, this.productErrorMapper))
+    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'UPDATE', this.fis, this, this.clientErrorMapper))
       this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(this), this.changeId)
   }
   doCreate() {
-    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'CREATE', this.fis, this, this.productErrorMapper))
+    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'CREATE', this.fis, this, this.clientErrorMapper))
       this.clientService.create(this.convertToClient(this), this.changeId)
   }
-  productErrorMapper(original: ErrorMessage[], cmpt: ClientComponent) {
+  clientErrorMapper(original: ErrorMessage[], cmpt: ClientComponent) {
     return original.map(e => {
       if (e.key === 'resourceIds') {
         return {

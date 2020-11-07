@@ -366,5 +366,7 @@ export const zhHans = {
     "NUMBER_IS_INTEGER": "必须为整数",
     "NUMBER_GREATER_THAN_OREQUAL_TO": "值过小",
     "LIST_IS_SUB_LIST_OF": "错误值",
+    "NUMBER_IS_NUMBER": "请输入数字",
+    "PWD_NOT_SAME": "必须相同",
     "": "",
 }

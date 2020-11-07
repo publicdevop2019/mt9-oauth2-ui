@@ -360,5 +360,7 @@ export const enUS = {
     "NUMBER_IS_INTEGER": "Need integer",
     "NUMBER_GREATER_THAN_OREQUAL_TO": "Value too small",
     "LIST_IS_SUB_LIST_OF": "Wrong list value",
+    "NUMBER_IS_NUMBER": "Number required",
+    "PWD_NOT_SAME": "Passwords not match",
     "": "",
 }

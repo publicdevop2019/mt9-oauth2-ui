@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
+import { IEndpoint } from '../clazz/validation/aggregate/endpoint/interfaze-endpoint';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-export interface IEndpoint {
-  resourceId: string;
-  description?: string;
-  path: string;
-  method: string;
-  expression: string;
-  id: number;
-}
 @Injectable({
   providedIn: 'root'
 })

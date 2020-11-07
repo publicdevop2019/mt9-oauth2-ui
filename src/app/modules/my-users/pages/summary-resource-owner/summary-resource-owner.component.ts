@@ -6,11 +6,11 @@ import { CONST_ROLES_USER } from 'src/app/clazz/constants';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { DeviceService } from 'src/app/services/device.service';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
-import { IResourceOwner } from '../../interface/resource-owner.interface';
 import { ResourceOwnerComponent } from '../resource-owner/resource-owner.component';
 import { OperationConfirmDialogComponent } from 'src/app/components/operation-confirm-dialog/operation-confirm-dialog.component';
 import { filter } from 'rxjs/operators';
 import * as UUID from 'uuid/v1';
+import { IResourceOwner } from 'src/app/clazz/validation/aggregate/user/interfaze-user';
 @Component({
   selector: 'app-summary-resource-owner',
   templateUrl: './summary-resource-owner.component.html',

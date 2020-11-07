@@ -1,7 +1,3 @@
-export interface IUserSumRep{
-    data: IResourceOwner[],
-    totalItemCount?: number
-}
 export interface IResourceOwner {
     id: number,
     email: string;

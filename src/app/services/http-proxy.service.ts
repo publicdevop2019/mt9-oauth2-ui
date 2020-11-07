@@ -9,7 +9,6 @@ import { ISumRep } from '../clazz/summary.component';
 import { getCookie } from '../clazz/utility';
 import { IEditEvent } from '../components/editable-field/editable-field.component';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../clazz/validation/interfaze-common';
-import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from '../modules/my-users/interface/resource-owner.interface';
 import { ICommentSummary } from './comment.service';
 import { IPostSummary } from './post.service';
 import { IUserReactionResult } from './reaction.service';
@@ -17,6 +16,7 @@ import { IEditListEvent } from '../components/editable-select-multi/editable-sel
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
 import { hasValue } from '../clazz/validation/validator-common';
+import { IResourceOwnerUpdatePwd, IPendingResourceOwner, IForgetPasswordRequest } from '../clazz/validation/aggregate/user/interfaze-user';
 export interface IPatch {
     op: string,
     path: string,

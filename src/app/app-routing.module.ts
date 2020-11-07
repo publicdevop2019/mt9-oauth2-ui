@@ -15,7 +15,6 @@ import { SummaryOrderComponent } from './modules/mall/pages/summary-order/summar
 import { SummaryProductComponent } from './modules/mall/pages/summary-product/summary-product.component';
 import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
 import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
-import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -25,6 +24,7 @@ import { UpdatePwdComponent } from './pages/update-pwd/update-pwd.component';
 import { AuthService } from './services/auth.service';
 import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
 import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
+import { SummaryEndpointComponent } from './modules/my-apps/pages/summary-endpoint/summary-endpoint.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -38,7 +38,7 @@ const routes: Routes = [
       { path: 'resource-owners', component: SummaryResourceOwnerComponent },
       { path: 'orders', component: SummaryOrderComponent },
       { path: 'orders/:id', component: OrderComponent },
-      { path: 'security-profiles', component: SummarySecurityProfileComponent },
+      { path: 'security-profiles', component: SummaryEndpointComponent },
       { path: 'products', component: SummaryProductComponent },
       { path: 'catalogs', component: SummaryCatalogComponent },
       { path: 'filters', component: SummaryFilterComponent },
@@ -54,7 +54,7 @@ const routes: Routes = [
       { path: 'operation-history', component: OperationHistoryComponent},
       { path: 'revoke-token', component: SummaryRevokeTokenComponent},
       { path: 'skus', component: SummarySkuComponent},
-      { path: '**', component: SummarySecurityProfileComponent }
+      { path: '**', component: SummaryEndpointComponent }
     ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },

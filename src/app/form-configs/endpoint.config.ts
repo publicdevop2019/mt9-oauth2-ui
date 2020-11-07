@@ -1,4 +1,5 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { HTTP_METHODS } from '../clazz/validation/aggregate/endpoint/interfaze-endpoint';
 
 export const FORM_CONFIG: IForm = {
     "repeatable": false,
@@ -54,13 +55,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "4",
                 "column": "0"
             },
-            "options": [
-                { label: 'HTTP_GET', value: "GET" },
-                { label: 'HTTP_POST', value: "POST" },
-                { label: 'HTTP_PUT', value: "PUT" },
-                { label: 'HTTP_DELETE', value: "DELETE" },
-                { label: 'HTTP_PATCH', value: "PATCH" },
-            ],
+            "options":HTTP_METHODS,
             required:true,
         },
         {

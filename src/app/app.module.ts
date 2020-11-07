@@ -76,10 +76,10 @@ import { SummaryProductComponent } from './modules/mall/pages/summary-product/su
 import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
 import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
 import { ClientComponent } from './modules/my-apps/pages/client/client.component';
-import { SecurityProfileComponent } from './modules/my-apps/pages/security-profile/security-profile.component';
+import { EndpointComponent } from './modules/my-apps/pages/endpoint/endpoint.component';
 import { SummaryClientComponent } from './modules/my-apps/pages/summary-client/summary-client.component';
+import { SummaryEndpointComponent } from './modules/my-apps/pages/summary-endpoint/summary-endpoint.component';
 import { SummaryRevokeTokenComponent } from './modules/my-apps/pages/summary-revoke-token/summary-revoke-token.component';
-import { SummarySecurityProfileComponent } from './modules/my-apps/pages/summary-security-profile/summary-security-profile.component';
 import { ResourceOwnerComponent } from './modules/my-users/pages/resource-owner/resource-owner.component';
 import { SummaryResourceOwnerComponent } from './modules/my-users/pages/summary-resource-owner/summary-resource-owner.component';
 import { AuthorizeComponent } from './pages/authorize/authorize.component';
@@ -111,8 +111,8 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
     ProgressSpinnerComponent,
     MsgBoxComponent,
     AuthorizeComponent,
-    SummarySecurityProfileComponent,
-    SecurityProfileComponent,
+    SummaryEndpointComponent,
+    EndpointComponent,
     SummaryProductComponent,
     SummaryCatalogComponent,
     CatalogComponent,
@@ -193,7 +193,7 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
       }
     }),
   ],
-  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, SecurityProfileComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent,ObjectDetailComponent],
+  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, EndpointComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent,ObjectDetailComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

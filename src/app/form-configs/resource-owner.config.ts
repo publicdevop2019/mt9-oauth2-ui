@@ -16,6 +16,7 @@ export const FORM_CONFIG: IForm = {
         {
             "type": "text",
             "display": true,
+            "disabled": true,
             "label": "Enter email",
             "key": "email",
             "readonly": true,

@@ -60,8 +60,16 @@ export class StringValidator {
         }
     }
     public static hasValue(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
-        if (!StringValidator.isString(var0, results, key) || var0 === undefined || var0 === null || var0 === '') {
+        if (!StringValidator.isString(var0, results, key) || var0 === '') {
             results.push({ type: "hasStringValue", message: 'STRING_HAS_VALUE', key: key })
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public static belongsTo(var0: string | undefined | null, list: string[], results: ErrorMessage[], key: string): boolean {
+        if (!StringValidator.isString(var0, results, key) || !list.includes(var0)) {
+            results.push({ type: "belongsTo", message: 'STRING_BELONGS_TO', key: key })
             return false;
         } else {
             return true;
