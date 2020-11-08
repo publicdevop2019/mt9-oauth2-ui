@@ -368,5 +368,6 @@ export const zhHans = {
     "LIST_IS_SUB_LIST_OF": "错误值",
     "NUMBER_IS_NUMBER": "请输入数字",
     "PWD_NOT_SAME": "必须相同",
+    "STRING_IS_EMAIL": "邮箱格式错误",
     "": "",
 }

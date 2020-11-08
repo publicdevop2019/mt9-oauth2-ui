@@ -7,16 +7,16 @@ import { environment } from 'src/environments/environment';
 import * as UUID from 'uuid/v1';
 import { ISumRep } from '../clazz/summary.component';
 import { getCookie } from '../clazz/utility';
-import { IEditEvent } from '../components/editable-field/editable-field.component';
+import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from '../clazz/validation/aggregate/user/interfaze-user';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../clazz/validation/interfaze-common';
+import { hasValue } from '../clazz/validation/validator-common';
+import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
+import { IEditEvent } from '../components/editable-field/editable-field.component';
+import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
+import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { ICommentSummary } from './comment.service';
 import { IPostSummary } from './post.service';
 import { IUserReactionResult } from './reaction.service';
-import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
-import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
-import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
-import { hasValue } from '../clazz/validation/validator-common';
-import { IResourceOwnerUpdatePwd, IPendingResourceOwner, IForgetPasswordRequest } from '../clazz/validation/aggregate/user/interfaze-user';
 export interface IPatch {
     op: string,
     path: string,
@@ -134,11 +134,11 @@ export class HttpProxyService {
         formData.append('grant_type', 'client_credentials');
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._resetPwd(this._getToken(token), fg)))
     };
-    activate(fg: FormGroup, changeId: string): Observable<any> {
+    activate(payload: IPendingResourceOwner, changeId: string): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
         let headers = this._getAuthHeader(false);
-        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: headers }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), fg, changeId)))
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: headers }).pipe(switchMap(token => this._getActivationCode(this._getToken(token), payload, changeId)))
     };
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
@@ -198,7 +198,7 @@ export class HttpProxyService {
         formData.append('password', loginFG.get('pwd').value);
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(true) });
     }
-    register(registerFG: FormGroup, changeId: string): Observable<any> {
+    register(registerFG: IPendingResourceOwner, changeId: string): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
         return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._createUser(this._getToken(token), registerFG, changeId)))
@@ -212,15 +212,15 @@ export class HttpProxyService {
     private _getToken(res: ITokenResponse): string {
         return res.access_token;
     }
-    private _createUser(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
+    private _createUser(token: string, registerFG: IPendingResourceOwner, changeId: string): Observable<any> {
         let headers = this._getAuthHeader(false, token);
         headers = headers.append("changeId", changeId)
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app', this._getRegPayload(registerFG), { headers: headers })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app', registerFG, { headers: headers })
     }
-    private _getActivationCode(token: string, registerFG: FormGroup, changeId: string): Observable<any> {
+    private _getActivationCode(token: string, payload: IPendingResourceOwner, changeId: string): Observable<any> {
         let headers = this._getAuthHeader(false, token);
         headers = headers.append("changeId", changeId)
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/pending-users/app', this._getActivatePayload(registerFG), { headers: headers })
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/pending-users/app', payload, { headers: headers })
     }
     private _resetPwd(token: string, registerFG: FormGroup): Observable<any> {
         return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
@@ -228,18 +228,8 @@ export class HttpProxyService {
     private _forgetPwd(token: string, registerFG: FormGroup): Observable<any> {
         return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
     }
-    private _getRegPayload(fg: FormGroup): IPendingResourceOwner {
-        return {
-            email: fg.get('email').value,
-            password: fg.get('pwd').value,
-            activationCode: fg.get('activationCode').value,
-        };
-    }
-    private _getActivatePayload(fg: FormGroup): IPendingResourceOwner {
-        return {
-            email: fg.get('email').value,
-        };
-    }
+
+    
     private _getForgetPayload(fg: FormGroup): IForgetPasswordRequest {
         return {
             email: fg.get('email').value,

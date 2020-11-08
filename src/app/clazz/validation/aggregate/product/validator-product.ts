@@ -5,48 +5,48 @@ import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
 export class ProductValidator implements IAggregateValidator {
     private formId: string;
     private platform: TPlatform = 'CLIENT';
-    private validatorsCreate: Map<string, TValidator> = new Map();
-    private validatorsUpdate: Map<string, TValidator> = new Map();
+    private adminCreateProductCommandValidator: Map<string, TValidator> = new Map();
+    private adminUpdateProductCommandValidator: Map<string, TValidator> = new Map();
     constructor(formId: string, platform?: TPlatform) {
         this.formId = formId;
         if (platform) {
             this.platform = platform;
         }
-        this.validatorsCreate.set('name', this.nameValidator);
-        this.validatorsCreate.set('description', this.descriptionValidator);
-        this.validatorsCreate.set('imageUrlSmall', this.imageUrlSmallValidator);
-        this.validatorsCreate.set('startAt', this.startAtValidator);
-        this.validatorsCreate.set('endAt', this.endAtValidator);
-        this.validatorsCreate.set('skus', this.skusCreateValidator);
-        this.validatorsCreate.set('attributeSaleImages', this.attributeSaleImagesCreateValidator);
-        this.validatorsCreate.set('imageUrlLarge', this.imageUrlLargeValidator);
-        this.validatorsCreate.set('selectedOptions', this.selectedOptionsValidator);
-        this.validatorsCreate.set('attributesKey', this.attributesKeyValidator);
-        this.validatorsCreate.set('attributesGen', this.attributesGenValidator);
-        this.validatorsCreate.set('attributesProd', this.attributesProdValidator);
+        this.adminCreateProductCommandValidator.set('name', this.nameValidator);
+        this.adminCreateProductCommandValidator.set('description', this.descriptionValidator);
+        this.adminCreateProductCommandValidator.set('imageUrlSmall', this.imageUrlSmallValidator);
+        this.adminCreateProductCommandValidator.set('startAt', this.startAtValidator);
+        this.adminCreateProductCommandValidator.set('endAt', this.endAtValidator);
+        this.adminCreateProductCommandValidator.set('skus', this.skusCreateValidator);
+        this.adminCreateProductCommandValidator.set('attributeSaleImages', this.attributeSaleImagesCreateValidator);
+        this.adminCreateProductCommandValidator.set('imageUrlLarge', this.imageUrlLargeValidator);
+        this.adminCreateProductCommandValidator.set('selectedOptions', this.selectedOptionsValidator);
+        this.adminCreateProductCommandValidator.set('attributesKey', this.attributesKeyValidator);
+        this.adminCreateProductCommandValidator.set('attributesGen', this.attributesGenValidator);
+        this.adminCreateProductCommandValidator.set('attributesProd', this.attributesProdValidator);
 
-        this.validatorsUpdate.set('name', this.nameValidator);
-        this.validatorsUpdate.set('description', this.descriptionValidator);
-        this.validatorsUpdate.set('imageUrlSmall', this.imageUrlSmallValidator);
-        this.validatorsUpdate.set('startAt', this.startAtValidator);
-        this.validatorsUpdate.set('endAt', this.endAtValidator);
-        this.validatorsUpdate.set('skus', this.skusUpdateValidator);
-        this.validatorsUpdate.set('attributeSaleImages', this.attributeSaleImagesCreateValidator);
-        this.validatorsUpdate.set('imageUrlLarge', this.imageUrlLargeValidator);
-        this.validatorsUpdate.set('selectedOptions', this.selectedOptionsValidator);
-        this.validatorsUpdate.set('attributesKey', this.attributesKeyValidator);
-        this.validatorsUpdate.set('attributesGen', this.attributesGenValidator);
-        this.validatorsUpdate.set('attributesProd', this.attributesProdValidator);
+        this.adminUpdateProductCommandValidator.set('name', this.nameValidator);
+        this.adminUpdateProductCommandValidator.set('description', this.descriptionValidator);
+        this.adminUpdateProductCommandValidator.set('imageUrlSmall', this.imageUrlSmallValidator);
+        this.adminUpdateProductCommandValidator.set('startAt', this.startAtValidator);
+        this.adminUpdateProductCommandValidator.set('endAt', this.endAtValidator);
+        this.adminUpdateProductCommandValidator.set('skus', this.skusUpdateValidator);
+        this.adminUpdateProductCommandValidator.set('attributeSaleImages', this.attributeSaleImagesCreateValidator);
+        this.adminUpdateProductCommandValidator.set('imageUrlLarge', this.imageUrlLargeValidator);
+        this.adminUpdateProductCommandValidator.set('selectedOptions', this.selectedOptionsValidator);
+        this.adminUpdateProductCommandValidator.set('attributesKey', this.attributesKeyValidator);
+        this.adminUpdateProductCommandValidator.set('attributesGen', this.attributesGenValidator);
+        this.adminUpdateProductCommandValidator.set('attributesProd', this.attributesProdValidator);
     }
     public validate(payload: IProductDetail, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
         if (this.platform === 'CLIENT') {
             if (context === 'CREATE') {
-                this.validatorsCreate.forEach((fn, field) => {
+                this.adminCreateProductCommandValidator.forEach((fn, field) => {
                     errors.push(...fn(field, payload))
                 })
             } else if (context === 'UPDATE') {
-                this.validatorsUpdate.forEach((fn, field) => {
+                this.adminUpdateProductCommandValidator.forEach((fn, field) => {
                     errors.push(...fn(field, payload))
                 })
             } else {
@@ -55,7 +55,7 @@ export class ProductValidator implements IAggregateValidator {
         } else {
             //fail fast for server
             if (context === 'CREATE') {
-                this.validatorsCreate.forEach((fn, field) => {
+                this.adminCreateProductCommandValidator.forEach((fn, field) => {
                     if (errors.length === 0) {
                         if (fn(field, payload).length > 0) {
                             errors = fn(field, payload);
@@ -63,7 +63,7 @@ export class ProductValidator implements IAggregateValidator {
                     }
                 })
             } else if (context === 'UPDATE') {
-                this.validatorsUpdate.forEach((fn, field) => {
+                this.adminUpdateProductCommandValidator.forEach((fn, field) => {
                     if (errors.length === 0) {
                         if (fn(field, payload).length > 0) {
                             errors = fn(field, payload);

@@ -3,50 +3,50 @@ import { grantTypeEnums, IClient } from './interfaze-client';
 import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from '../../validator-common';
 
 export class ClientValidator implements IAggregateValidator {
-    private createValidators: Map<string, TValidator> = new Map();
-    private updateValidators: Map<string, TValidator> = new Map();
+    private rootCreateClientCommandValidator: Map<string, TValidator> = new Map();
+    private rootUpdateClientCommandValidator: Map<string, TValidator> = new Map();
     private platform: TPlatform = 'CLIENT';
     constructor(platform?: TPlatform) {
         if (platform) {
             this.platform = platform;
         }
-        this.createValidators.set('name', this.clientNameValidator);
-        this.createValidators.set('description', this.clientDescriptionValidator);
-        this.createValidators.set('hasSecret', this.clientHasSecretValidator);
-        this.createValidators.set('clientSecret', this.clientClientSecretValidator);
-        this.createValidators.set('grantTypeEnums', this.clientGrantTypeValidator);
-        this.createValidators.set('resourceIndicator', this.clientResourceIndicatorValidator);
-        this.createValidators.set('grantedAuthorities', this.clientAuthorityValidator);
-        this.createValidators.set('scopeEnums', this.clientScopeValidator);
-        this.createValidators.set('resourceIds', this.clientResourceIdValidator);
-        this.createValidators.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
-        this.createValidators.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
-        this.createValidators.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
-        this.createValidators.set('autoApprove', this.clientAutoApproveValidator);
+        this.rootCreateClientCommandValidator.set('name', this.clientNameValidator);
+        this.rootCreateClientCommandValidator.set('description', this.clientDescriptionValidator);
+        this.rootCreateClientCommandValidator.set('hasSecret', this.clientHasSecretValidator);
+        this.rootCreateClientCommandValidator.set('clientSecret', this.clientClientSecretValidator);
+        this.rootCreateClientCommandValidator.set('grantTypeEnums', this.clientGrantTypeValidator);
+        this.rootCreateClientCommandValidator.set('resourceIndicator', this.clientResourceIndicatorValidator);
+        this.rootCreateClientCommandValidator.set('grantedAuthorities', this.clientAuthorityValidator);
+        this.rootCreateClientCommandValidator.set('scopeEnums', this.clientScopeValidator);
+        this.rootCreateClientCommandValidator.set('resourceIds', this.clientResourceIdValidator);
+        this.rootCreateClientCommandValidator.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
+        this.rootCreateClientCommandValidator.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
+        this.rootCreateClientCommandValidator.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
+        this.rootCreateClientCommandValidator.set('autoApprove', this.clientAutoApproveValidator);
 
-        this.updateValidators.set('name', this.clientNameValidator);
-        this.updateValidators.set('description', this.clientDescriptionValidator);
-        this.updateValidators.set('hasSecret', this.clientHasSecretValidator);
-        this.updateValidators.set('clientSecret', this.clientUpdateClientSecretValidator);
-        this.updateValidators.set('grantTypeEnums', this.clientGrantTypeValidator);
-        this.updateValidators.set('resourceIndicator', this.clientResourceIndicatorValidator);
-        this.updateValidators.set('grantedAuthorities', this.clientAuthorityValidator);
-        this.updateValidators.set('scopeEnums', this.clientScopeValidator);
-        this.updateValidators.set('resourceIds', this.clientResourceIdValidator);
-        this.updateValidators.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
-        this.updateValidators.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
-        this.updateValidators.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
-        this.updateValidators.set('autoApprove', this.clientAutoApproveValidator);
+        this.rootUpdateClientCommandValidator.set('name', this.clientNameValidator);
+        this.rootUpdateClientCommandValidator.set('description', this.clientDescriptionValidator);
+        this.rootUpdateClientCommandValidator.set('hasSecret', this.clientHasSecretValidator);
+        this.rootUpdateClientCommandValidator.set('clientSecret', this.clientUpdateClientSecretValidator);
+        this.rootUpdateClientCommandValidator.set('grantTypeEnums', this.clientGrantTypeValidator);
+        this.rootUpdateClientCommandValidator.set('resourceIndicator', this.clientResourceIndicatorValidator);
+        this.rootUpdateClientCommandValidator.set('grantedAuthorities', this.clientAuthorityValidator);
+        this.rootUpdateClientCommandValidator.set('scopeEnums', this.clientScopeValidator);
+        this.rootUpdateClientCommandValidator.set('resourceIds', this.clientResourceIdValidator);
+        this.rootUpdateClientCommandValidator.set('accessTokenValiditySeconds', this.clientAccessTokenValiditySecondsValidator);
+        this.rootUpdateClientCommandValidator.set('refreshTokenValiditySeconds', this.clientRefreshTokenValiditySecondsValidator);
+        this.rootUpdateClientCommandValidator.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
+        this.rootUpdateClientCommandValidator.set('autoApprove', this.clientAutoApproveValidator);
     }
     public validate(client: IClient, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
         if (this.platform === 'CLIENT') {
             if (context === 'CREATE') {
-                this.createValidators.forEach((fn, field) => {
+                this.rootCreateClientCommandValidator.forEach((fn, field) => {
                     errors.push(...fn(field, client))
                 })
             } else if (context === 'UPDATE') {
-                this.updateValidators.forEach((fn, field) => {
+                this.rootUpdateClientCommandValidator.forEach((fn, field) => {
                     errors.push(...fn(field, client))
                 })
             } else {
@@ -55,7 +55,7 @@ export class ClientValidator implements IAggregateValidator {
         } else {
             if (context === 'CREATE') {
                 //fail fast for server
-                this.createValidators.forEach((fn, field) => {
+                this.rootCreateClientCommandValidator.forEach((fn, field) => {
                     if (errors.length === 0) {
                         if (fn(field, client).length > 0) {
                             errors = fn(field, client);
@@ -64,7 +64,7 @@ export class ClientValidator implements IAggregateValidator {
                 })
             } else if (context === 'UPDATE') {
                 //fail fast for server
-                this.updateValidators.forEach((fn, field) => {
+                this.rootUpdateClientCommandValidator.forEach((fn, field) => {
                     if (errors.length === 0) {
                         if (fn(field, client).length > 0) {
                             errors = fn(field, client);

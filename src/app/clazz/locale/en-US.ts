@@ -362,5 +362,6 @@ export const enUS = {
     "LIST_IS_SUB_LIST_OF": "Wrong list value",
     "NUMBER_IS_NUMBER": "Number required",
     "PWD_NOT_SAME": "Passwords not match",
+    "STRING_IS_EMAIL": "Not an email",
     "": "",
 }

@@ -4,10 +4,10 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { ValidatorHelper } from 'src/app/clazz/validateHelper';
+import { IResourceOwner } from 'src/app/clazz/validation/aggregate/user/interfaze-user';
 import { FORM_CONFIG } from 'src/app/form-configs/resource-owner.config';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
 import * as UUID from 'uuid/v1';
-import { IResourceOwner } from '../../interface/resource-owner.interface';
 @Component({
   selector: 'app-resource-owner',
   templateUrl: './resource-owner.component.html',

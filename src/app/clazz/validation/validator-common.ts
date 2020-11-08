@@ -35,6 +35,14 @@ export class StringValidator {
             return true
         }
     }
+    public static isEmail(var0: string, results: ErrorMessage[], key: string): boolean {
+        if (!StringValidator.isString(var0, results, key) || !new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g).test(var0)) {
+            results.push({ type: "isEmail", message: 'STRING_IS_EMAIL', key: key })
+            return false
+        } else {
+            return true
+        }
+    }
     public static lessThan(var0: string, length: number, results: ErrorMessage[], key: string): boolean {
         if (!StringValidator.isString(var0, results, key) || var0.length >= length) {
             results.push({ type: "lessThan", message: 'STRING_LESS_THAN', key: key })

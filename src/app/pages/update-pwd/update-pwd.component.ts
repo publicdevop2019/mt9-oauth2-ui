@@ -3,7 +3,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { IResourceOwnerUpdatePwd } from 'src/app/clazz/validation/aggregate/user/interfaze-user';
-import { UserUpdatePwdValidator } from 'src/app/clazz/validation/aggregate/user/validator-user-update-pwd';
+import { UserValidator } from 'src/app/clazz/validation/aggregate/user/validator-user';
 import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
 import { FORM_CONFIG } from 'src/app/form-configs/update-pwd.config';
 import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
@@ -17,7 +17,7 @@ export class UpdatePwdComponent implements OnInit, AfterViewInit, OnDestroy {
   formId = 'updatePwd';
   changeId = UUID();
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  private validator = new UserUpdatePwdValidator()
+  private validator = new UserValidator()
   private validateHelper = new ValidatorHelper()
   constructor(
     public resourceOwnerService: ResourceOwnerService,

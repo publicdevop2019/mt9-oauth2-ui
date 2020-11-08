@@ -4,33 +4,33 @@ import { HTTP_METHODS, IEndpoint } from './interfaze-endpoint';
 
 export class EndpointValidator implements IAggregateValidator {
     private platform: TPlatform = 'CLIENT';
-    private validatorsCreate: Map<string, TValidator> = new Map();
-    private validatorsUpdate: Map<string, TValidator> = new Map();
+    private rootCreateEndpointCommandValidator: Map<string, TValidator> = new Map();
+    private rootUpdateEndpointCommandValidator: Map<string, TValidator> = new Map();
     constructor(platform?: TPlatform) {
         if (platform) {
             this.platform = platform;
         }
-        this.validatorsCreate.set('resourceId', this.resourceIdValidator);
-        this.validatorsCreate.set('description', this.descriptionValidator);
-        this.validatorsCreate.set('path', this.pathValidator);
-        this.validatorsCreate.set('method', this.methodValidator);
-        this.validatorsCreate.set('expression', this.expressionValidator);
+        this.rootCreateEndpointCommandValidator.set('resourceId', this.resourceIdValidator);
+        this.rootCreateEndpointCommandValidator.set('description', this.descriptionValidator);
+        this.rootCreateEndpointCommandValidator.set('path', this.pathValidator);
+        this.rootCreateEndpointCommandValidator.set('method', this.methodValidator);
+        this.rootCreateEndpointCommandValidator.set('expression', this.expressionValidator);
         
-        this.validatorsUpdate.set('resourceId', this.resourceIdValidator);
-        this.validatorsUpdate.set('description', this.descriptionValidator);
-        this.validatorsUpdate.set('path', this.pathValidator);
-        this.validatorsUpdate.set('method', this.methodValidator);
-        this.validatorsUpdate.set('expression', this.expressionValidator);
+        this.rootUpdateEndpointCommandValidator.set('resourceId', this.resourceIdValidator);
+        this.rootUpdateEndpointCommandValidator.set('description', this.descriptionValidator);
+        this.rootUpdateEndpointCommandValidator.set('path', this.pathValidator);
+        this.rootUpdateEndpointCommandValidator.set('method', this.methodValidator);
+        this.rootUpdateEndpointCommandValidator.set('expression', this.expressionValidator);
     }
     public validate(payload: IEndpoint, context: TValidatorContext): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
         if (this.platform === 'CLIENT') {
             if (context === 'CREATE') {
-                this.validatorsCreate.forEach((fn, field) => {
+                this.rootCreateEndpointCommandValidator.forEach((fn, field) => {
                     errors.push(...fn(field, payload))
                 })
             } else if (context === 'UPDATE') {
-                this.validatorsUpdate.forEach((fn, field) => {
+                this.rootUpdateEndpointCommandValidator.forEach((fn, field) => {
                     errors.push(...fn(field, payload))
                 })
             } else {
@@ -39,7 +39,7 @@ export class EndpointValidator implements IAggregateValidator {
         } else {
             //fail fast for server
             if (context === 'CREATE') {
-                this.validatorsCreate.forEach((fn, field) => {
+                this.rootCreateEndpointCommandValidator.forEach((fn, field) => {
                     if (errors.length === 0) {
                         if (fn(field, payload).length > 0) {
                             errors = fn(field, payload);
@@ -47,7 +47,7 @@ export class EndpointValidator implements IAggregateValidator {
                     }
                 })
             } else if (context === 'UPDATE') {
-                this.validatorsUpdate.forEach((fn, field) => {
+                this.rootUpdateEndpointCommandValidator.forEach((fn, field) => {
                     if (errors.length === 0) {
                         if (fn(field, payload).length > 0) {
                             errors = fn(field, payload);

@@ -3,23 +3,26 @@
         <mat-slide-toggle class="example-margin" [color]="'accent'" [checked]="'false'" (change)="toggleLang()">
             {{'CURRENT_LANG' | translate}}
         </mat-slide-toggle>
-        <mat-slide-toggle class="example-margin" [color]="'accent'" [checked]="'false'" formControlName="state">
+        <mat-slide-toggle class="example-margin" [color]="'accent'" [checked]="'false'" formControlName="isRegister">
             {{'REGISTER' | translate}}
         </mat-slide-toggle>
     </mat-toolbar>
     <div class="example-container2 mobileView">
         <mat-form-field>
-            <input matInput placeholder="{{'ENTER_YOUR_EMAIL' | translate}}" formControlName="email">
-            <mat-error *ngIf="loginOrRegForm.get('email').invalid">{{getErrorMessage()}}</mat-error>
+            <mat-label>{{'ENTER_YOUR_EMAIL' | translate}}</mat-label>
+            <input matInput formControlName="email">
+            <mat-error>{{emailErrorMsg | translate}}</mat-error>
         </mat-form-field>
-        <button *ngIf="loginOrRegForm.get('state').value" mat-raised-button (click)="getCode()"
+        <button *ngIf="loginOrRegForm.get('isRegister').value" mat-raised-button (click)="getCode()"
             color="primary">{{'GET_ACTIVATION_CODE'| translate}}</button>
-        <button *ngIf="!loginOrRegForm.get('state').value && forgetPwd" mat-raised-button (click)="getToken()"
+        <button *ngIf="!loginOrRegForm.get('isRegister').value && forgetPwd" mat-raised-button (click)="getToken()"
             color="primary">{{'GET_PASSWORD_RESET_TOKEN' | translate}}</button>
-        <mat-form-field *ngIf="loginOrRegForm.get('state').value">
-            <input matInput placeholder="{{'ACTIVATION_CODE'| translate}}" formControlName="activationCode">
+        <mat-form-field *ngIf="loginOrRegForm.get('isRegister').value">
+            <mat-label>{{'ACTIVATION_CODE'| translate}}</mat-label>
+            <input matInput formControlName="activationCode">
+            <mat-error>{{activationCodeErrorMsg | translate}}</mat-error>
         </mat-form-field>
-        <mat-form-field *ngIf="!loginOrRegForm.get('state').value && forgetPwd">
+        <mat-form-field *ngIf="!loginOrRegForm.get('isRegister').value && forgetPwd">
             <input matInput placeholder="{{'ENTER_PASSWORD_RESET_TOKEN'| translate}}"
                 [type]="hide ? 'password' : 'text'" formControlName="token" [autocomplete]="false">
             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
@@ -30,28 +33,30 @@
         <mat-form-field>
             <input matInput placeholder="{{'ENTER_YOUR_PASSWORD'| translate}}" [type]="hide ? 'password' : 'text'"
                 formControlName="pwd" [autocomplete]="false">
+            <mat-error>{{passwordErrorMsg | translate}}</mat-error>
             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide">
                 <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
         </mat-form-field>
-        <mat-form-field *ngIf="loginOrRegForm.get('state').value || forgetPwd">
+        <mat-form-field *ngIf="loginOrRegForm.get('isRegister').value || forgetPwd">
             <input matInput placeholder="{{'CONFIRM_YOUR_PASSWORD'| translate}}" [type]="hide2 ? 'password' : 'text'"
                 formControlName="confirmPwd" [autocomplete]="false">
+            <mat-error>{{confirmgPasswordErrorMsg | translate}}</mat-error>
             <button mat-icon-button matSuffix (click)="hide2 = !hide2" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide2">
                 <mat-icon>{{hide2 ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
         </mat-form-field>
-        <button mat-raised-button *ngIf="!loginOrRegForm.get('state').value && !forgetPwd" (click)="login()"
+        <button mat-raised-button *ngIf="!loginOrRegForm.get('isRegister').value && !forgetPwd" (click)="login()"
             color="primary">{{'LOGIN'| translate}}</button>
-        <button mat-raised-button *ngIf="loginOrRegForm.get('state').value" (click)="register()"
+        <button mat-raised-button *ngIf="loginOrRegForm.get('isRegister').value" (click)="register()"
             color="primary">{{'REGISTER'| translate}}</button>
-        <button mat-raised-button *ngIf="!loginOrRegForm.get('state').value && forgetPwd" (click)="changePassword()"
-            color="primary">{{'CHANGE_PASSWORD'| translate}}</button>
-        <a *ngIf="!loginOrRegForm.get('state').value && !forgetPwd" (click)="forgetPwd=true"
+        <button mat-raised-button *ngIf="!loginOrRegForm.get('isRegister').value && forgetPwd"
+            (click)="changePassword()" color="primary">{{'CHANGE_PASSWORD'| translate}}</button>
+        <a *ngIf="!loginOrRegForm.get('isRegister').value && !forgetPwd" (click)="forgetPwd=true"
             class="forget-pwd">{{'FORGET_PASSWORD'| translate}}</a>
-        <a *ngIf="!loginOrRegForm.get('state').value && forgetPwd" (click)="forgetPwd=false"
+        <a *ngIf="!loginOrRegForm.get('isRegister').value && forgetPwd" (click)="forgetPwd=false"
             class="forget-pwd">{{'GO_BACK_TO_LOGIN'| translate}}</a>
     </div>
 </form>
