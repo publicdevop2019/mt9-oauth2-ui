@@ -4,14 +4,15 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
-import { ValidatorHelper } from 'src/app/clazz/validateHelper';
-import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
-import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
-import { FilterService, IFilterItem, IBizFilter } from 'src/app/services/filter.service';
-import * as UUID from 'uuid/v1';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
+import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
+import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
+import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
+import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
+import { AttributeService } from 'src/app/services/attribute.service';
+import { CatalogService } from 'src/app/services/catalog.service';
+import { FilterService, IBizFilter, IFilterItem } from 'src/app/services/filter.service';
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
@@ -35,6 +36,7 @@ export class FilterComponent implements OnInit {
   private subs: { [key: string]: Subscription } = {};
   attrList: IBizAttribute[];
   catalogList: ICatalog[];
+  
   changeId: string = UUID();
   productBottomSheet: IBottomSheet<IBizFilter>;
   catalogIndex: number = 0;

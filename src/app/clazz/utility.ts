@@ -1,5 +1,5 @@
-import { IBizAttribute } from '../services/attribute.service';
-import { ICatalog } from '../services/catalog.service';
+import { IBizAttribute } from './validation/aggregate/attribute/interfaze-attribute';
+import { ICatalog } from './validation/aggregate/catalog/interfaze-catalog';
 
 export function getCookie(name: string): string {
     let value = "; " + document.cookie;

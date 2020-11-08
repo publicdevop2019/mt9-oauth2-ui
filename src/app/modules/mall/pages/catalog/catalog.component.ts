@@ -7,10 +7,15 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
-import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
+import { AttributeService } from 'src/app/services/attribute.service';
+import { CatalogService } from 'src/app/services/catalog.service';
 import * as UUID from 'uuid/v1';
 import { ISumRep, IBottomSheet } from 'src/app/clazz/summary.component';
+import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
+import { CatalogValidator } from 'src/app/clazz/validation/aggregate/catalog/validator-catalog';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
+import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
+import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 
 @Component({
   selector: 'app-catalog',
@@ -24,6 +29,8 @@ export class CatalogComponent implements OnInit, OnDestroy {
   attrFormId = 'attributes';
   attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
   attrList: IBizAttribute[];
+  private validator = new CatalogValidator()
+  private validateHelper = new ValidatorHelper()
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
   private subs: Subscription = new Subscription();
@@ -110,14 +117,14 @@ export class CatalogComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
   }
-  convertToCategoryPayload(): ICatalog {
-    let formGroup = this.fis.formGroupCollection[this.formId];
+  convertToPayload(cmpt: CatalogComponent): ICatalog {
+    let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
     return {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
       parentId: formGroup.get('parentId').value,
-      attributes: this.hasAttr() ? this.getAttributeAsPayload() : null,
-      catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : null,
+      attributes: cmpt.hasAttr() ? cmpt.getAttributeAsPayload() : [],
+      catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : '',
     }
   }
   private hasAttr(): boolean {
@@ -130,18 +137,39 @@ export class CatalogComponent implements OnInit, OnDestroy {
       let selected = this.attrList.find(e => e.id === attrFormValue[idKey]);
       let append = idKey.replace('attributeId', '');
       let attrValue: string;
-      if (selected.method === 'SELECT') {
-        attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect' + append).value;
-      } else {
-        attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual' + append).value;
+      if(selected){
+        if (selected.method === 'SELECT') {
+          attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueSelect' + append).value;
+        } else {
+          attrValue = this.fis.formGroupCollection[this.attrFormId].get('attributeValueManual' + append).value;
+        }
+        return selected.id + ':' + attrValue
       }
-      return selected.id + ':' + attrValue
     });
   }
   createCatalog() {
-    this.entitySvc.create(this.convertToCategoryPayload(), this.changeId)
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+      this.entitySvc.create(this.convertToPayload(this), this.changeId)
   }
   updateCatalog() {
-    this.entitySvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToCategoryPayload(), this.changeId)
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+      this.entitySvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+  }
+
+  errorMapper(original: ErrorMessage[], cmpt: CatalogComponent) {
+    return original.map(e => {
+      if (e.key === 'attributes') {
+        return {
+          ...e,
+          key: 'attributeId',
+          formId: cmpt.attrFormId
+        }
+      } else {
+        return {
+          ...e,
+          formId: cmpt.formId
+        }
+      }
+    })
   }
 }

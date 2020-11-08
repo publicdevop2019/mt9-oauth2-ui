@@ -368,5 +368,6 @@ export const enUS = {
     "CODE_SEND_MSG": "code send success, please check your email",
     "REGISTER_SUCCESS_MSG": "Register success, please login",
     "OK": "Ok",
+    "STRING_BELONGS_TO": "Wrong value",
     "": "",
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { ICatalogCustomerTreeNode, ICatalog } from 'src/app/services/catalog.service';
+import { ICatalogCustomerTreeNode } from 'src/app/services/catalog.service';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material/tree';
+import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;

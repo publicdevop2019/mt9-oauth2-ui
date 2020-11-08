@@ -1,16 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
+import { IBizAttribute } from '../clazz/validation/aggregate/attribute/interfaze-attribute';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-export interface IBizAttribute {
-  id: number,
-  name: string,
-  description?: string,
-  selectValues?: string[],
-  method: 'MANUAL' | 'SELECT',
-  type: 'PROD_ATTR' | 'SALES_ATTR' | 'KEY_ATTR' | 'GEN_ATTR'
-}
 @Injectable({
   providedIn: 'root'
 })

@@ -2,7 +2,7 @@
     <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
     <lib-factory *ngIf="manualSelect" [formId]="formIdAttrValue" [formInfo]="formInfoAttrValue"></lib-factory>
     <button mat-raised-button color="primary" *ngIf="attribute" class="app-btn"
-        (click)="validator.valid()&&updateAttr()">{{'UPDATE'|translate}}</button>
+        (click)="updateAttr()">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="primary" class="app-btn"
-        (click)="validator.valid()&&createAttr()"
+        (click)="createAttr()"
         *ngIf="!attribute">{{'CREATE'|translate}}</button>

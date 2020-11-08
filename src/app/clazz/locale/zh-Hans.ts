@@ -374,5 +374,6 @@ export const zhHans = {
     "CODE_SEND_MSG": "注册码已发送，请查看邮箱",
     "REGISTER_SUCCESS_MSG": "注册成功，请登录",
     "OK": "好的",
+    "STRING_BELONGS_TO": "错误值",
     "": "",
 }

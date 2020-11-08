@@ -4,11 +4,14 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { ValidatorHelper } from 'src/app/clazz/validateHelper';
-import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
-import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import * as UUID from 'uuid/v1';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
+import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
+import { AttributeValidator } from 'src/app/clazz/validation/aggregate/attribute/validator-attribute';
+import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
+import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
+import { AttributeService } from 'src/app/services/attribute.service';
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-attribute',
   templateUrl: './attribute.component.html',
@@ -26,6 +29,8 @@ export class AttributeComponent implements OnInit, OnDestroy {
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
   private subs: Subscription = new Subscription()
+  private validator = new AttributeValidator()
+  private validateHelper = new ValidatorHelper()
   constructor(
     public attributeSvc: AttributeService,
     private fis: FormInfoService,
@@ -63,11 +68,11 @@ export class AttributeComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
   }
-  convertToPayload(): IBizAttribute {
-    let formGroup = this.fis.formGroupCollection[this.formId];
+  convertToPayload(cmpt: AttributeComponent): IBizAttribute {
+    let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
     let values = null;
-    if (formGroup.get('method').value === 'SELECT') {
-      let valueSnapshot = this.fis.formGroupCollection[this.formIdAttrValue].value;
+    if (formGroup.get('method').value === 'SELECT' && cmpt.fis.formGroupCollection[cmpt.formIdAttrValue]) {
+      let valueSnapshot = cmpt.fis.formGroupCollection[cmpt.formIdAttrValue].value;
       values = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string);
     }
     return {
@@ -80,9 +85,35 @@ export class AttributeComponent implements OnInit, OnDestroy {
     }
   }
   createAttr() {
-    this.attributeSvc.create(this.convertToPayload(), this.changeId)
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+    this.attributeSvc.create(this.convertToPayload(this), this.changeId)
   }
   updateAttr() {
-    this.attributeSvc.update(this.fis.formGroupCollection[this.formId].get('id').value,this.convertToPayload(), this.changeId)
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+    this.attributeSvc.update(this.fis.formGroupCollection[this.formId].get('id').value,this.convertToPayload(this), this.changeId)
+  }
+
+  errorMapper(original: ErrorMessage[], cmpt: AttributeComponent) {
+    return original.map(e => {
+      if (e.key === 'attributes') {
+        return {
+          ...e,
+          key: 'attributeId',
+          formId: cmpt.formId
+        }
+      } else if(e.key.includes("_valueOption")){
+        let idx=+e.key.split('_')[0];
+        return {
+          ...e,
+          key: cmpt.fis.formGroupCollection_formInfo[cmpt.formIdAttrValue].inputs.find((e,index)=>index===idx).key,
+          formId: cmpt.formIdAttrValue
+        }
+      }else {
+        return {
+          ...e,
+          formId: cmpt.formId
+        }
+      }
+    })
   }
 }

@@ -1,15 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
+import { ICatalog } from '../clazz/validation/aggregate/catalog/interfaze-catalog';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-export interface ICatalog {
-  id: number,
-  name: string,
-  parentId?: number,
-  attributes?: string[],
-  catalogType?: 'BACKEND' | 'FRONTEND',
-}
 export interface ICatalogCustomerTreeNode {
   id: number,
   name: string,

@@ -6,11 +6,13 @@ import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { interval, Observable, Subscription, combineLatest } from 'rxjs';
 import { debounce, filter } from 'rxjs/operators';
 import { CONST_ATTR_TYPE, CONST_GRANT_TYPE, CONST_HTTP_METHOD, CONST_ROLES, CONST_ROLES_USER } from 'src/app/clazz/constants';
-import { AttributeService, IBizAttribute } from 'src/app/services/attribute.service';
-import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
+import { AttributeService } from 'src/app/services/attribute.service';
+import { CatalogService } from 'src/app/services/catalog.service';
 import { ClientService } from 'src/app/services/client.service';
 import { IClient } from 'src/app/clazz/validation/aggregate/client/interfaze-client';
 import { hasValue } from 'src/app/clazz/validation/validator-common';
+import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
+import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',

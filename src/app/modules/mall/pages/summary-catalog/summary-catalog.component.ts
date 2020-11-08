@@ -6,8 +6,9 @@ import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { Observable } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 import { SummaryEntityComponent, ISumRep } from 'src/app/clazz/summary.component';
+import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
 import { FORM_CONFIG } from 'src/app/form-configs/catalog-view.config';
-import { CatalogService, ICatalog } from 'src/app/services/catalog.service';
+import { CatalogService } from 'src/app/services/catalog.service';
 import { DeviceService } from 'src/app/services/device.service';
 import { CatalogComponent } from '../catalog/catalog.component';
 

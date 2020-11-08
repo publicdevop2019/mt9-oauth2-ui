@@ -75,6 +75,7 @@ export const FORM_CONFIG_ATTR_VALUE: IForm = {
             "display": true,
             "label": "ENTER_VALUE",
             "key": "attrValue",
+            required:true,
             "position": {
                 "row": "0",
                 "column": "0"
