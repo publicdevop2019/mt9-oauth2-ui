@@ -1,6 +1,6 @@
 import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from '../../constant';
 import { grantTypeEnums, IClient } from './interfaze-client';
-import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from '../../validator-common';
+import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 
 export class ClientValidator implements IAggregateValidator {
     private rootCreateClientCommandValidator: Map<string, TValidator> = new Map();
@@ -38,7 +38,7 @@ export class ClientValidator implements IAggregateValidator {
         this.rootUpdateClientCommandValidator.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
         this.rootUpdateClientCommandValidator.set('autoApprove', this.clientAutoApproveValidator);
     }
-    public validate(client: IClient, context: TValidatorContext): ErrorMessage[] {
+    public validate(client: IClient, context: string): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
         if (this.platform === 'CLIENT') {
             if (context === 'CREATE') {

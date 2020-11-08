@@ -1,4 +1,4 @@
-import { IAggregateValidator, TPlatform, TValidator, TValidatorContext, ErrorMessage, StringValidator, ListValidator, notNullOrUndefined, NumberValidator, DefaultValidator, hasValue } from '../../validator-common';
+import { ErrorMessage, IAggregateValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 import { HTTP_METHODS, IEndpoint } from './interfaze-endpoint';
 
 
@@ -22,7 +22,7 @@ export class EndpointValidator implements IAggregateValidator {
         this.rootUpdateEndpointCommandValidator.set('method', this.methodValidator);
         this.rootUpdateEndpointCommandValidator.set('expression', this.expressionValidator);
     }
-    public validate(payload: IEndpoint, context: TValidatorContext): ErrorMessage[] {
+    public validate(payload: IEndpoint, context: string): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
         if (this.platform === 'CLIENT') {
             if (context === 'CREATE') {

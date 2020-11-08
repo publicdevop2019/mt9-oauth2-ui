@@ -1,4 +1,3 @@
-export type TValidatorContext = 'CREATE' | 'UPDATE' | 'DELETE'
 export interface ErrorMessage {
     type: string,
     key: string
@@ -8,7 +7,7 @@ export interface ErrorMessage {
 export type TValidator = (value: any, payload: any) => ErrorMessage[];
 export type TPlatform = 'CLIENT' | 'SERVER';
 export interface IAggregateValidator {
-    validate: (payload: any, context: TValidatorContext) => ErrorMessage[];
+    validate: (payload: any, context: string) => ErrorMessage[];
 }
 export class StringValidator {
     public static greaterThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key: string): boolean {

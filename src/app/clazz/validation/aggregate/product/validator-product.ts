@@ -1,4 +1,4 @@
-import { IAggregateValidator, TPlatform, TValidator, TValidatorContext, ErrorMessage, StringValidator, ListValidator, notNullOrUndefined, NumberValidator, DefaultValidator, hasValue } from '../../validator-common';
+import { IAggregateValidator, TPlatform, TValidator, ErrorMessage, StringValidator, ListValidator, notNullOrUndefined, NumberValidator, DefaultValidator, hasValue } from '../../validator-common';
 import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
 
 
@@ -38,7 +38,7 @@ export class ProductValidator implements IAggregateValidator {
         this.adminUpdateProductCommandValidator.set('attributesGen', this.attributesGenValidator);
         this.adminUpdateProductCommandValidator.set('attributesProd', this.attributesProdValidator);
     }
-    public validate(payload: IProductDetail, context: TValidatorContext): ErrorMessage[] {
+    public validate(payload: IProductDetail, context: string): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
         if (this.platform === 'CLIENT') {
             if (context === 'CREATE') {

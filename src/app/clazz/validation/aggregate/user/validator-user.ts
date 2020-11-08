@@ -1,5 +1,5 @@
-import { ErrorMessage, IAggregateValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from '../../validator-common';
-import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from './interfaze-user';
+import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
+import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd, USER_ROLE_ENUM } from './interfaze-user';
 
 export class UserValidator implements IAggregateValidator {
     private appCreatePendingUserCommandValidator: Map<string, TValidator> = new Map();
@@ -17,7 +17,7 @@ export class UserValidator implements IAggregateValidator {
         this.userUpdatePwdCommandValidator.set('currentPwd', this.currentPwdValidator);
 
         this.appCreatePendingUserCommandValidator.set('email', this.emailValidator);
-        
+
         this.appCreateUserCommandValidator.set('email', this.emailValidator);
         this.appCreateUserCommandValidator.set('activationCode', this.activationCodeValidator);
         this.appCreateUserCommandValidator.set('password', this.passwordValidator);
@@ -27,9 +27,14 @@ export class UserValidator implements IAggregateValidator {
         this.appResetUserPasswordCommandValidator.set('email', this.emailValidator);
         this.appResetUserPasswordCommandValidator.set('token', this.tokenValidator);
         this.appResetUserPasswordCommandValidator.set('newPassword', this.passwordValidator);
+
+        this.adminUpdateUserCommandValidator.set('locked', this.lockedValidator);
+        this.adminUpdateUserCommandValidator.set('subscription', this.subscriptionValidator);
+        this.adminUpdateUserCommandValidator.set('grantedAuthorities', this.grantedAuthoritiesValidator);
     }
-    public validate(client: IResourceOwnerUpdatePwd, context: TValidatorContext): ErrorMessage[] {
-        return this._validate(client, this.userUpdatePwdCommandValidator)
+    public validate(client: IResourceOwnerUpdatePwd, context: string): ErrorMessage[] {
+        if (context === 'adminUpdateUserCommandValidator')
+            return this._validate(client, this.adminUpdateUserCommandValidator)
     }
     private _validate(payload: any, validator: Map<string, TValidator>): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
@@ -51,6 +56,9 @@ export class UserValidator implements IAggregateValidator {
     }
     public validateCreatePending(payload: IPendingResourceOwner): ErrorMessage[] {
         return this._validate(payload, this.appCreatePendingUserCommandValidator)
+    }
+    public validateAdminUpdate(payload: IResourceOwner): ErrorMessage[] {
+        return this._validate(payload, this.adminUpdateUserCommandValidator)
     }
     public validateCreateUser(payload: IPendingResourceOwner): ErrorMessage[] {
         return this._validate(payload, this.appCreateUserCommandValidator)
@@ -80,17 +88,29 @@ export class UserValidator implements IAggregateValidator {
     activationCodeValidator = (key: string, payload: IPendingResourceOwner) => {
         let results: ErrorMessage[] = [];
         NumberValidator.isInteger(+payload[key], results, key)
-        NumberValidator.greaterThan(+payload[key],99999, results, key)
+        NumberValidator.greaterThan(+payload[key], 99999, results, key)
         return results
     }
     tokenValidator = (key: string, payload: IPendingResourceOwner) => {
         let results: ErrorMessage[] = [];
-        console.dir(payload)
-        console.dir(payload[key])
-        console.dir(typeof payload[key])
         StringValidator.hasValue(payload[key], results, key)
         NumberValidator.isInteger(+payload[key], results, key)
-        NumberValidator.greaterThan(+payload[key],99999999, results, key)
+        NumberValidator.greaterThan(+payload[key], 99999999, results, key)
+        return results
+    }
+    lockedValidator = (key: string, payload: IPendingResourceOwner) => {
+        let results: ErrorMessage[] = [];
+        BooleanValidator.isBoolean(payload[key], results, key)
+        return results
+    }
+    subscriptionValidator = (key: string, payload: IPendingResourceOwner) => {
+        let results: ErrorMessage[] = [];
+        BooleanValidator.isBoolean(payload[key], results, key)
+        return results
+    }
+    grantedAuthoritiesValidator = (key: string, payload: IPendingResourceOwner) => {
+        let results: ErrorMessage[] = [];
+        ListValidator.isSubListOf(payload[key], ['ROLE_ROOT',...USER_ROLE_ENUM.map(e => e.value)], results, key)
         return results
     }
 }

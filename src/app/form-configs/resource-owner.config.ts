@@ -1,4 +1,5 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { USER_ROLE_ENUM } from '../clazz/validation/aggregate/user/interfaze-user';
 
 export const FORM_CONFIG: IForm = {
     "repeatable": false,
@@ -34,10 +35,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "5",
                 "column": "0"
             },
-            "options": [
-                { label: 'ROLE_ADMIN', value: "ROLE_ADMIN" },
-                { label: 'ROLE_USER', value: "ROLE_USER" },
-            ],
+            "options": USER_ROLE_ENUM,
         },
         {
             "type": "checkbox",

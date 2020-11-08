@@ -1,12 +1,12 @@
 import { FormInfoService } from 'mt-form-builder';
 import { merge } from 'rxjs';
-import { ErrorMessage, IAggregateValidator, TValidatorContext } from './validation/validator-common';
+import { ErrorMessage, IAggregateValidator } from './validation/validator-common';
 
 export class ValidatorHelper {
   constructor() {
   }
   private previousErrors: ErrorMessage[] = [];
-  public validate(validator: IAggregateValidator, getPayload: any, context: TValidatorContext, fis: FormInfoService, cmpt: any, errorMapper: (original: ErrorMessage[], cmpt: any) => ErrorMessage[]): boolean {
+  public validate(validator: IAggregateValidator, getPayload: any, context: string, fis: FormInfoService, cmpt: any, errorMapper: (original: ErrorMessage[], cmpt: any) => ErrorMessage[]): boolean {
     console.dir('payload to be validated')
     console.dir(getPayload(cmpt))
     let errors = validator.validate(getPayload(cmpt), context);
