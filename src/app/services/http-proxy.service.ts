@@ -124,15 +124,15 @@ export class HttpProxyService {
             });
         });
     }
-    forgetPwd(fg: FormGroup): Observable<any> {
+    forgetPwd(fg: IForgetPasswordRequest, changeId: string): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
-        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._forgetPwd(this._getToken(token), fg)))
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._forgetPwd(this._getToken(token), fg, changeId)))
     };
-    resetPwd(fg: FormGroup): Observable<any> {
+    resetPwd(fg: IForgetPasswordRequest, changeId: string): Observable<any> {
         const formData = new FormData();
         formData.append('grant_type', 'client_credentials');
-        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._resetPwd(this._getToken(token), fg)))
+        return this._httpClient.post<ITokenResponse>(environment.tokenUrl, formData, { headers: this._getAuthHeader(false) }).pipe(switchMap(token => this._resetPwd(this._getToken(token), fg, changeId)))
     };
     activate(payload: IPendingResourceOwner, changeId: string): Observable<any> {
         const formData = new FormData();
@@ -222,26 +222,18 @@ export class HttpProxyService {
         headers = headers.append("changeId", changeId)
         return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/pending-users/app', payload, { headers: headers })
     }
-    private _resetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/resetPwd', this._getResetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+    private _resetPwd(token: string, registerFG: IForgetPasswordRequest, changeId: string): Observable<any> {
+        let headers = this._getAuthHeader(false, token);
+        headers = headers.append("changeId", changeId)
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/resetPwd', registerFG, { headers: headers })
     }
-    private _forgetPwd(token: string, registerFG: FormGroup): Observable<any> {
-        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/forgetPwd', this._getForgetPayload(registerFG), { headers: this._getAuthHeader(false, token) })
+    private _forgetPwd(token: string, registerFG: IForgetPasswordRequest, changeId: string): Observable<any> {
+        let headers = this._getAuthHeader(false, token);
+        headers = headers.append("changeId", changeId)
+        return this._httpClient.post<any>(environment.serverUri + this.AUTH_SVC_NAME + '/users/app/forgetPwd', registerFG, { headers: headers })
     }
 
-    
-    private _getForgetPayload(fg: FormGroup): IForgetPasswordRequest {
-        return {
-            email: fg.get('email').value,
-        };
-    }
-    private _getResetPayload(fg: FormGroup): IForgetPasswordRequest {
-        return {
-            email: fg.get('email').value,
-            token: fg.get('token').value,
-            newPassword: fg.get('pwd').value,
-        };
-    }
+
     private getPageParam(pageNumer?: number, pageSize?: number, sortBy?: string, sortOrder?: string): string {
         let var1: string[] = [];
         if (hasValue(pageNumer) && hasValue(pageSize)) {

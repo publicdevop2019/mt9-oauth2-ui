@@ -1,5 +1,5 @@
 import { ErrorMessage, IAggregateValidator, NumberValidator, StringValidator, TPlatform, TValidator, TValidatorContext } from '../../validator-common';
-import { IPendingResourceOwner, IResourceOwnerUpdatePwd } from './interfaze-user';
+import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from './interfaze-user';
 
 export class UserValidator implements IAggregateValidator {
     private appCreatePendingUserCommandValidator: Map<string, TValidator> = new Map();
@@ -17,10 +17,16 @@ export class UserValidator implements IAggregateValidator {
         this.userUpdatePwdCommandValidator.set('currentPwd', this.currentPwdValidator);
 
         this.appCreatePendingUserCommandValidator.set('email', this.emailValidator);
-
+        
         this.appCreateUserCommandValidator.set('email', this.emailValidator);
         this.appCreateUserCommandValidator.set('activationCode', this.activationCodeValidator);
         this.appCreateUserCommandValidator.set('password', this.passwordValidator);
+
+        this.appForgetUserPasswordCommandValidator.set('email', this.emailValidator);
+
+        this.appResetUserPasswordCommandValidator.set('email', this.emailValidator);
+        this.appResetUserPasswordCommandValidator.set('token', this.tokenValidator);
+        this.appResetUserPasswordCommandValidator.set('newPassword', this.passwordValidator);
     }
     public validate(client: IResourceOwnerUpdatePwd, context: TValidatorContext): ErrorMessage[] {
         return this._validate(client, this.userUpdatePwdCommandValidator)
@@ -49,6 +55,12 @@ export class UserValidator implements IAggregateValidator {
     public validateCreateUser(payload: IPendingResourceOwner): ErrorMessage[] {
         return this._validate(payload, this.appCreateUserCommandValidator)
     }
+    public validateForgetPwd(payload: IForgetPasswordRequest): ErrorMessage[] {
+        return this._validate(payload, this.appForgetUserPasswordCommandValidator)
+    }
+    public validateResetPwd(payload: IForgetPasswordRequest): ErrorMessage[] {
+        return this._validate(payload, this.appResetUserPasswordCommandValidator)
+    }
     passwordValidator = (key: string, payload: IResourceOwnerUpdatePwd) => {
         let results: ErrorMessage[] = [];
         StringValidator.hasValue(payload[key], results, key)
@@ -69,6 +81,16 @@ export class UserValidator implements IAggregateValidator {
         let results: ErrorMessage[] = [];
         NumberValidator.isInteger(+payload[key], results, key)
         NumberValidator.greaterThan(+payload[key],99999, results, key)
+        return results
+    }
+    tokenValidator = (key: string, payload: IPendingResourceOwner) => {
+        let results: ErrorMessage[] = [];
+        console.dir(payload)
+        console.dir(payload[key])
+        console.dir(typeof payload[key])
+        StringValidator.hasValue(payload[key], results, key)
+        NumberValidator.isInteger(+payload[key], results, key)
+        NumberValidator.greaterThan(+payload[key],99999999, results, key)
         return results
     }
 }

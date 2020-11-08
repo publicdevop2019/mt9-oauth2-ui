@@ -369,5 +369,10 @@ export const zhHans = {
     "NUMBER_IS_NUMBER": "请输入数字",
     "PWD_NOT_SAME": "必须相同",
     "STRING_IS_EMAIL": "邮箱格式错误",
+    "PASSWORD_UPDATE_SUCCESS_MSG": "密码重置成功，请登录",
+    "TOKEN_SEND_MSG": "重置令牌已发送，请查看邮箱",
+    "CODE_SEND_MSG": "注册码已发送，请查看邮箱",
+    "REGISTER_SUCCESS_MSG": "注册成功，请登录",
+    "OK": "好的",
     "": "",
 }

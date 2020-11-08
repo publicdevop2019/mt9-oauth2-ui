@@ -363,5 +363,10 @@ export const enUS = {
     "NUMBER_IS_NUMBER": "Number required",
     "PWD_NOT_SAME": "Passwords not match",
     "STRING_IS_EMAIL": "Not an email",
+    "PASSWORD_UPDATE_SUCCESS_MSG": "Password update success, please login",
+    "TOKEN_SEND_MSG": "Token send success, please check your email",
+    "CODE_SEND_MSG": "code send success, please check your email",
+    "REGISTER_SUCCESS_MSG": "Register success, please login",
+    "OK": "Ok",
     "": "",
 }

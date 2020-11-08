@@ -1,7 +1,6 @@
-<h1 mat-dialog-title>Message</h1>
 <div mat-dialog-content>
-    <p>{{data}}</p>
+    <p>{{data|translate}}</p>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">Ok</button>
+    <button mat-raised-button [color]="'primary'" style="width: 100%;" (click)="onNoClick()">{{'OK'|translate}}</button>
 </div>

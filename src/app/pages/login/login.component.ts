@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormGroup, Form, FormGroupDirective, NgForm } from '@angular/forms';
-import { HttpProxyService } from 'src/app/services/http-proxy.service';
-import { Router, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MsgBoxComponent } from 'src/app/components/msg-box/msg-box.component';
-import { environment } from 'src/environments/environment';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import * as UUID from 'uuid/v1';
-import { IPendingResourceOwner } from 'src/app/clazz/validation/aggregate/user/interfaze-user';
 import { ValidatorHelper } from 'src/app/clazz/validateHelper';
-import { EndpointValidator } from 'src/app/clazz/validation/aggregate/endpoint/validator-endpoint';
+import { IForgetPasswordRequest, IPendingResourceOwner } from 'src/app/clazz/validation/aggregate/user/interfaze-user';
 import { UserValidator } from 'src/app/clazz/validation/aggregate/user/validator-user';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { ErrorMessage, StringValidator } from 'src/app/clazz/validation/validator-common';
+import { MsgBoxComponent } from 'src/app/components/msg-box/msg-box.component';
+import { HttpProxyService } from 'src/app/services/http-proxy.service';
+import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -22,9 +20,13 @@ export class LoginComponent implements OnInit {
   forgetPwd: boolean = false;
   emailErrorMsg: string = undefined;
   activationCodeErrorMsg: string = undefined;
+  tokenErrorMsg: string = undefined;
   passwordErrorMsg: string = undefined;
   confirmgPasswordErrorMsg: string = undefined;
-  changeId = UUID();
+  activationCodeChangeId = UUID();
+  registerChangeId = UUID();
+  tokenChangeId = UUID();
+  resetChangeId = UUID();
   // emailMatcher=new MyErrorStateMatcher(this.errorMsgs)
   loginOrRegForm = new FormGroup({
     isRegister: new FormControl('', []),
@@ -36,7 +38,6 @@ export class LoginComponent implements OnInit {
   });
   hide = true;
   hide2 = true;
-  private validateHelper = new ValidatorHelper();
   private validator = new UserValidator()
   constructor(public httpProxy: HttpProxyService, private route: Router, public dialog: MatDialog, private router: ActivatedRoute, public translate: TranslateService) {
     this.httpProxy.refreshInprogress = false;
@@ -50,69 +51,100 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
   }
-  getErrorMessage() {
-    return this.loginOrRegForm.get('email').hasError('required') ? 'You must enter a value' :
-      this.loginOrRegForm.get('email').hasError('email') ? 'Not a valid email' :
-        '';
-  }
   login() {
-    this.httpProxy.login(this.loginOrRegForm).subscribe(next => {
-      this.httpProxy.currentUserAuthInfo = next;
-      this.route.navigate([this.nextUrl], { queryParams: this.router.snapshot.queryParams });
-    })
+    let error: ErrorMessage[] = [];
+    StringValidator.hasValue(this.loginOrRegForm.get('email').value, error, 'email')
+    StringValidator.isEmail(this.loginOrRegForm.get('email').value, error, 'email')
+    StringValidator.hasValue(this.loginOrRegForm.get('pwd').value, error, 'pwd')
+    if (error.length > 0) {
+      if (error.some(e => e.key === 'email')) {
+        this.emailErrorMsg = error.find(e => e.key === 'email').message;
+        this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+      }
+      if (error.some(e => e.key === 'pwd')) {
+        this.passwordErrorMsg = error.find(e => e.key === 'pwd').message;
+        this.loginOrRegForm.get('pwd').setErrors({ wrongValue: true });
+      }
+
+      this.loginOrRegForm.valueChanges.subscribe(() => {
+        let error: ErrorMessage[] = [];
+        StringValidator.hasValue(this.loginOrRegForm.get('email').value, error, 'email')
+        StringValidator.isEmail(this.loginOrRegForm.get('email').value, error, 'email')
+        StringValidator.hasValue(this.loginOrRegForm.get('pwd').value, error, 'pwd')
+        if (error.some(e => e.key === 'email')) {
+          this.emailErrorMsg = error.find(e => e.key === 'email').message;
+          this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+        } else {
+          this.emailErrorMsg = undefined;
+        }
+        if (error.some(e => e.key === 'pwd')) {
+          this.passwordErrorMsg = error.find(e => e.key === 'pwd').message;
+          this.loginOrRegForm.get('pwd').setErrors({ wrongValue: true });
+        } else {
+          this.passwordErrorMsg = undefined;
+        }
+      })
+    } else {
+      this.httpProxy.login(this.loginOrRegForm).subscribe(next => {
+        this.httpProxy.currentUserAuthInfo = next;
+        this.route.navigate([this.nextUrl], { queryParams: this.router.snapshot.queryParams });
+      })
+    }
   }
   register() {
     let error = this.validator.validateCreateUser(this.getRegPayload(this.loginOrRegForm));
-    if(this.loginOrRegForm.get('confirmPwd').value!==this.loginOrRegForm.get('pwd').value){
+    if (this.loginOrRegForm.get('confirmPwd').value !== this.loginOrRegForm.get('pwd').value) {
       this.confirmgPasswordErrorMsg = 'PWD_NOT_SAME';
-      this.loginOrRegForm.get('confirmPwd').setErrors({wrongValue:true});
+      this.loginOrRegForm.get('confirmPwd').setErrors({ wrongValue: true });
     }
     if (error.length > 0) {
-      if(error.some(e=>e.key==='email')){
-        this.emailErrorMsg = error.find(e=>e.key==='email').message;
-        this.loginOrRegForm.get('email').setErrors({wrongValue:true});
+      if (error.some(e => e.key === 'email')) {
+        this.emailErrorMsg = error.find(e => e.key === 'email').message;
+        this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
       }
-      if(error.some(e=>e.key==='activationCode')){
-        this.activationCodeErrorMsg = error.find(e=>e.key==='activationCode').message;
-        this.loginOrRegForm.get('activationCode').setErrors({wrongValue:true});
+      if (error.some(e => e.key === 'activationCode')) {
+        this.activationCodeErrorMsg = error.find(e => e.key === 'activationCode').message;
+        this.loginOrRegForm.get('activationCode').setErrors({ wrongValue: true });
       }
-      if(error.some(e=>e.key==='password')){
-        this.passwordErrorMsg = error.find(e=>e.key==='password').message;
-        this.loginOrRegForm.get('pwd').setErrors({wrongValue:true});
+      if (error.some(e => e.key === 'password')) {
+        this.passwordErrorMsg = error.find(e => e.key === 'password').message;
+        this.loginOrRegForm.get('pwd').setErrors({ wrongValue: true });
       }
 
-      this.loginOrRegForm.valueChanges.subscribe(()=>{
+      this.loginOrRegForm.valueChanges.subscribe(() => {
         let error = this.validator.validateCreateUser(this.getRegPayload(this.loginOrRegForm));
-        if(error.some(e=>e.key==='email')){
-          this.emailErrorMsg = error.find(e=>e.key==='email').message;
-          this.loginOrRegForm.get('email').setErrors({wrongValue:true});
-        }else{
+        if (error.some(e => e.key === 'email')) {
+          this.emailErrorMsg = error.find(e => e.key === 'email').message;
+          this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+        } else {
           this.emailErrorMsg = undefined;
         }
-        if(error.some(e=>e.key==='activationCode')){
-          this.activationCodeErrorMsg = error.find(e=>e.key==='activationCode').message;
-          this.loginOrRegForm.get('activationCode').setErrors({wrongValue:true});
-        }else{
+        if (error.some(e => e.key === 'activationCode')) {
+          this.activationCodeErrorMsg = error.find(e => e.key === 'activationCode').message;
+          this.loginOrRegForm.get('activationCode').setErrors({ wrongValue: true });
+        } else {
           this.activationCodeErrorMsg = undefined;
         }
-        if(error.some(e=>e.key==='password')){
-          this.passwordErrorMsg = error.find(e=>e.key==='password').message;
-          this.loginOrRegForm.get('pwd').setErrors({wrongValue:true});
-        }else{
+        if (error.some(e => e.key === 'password')) {
+          this.passwordErrorMsg = error.find(e => e.key === 'password').message;
+          this.loginOrRegForm.get('pwd').setErrors({ wrongValue: true });
+        } else {
           this.passwordErrorMsg = undefined;
         }
-        if(this.loginOrRegForm.get('confirmPwd').value!==this.loginOrRegForm.get('pwd').value){
+        if (this.loginOrRegForm.get('confirmPwd').value !== this.loginOrRegForm.get('pwd').value) {
           this.confirmgPasswordErrorMsg = 'PWD_NOT_SAME';
-          this.loginOrRegForm.get('confirmPwd').setErrors({wrongValue:true});
-        }else{
+          this.loginOrRegForm.get('confirmPwd').setErrors({ wrongValue: true });
+        } else {
           this.confirmgPasswordErrorMsg = undefined;
         }
       })
     } else {
-      this.httpProxy.register(this.getRegPayload(this.loginOrRegForm), this.changeId).subscribe(next => {
-        this.loginOrRegForm.get('isRegister').setValue(false);
-        this.openDialog('register success, please login');
-      })
+      if (this.loginOrRegForm.get('confirmPwd').value === this.loginOrRegForm.get('pwd').value) {
+        this.httpProxy.register(this.getRegPayload(this.loginOrRegForm), this.registerChangeId).subscribe(next => {
+          this.loginOrRegForm.get('isRegister').setValue(false);
+          this.openDialog('REGISTER_SUCCESS_MSG');
+        })
+      }
     }
 
   }
@@ -120,35 +152,100 @@ export class LoginComponent implements OnInit {
     let error = this.validator.validateCreatePending(this.getActivatePayload(this.loginOrRegForm));
     if (error.length > 0) {
       this.emailErrorMsg = error[0].message;
-      this.loginOrRegForm.get('email').setErrors({wrongValue:true});
-      this.loginOrRegForm.get('email').valueChanges.subscribe(()=>{
+      this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+      this.loginOrRegForm.get('email').valueChanges.subscribe(() => {
         let error = this.validator.validateCreatePending(this.getActivatePayload(this.loginOrRegForm));
         if (error.length > 0) {
           this.emailErrorMsg = error[0].message;
-          this.loginOrRegForm.get('email').setErrors({wrongValue:true});
+          this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
         } else {
           this.emailErrorMsg = undefined;
         }
       })
     } else {
       this.httpProxy.currentUserAuthInfo = undefined;
-      this.httpProxy.activate(this.getActivatePayload(this.loginOrRegForm), this.changeId).subscribe(next => {
-        this.openDialog('code send success, please check your email');
+      this.httpProxy.activate(this.getActivatePayload(this.loginOrRegForm), this.activationCodeChangeId).subscribe(next => {
+        this.openDialog('CODE_SEND_MSG');
       })
     }
   }
   getToken() {
-    this.httpProxy.currentUserAuthInfo = undefined;
-    this.httpProxy.forgetPwd(this.loginOrRegForm).subscribe(next => {
-      this.openDialog('token send success, please check your email');
-    })
+    let error = this.validator.validateForgetPwd(this.getForgetPayload(this.loginOrRegForm));
+    if (error.length > 0) {
+      this.emailErrorMsg = error[0].message;
+      this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+      this.loginOrRegForm.get('email').valueChanges.subscribe(() => {
+        let error = this.validator.validateCreatePending(this.getActivatePayload(this.loginOrRegForm));
+        if (error.length > 0) {
+          this.emailErrorMsg = error[0].message;
+          this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+        } else {
+          this.emailErrorMsg = undefined;
+        }
+      })
+    } else {
+      this.httpProxy.currentUserAuthInfo = undefined;
+      this.httpProxy.forgetPwd(this.getForgetPayload(this.loginOrRegForm), this.tokenChangeId).subscribe(next => {
+        this.openDialog('TOKEN_SEND_MSG');
+      })
+    }
   }
   changePassword() {
-    this.httpProxy.resetPwd(this.loginOrRegForm).subscribe(next => {
-      this.loginOrRegForm.get('isRegister').setValue(false);
-      this.forgetPwd = false;
-      this.openDialog('password update success, please login');
-    })
+    let error = this.validator.validateResetPwd(this.getResetPayload(this.loginOrRegForm));
+    if (this.loginOrRegForm.get('confirmPwd').value !== this.loginOrRegForm.get('pwd').value) {
+      this.confirmgPasswordErrorMsg = 'PWD_NOT_SAME';
+      this.loginOrRegForm.get('confirmPwd').setErrors({ wrongValue: true });
+    }
+    if (error.length > 0) {
+      if (error.some(e => e.key === 'email')) {
+        this.emailErrorMsg = error.find(e => e.key === 'email').message;
+        this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+      }
+      if (error.some(e => e.key === 'token')) {
+        this.tokenErrorMsg = error.find(e => e.key === 'token').message;
+        this.loginOrRegForm.get('token').setErrors({ wrongValue: true });
+      }
+      if (error.some(e => e.key === 'newPassword')) {
+        this.passwordErrorMsg = error.find(e => e.key === 'newPassword').message;
+        this.loginOrRegForm.get('pwd').setErrors({ wrongValue: true });
+      }
+
+      this.loginOrRegForm.valueChanges.subscribe(() => {
+        let error = this.validator.validateCreateUser(this.getResetPayload(this.loginOrRegForm));
+        if (error.some(e => e.key === 'email')) {
+          this.emailErrorMsg = error.find(e => e.key === 'email').message;
+          this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
+        } else {
+          this.emailErrorMsg = undefined;
+        }
+        if (error.some(e => e.key === 'token')) {
+          this.tokenErrorMsg = error.find(e => e.key === 'token').message;
+          this.loginOrRegForm.get('token').setErrors({ wrongValue: true });
+        } else {
+          this.tokenErrorMsg = undefined;
+        }
+        if (error.some(e => e.key === 'newPassword')) {
+          this.passwordErrorMsg = error.find(e => e.key === 'newPassword').message;
+          this.loginOrRegForm.get('pwd').setErrors({ wrongValue: true });
+        } else {
+          this.passwordErrorMsg = undefined;
+        }
+        if (this.loginOrRegForm.get('confirmPwd').value !== this.loginOrRegForm.get('pwd').value) {
+          this.confirmgPasswordErrorMsg = 'PWD_NOT_SAME';
+          this.loginOrRegForm.get('confirmPwd').setErrors({ wrongValue: true });
+        } else {
+          this.confirmgPasswordErrorMsg = undefined;
+        }
+      })
+    } else {
+      if (this.loginOrRegForm.get('confirmPwd').value === this.loginOrRegForm.get('pwd').value) {
+        this.httpProxy.resetPwd(this.getResetPayload(this.loginOrRegForm), this.resetChangeId).subscribe(next => {
+          this.loginOrRegForm.get('isRegister').setValue(false);
+          this.forgetPwd = false;
+          this.openDialog('PASSWORD_UPDATE_SUCCESS_MSG');
+        })
+      }
+    }
   }
   openDialog(msg: string): void {
     this.dialog.open(MsgBoxComponent, {
@@ -163,11 +260,23 @@ export class LoginComponent implements OnInit {
   }
   private getRegPayload(fg: FormGroup): IPendingResourceOwner {
     return {
-        email: fg.get('email').value,
-        password: fg.get('pwd').value,
-        activationCode: fg.get('activationCode').value,
+      email: fg.get('email').value,
+      password: fg.get('pwd').value,
+      activationCode: fg.get('activationCode').value,
     };
-}
+  }
+  private getResetPayload(fg: FormGroup): IForgetPasswordRequest {
+    return {
+      email: fg.get('email').value,
+      token: fg.get('token').value,
+      newPassword: fg.get('pwd').value,
+    };
+  }
+  private getForgetPayload(fg: FormGroup): IForgetPasswordRequest {
+    return {
+      email: fg.get('email').value,
+    };
+  }
   public toggleLang() {
     if (this.translate.currentLang === 'enUS') {
       this.translate.use('zhHans')
@@ -189,13 +298,3 @@ export class LoginComponent implements OnInit {
     }
   }
 }
-/** Error when invalid control is dirty, touched, or submitted. */
-// export class MyErrorStateMatcher implements ErrorStateMatcher {
-// private _errorMsg:  Map<string,string>;
-// constructor(errorMsg:  Map<string,string>) {
-//   this._errorMsg = errorMsg;
-// }
-// isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-//   return this._errorMsg.get(control);
-// }
-// }

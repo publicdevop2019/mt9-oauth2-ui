@@ -23,8 +23,9 @@
             <mat-error>{{activationCodeErrorMsg | translate}}</mat-error>
         </mat-form-field>
         <mat-form-field *ngIf="!loginOrRegForm.get('isRegister').value && forgetPwd">
-            <input matInput placeholder="{{'ENTER_PASSWORD_RESET_TOKEN'| translate}}"
-                [type]="hide ? 'password' : 'text'" formControlName="token" [autocomplete]="false">
+            <mat-label>{{'ENTER_PASSWORD_RESET_TOKEN'| translate}}</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" formControlName="token" [autocomplete]="false">
+            <mat-error>{{tokenErrorMsg | translate}}</mat-error>
             <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
                 [attr.aria-pressed]="hide">
                 <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
