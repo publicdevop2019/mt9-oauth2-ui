@@ -1,5 +1,6 @@
 import { FormInfoService } from 'mt-form-builder';
 import { merge } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { ErrorMessage, IAggregateValidator } from './validation/validator-common';
 
 export class ValidatorHelper {
@@ -7,8 +8,6 @@ export class ValidatorHelper {
   }
   private previousErrors: ErrorMessage[] = [];
   public validate(validator: IAggregateValidator, getPayload: any, context: string, fis: FormInfoService, cmpt: any, errorMapper: (original: ErrorMessage[], cmpt: any) => ErrorMessage[]): boolean {
-    console.dir('payload to be validated')
-    console.dir(getPayload(cmpt))
     let errors = validator.validate(getPayload(cmpt), context);
     if (errors.length > 0) {
       let uniqueError: ErrorMessage[] = []
@@ -73,9 +72,13 @@ export class ValidatorHelper {
             }
           }
         })
-      console.dir('parsed errors')
-      console.dir(mapped)
-      return false
+      console.debug('[DEV ONLY] parsed errors')
+      console.debug(mapped)
+      if (environment.validation === 'on') {
+        return false
+      } else {
+        return true
+      }
     } else {
       return true
     }

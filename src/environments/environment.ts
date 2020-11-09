@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   mode: 'offline' as 'online' | 'offline',
+  validation: 'off' as 'on' | 'off', //make payload validation always return true, note this will not disable all validations
   serverUri: 'http://localhost:8111',
   tokenUrl: 'http://localhost:8111/auth-svc/oauth/token',
   // serverUri: 'http://localhost:8083/v1',
