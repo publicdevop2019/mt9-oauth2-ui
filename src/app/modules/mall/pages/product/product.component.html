@@ -1,8 +1,8 @@
 <div style="display: flex;flex-direction: row;justify-content: space-between;align-items: baseline;">
     <button mat-raised-button color="primary" *ngIf="productBottomSheet.context==='edit'" style="margin-top: 10px;"
-        (click)="updateProduct()">{{'UPDATE'|translate}}</button>
+        (click)="update()">{{'UPDATE'|translate}}</button>
     <button mat-raised-button color="primary" style="margin-bottom: 10px;"
-        (click)="createProduct()"
+        (click)="create()"
         *ngIf="productBottomSheet.context==='new' || productBottomSheet.context==='clone'">{{'CREATE'|translate}}</button>
     <mat-slide-toggle style="margin-left: 24px;" [color]="'accent'" [checked]="'false'" (change)="doPreview()">
         {{'PREVIEW' | translate}}

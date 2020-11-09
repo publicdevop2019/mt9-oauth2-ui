@@ -1,47 +1,37 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
-import { MatDialog } from '@angular/material/dialog';
 import { FormInfoService } from 'mt-form-builder';
-import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
-import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { grantTypeEnums, IClient, scopeEnums } from 'src/app/clazz/validation/aggregate/client/interfaze-client';
 import { ClientValidator } from 'src/app/clazz/validation/aggregate/client/validator-client';
 import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
-import * as UUID from 'uuid/v1';
 
 @Component({
   selector: 'app-client',
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
 })
-export class ClientComponent implements OnDestroy, OnInit {
+export class ClientComponent extends AbstractAggregate<ClientComponent, IClient> implements OnDestroy, OnInit {
   hide = true;
   disabled = false;
   disabled2 = false;
   resources: IClient[];
-  client: IClient;
-  formId = 'client'
-  formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  productBottomSheet: IBottomSheet<IClient>;
   private formCreatedOb: Observable<string>;
   private previousPayload: any = {};
-  private changeId = UUID();
-  private clientValidator = new ClientValidator()
-  private validateHelper = new ValidatorHelper()
   constructor(
     public clientService: ClientService,
-    public dialog: MatDialog,
     private fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private _bottomSheetRef: MatBottomSheetRef<ClientComponent>,
+    bottomSheetRef: MatBottomSheetRef<ClientComponent>,
     private cdr: ChangeDetectorRef
   ) {
-    this.client = (data as IBottomSheet<IClient>).from;
+    super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef,data);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
@@ -61,31 +51,27 @@ export class ClientComponent implements OnDestroy, OnInit {
         this.previousPayload = e;
         // update form config
       });
-      if (this.client) {
-        const grantType: string = this.client.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
+      if (this.aggregate) {
+        const grantType: string = this.aggregate.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
         this.fis.formGroupCollection[this.formId].patchValue({
-          id: this.client.id,
-          hasSecret: this.client.hasSecret,
-          clientSecret: this.client.hasSecret ? '*****' : '',
-          name: this.client.name,
-          description: this.client.description,
+          id: this.aggregate.id,
+          hasSecret: this.aggregate.hasSecret,
+          clientSecret: this.aggregate.hasSecret ? '*****' : '',
+          name: this.aggregate.name,
+          description: this.aggregate.description,
           grantType: grantType,
-          registeredRedirectUri: this.client.registeredRedirectUri ? this.client.registeredRedirectUri.join(',') : '',
-          refreshToken: grantType === 'PASSWORD' ? this.client.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
-          resourceIndicator: this.client.resourceIndicator,
-          autoApprove: this.client.autoApprove,
-          authority: this.client.grantedAuthorities,
-          scope: this.client.scopeEnums.map(e => e.toString()),
-          accessTokenValiditySeconds: this.client.accessTokenValiditySeconds,
-          refreshTokenValiditySeconds: this.client.refreshTokenValiditySeconds,
-          resourceId: this.client.resourceIds,
+          registeredRedirectUri: this.aggregate.registeredRedirectUri ? this.aggregate.registeredRedirectUri.join(',') : '',
+          refreshToken: grantType === 'PASSWORD' ? this.aggregate.grantTypeEnums.some(e => e === grantTypeEnums.refresh_token) : false,
+          resourceIndicator: this.aggregate.resourceIndicator,
+          autoApprove: this.aggregate.autoApprove,
+          authority: this.aggregate.grantedAuthorities,
+          scope: this.aggregate.scopeEnums.map(e => e.toString()),
+          accessTokenValiditySeconds: this.aggregate.accessTokenValiditySeconds,
+          refreshTokenValiditySeconds: this.aggregate.refreshTokenValiditySeconds,
+          resourceId: this.aggregate.resourceIds,
         });
       };
     })
-  }
-  dismiss(event: MouseEvent) {
-    this._bottomSheetRef.dismiss();
-    event.preventDefault();
   }
   ngOnInit(): void {
   }
@@ -93,7 +79,7 @@ export class ClientComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.fis.resetAll();
   }
-  convertToClient(clientCmpt: ClientComponent): IClient {
+  convertToPayload(clientCmpt: ClientComponent): IClient {
     let formGroup = clientCmpt.fis.getFormGroup(clientCmpt.formId);
     let grants: grantTypeEnums[] = [];
     let authority: string[] = [];
@@ -112,7 +98,7 @@ export class ClientComponent implements OnDestroy, OnInit {
     return {
       id: formGroup.get('id').value,
       name: formGroup.get('name').value,
-      description: formGroup.get('description').value?formGroup.get('description').value:null,
+      description: formGroup.get('description').value ? formGroup.get('description').value : null,
       hasSecret: formGroup.get('hasSecret').value ? true : false,
       clientSecret: formGroup.get('clientSecret').value == '*****' ? '' : formGroup.get('clientSecret').value,
       grantTypeEnums: grants,
@@ -139,15 +125,15 @@ export class ClientComponent implements OnDestroy, OnInit {
     }
     return changeKeys[0];
   }
-  doUpdate() {
-    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'UPDATE', this.fis, this, this.clientErrorMapper))
-      this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToClient(this), this.changeId)
+  update() {
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+      this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
-  doCreate() {
-    if (this.validateHelper.validate(this.clientValidator, this.convertToClient, 'CREATE', this.fis, this, this.clientErrorMapper))
-      this.clientService.create(this.convertToClient(this), this.changeId)
+  create() {
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+      this.clientService.create(this.convertToPayload(this), this.changeId)
   }
-  clientErrorMapper(original: ErrorMessage[], cmpt: ClientComponent) {
+  errorMapper(original: ErrorMessage[], cmpt: ClientComponent) {
     return original.map(e => {
       if (e.key === 'resourceIds') {
         return {
@@ -155,24 +141,24 @@ export class ClientComponent implements OnDestroy, OnInit {
           key: 'resourceId',
           formId: cmpt.formId
         }
-      }else if(e.key === 'grantedAuthorities'){
-          return {
-            ...e,
-            key: 'authority',
-            formId: cmpt.formId
-          }
-      }else if(e.key === 'scopeEnums'){
-          return {
-            ...e,
-            key: 'scope',
-            formId: cmpt.formId
-          }
-      }else if(e.key === 'grantTypeEnums'){
-          return {
-            ...e,
-            key: 'grantType',
-            formId: cmpt.formId
-          }
+      } else if (e.key === 'grantedAuthorities') {
+        return {
+          ...e,
+          key: 'authority',
+          formId: cmpt.formId
+        }
+      } else if (e.key === 'scopeEnums') {
+        return {
+          ...e,
+          key: 'scope',
+          formId: cmpt.formId
+        }
+      } else if (e.key === 'grantTypeEnums') {
+        return {
+          ...e,
+          key: 'grantType',
+          formId: cmpt.formId
+        }
       } else {
         return {
           ...e,

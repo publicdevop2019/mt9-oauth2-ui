@@ -2,8 +2,8 @@
 </mat-icon>
 <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
 <button mat-raised-button color="primary" class="app-btn"
-    (click)="doUpdate()"
-    *ngIf="client">{{'UPDATE'|translate}}</button>
+    (click)="update()"
+    *ngIf="aggregate">{{'UPDATE'|translate}}</button>
 <button mat-raised-button color="primary" class="app-btn"
-    (click)="doCreate()"
-    *ngIf="!client">{{'CREATE'|translate}}</button>
+    (click)="create()"
+    *ngIf="!aggregate">{{'CREATE'|translate}}</button>

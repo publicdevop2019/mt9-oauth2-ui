@@ -2,11 +2,11 @@ import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
+import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
-import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
 import { IBizFilter, IFilterItem } from 'src/app/clazz/validation/aggregate/filter/interfaze-filter';
@@ -16,54 +16,40 @@ import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/a
 import { AttributeService } from 'src/app/services/attribute.service';
 import { CatalogService } from 'src/app/services/catalog.service';
 import { FilterService } from 'src/app/services/filter.service';
-import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })
-export class FilterComponent implements OnInit {
-  filter: IBizFilter;
-  formId = 'filters';
+export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilter>  implements OnInit {
   formIdCatalog = 'filtersCatalog';
   formIdFilter = 'filtersFilter';
   childFormId = 'filterForm';
   manualEnter = false;
-  formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   formInfoCatalog: IForm = JSON.parse(JSON.stringify(FORM_CATALOG_CONFIG));
   formInfoFilter: IForm = JSON.parse(JSON.stringify(FORM_FILTER_ITEM_CONFIG));
   private formCreatedOb: Observable<string>;
   private catalogFormCreatedOb: Observable<string>;
   private filterFormCreatedOb: Observable<string>;
   private childFormOb: Observable<string>;
-  private subscriptions: Subscription = new Subscription()
-  private subs: { [key: string]: Subscription } = {};
   attrList: IBizAttribute[];
   catalogList: ICatalog[];
-  private validator = new FilterValidator()
-  private validateHelper = new ValidatorHelper()
-  changeId: string = UUID();
-  productBottomSheet: IBottomSheet<IBizFilter>;
   catalogIndex: number = 0;
   catalogChunkSize: number = 100;
   constructor(
     public filterSvc: FilterService,
     private fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    private _bottomSheetRef: MatBottomSheetRef<FilterComponent>,
+    bottomSheetRef: MatBottomSheetRef<FilterComponent>,
     private categorySvc: CatalogService,
     private cdr: ChangeDetectorRef,
     public attrSvc: AttributeService,
   ) {
-    let sub = this.filterSvc.closeSheet.subscribe(() => {
-      this._bottomSheetRef.dismiss()
-    })
-    this.subscriptions.add(sub)
+    super('filters',JSON.parse(JSON.stringify(FORM_CONFIG)),new FilterValidator(),bottomSheetRef,data);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.catalogFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdCatalog));
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
-    this.filter = (data as IBottomSheet<IBizFilter>).from;
     this.fis.$loadNextPage.subscribe(e => {
       if (e.formId === this.formIdCatalog && e.ctrlKey.includes('catalogId')) {
         this.catalogIndex++;
@@ -82,7 +68,7 @@ export class FilterComponent implements OnInit {
         })
       }
     })
-    combineLatest(this.attrSvc.readByQuery(0, 1000), this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb).pipe(take(1)).subscribe((next) => {
+    combineLatest([this.attrSvc.readByQuery(0, 1000), this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });
@@ -90,23 +76,23 @@ export class FilterComponent implements OnInit {
       this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
       this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
       this.cdr.detectChanges()
-      if (this.filter) {
-        this.fis.formGroupCollection[this.formId].get('id').setValue(this.filter.id);
-        this.fis.formGroupCollection[this.formId].get('description').setValue(this.filter.description);
-        if (this.filter.catalogs && this.filter.catalogs.length !== 0) {
-          this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND,id:' + this.filter.catalogs.join('.')).subscribe(next => {
+      if (this.aggregate) {
+        this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id);
+        this.fis.formGroupCollection[this.formId].get('description').setValue(this.aggregate.description);
+        if (this.aggregate.catalogs && this.aggregate.catalogs.length !== 0) {
+          this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND,id:' + this.aggregate.catalogs.join('.')).subscribe(next => {
             this.catalogList = [...next.data, ...this.catalogList];
-            this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.filter.catalogs, 'catalogId'), this.filter.catalogs.length);
+            this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.aggregate.catalogs, 'catalogId'), this.aggregate.catalogs.length);
             this.formInfoCatalog.inputs.forEach(a => {
               a.options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
             })
           })
 
         }
-        if (this.filter.filters && this.filter.filters.length !== 0) {
-          this.fis.restoreDynamicForm(this.formIdFilter, this.fis.parsePayloadArr(this.filter.filters.map(e => e.id), 'attributeId'), this.filter.filters.length);
+        if (this.aggregate.filters && this.aggregate.filters.length !== 0) {
+          this.fis.restoreDynamicForm(this.formIdFilter, this.fis.parsePayloadArr(this.aggregate.filters.map(e => e.id), 'attributeId'), this.aggregate.filters.length);
 
-          this.filter.filters.forEach((e, index) => {
+          this.aggregate.filters.forEach((e, index) => {
             if (index === 0) {
               //for child form
               this.updateChildFormFilter(e, this.childFormId);
@@ -120,8 +106,6 @@ export class FilterComponent implements OnInit {
                 this.subForCtrlChange('attributeId_' + (index - 1))
               })
               this.subs[childFormId + '_formCreate'] = sub;
-              this.subscriptions.add(sub)
-
             }
           });
         }
@@ -138,17 +122,13 @@ export class FilterComponent implements OnInit {
     this.fis.formGroupCollection_formInfo[childFormId].inputs = this.fis.formGroupCollection_formInfo[childFormId].inputs.filter(e => !e.key.includes('value_'))
     this.fis.formGroupCollection[childFormId].get('value').reset();
     this.fis.restoreDynamicForm(childFormId, this.fis.parsePayloadArr(option.values, 'value'), option.values.length);
-    if (this.filter)
+    if (this.aggregate)
       this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper)
     else
       this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
   }
-  dismiss(event: MouseEvent) {
-    this._bottomSheetRef.dismiss();
-    event.preventDefault();
-  }
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe()
+    Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAll();
   }
   ngOnInit() {
@@ -202,7 +182,6 @@ export class FilterComponent implements OnInit {
         });
       });
       this.subs[formId + '_valueChange'] = sub;
-      this.subscriptions.add(sub)
     }
   }
   subForCtrlChange(idKey: string) {
@@ -219,14 +198,13 @@ export class FilterComponent implements OnInit {
       }
     })
     this.subs[idKey + '_valueChange_ctrl'] = sub;
-    this.subscriptions.add(sub)
 
   }
-  createFilter() {
+  create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
       this.filterSvc.create(this.convertToPayload(this), this.changeId)
   }
-  updateFilter() {
+  update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
       this.filterSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }

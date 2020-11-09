@@ -2,11 +2,11 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angula
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
+import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
-import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
 import { IAttrImage, IProductDetail, IProductOption, IProductOptions, ISku } from 'src/app/clazz/validation/aggregate/product/interfaze-product';
@@ -21,7 +21,6 @@ import { CatalogService } from 'src/app/services/catalog.service';
 import { HttpProxyService } from 'src/app/services/http-proxy.service';
 import { ProductService } from 'src/app/services/product.service';
 import { environment } from 'src/environments/environment';
-import * as UUID from 'uuid/v1';
 interface IProductSimplePublic {
   imageUrlSmall: string;
   name: string;
@@ -49,7 +48,7 @@ interface IProductDetailPublic extends IProductSimplePublic {
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
-export class ProductComponent implements OnInit, OnDestroy {
+export class ProductComponent extends AbstractAggregate<ProductComponent, IProductDetail> implements OnInit, OnDestroy {
   subForFileUpload(formId: string) {
     let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
       Object.keys(next).forEach(key => {
@@ -58,17 +57,13 @@ export class ProductComponent implements OnInit, OnDestroy {
         }
       })
     });
-    this.subscriptions.add(sub);
+    this.subs[formId + '_valueChanges'] = sub;
   }
   hasEmptyAttrSales(e: ISku): boolean {
     return e.attributesSales.length === 0 || (e.attributesSales.length === 1 && e.attributesSales[0] === '')
   }
-  productDetail: IProductDetail;
   productBottomSheet: IBottomSheet<IProductDetail>;
-  changeId: string = UUID();
   salesFormIdTempId = 'attrSalesFormChild';
-  formId = 'product';
-  formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   attrProdFormId = 'attributesProd';
   attrProdFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
   attrSalesFormId = 'attributeSales';
@@ -83,8 +78,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   optionFormId = 'product_option';
   optionFormInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_OPTIONS));
   public attrList: IBizAttribute[];
-  private subs: { [key: string]: Subscription } = {};
-  private subscriptions: Subscription = new Subscription();
   public catalogs: ISumRep<ICatalog>;
   private udpateSkusOriginalCopy: ISku[];
   private formCreatedOb: Observable<string>;
@@ -95,8 +88,8 @@ export class ProductComponent implements OnInit, OnDestroy {
   private salesFormIdTempFormCreatedOb: Observable<string>;
   private imageAttrSaleChildFormCreatedOb: Observable<string>;
   public hasSku: boolean = false;
-  private productValidator = new ProductValidator(this.formId)
-  private validateHelper = new ValidatorHelper()
+  private keys = ['storageActual', 'storageOrder', 'price', 'sales']
+  private keys2 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
   constructor(
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
@@ -104,18 +97,11 @@ export class ProductComponent implements OnInit, OnDestroy {
     private categorySvc: CatalogService,
     public attrSvc: AttributeService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, // keep as any is needed
-    private _bottomSheetRef: MatBottomSheetRef<ProductComponent>,
+    _bottomSheetRef: MatBottomSheetRef<ProductComponent>,
     private changeDecRef: ChangeDetectorRef
   ) {
-    let sub = this.productSvc.closeSheet.subscribe(() => {
-      this._bottomSheetRef.dismiss();
-    })
-    let keys = ['storageActual', 'storageOrder', 'price', 'sales']
-    let keys2 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
-    this.subs['closeSheet'] = sub;
-    this.subscriptions.add(sub);
+    super('product', JSON.parse(JSON.stringify(FORM_CONFIG)), new ProductValidator('product'), _bottomSheetRef, data);
     this.productBottomSheet = data;
-    this.productDetail = this.productBottomSheet.from;
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.prodFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrProdFormId));
     this.salesFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrSalesFormId));
@@ -126,11 +112,11 @@ export class ProductComponent implements OnInit, OnDestroy {
     let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
       if (this.productBottomSheet.context !== 'new') {
         // this.attrSalesFormInfo.disabled = true;
-        this.fis.restore(this.formId, this.productDetail);
-        this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.productDetail.startAt ? new Date(this.productDetail.startAt) : '')
-        this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.productDetail.startAt ? this.getTime(new Date(this.productDetail.startAt)) : '')
-        this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(this.productDetail.endAt ? new Date(this.productDetail.endAt) : '')
-        this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.productDetail.endAt ? this.getTime(new Date(this.productDetail.endAt)) : '')
+        this.fis.restore(this.formId, this.aggregate);
+        this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.aggregate.startAt ? new Date(this.aggregate.startAt) : '')
+        this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.aggregate.startAt ? this.getTime(new Date(this.aggregate.startAt)) : '')
+        this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(this.aggregate.endAt ? new Date(this.aggregate.endAt) : '')
+        this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.aggregate.endAt ? this.getTime(new Date(this.aggregate.endAt)) : '')
         this.formInfo.inputs.find(e => e.key === 'status').display = false;
         this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
         this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
@@ -148,7 +134,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
           }
         });
-        this.subscriptions.add(sub);
+        this.subs[this.formId + '_status'] = sub;
       }
       let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
         this.loadAttributes(this.catalogs.data.find(e => e.id === +next))
@@ -156,22 +142,22 @@ export class ProductComponent implements OnInit, OnDestroy {
       let sub2 = this.fis.formGroupCollection[this.formId].get('hasSku').valueChanges.subscribe(next => {
         if (next === 'YES') {
           this.hasSku = true;
-          this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = false);
-          this.formInfo.inputs.filter(e => keys2.includes(e.key)).forEach(e => e.display = false);
+          this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = false);
+          this.formInfo.inputs.filter(e => this.keys2.includes(e.key)).forEach(e => e.display = false);
         } else {
           this.hasSku = false;
-          this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = true);
+          this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = true);
         }
       })
-      this.subscriptions.add(sub);
-      this.subscriptions.add(sub2);
+      this.subs[this.formId + '_selectBackendCatalog'] = sub;
+      this.subs[this.formId + '_hasSku'] = sub2;
     })
     let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {
       // load attribute first then initialize form
       this.updateFormInfoOptions(next.data);
       this.attrList = next.data;
       this.changeDecRef.markForCheck() // this is required to initialize all forms
-      return combineLatest(this.prodFormCreatedOb, this.genFormCreatedOb).pipe(take(1))
+      return combineLatest([this.prodFormCreatedOb, this.genFormCreatedOb]).pipe(take(1))
     })).subscribe(() => {
       //sub for image update
       this.subForFileUpload(this.imageFormId);
@@ -179,41 +165,41 @@ export class ProductComponent implements OnInit, OnDestroy {
         let sub = this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
           this.subChangeForForm(this.salesFormIdTempId);
         })
-        this.subscriptions.add(sub)
+        this.subs[this.formId + '_salesFormIdTempFormCreatedOb'] = sub;
       } else {
-        if (this.productDetail.attributesProd) {
+        if (this.aggregate.attributesProd) {
           this.subChangeForForm(this.attrProdFormId);
-          this.updateValueForForm(this.productDetail.attributesProd, this.attrProdFormId);
+          this.updateValueForForm(this.aggregate.attributesProd, this.attrProdFormId);
         }
-        if (this.productDetail.attributesGen) {
+        if (this.aggregate.attributesGen) {
           this.subChangeForForm(this.attrGeneralFormId);
-          this.updateValueForForm(this.productDetail.attributesGen, this.attrGeneralFormId);
+          this.updateValueForForm(this.aggregate.attributesGen, this.attrGeneralFormId);
         }
-        if (this.productDetail.skus.filter(e => this.hasEmptyAttrSales(e)).length === 0) {
+        if (this.aggregate.skus.filter(e => this.hasEmptyAttrSales(e)).length === 0) {
           // use sku form
-          this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.productDetail.skus))
+          this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.aggregate.skus))
           this.fis.formGroupCollection[this.formId].get('hasSku').setValue('YES', { emitEvent: false });
           this.hasSku = true;
-          this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = false);
+          this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = false);
           this.salesFormCreatedOb.pipe(take(1)).subscribe(() => {
-            this.updateAndSubSalesForm(this.productDetail.skus);
+            this.updateAndSubSalesForm(this.aggregate.skus);
           });
         } else {
           // use no sku form
           this.fis.formGroupCollection[this.formId].get('hasSku').setValue('NO', { emitEvent: false });
           this.hasSku = false;
-          this.formInfo.inputs.filter(e => keys.includes(e.key)).forEach(e => e.display = true);
-          this.fis.restore(this.formId, this.productDetail.skus[0]);
+          this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = true);
+          this.fis.restore(this.formId, this.aggregate.skus[0]);
           this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.formId]);
           this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.formId]);
           this.fis.$refresh.next();
         }
-        if (this.productDetail.imageUrlLarge && this.productDetail.imageUrlLarge.length !== 0) {
-          this.fis.restoreDynamicForm(this.imageFormId, this.fis.parsePayloadArr(this.productDetail.imageUrlLarge, 'imageUrl'), this.productDetail.imageUrlLarge.length)
+        if (this.aggregate.imageUrlLarge && this.aggregate.imageUrlLarge.length !== 0) {
+          this.fis.restoreDynamicForm(this.imageFormId, this.fis.parsePayloadArr(this.aggregate.imageUrlLarge, 'imageUrl'), this.aggregate.imageUrlLarge.length)
         }
-        if (this.productDetail.selectedOptions && this.productDetail.selectedOptions.length !== 0) {
-          this.fis.restoreDynamicForm(this.optionFormId, this.fis.parsePayloadArr(this.productDetail.selectedOptions.map(e => e.title), 'productOption'), this.productDetail.selectedOptions.length);
-          this.productDetail.selectedOptions.forEach((option, index) => {
+        if (this.aggregate.selectedOptions && this.aggregate.selectedOptions.length !== 0) {
+          this.fis.restoreDynamicForm(this.optionFormId, this.fis.parsePayloadArr(this.aggregate.selectedOptions.map(e => e.title), 'productOption'), this.aggregate.selectedOptions.length);
+          this.aggregate.selectedOptions.forEach((option, index) => {
             if (index === 0) {
               //for child form
               let childFormId = 'optionForm'
@@ -226,17 +212,16 @@ export class ProductComponent implements OnInit, OnDestroy {
                 this.updateChildFormProductOption(option, childFormId);
               })
               this.subs[childFormId + '_formCreate'] = sub;
-              this.subscriptions.add(sub)
             }
           });
         }
-        if (this.productDetail.attributeSaleImages && this.productDetail.attributeSaleImages.length !== 0) {
+        if (this.aggregate.attributeSaleImages && this.aggregate.attributeSaleImages.length !== 0) {
           this.imgAttrSaleFormCreatedOb.pipe(take(1)).subscribe(() => {
-            let attrs = this.productDetail.attributeSaleImages.map(e => e.attributeSales);
+            let attrs = this.aggregate.attributeSaleImages.map(e => e.attributeSales);
             this.subChangeForForm(this.imageAttrSaleFormId);
             this.updateValueForForm(attrs, this.imageAttrSaleFormId);
             this.imageAttrSaleChildFormCreatedOb.pipe(take(1)).subscribe(() => {
-              this.productDetail.attributeSaleImages.forEach((e, index) => {
+              this.aggregate.attributeSaleImages.forEach((e, index) => {
                 if (index === 0) {
                   this.fis.restoreDynamicForm(this.imageAttrSaleChildFormId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
                   this.subForFileUpload(this.imageAttrSaleChildFormId);
@@ -249,7 +234,6 @@ export class ProductComponent implements OnInit, OnDestroy {
                     this.fis.$refresh.next();
                   });
                   this.subs[formId + '_formCreate'] = sub;
-                  this.subscriptions.add(sub)
                 }
               })
             })
@@ -267,24 +251,19 @@ export class ProductComponent implements OnInit, OnDestroy {
                 this.subChangeForForm(childrenFormId);
               })
               this.subs[childrenFormId + '_formCreate'] = sub;
-              this.subs[this.attrSalesFormId + '_valueChange'] = sub2;
-              this.subscriptions.add(sub)
             }
           })
         });
-        this.subscriptions.add(sub2)
+        this.subs[this.attrSalesFormId + '_valueChange'] = sub2;
       })
       this.subChangeForForm(this.attrProdFormId);
       this.subChangeForForm(this.attrGeneralFormId);
 
       let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmall').valueChanges.subscribe((next) => { this.uploadFile(next) })
       this.subs['imageUrlSmallFile_valueChange'] = sub3;
-      this.subscriptions.add(sub3)
     })
     this.subs['getAttributeList_http'] = sub1;
     this.subs[this.formId + '_formCreate'] = sub0;
-    this.subscriptions.add(sub0)
-    this.subscriptions.add(sub1)
   }
   getTime(arg0: Date): string {
     let hour = arg0.getUTCHours() + '';
@@ -340,7 +319,6 @@ export class ProductComponent implements OnInit, OnDestroy {
           this.fis.$refresh.next();
         });
         this.subs[formId + '_formCreate'] = sub;
-        this.subscriptions.add(sub)
         //end of child form
       }
     });
@@ -373,7 +351,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.imageAttrSaleFormInfo.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: getLabel(e), value: e.id });
   }
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe()
+    Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAll();
   }
   ngOnInit() {
@@ -404,7 +382,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       } else {
         this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
       }
-      this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis, this, this.productErrorMapper)
+      this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
       this.changeDecRef.detectChanges();
     })
   }
@@ -469,10 +447,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.fis.$refresh.next();
     this.changeDecRef.markForCheck();
   }
-  dismiss(event: MouseEvent) {
-    this._bottomSheetRef.dismiss();
-    event.preventDefault();
-  }
   private subChangeForForm(formId: string) {
     if (!this.subs[formId + '_valueChange']) {
       let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
@@ -489,7 +463,6 @@ export class ProductComponent implements OnInit, OnDestroy {
         });
       });
       this.subs[formId + '_valueChange'] = sub;
-      this.subscriptions.add(sub)
     }
   }
   checkInput(key: string, formId: string) {
@@ -511,7 +484,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   requiredInput(key: string, formId: string) {
     return hasValue(this.fis.getFormGroup(formId).get(key).value)
   }
-  createProduct() {
+  create() {
     this.checkInput('status', this.formId)
     this.checkInput('hasSku', this.formId)
     if (this.hasSku) {
@@ -530,7 +503,7 @@ export class ProductComponent implements OnInit, OnDestroy {
         })
       })
     }
-    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'CREATE', this.fis, this, this.productErrorMapper)) {
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)) {
       if (this.hasSku) {
         if (this.requiredInput('status', this.formId)
           && this.requiredInput('hasSku', this.formId)
@@ -558,7 +531,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     })
     return output;
   }
-  productErrorMapper(original: ErrorMessage[], cmpt: ProductComponent) {
+  errorMapper(original: ErrorMessage[], cmpt: ProductComponent) {
     let next = cmpt.pareseOptionFormError(original, cmpt);
     let next2 = cmpt.pareseSkuFormError(next, cmpt);
     let next3 = cmpt.parseProductFormError(next2, cmpt);
@@ -676,8 +649,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       return next;
     }
   }
-  updateProduct() {
-    if (this.validateHelper.validate(this.productValidator, this.convertToPayload, 'UPDATE', this.fis, this, this.productErrorMapper))
+  update() {
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
       this.productSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   previewFlag: boolean = false;
@@ -750,7 +723,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           var1.storageOrder = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageOrder' + suffix)?.value;
           var1.storageActual = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageActual' + suffix)?.value;
           var1.sales = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('sales' + suffix)?.value;
-        } else if (cmpt.productDetail && cmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
+        } else if (cmpt.aggregate && cmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) === JSON.stringify(var1.attributesSales.sort()))) {
           let var11 = cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storage_OrderIncreaseBy' + suffix).value;
           if (var11)
             var1.increaseOrderStorage = +var11;
@@ -763,7 +736,7 @@ export class ProductComponent implements OnInit, OnDestroy {
           let var14 = cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storage_ActualDecreaseBy' + suffix).value;
           if (var14)
             var1.decreaseActualStorage = +var14;
-        } else if (cmpt.productDetail && cmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
+        } else if (cmpt.aggregate && cmpt.udpateSkusOriginalCopy.find(e => JSON.stringify(e.attributesSales.sort()) !== JSON.stringify(var1.attributesSales.sort()))) {
           //new sku during update product
           var1.storageOrder = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageOrder' + suffix).value;
           var1.storageActual = +cmpt.fis.formGroupCollection[cmpt.attrSalesFormId].get('storageActual' + suffix).value;
@@ -776,7 +749,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     } else {
       let var1 = <ISku>{};
       var1.attributesSales = [];
-      if (!cmpt.productDetail) {
+      if (!cmpt.aggregate) {
         //create
         var1.storageOrder = +formGroup.get('storageOrder').value
         var1.storageActual = +formGroup.get('storageActual').value

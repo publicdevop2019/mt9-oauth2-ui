@@ -10,7 +10,6 @@ import { IEditInputListEvent } from '../components/editable-input-multi/editable
 export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntityService<C, D>{
     httpProxySvc: HttpProxyService;
     refreshSummary: Subject<any> = new Subject();
-    closeSheet: Subject<void> = new Subject();
     currentPageIndex: number = 0;
     entityRepo: string;
     role: string;
