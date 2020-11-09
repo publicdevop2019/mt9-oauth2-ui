@@ -35,6 +35,8 @@ export class UserValidator implements IAggregateValidator {
     public validate(client: IResourceOwnerUpdatePwd, context: string): ErrorMessage[] {
         if (context === 'adminUpdateUserCommandValidator')
             return this._validate(client, this.adminUpdateUserCommandValidator)
+        if (context === 'UPDATE')
+            return this._validate(client, this.userUpdatePwdCommandValidator)
     }
     private _validate(payload: any, validator: Map<string, TValidator>): ErrorMessage[] {
         let errors: ErrorMessage[] = [];
