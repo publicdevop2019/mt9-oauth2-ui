@@ -6,12 +6,16 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
+import { ValidatorHelper } from 'src/app/clazz/validateHelper';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
+import { IBizFilter, IFilterItem } from 'src/app/clazz/validation/aggregate/filter/interfaze-filter';
+import { FilterValidator } from 'src/app/clazz/validation/aggregate/filter/validator-filter';
+import { ErrorMessage, hasValue } from 'src/app/clazz/validation/validator-common';
 import { FORM_CATALOG_CONFIG, FORM_CONFIG, FORM_FILTER_ITEM_CONFIG } from 'src/app/form-configs/filter.config';
 import { AttributeService } from 'src/app/services/attribute.service';
 import { CatalogService } from 'src/app/services/catalog.service';
-import { FilterService, IBizFilter, IFilterItem } from 'src/app/services/filter.service';
+import { FilterService } from 'src/app/services/filter.service';
 import * as UUID from 'uuid/v1';
 @Component({
   selector: 'app-filter',
@@ -36,7 +40,8 @@ export class FilterComponent implements OnInit {
   private subs: { [key: string]: Subscription } = {};
   attrList: IBizAttribute[];
   catalogList: ICatalog[];
-  
+  private validator = new FilterValidator()
+  private validateHelper = new ValidatorHelper()
   changeId: string = UUID();
   productBottomSheet: IBottomSheet<IBizFilter>;
   catalogIndex: number = 0;
@@ -133,6 +138,10 @@ export class FilterComponent implements OnInit {
     this.fis.formGroupCollection_formInfo[childFormId].inputs = this.fis.formGroupCollection_formInfo[childFormId].inputs.filter(e => !e.key.includes('value_'))
     this.fis.formGroupCollection[childFormId].get('value').reset();
     this.fis.restoreDynamicForm(childFormId, this.fis.parsePayloadArr(option.values, 'value'), option.values.length);
+    if (this.filter)
+      this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper)
+    else
+      this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
   }
   dismiss(event: MouseEvent) {
     this._bottomSheetRef.dismiss();
@@ -154,25 +163,33 @@ export class FilterComponent implements OnInit {
     }
     this.fis.add(this.formIdCatalog)
   }
-  convertToPayload(): IBizFilter {
-    let formGroup = this.fis.formGroupCollection[this.formId];
-    let varValue = this.fis.formGroupCollection[this.formIdCatalog].value;
-    let catalogs = Object.keys(varValue).map(e => varValue[e] as string);
+  convertToPayload(cmpt: FilterComponent): IBizFilter {
+    let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
+    let varValue = cmpt.fis.formGroupCollection[cmpt.formIdCatalog].value;
+    let catalogs = Object.keys(varValue).map(e => varValue[e] as string).filter(e => e);
     let filters: IFilterItem[] = [];
-    Object.keys(this.fis.formGroupCollection[this.formIdFilter].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
+    Object.keys(cmpt.fis.formGroupCollection[cmpt.formIdFilter].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
       let var1 = <IFilterItem>{};
-      var1.id = +this.fis.formGroupCollection[this.formIdFilter].get(ctrlName).value;
-      var1.name = this.attrList.find(e => e.id === var1.id).name
+      var1.id = +cmpt.fis.formGroupCollection[cmpt.formIdFilter].get(ctrlName).value;
+      if (var1.id > 0) {
+        var1.name = cmpt.attrList.find(e => e.id === var1.id).name
+      } else {
+        var1.name = ''
+      }
       var1.values = [];
-      let fg = this.fis.formGroupCollection['filterForm' + ctrlName.replace('attributeId', '')];
-      var1.values = Object.keys(fg.controls).filter(e => e.indexOf('value') > -1).map(e => fg.get(e).value);
+      let fg = cmpt.fis.formGroupCollection[cmpt.childFormId + ctrlName.replace('attributeId', '')];
+      if (fg) {
+        var1.values = Object.keys(fg.controls).filter(e => e.indexOf('value') > -1).map(e => fg.get(e).value);
+      } else {
+        var1.values = [];
+      }
       filters.push(var1)
     });
     return {
       id: formGroup.get('id').value,
       catalogs: catalogs,
       filters: filters,
-      description: formGroup.get('description').value
+      description: hasValue(formGroup.get('description').value) ? formGroup.get('description').value : null
     }
   }
   private subChangeForForm(formId: string) {
@@ -198,7 +215,7 @@ export class FilterComponent implements OnInit {
           name: selected.name,
           values: selected.selectValues
         }
-        this.updateChildFormFilter(var1, 'filterForm' + append);
+        this.updateChildFormFilter(var1, this.childFormId + append);
       }
     })
     this.subs[idKey + '_valueChange_ctrl'] = sub;
@@ -206,9 +223,43 @@ export class FilterComponent implements OnInit {
 
   }
   createFilter() {
-    this.filterSvc.create(this.convertToPayload(), this.changeId)
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+      this.filterSvc.create(this.convertToPayload(this), this.changeId)
   }
   updateFilter() {
-    this.filterSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(), this.changeId)
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+      this.filterSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+  }
+  errorMapper(original: ErrorMessage[], cmpt: FilterComponent) {
+    return original.map(e => {
+      if (e.key === 'catalogs') {
+        return {
+          ...e,
+          key: 'catalogId',
+          formId: cmpt.formIdCatalog
+        }
+      } else if (e.key.includes('_filterItemName')) {
+        let idx = +e.key.split('_')[0];
+        return {
+          ...e,
+          key: cmpt.fis.formGroupCollection_formInfo[cmpt.formIdFilter].inputs.filter(e => e.key.includes('attributeId')).find((e, index) => index === idx).key,
+          formId: cmpt.formIdFilter
+        }
+      } else if (e.key.includes('_filterItemValueList')) {
+        let idx = +e.key.split('_')[0];
+        let idx2 = +e.key.split('_')[1];
+        let formId = idx === 0 ? cmpt.childFormId : (cmpt.childFormId + '_' + (idx - 1))
+        return {
+          ...e,
+          key: cmpt.fis.formGroupCollection_formInfo[formId].inputs.filter(e => e.key.includes('value')).find((e, index) => index === idx2).key,
+          formId: formId
+        }
+      } else {
+        return {
+          ...e,
+          formId: cmpt.formId
+        }
+      }
+    })
   }
 }

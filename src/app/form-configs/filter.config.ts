@@ -32,6 +32,7 @@ export const FORM_CATALOG_CONFIG: IForm = {
             "display": true,
             "label": "ENTER_LINKED_CATALOG_IDS",
             "key": "catalogId",
+            required:true,
             "position": {
                 "row": "0",
                 "column": "0"

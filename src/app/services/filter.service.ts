@@ -1,19 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
+import { IBizFilter } from '../clazz/validation/aggregate/filter/interfaze-filter';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
-export interface IFilterItem {
-  id: number,
-  name: string,
-  values: string[]
-}
-export interface IBizFilter {
-  id: number,
-  catalogs: string[],
-  description?:string
-  filters: IFilterItem[]
-}
 @Injectable({
   providedIn: 'root'
 })

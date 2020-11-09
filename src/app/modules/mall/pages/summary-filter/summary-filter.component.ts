@@ -4,9 +4,10 @@ import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { switchMap } from 'rxjs/operators';
 import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
+import { IBizFilter } from 'src/app/clazz/validation/aggregate/filter/interfaze-filter';
 import { CatalogService } from 'src/app/services/catalog.service';
 import { DeviceService } from 'src/app/services/device.service';
-import { FilterService, IBizFilter } from 'src/app/services/filter.service';
+import { FilterService } from 'src/app/services/filter.service';
 import { FilterComponent } from '../filter/filter.component';
 
 @Component({
