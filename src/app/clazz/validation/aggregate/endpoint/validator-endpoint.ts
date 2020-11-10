@@ -2,11 +2,11 @@ import { ErrorMessage, IAggregateValidator, NumberValidator, StringValidator, TP
 import { HTTP_METHODS, IEndpoint } from './interfaze-endpoint';
 
 
-export class EndpointValidator implements IAggregateValidator {
-    private platform: TPlatform = 'CLIENT';
+export class EndpointValidator extends IAggregateValidator {
     private rootCreateEndpointCommandValidator: Map<string, TValidator> = new Map();
     private rootUpdateEndpointCommandValidator: Map<string, TValidator> = new Map();
     constructor(platform?: TPlatform) {
+        super(platform)
         if (platform) {
             this.platform = platform;
         }
@@ -15,7 +15,7 @@ export class EndpointValidator implements IAggregateValidator {
         this.rootCreateEndpointCommandValidator.set('path', this.pathValidator);
         this.rootCreateEndpointCommandValidator.set('method', this.methodValidator);
         this.rootCreateEndpointCommandValidator.set('expression', this.expressionValidator);
-        
+
         this.rootUpdateEndpointCommandValidator.set('resourceId', this.resourceIdValidator);
         this.rootUpdateEndpointCommandValidator.set('description', this.descriptionValidator);
         this.rootUpdateEndpointCommandValidator.set('path', this.pathValidator);
@@ -23,49 +23,16 @@ export class EndpointValidator implements IAggregateValidator {
         this.rootUpdateEndpointCommandValidator.set('expression', this.expressionValidator);
     }
     public validate(payload: IEndpoint, context: string): ErrorMessage[] {
-        let errors: ErrorMessage[] = [];
-        if (this.platform === 'CLIENT') {
-            if (context === 'CREATE') {
-                this.rootCreateEndpointCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, payload))
-                })
-            } else if (context === 'UPDATE') {
-                this.rootUpdateEndpointCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, payload))
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-        } else {
-            //fail fast for server
-            if (context === 'CREATE') {
-                this.rootCreateEndpointCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, payload).length > 0) {
-                            errors = fn(field, payload);
-                        }
-                    }
-                })
-            } else if (context === 'UPDATE') {
-                this.rootUpdateEndpointCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, payload).length > 0) {
-                            errors = fn(field, payload);
-                        }
-                    }
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-
-        }
-
-        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
+        if (context === 'rootCreateEndpointCommandValidator')
+            return this.validationWPlatform(payload, this.rootCreateEndpointCommandValidator)
+        if (context === 'rootUpdateEndpointCommandValidator')
+            return this.validationWPlatform(payload, this.rootUpdateEndpointCommandValidator)
     }
     resourceIdValidator = (key: string, payload: IEndpoint) => {
         let results: ErrorMessage[] = [];
         NumberValidator.isNumber(+payload[key], results, key);
         NumberValidator.isInteger(+payload[key], results, key);
+        NumberValidator.greaterThan(+payload[key], 0, results, key);
         return results
     }
     pathValidator = (key: string, payload: IEndpoint) => {

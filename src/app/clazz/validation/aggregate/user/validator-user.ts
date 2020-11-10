@@ -1,18 +1,15 @@
 import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwner, IResourceOwnerUpdatePwd, USER_ROLE_ENUM } from './interfaze-user';
 
-export class UserValidator implements IAggregateValidator {
+export class UserValidator extends IAggregateValidator {
     private appCreatePendingUserCommandValidator: Map<string, TValidator> = new Map();
     private adminUpdateUserCommandValidator: Map<string, TValidator> = new Map();
     private appCreateUserCommandValidator: Map<string, TValidator> = new Map();
     private appForgetUserPasswordCommandValidator: Map<string, TValidator> = new Map();
     private appResetUserPasswordCommandValidator: Map<string, TValidator> = new Map();
     private userUpdatePwdCommandValidator: Map<string, TValidator> = new Map();
-    private platform: TPlatform = 'CLIENT';
     constructor(platform?: TPlatform) {
-        if (platform) {
-            this.platform = platform;
-        }
+        super(platform)
         this.userUpdatePwdCommandValidator.set('password', this.passwordValidator);
         this.userUpdatePwdCommandValidator.set('currentPwd', this.currentPwdValidator);
 
@@ -32,44 +29,19 @@ export class UserValidator implements IAggregateValidator {
         this.adminUpdateUserCommandValidator.set('subscription', this.subscriptionValidator);
         this.adminUpdateUserCommandValidator.set('grantedAuthorities', this.grantedAuthoritiesValidator);
     }
-    public validate(client: IResourceOwnerUpdatePwd, context: string): ErrorMessage[] {
+    public validate(client: IResourceOwner|IPendingResourceOwner|IForgetPasswordRequest, context: string): ErrorMessage[] {
         if (context === 'adminUpdateUserCommandValidator')
-            return this._validate(client, this.adminUpdateUserCommandValidator)
-        if (context === 'UPDATE')
-            return this._validate(client, this.userUpdatePwdCommandValidator)
-    }
-    private _validate(payload: any, validator: Map<string, TValidator>): ErrorMessage[] {
-        let errors: ErrorMessage[] = [];
-        if (this.platform === 'CLIENT') {
-            validator.forEach((fn, field) => {
-                errors.push(...fn(field, payload))
-            })
-        } else {
-            //fail fast for server
-            validator.forEach((fn, field) => {
-                if (errors.length === 0) {
-                    if (fn(field, payload).length > 0) {
-                        errors = fn(field, payload);
-                    }
-                }
-            })
-        }
-        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
-    }
-    public validateCreatePending(payload: IPendingResourceOwner): ErrorMessage[] {
-        return this._validate(payload, this.appCreatePendingUserCommandValidator)
-    }
-    public validateAdminUpdate(payload: IResourceOwner): ErrorMessage[] {
-        return this._validate(payload, this.adminUpdateUserCommandValidator)
-    }
-    public validateCreateUser(payload: IPendingResourceOwner): ErrorMessage[] {
-        return this._validate(payload, this.appCreateUserCommandValidator)
-    }
-    public validateForgetPwd(payload: IForgetPasswordRequest): ErrorMessage[] {
-        return this._validate(payload, this.appForgetUserPasswordCommandValidator)
-    }
-    public validateResetPwd(payload: IForgetPasswordRequest): ErrorMessage[] {
-        return this._validate(payload, this.appResetUserPasswordCommandValidator)
+            return this.validationWPlatform(client, this.adminUpdateUserCommandValidator)
+        if (context === 'userUpdatePwdCommandValidator')
+            return this.validationWPlatform(client, this.userUpdatePwdCommandValidator)
+        if (context === 'appCreatePendingUserCommandValidator')
+            return this.validationWPlatform(client, this.appCreatePendingUserCommandValidator)
+        if (context === 'appCreateUserCommandValidator')
+            return this.validationWPlatform(client, this.appCreateUserCommandValidator)
+        if (context === 'appForgetUserPasswordCommandValidator')
+            return this.validationWPlatform(client, this.appForgetUserPasswordCommandValidator)
+        if (context === 'appResetUserPasswordCommandValidator')
+            return this.validationWPlatform(client, this.appResetUserPasswordCommandValidator)
     }
     passwordValidator = (key: string, payload: IResourceOwnerUpdatePwd) => {
         let results: ErrorMessage[] = [];

@@ -123,9 +123,9 @@ export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilte
     this.fis.formGroupCollection[childFormId].get('value').reset();
     this.fis.restoreDynamicForm(childFormId, this.fis.parsePayloadArr(option.values, 'value'), option.values.length);
     if (this.aggregate)
-      this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper)
+      this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateFilterCommandValidator', this.fis, this, this.errorMapper)
     else
-      this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
+      this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateFilterCommandValidator', this.fis, this, this.errorMapper)
   }
   ngOnDestroy(): void {
     Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
@@ -201,11 +201,11 @@ export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilte
 
   }
   create() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateFilterCommandValidator', this.fis, this, this.errorMapper))
       this.filterSvc.create(this.convertToPayload(this), this.changeId)
   }
   update() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateFilterCommandValidator', this.fis, this, this.errorMapper))
       this.filterSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   errorMapper(original: ErrorMessage[], cmpt: FilterComponent) {

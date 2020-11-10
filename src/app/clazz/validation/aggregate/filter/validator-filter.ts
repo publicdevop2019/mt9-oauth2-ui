@@ -1,11 +1,11 @@
 import { ErrorMessage, IAggregateValidator, ListValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 import { IBizFilter, IFilterItem } from './interfaze-filter';
 
-export class FilterValidator implements IAggregateValidator {
+export class FilterValidator extends IAggregateValidator {
     private adminCreateFilterCommandValidator: Map<string, TValidator> = new Map();
     private adminUpdateFilterCommandValidator: Map<string, TValidator> = new Map();
-    private platform: TPlatform = 'CLIENT';
     constructor(platform?: TPlatform) {
+        super(platform)
         if (platform) {
             this.platform = platform;
         }
@@ -17,45 +17,11 @@ export class FilterValidator implements IAggregateValidator {
         this.adminUpdateFilterCommandValidator.set('catalogs', this.catalogsValidator);
         this.adminUpdateFilterCommandValidator.set('filters', this.filtersValidator);
     }
-    public validate(client: IBizFilter, context: string): ErrorMessage[] {
-        let errors: ErrorMessage[] = [];
-        if (this.platform === 'CLIENT') {
-            if (context === 'CREATE') {
-                this.adminCreateFilterCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, client))
-                })
-            } else if (context === 'UPDATE') {
-                this.adminUpdateFilterCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, client))
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-        } else {
-            if (context === 'CREATE') {
-                //fail fast for server
-                this.adminCreateFilterCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, client).length > 0) {
-                            errors = fn(field, client);
-                        }
-                    }
-                })
-            } else if (context === 'UPDATE') {
-                //fail fast for server
-                this.adminUpdateFilterCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, client).length > 0) {
-                            errors = fn(field, client);
-                        }
-                    }
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-
-        }
-        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
+    public validate(payload: IBizFilter, context: string): ErrorMessage[] {
+        if (context === 'adminCreateFilterCommandValidator')
+            return this.validationWPlatform(payload, this.adminCreateFilterCommandValidator)
+        if (context === 'adminUpdateFilterCommandValidator')
+            return this.validationWPlatform(payload, this.adminUpdateFilterCommandValidator)
     }
     descriptionValidator = (key: string, payload: any) => {
         let results: ErrorMessage[] = [];

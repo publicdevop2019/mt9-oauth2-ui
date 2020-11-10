@@ -49,7 +49,7 @@ export class UpdatePwdComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       })
     }
-    if (this.checkConfirmPwd() && this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper)) {
+    if (this.checkConfirmPwd() && this.validateHelper.validate(this.validator, this.convertToPayload, 'userUpdatePwdCommandValidator', this.fis, this, this.errorMapper)) {
       this.resourceOwnerService.updateMyPwd(this.convertToPayload(this), this.changeId)
     }
   }

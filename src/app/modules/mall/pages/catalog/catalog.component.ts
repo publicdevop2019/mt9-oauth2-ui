@@ -111,11 +111,11 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
     }
   }
   create() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateCatalogCommandValidator', this.fis, this, this.errorMapper))
       this.entitySvc.create(this.convertToPayload(this), this.changeId)
   }
   update() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateCatalogCommandValidator', this.fis, this, this.errorMapper))
       this.entitySvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
 

@@ -6,8 +6,33 @@ export interface ErrorMessage {
 }
 export type TValidator = (value: any, payload: any) => ErrorMessage[];
 export type TPlatform = 'CLIENT' | 'SERVER';
-export interface IAggregateValidator {
-    validate: (payload: any, context: string) => ErrorMessage[];
+export abstract class IAggregateValidator {
+    platform: TPlatform = 'CLIENT';
+    constructor(platform: TPlatform) {
+        if (platform) {
+            this.platform = platform;
+        }
+    }
+    abstract validate(payload: any, context: string): ErrorMessage[];
+
+    public validationWPlatform(payload: any, validator: Map<string, TValidator>): ErrorMessage[] {
+        let errors: ErrorMessage[] = [];
+        if (this.platform === 'CLIENT') {
+            validator.forEach((fn, field) => {
+                errors.push(...fn(field, payload))
+            })
+        } else {
+            //fail fast for server
+            validator.forEach((fn, field) => {
+                if (errors.length === 0) {
+                    if (fn(field, payload).length > 0) {
+                        errors = fn(field, payload);
+                    }
+                }
+            })
+        }
+        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
+    }
 }
 export class StringValidator {
     public static greaterThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key: string): boolean {

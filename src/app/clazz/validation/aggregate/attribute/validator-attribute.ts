@@ -1,14 +1,11 @@
 import { ErrorMessage, IAggregateValidator, ListValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 import { IBizAttribute } from './interfaze-attribute';
 
-export class AttributeValidator implements IAggregateValidator {
+export class AttributeValidator extends IAggregateValidator {
     private adminCreateAttributeCommandValidator: Map<string, TValidator> = new Map();
     private adminUpdateAttributeCommandValidator: Map<string, TValidator> = new Map();
-    private platform: TPlatform = 'CLIENT';
     constructor(platform?: TPlatform) {
-        if (platform) {
-            this.platform = platform;
-        }
+        super(platform)
         this.adminCreateAttributeCommandValidator.set('name', this.nameValidator);
         this.adminCreateAttributeCommandValidator.set('description', this.descriptionValidator);
         this.adminCreateAttributeCommandValidator.set('method', this.methodValidator);
@@ -21,45 +18,11 @@ export class AttributeValidator implements IAggregateValidator {
         this.adminUpdateAttributeCommandValidator.set('type', this.typeValidator);
         this.adminUpdateAttributeCommandValidator.set('selectValues', this.selectValuesValidator);
     }
-    public validate(client: IBizAttribute, context: string): ErrorMessage[] {
-        let errors: ErrorMessage[] = [];
-        if (this.platform === 'CLIENT') {
-            if (context === 'CREATE') {
-                this.adminCreateAttributeCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, client))
-                })
-            } else if (context === 'UPDATE') {
-                this.adminUpdateAttributeCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, client))
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-        } else {
-            if (context === 'CREATE') {
-                //fail fast for server
-                this.adminCreateAttributeCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, client).length > 0) {
-                            errors = fn(field, client);
-                        }
-                    }
-                })
-            } else if (context === 'UPDATE') {
-                //fail fast for server
-                this.adminUpdateAttributeCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, client).length > 0) {
-                            errors = fn(field, client);
-                        }
-                    }
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-
-        }
-        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
+    public validate(payload: IBizAttribute, context: string): ErrorMessage[] {
+        if (context === 'adminCreateAttributeCommandValidator')
+            return this.validationWPlatform(payload, this.adminCreateAttributeCommandValidator)
+        if (context === 'adminUpdateAttributeCommandValidator')
+            return this.validationWPlatform(payload, this.adminUpdateAttributeCommandValidator)
     }
     nameValidator = (key: string, payload: IBizAttribute) => {
         let results: ErrorMessage[] = [];

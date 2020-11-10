@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit {
     }
   }
   register() {
-    let error = this.validator.validateCreateUser(this.getRegPayload(this.loginOrRegForm));
+    let error = this.validator.validate(this.getRegPayload(this.loginOrRegForm),'appCreateUserCommandValidator');
     if (this.loginOrRegForm.get('confirmPwd').value !== this.loginOrRegForm.get('pwd').value) {
       this.confirmgPasswordErrorMsg = 'PWD_NOT_SAME';
       this.loginOrRegForm.get('confirmPwd').setErrors({ wrongValue: true });
@@ -112,7 +112,7 @@ export class LoginComponent implements OnInit {
       }
 
       this.loginOrRegForm.valueChanges.subscribe(() => {
-        let error = this.validator.validateCreateUser(this.getRegPayload(this.loginOrRegForm));
+        let error = this.validator.validate(this.getRegPayload(this.loginOrRegForm),'appCreateUserCommandValidator');
         if (error.some(e => e.key === 'email')) {
           this.emailErrorMsg = error.find(e => e.key === 'email').message;
           this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
@@ -149,12 +149,12 @@ export class LoginComponent implements OnInit {
 
   }
   getCode() {
-    let error = this.validator.validateCreatePending(this.getActivatePayload(this.loginOrRegForm));
+    let error = this.validator.validate(this.getActivatePayload(this.loginOrRegForm),'appCreatePendingUserCommandValidator');
     if (error.length > 0) {
       this.emailErrorMsg = error[0].message;
       this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
       this.loginOrRegForm.get('email').valueChanges.subscribe(() => {
-        let error = this.validator.validateCreatePending(this.getActivatePayload(this.loginOrRegForm));
+        let error = this.validator.validate(this.getActivatePayload(this.loginOrRegForm),'appCreatePendingUserCommandValidator');
         if (error.length > 0) {
           this.emailErrorMsg = error[0].message;
           this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
@@ -170,12 +170,12 @@ export class LoginComponent implements OnInit {
     }
   }
   getToken() {
-    let error = this.validator.validateForgetPwd(this.getForgetPayload(this.loginOrRegForm));
+    let error = this.validator.validate(this.getForgetPayload(this.loginOrRegForm),'appForgetUserPasswordCommandValidator');
     if (error.length > 0) {
       this.emailErrorMsg = error[0].message;
       this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
       this.loginOrRegForm.get('email').valueChanges.subscribe(() => {
-        let error = this.validator.validateCreatePending(this.getActivatePayload(this.loginOrRegForm));
+        let error = this.validator.validate(this.getForgetPayload(this.loginOrRegForm),'appForgetUserPasswordCommandValidator');
         if (error.length > 0) {
           this.emailErrorMsg = error[0].message;
           this.loginOrRegForm.get('email').setErrors({ wrongValue: true });
@@ -191,7 +191,7 @@ export class LoginComponent implements OnInit {
     }
   }
   changePassword() {
-    let error = this.validator.validateResetPwd(this.getResetPayload(this.loginOrRegForm));
+    let error = this.validator.validate(this.getResetPayload(this.loginOrRegForm),'appResetUserPasswordCommandValidator');
     if (this.loginOrRegForm.get('confirmPwd').value !== this.loginOrRegForm.get('pwd').value) {
       this.confirmgPasswordErrorMsg = 'PWD_NOT_SAME';
       this.loginOrRegForm.get('confirmPwd').setErrors({ wrongValue: true });
@@ -211,7 +211,7 @@ export class LoginComponent implements OnInit {
       }
 
       this.loginOrRegForm.valueChanges.subscribe(() => {
-        let error = this.validator.validateCreateUser(this.getResetPayload(this.loginOrRegForm));
+        let error = this.validator.validate(this.getResetPayload(this.loginOrRegForm),'appResetUserPasswordCommandValidator');
         if (error.some(e => e.key === 'email')) {
           this.emailErrorMsg = error.find(e => e.key === 'email').message;
           this.loginOrRegForm.get('email').setErrors({ wrongValue: true });

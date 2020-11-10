@@ -2,16 +2,13 @@ import { IAggregateValidator, TPlatform, TValidator, ErrorMessage, StringValidat
 import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
 
 
-export class ProductValidator implements IAggregateValidator {
+export class ProductValidator extends IAggregateValidator {
     private formId: string;
-    private platform: TPlatform = 'CLIENT';
     private adminCreateProductCommandValidator: Map<string, TValidator> = new Map();
     private adminUpdateProductCommandValidator: Map<string, TValidator> = new Map();
     constructor(formId: string, platform?: TPlatform) {
+        super(platform);
         this.formId = formId;
-        if (platform) {
-            this.platform = platform;
-        }
         this.adminCreateProductCommandValidator.set('name', this.nameValidator);
         this.adminCreateProductCommandValidator.set('description', this.descriptionValidator);
         this.adminCreateProductCommandValidator.set('imageUrlSmall', this.imageUrlSmallValidator);
@@ -39,44 +36,10 @@ export class ProductValidator implements IAggregateValidator {
         this.adminUpdateProductCommandValidator.set('attributesProd', this.attributesProdValidator);
     }
     public validate(payload: IProductDetail, context: string): ErrorMessage[] {
-        let errors: ErrorMessage[] = [];
-        if (this.platform === 'CLIENT') {
-            if (context === 'CREATE') {
-                this.adminCreateProductCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, payload))
-                })
-            } else if (context === 'UPDATE') {
-                this.adminUpdateProductCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, payload))
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-        } else {
-            //fail fast for server
-            if (context === 'CREATE') {
-                this.adminCreateProductCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, payload).length > 0) {
-                            errors = fn(field, payload);
-                        }
-                    }
-                })
-            } else if (context === 'UPDATE') {
-                this.adminUpdateProductCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, payload).length > 0) {
-                            errors = fn(field, payload);
-                        }
-                    }
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-
-        }
-
-        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
+        if (context === 'adminCreateProductCommandValidator')
+            return this.validationWPlatform(payload, this.adminCreateProductCommandValidator)
+        if (context === 'adminUpdateProductCommandValidator')
+            return this.validationWPlatform(payload, this.adminUpdateProductCommandValidator)
     }
     nameValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];

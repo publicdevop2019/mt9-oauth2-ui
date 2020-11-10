@@ -46,11 +46,11 @@ export class EndpointComponent extends AbstractAggregate<EndpointComponent,IEndp
     }
   }
   update() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootUpdateEndpointCommandValidator', this.fis, this, this.errorMapper))
       this.endpointSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   create() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootCreateEndpointCommandValidator', this.fis, this, this.errorMapper))
       this.endpointSvc.create(this.convertToPayload(this), this.changeId)
   }
   errorMapper(original: ErrorMessage[], cmpt: EndpointComponent) {

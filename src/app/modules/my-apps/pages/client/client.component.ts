@@ -126,11 +126,11 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
     return changeKeys[0];
   }
   update() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootUpdateClientCommandValidator', this.fis, this, this.errorMapper))
       this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   create() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootCreateClientCommandValidator', this.fis, this, this.errorMapper))
       this.clientService.create(this.convertToPayload(this), this.changeId)
   }
   errorMapper(original: ErrorMessage[], cmpt: ClientComponent) {

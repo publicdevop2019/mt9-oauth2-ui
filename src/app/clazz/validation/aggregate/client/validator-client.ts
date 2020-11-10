@@ -2,14 +2,11 @@ import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE
 import { grantTypeEnums, IClient } from './interfaze-client';
 import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 
-export class ClientValidator implements IAggregateValidator {
+export class ClientValidator extends IAggregateValidator {
     private rootCreateClientCommandValidator: Map<string, TValidator> = new Map();
     private rootUpdateClientCommandValidator: Map<string, TValidator> = new Map();
-    private platform: TPlatform = 'CLIENT';
     constructor(platform?: TPlatform) {
-        if (platform) {
-            this.platform = platform;
-        }
+        super(platform);
         this.rootCreateClientCommandValidator.set('name', this.clientNameValidator);
         this.rootCreateClientCommandValidator.set('description', this.clientDescriptionValidator);
         this.rootCreateClientCommandValidator.set('hasSecret', this.clientHasSecretValidator);
@@ -38,45 +35,11 @@ export class ClientValidator implements IAggregateValidator {
         this.rootUpdateClientCommandValidator.set('registeredRedirectUri', this.clientRegisteredRedirectUriValidator);
         this.rootUpdateClientCommandValidator.set('autoApprove', this.clientAutoApproveValidator);
     }
-    public validate(client: IClient, context: string): ErrorMessage[] {
-        let errors: ErrorMessage[] = [];
-        if (this.platform === 'CLIENT') {
-            if (context === 'CREATE') {
-                this.rootCreateClientCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, client))
-                })
-            } else if (context === 'UPDATE') {
-                this.rootUpdateClientCommandValidator.forEach((fn, field) => {
-                    errors.push(...fn(field, client))
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-        } else {
-            if (context === 'CREATE') {
-                //fail fast for server
-                this.rootCreateClientCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, client).length > 0) {
-                            errors = fn(field, client);
-                        }
-                    }
-                })
-            } else if (context === 'UPDATE') {
-                //fail fast for server
-                this.rootUpdateClientCommandValidator.forEach((fn, field) => {
-                    if (errors.length === 0) {
-                        if (fn(field, client).length > 0) {
-                            errors = fn(field, client);
-                        }
-                    }
-                })
-            } else {
-                console.error('unsupportted context type :: ' + context)
-            }
-
-        }
-        return errors.filter((v, i, a) => a.findIndex(t => (t.key === v.key && t.message === v.message && t.type === v.type)) === i);
+    public validate(payload: IClient, context: string): ErrorMessage[] {
+        if (context === 'rootCreateClientCommandValidator')
+            return this.validationWPlatform(payload, this.rootCreateClientCommandValidator)
+        if (context === 'rootUpdateClientCommandValidator')
+            return this.validationWPlatform(payload, this.rootUpdateClientCommandValidator)
     }
     clientAutoApproveValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];

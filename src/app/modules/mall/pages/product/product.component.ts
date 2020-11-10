@@ -503,7 +503,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         })
       })
     }
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)) {
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateProductCommandValidator', this.fis, this, this.errorMapper)) {
       if (this.hasSku) {
         if (this.requiredInput('status', this.formId)
           && this.requiredInput('hasSku', this.formId)
@@ -650,7 +650,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     }
   }
   update() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateProductCommandValidator', this.fis, this, this.errorMapper))
       this.productSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
   previewFlag: boolean = false;

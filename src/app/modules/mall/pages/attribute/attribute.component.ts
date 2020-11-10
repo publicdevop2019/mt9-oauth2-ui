@@ -70,11 +70,11 @@ export class AttributeComponent extends AbstractAggregate<AttributeComponent, IB
     }
   }
   create() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateAttributeCommandValidator', this.fis, this, this.errorMapper))
       this.attributeSvc.create(this.convertToPayload(this), this.changeId)
   }
   update() {
-    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'UPDATE', this.fis, this, this.errorMapper))
+    if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateAttributeCommandValidator', this.fis, this, this.errorMapper))
       this.attributeSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
   }
 
