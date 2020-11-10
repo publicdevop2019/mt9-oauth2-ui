@@ -1,6 +1,6 @@
 import { CLIENT_ROLE_LIST, GRANT_TYPE_LIST_EXT, RESOURCE_CLIENT_ROLE_LIST, SCOPE_LIST } from '../../constant';
 import { grantTypeEnums, IClient } from './interfaze-client';
-import { BooleanValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
+import { BooleanValidator, descriptionValidator, ErrorMessage, IAggregateValidator, ListValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 
 export class ClientValidator extends IAggregateValidator {
     private rootCreateClientCommandValidator: Map<string, TValidator> = new Map();
@@ -8,7 +8,7 @@ export class ClientValidator extends IAggregateValidator {
     constructor(platform?: TPlatform) {
         super(platform);
         this.rootCreateClientCommandValidator.set('name', this.clientNameValidator);
-        this.rootCreateClientCommandValidator.set('description', this.clientDescriptionValidator);
+        this.rootCreateClientCommandValidator.set('description', descriptionValidator);
         this.rootCreateClientCommandValidator.set('hasSecret', this.clientHasSecretValidator);
         this.rootCreateClientCommandValidator.set('clientSecret', this.clientClientSecretValidator);
         this.rootCreateClientCommandValidator.set('grantTypeEnums', this.clientGrantTypeValidator);
@@ -22,7 +22,7 @@ export class ClientValidator extends IAggregateValidator {
         this.rootCreateClientCommandValidator.set('autoApprove', this.clientAutoApproveValidator);
 
         this.rootUpdateClientCommandValidator.set('name', this.clientNameValidator);
-        this.rootUpdateClientCommandValidator.set('description', this.clientDescriptionValidator);
+        this.rootUpdateClientCommandValidator.set('description', descriptionValidator);
         this.rootUpdateClientCommandValidator.set('hasSecret', this.clientHasSecretValidator);
         this.rootUpdateClientCommandValidator.set('clientSecret', this.clientUpdateClientSecretValidator);
         this.rootUpdateClientCommandValidator.set('grantTypeEnums', this.clientGrantTypeValidator);
@@ -75,7 +75,7 @@ export class ClientValidator extends IAggregateValidator {
     }
     clientNameValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValidValue(payload[key], results, key)
+        StringValidator.hasValidWhiteListValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
         StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
         return results
@@ -108,7 +108,7 @@ export class ClientValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
             (payload[key] as string[]).forEach((e, index) => {
-                StringValidator.hasValidValue(e, results, index + "_" + key)
+                StringValidator.hasValidWhiteListValue(e, results, index + "_" + key)
             })
         } else {
             results = [];
@@ -190,15 +190,6 @@ export class ClientValidator extends IAggregateValidator {
             } else {
 
             }
-        }
-        return results
-    }
-    clientDescriptionValidator = (key: string, payload: any) => {
-        let results: ErrorMessage[] = [];
-        if (payload[key] !== null && payload[key] !== undefined) {
-            StringValidator.hasValidValue(payload[key], results, key)
-            StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
-        } else {
         }
         return results
     }

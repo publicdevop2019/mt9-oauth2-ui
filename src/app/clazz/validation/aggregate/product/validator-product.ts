@@ -1,5 +1,5 @@
 import { IAggregateValidator, TPlatform, TValidator, ErrorMessage, StringValidator, ListValidator, notNullOrUndefined, NumberValidator, DefaultValidator, hasValue } from '../../validator-common';
-import { IProductDetail, IProductOptions, ISku } from './interfaze-product';
+import { IAttrImage, IProductDetail, IProductOptions, ISku } from './interfaze-product';
 
 
 export class ProductValidator extends IAggregateValidator {
@@ -74,10 +74,10 @@ export class ProductValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
             (payload[key] as IProductOptions[]).forEach((e, index) => {
-                StringValidator.hasValidValue(e.title, results, index + "_title");
+                StringValidator.hasValidWhiteListValue(e.title, results, index + "_title");
                 ListValidator.hasValue(e.options, results, index + "_options")
                 e.options.forEach((ee, i) => {
-                    StringValidator.hasValidValue(ee.optionValue, results, index + "_" + i + "_optionValue");
+                    StringValidator.hasValidWhiteListValue(ee.optionValue, results, index + "_" + i + "_optionValue");
                 })
             })
         } else {
@@ -104,7 +104,6 @@ export class ProductValidator extends IAggregateValidator {
     }
     imageUrlSmallValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValidValue(payload[key], results, key);
         StringValidator.isHttpUrl(payload[key], results, key);
         return appendCtrlKey(results, this.formId)
     }
@@ -189,8 +188,8 @@ export class ProductValidator extends IAggregateValidator {
     attributeSaleImagesCreateValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
-            payload[key].forEach(e => {
-                StringValidator.hasValidValue(e.attributeSales, results, key);
+            (payload[key] as IAttrImage[]).forEach(e => {
+                StringValidator.isAttrKeyPair(e.attributeSales, results, key);
                 ListValidator.hasValue(e.imageUrls, results, key)
             })
         } else {
@@ -202,17 +201,17 @@ export class ProductValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
             (payload[key] as string[]).forEach((e, index) => {
-                StringValidator.hasValidValue(payload[key], results, index + "_" + key);
-                StringValidator.isHttpUrl(payload[key], results, index + "_" + key);
+                StringValidator.isHttpUrl(e, results, index + "_" + key);
             })
         } else {
             results = [];
         }
         return appendCtrlKey(results, this.formId)
     }
+    //public display apply, diffrent rule
     descriptionValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
-        if (StringValidator.hasValidValue(payload[key], results, key)) {
+        if (StringValidator.hasValidWhiteListValue(payload[key], results, key)) {
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
             results = [];

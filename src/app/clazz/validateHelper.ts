@@ -8,6 +8,8 @@ export class ValidatorHelper {
   }
   private previousErrors: ErrorMessage[] = [];
   public validate(validator: IAggregateValidator, getPayload: any, context: string, fis: FormInfoService, cmpt: any, errorMapper: (original: ErrorMessage[], cmpt: any) => ErrorMessage[]): boolean {
+    console.dir('[DEV ONLY] validate target')
+    console.dir(getPayload(cmpt))
     let errors = validator.validate(getPayload(cmpt), context);
     if (errors.length > 0) {
       let uniqueError: ErrorMessage[] = []

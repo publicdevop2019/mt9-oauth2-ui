@@ -53,9 +53,8 @@ export class LoginComponent implements OnInit {
   }
   login() {
     let error: ErrorMessage[] = [];
-    StringValidator.hasValidValue(this.loginOrRegForm.get('email').value, error, 'email')
     StringValidator.isEmail(this.loginOrRegForm.get('email').value, error, 'email')
-    StringValidator.hasValidValue(this.loginOrRegForm.get('pwd').value, error, 'pwd')
+    StringValidator.hasValidWhiteListValue(this.loginOrRegForm.get('pwd').value, error, 'pwd')
     if (error.length > 0) {
       if (error.some(e => e.key === 'email')) {
         this.emailErrorMsg = error.find(e => e.key === 'email').message;
@@ -68,9 +67,8 @@ export class LoginComponent implements OnInit {
 
       this.loginOrRegForm.valueChanges.subscribe(() => {
         let error: ErrorMessage[] = [];
-        StringValidator.hasValidValue(this.loginOrRegForm.get('email').value, error, 'email')
         StringValidator.isEmail(this.loginOrRegForm.get('email').value, error, 'email')
-        StringValidator.hasValidValue(this.loginOrRegForm.get('pwd').value, error, 'pwd')
+        StringValidator.hasValidWhiteListValue(this.loginOrRegForm.get('pwd').value, error, 'pwd')
         if (error.some(e => e.key === 'email')) {
           this.emailErrorMsg = error.find(e => e.key === 'email').message;
           this.loginOrRegForm.get('email').setErrors({ wrongValue: true });

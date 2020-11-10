@@ -370,5 +370,11 @@ export const enUS = {
     "OK": "Ok",
     "STRING_BELONGS_TO": "Wrong value",
     "STRING_WHITE_LIST_VALUE_ONLY": "White list check failed",
+    "STRING_HAS_EP_EXPRESSION_VALUE": "White list check failed",
+    "STRING_IS_ATTR_KEY_PAIR": "White list check failed",
+    "STRING_IS_HTTP_PATH": "White list check failed",
+    "STRING_IS_ATTR_VALUE": "White list check failed",
+    "STRING_IS_DESCRIPTION": "White list check failed",
+    "STRING_NOT_EMPTY_STRING": "Required",
     "": "",
 }

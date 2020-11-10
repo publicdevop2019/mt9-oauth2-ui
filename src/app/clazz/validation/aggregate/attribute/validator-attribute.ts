@@ -1,4 +1,4 @@
-import { ErrorMessage, IAggregateValidator, ListValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
+import { descriptionValidator, ErrorMessage, IAggregateValidator, ListValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 import { IBizAttribute } from './interfaze-attribute';
 
 export class AttributeValidator extends IAggregateValidator {
@@ -7,13 +7,13 @@ export class AttributeValidator extends IAggregateValidator {
     constructor(platform?: TPlatform) {
         super(platform)
         this.adminCreateAttributeCommandValidator.set('name', this.nameValidator);
-        this.adminCreateAttributeCommandValidator.set('description', this.descriptionValidator);
+        this.adminCreateAttributeCommandValidator.set('description', descriptionValidator);
         this.adminCreateAttributeCommandValidator.set('method', this.methodValidator);
         this.adminCreateAttributeCommandValidator.set('type', this.typeValidator);
         this.adminCreateAttributeCommandValidator.set('selectValues', this.selectValuesValidator);
         
         this.adminUpdateAttributeCommandValidator.set('name', this.nameValidator);
-        this.adminUpdateAttributeCommandValidator.set('description', this.descriptionValidator);
+        this.adminUpdateAttributeCommandValidator.set('description', descriptionValidator);
         this.adminUpdateAttributeCommandValidator.set('method', this.methodValidator);
         this.adminUpdateAttributeCommandValidator.set('type', this.typeValidator);
         this.adminUpdateAttributeCommandValidator.set('selectValues', this.selectValuesValidator);
@@ -26,18 +26,9 @@ export class AttributeValidator extends IAggregateValidator {
     }
     nameValidator = (key: string, payload: IBizAttribute) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValidValue(payload[key], results, key)
+        StringValidator.hasValidWhiteListValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
         StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
-        return results
-    }
-    descriptionValidator = (key: string, payload: any) => {
-        let results: ErrorMessage[] = [];
-        if (payload[key] !== null && payload[key] !== undefined) {
-            StringValidator.hasValidValue(payload[key], results, key)
-            StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
-        } else {
-        }
         return results
     }
     methodValidator = (key: string, payload: IBizAttribute) => {
@@ -56,7 +47,7 @@ export class AttributeValidator extends IAggregateValidator {
             ListValidator.hasValue(payload[key], results, key);
             if (payload[key] && payload[key].length > 0) {
                 (payload[key] as string[]).forEach((e, index) => {
-                    StringValidator.hasValidValue(e, results, index + '_valueOption')
+                    StringValidator.isAttrValue(e, results, index + '_valueOption')
                 })
             }
         }

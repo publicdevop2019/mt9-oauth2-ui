@@ -376,5 +376,11 @@ export const zhHans = {
     "OK": "好的",
     "STRING_BELONGS_TO": "错误值",
     "STRING_WHITE_LIST_VALUE_ONLY": "含有非法字符",
+    "STRING_HAS_EP_EXPRESSION_VALUE": "含有非法字符",
+    "STRING_IS_HTTP_PATH": "含有非法字符",
+    "STRING_IS_ATTR_VALUE": "含有非法字符",
+    "STRING_IS_ATTR_KEY_PAIR": "含有非法字符",
+    "STRING_IS_DESCRIPTION": "含有非法字符",
+    "STRING_NOT_EMPTY_STRING": "不能为空",
     "": "",
 }
