@@ -26,7 +26,7 @@ export class FilterValidator extends IAggregateValidator {
     descriptionValidator = (key: string, payload: any) => {
         let results: ErrorMessage[] = [];
         if (payload[key] !== null && payload[key] !== undefined) {
-            StringValidator.hasValue(payload[key], results, key)
+            StringValidator.hasValidValue(payload[key], results, key)
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
         }
@@ -42,10 +42,10 @@ export class FilterValidator extends IAggregateValidator {
         ListValidator.hasValue(payload[key], results, key)
         if (payload[key] && payload[key].length > 0) {
             (payload[key] as IFilterItem[]).forEach((e, index) => {
-                StringValidator.hasValue(e.name, results, index + '_filterItemName');
+                StringValidator.hasValidValue(e.name, results, index + '_filterItemName');
                 ListValidator.hasValue(e.values, results, index + '_filterItemValue');
                 (e.values as string[]).forEach((ee, ind) => {
-                    StringValidator.hasValue(ee, results, index + '_' + ind + '_filterItemValueList')
+                    StringValidator.hasValidValue(ee, results, index + '_' + ind + '_filterItemValueList')
                 })
             })
         }

@@ -35,9 +35,18 @@ export abstract class IAggregateValidator {
     }
 }
 export class StringValidator {
+    static STRING_WHITE_LIST = new RegExp(/^[a-zA-Z0-9 \u4E00-\u9FFF]*$/)
     public static greaterThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key: string): boolean {
         if (!StringValidator.isString(var0, results, key) || var0.length < arg1) {
             results.push({ type: "greaterThanOrEqualTo", message: 'STRING_GREATER_THAN_OR_EQUAL_TO', key: key })
+            return false
+        } else {
+            return true
+        }
+    }
+    public static whiteListValueOnly(var0: string, results: ErrorMessage[], key: string): boolean {
+        if (!StringValidator.isString(var0, results, key) || !StringValidator.STRING_WHITE_LIST.test(var0)) {
+            results.push({ type: "whiteListValueOnly", message: 'STRING_WHITE_LIST_VALUE_ONLY', key: key })
             return false
         } else {
             return true
@@ -91,8 +100,8 @@ export class StringValidator {
             return true;
         }
     }
-    public static hasValue(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
-        if (!StringValidator.isString(var0, results, key) || var0 === '') {
+    public static hasValidValue(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
+        if (!StringValidator.isString(var0, results, key) || var0 === '' || !StringValidator.whiteListValueOnly(var0, results, key)) {
             results.push({ type: "hasStringValue", message: 'STRING_HAS_VALUE', key: key })
             return false;
         } else {

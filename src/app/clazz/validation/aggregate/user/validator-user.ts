@@ -45,17 +45,17 @@ export class UserValidator extends IAggregateValidator {
     }
     passwordValidator = (key: string, payload: IResourceOwnerUpdatePwd) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValidValue(payload[key], results, key)
         return results
     }
     currentPwdValidator = (key: string, payload: IResourceOwnerUpdatePwd) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValidValue(payload[key], results, key)
         return results
     }
     emailValidator = (key: string, payload: IPendingResourceOwner) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValidValue(payload[key], results, key)
         StringValidator.isEmail(payload[key], results, key)
         return results
     }
@@ -67,7 +67,7 @@ export class UserValidator extends IAggregateValidator {
     }
     tokenValidator = (key: string, payload: IPendingResourceOwner) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValidValue(payload[key], results, key)
         NumberValidator.isInteger(+payload[key], results, key)
         NumberValidator.greaterThan(+payload[key], 99999999, results, key)
         return results

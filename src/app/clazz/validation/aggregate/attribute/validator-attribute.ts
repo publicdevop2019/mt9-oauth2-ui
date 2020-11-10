@@ -26,7 +26,7 @@ export class AttributeValidator extends IAggregateValidator {
     }
     nameValidator = (key: string, payload: IBizAttribute) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValidValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
         StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
         return results
@@ -34,7 +34,7 @@ export class AttributeValidator extends IAggregateValidator {
     descriptionValidator = (key: string, payload: any) => {
         let results: ErrorMessage[] = [];
         if (payload[key] !== null && payload[key] !== undefined) {
-            StringValidator.hasValue(payload[key], results, key)
+            StringValidator.hasValidValue(payload[key], results, key)
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
         }
@@ -56,7 +56,7 @@ export class AttributeValidator extends IAggregateValidator {
             ListValidator.hasValue(payload[key], results, key);
             if (payload[key] && payload[key].length > 0) {
                 (payload[key] as string[]).forEach((e, index) => {
-                    StringValidator.hasValue(e, results, index + '_valueOption')
+                    StringValidator.hasValidValue(e, results, index + '_valueOption')
                 })
             }
         }

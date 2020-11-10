@@ -369,5 +369,6 @@ export const enUS = {
     "REGISTER_SUCCESS_MSG": "Register success, please login",
     "OK": "Ok",
     "STRING_BELONGS_TO": "Wrong value",
+    "STRING_WHITE_LIST_VALUE_ONLY": "White list check failed",
     "": "",
 }

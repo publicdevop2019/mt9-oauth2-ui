@@ -37,25 +37,25 @@ export class EndpointValidator extends IAggregateValidator {
     }
     pathValidator = (key: string, payload: IEndpoint) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key);
+        StringValidator.hasValidValue(payload[key], results, key);
         StringValidator.lessThanOrEqualTo(payload[key], 100, results, key);
         return results
     }
     methodValidator = (key: string, payload: IEndpoint) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key);
+        StringValidator.hasValidValue(payload[key], results, key);
         StringValidator.belongsTo(payload[key], HTTP_METHODS.map(e => e.value), results, key);
         return results
     }
     expressionValidator = (key: string, payload: IEndpoint) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key);
+        StringValidator.hasValidValue(payload[key], results, key);
         StringValidator.lessThanOrEqualTo(payload[key], 100, results, key);
         return results
     }
     descriptionValidator = (key: string, payload: IEndpoint) => {
         let results: ErrorMessage[] = [];
-        if (StringValidator.hasValue(payload[key], results, key)) {
+        if (StringValidator.hasValidValue(payload[key], results, key)) {
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
             results = [];

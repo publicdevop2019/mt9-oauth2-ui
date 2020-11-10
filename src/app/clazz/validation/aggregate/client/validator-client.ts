@@ -75,7 +75,7 @@ export class ClientValidator extends IAggregateValidator {
     }
     clientNameValidator = (key: string, payload: IClient) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValidValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
         StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
         return results
@@ -108,7 +108,7 @@ export class ClientValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
             (payload[key] as string[]).forEach((e, index) => {
-                StringValidator.hasValue(e, results, index + "_" + key)
+                StringValidator.hasValidValue(e, results, index + "_" + key)
             })
         } else {
             results = [];
@@ -196,7 +196,7 @@ export class ClientValidator extends IAggregateValidator {
     clientDescriptionValidator = (key: string, payload: any) => {
         let results: ErrorMessage[] = [];
         if (payload[key] !== null && payload[key] !== undefined) {
-            StringValidator.hasValue(payload[key], results, key)
+            StringValidator.hasValidValue(payload[key], results, key)
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
         }

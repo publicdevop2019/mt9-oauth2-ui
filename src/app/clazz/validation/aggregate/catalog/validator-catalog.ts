@@ -24,7 +24,7 @@ export class CatalogValidator extends IAggregateValidator {
     }
     nameValidator = (key: string, payload: ICatalog) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key)
+        StringValidator.hasValidValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
         StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
         return results

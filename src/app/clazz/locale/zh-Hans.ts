@@ -375,5 +375,6 @@ export const zhHans = {
     "REGISTER_SUCCESS_MSG": "注册成功，请登录",
     "OK": "好的",
     "STRING_BELONGS_TO": "错误值",
+    "STRING_WHITE_LIST_VALUE_ONLY": "含有非法字符",
     "": "",
 }

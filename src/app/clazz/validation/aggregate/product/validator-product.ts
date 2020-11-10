@@ -74,10 +74,10 @@ export class ProductValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
             (payload[key] as IProductOptions[]).forEach((e, index) => {
-                StringValidator.hasValue(e.title, results, index + "_title");
+                StringValidator.hasValidValue(e.title, results, index + "_title");
                 ListValidator.hasValue(e.options, results, index + "_options")
                 e.options.forEach((ee, i) => {
-                    StringValidator.hasValue(ee.optionValue, results, index + "_" + i + "_optionValue");
+                    StringValidator.hasValidValue(ee.optionValue, results, index + "_" + i + "_optionValue");
                 })
             })
         } else {
@@ -104,7 +104,7 @@ export class ProductValidator extends IAggregateValidator {
     }
     imageUrlSmallValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValue(payload[key], results, key);
+        StringValidator.hasValidValue(payload[key], results, key);
         StringValidator.isHttpUrl(payload[key], results, key);
         return appendCtrlKey(results, this.formId)
     }
@@ -190,7 +190,7 @@ export class ProductValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
             payload[key].forEach(e => {
-                StringValidator.hasValue(e.attributeSales, results, key);
+                StringValidator.hasValidValue(e.attributeSales, results, key);
                 ListValidator.hasValue(e.imageUrls, results, key)
             })
         } else {
@@ -202,7 +202,7 @@ export class ProductValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         if (ListValidator.hasValue(payload[key], results, key)) {
             (payload[key] as string[]).forEach((e, index) => {
-                StringValidator.hasValue(payload[key], results, index + "_" + key);
+                StringValidator.hasValidValue(payload[key], results, index + "_" + key);
                 StringValidator.isHttpUrl(payload[key], results, index + "_" + key);
             })
         } else {
@@ -212,7 +212,7 @@ export class ProductValidator extends IAggregateValidator {
     }
     descriptionValidator = (key: string, payload: IProductDetail) => {
         let results: ErrorMessage[] = [];
-        if (StringValidator.hasValue(payload[key], results, key)) {
+        if (StringValidator.hasValidValue(payload[key], results, key)) {
             StringValidator.lessThanOrEqualTo(payload[key], 50, results, key)
         } else {
             results = [];
