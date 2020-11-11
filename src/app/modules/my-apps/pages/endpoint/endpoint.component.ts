@@ -38,7 +38,7 @@ export class EndpointComponent extends AbstractAggregate<EndpointComponent,IEndp
     let formGroup = endpointCmpt.fis.formGroupCollection[endpointCmpt.formId];
     return {
       id: formGroup.get('id').value,
-      description: formGroup.get('description').value,
+      description: formGroup.get('description').value?formGroup.get('description').value:null,
       resourceId: formGroup.get('resourceId').value,
       path: formGroup.get('path').value,
       method: formGroup.get('method').value,
