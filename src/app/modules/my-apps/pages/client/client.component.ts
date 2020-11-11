@@ -26,12 +26,12 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
   private previousPayload: any = {};
   constructor(
     public clientService: ClientService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<ClientComponent>,
-    private cdr: ChangeDetectorRef
+    cdr: ChangeDetectorRef
   ) {
-    super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef,data);
+    super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef,data,fis,cdr);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;

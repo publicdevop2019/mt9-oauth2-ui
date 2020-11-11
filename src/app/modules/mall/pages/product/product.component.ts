@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angula
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
@@ -88,21 +88,19 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   private salesFormIdTempFormCreatedOb: Observable<string>;
   private imageAttrSaleChildFormCreatedOb: Observable<string>;
   public hasSku: boolean = false;
-  private eventStore: any[] = []
-  private delayedEventStore: any[] = []
   private keys = ['storageActual', 'storageOrder', 'price', 'sales']
   private keys2 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
   constructor(
     public productSvc: ProductService,
     private httpProxy: HttpProxyService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     private categorySvc: CatalogService,
     public attrSvc: AttributeService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, // keep as any is needed
-    _bottomSheetRef: MatBottomSheetRef<ProductComponent>,
-    private changeDecRef: ChangeDetectorRef
+    bottomSheetRef: MatBottomSheetRef<ProductComponent>,
+    cdr: ChangeDetectorRef
   ) {
-    super('product', JSON.parse(JSON.stringify(FORM_CONFIG)), new ProductValidator('product'), _bottomSheetRef, data);
+    super('product', JSON.parse(JSON.stringify(FORM_CONFIG)), new ProductValidator('product'), bottomSheetRef, data,fis,cdr,true);
     this.productBottomSheet = data;
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.prodFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrProdFormId));
@@ -111,17 +109,12 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     this.imgAttrSaleFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleFormId));
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
-    combineLatest([this.categorySvc.readByQuery(0, 1000, 'type:BACKEND'),this.formCreatedOb]).pipe(take(1)).subscribe(next=>{
+    combineLatest([this.categorySvc.readByQuery(0, 1000, 'type:BACKEND'), this.formCreatedOb]).pipe(take(1)).subscribe(next => {
       if (next[0].data) {
         this.catalogs = next[0];
         this.formInfo.inputs[1].options = next[0].data.filter(ee => this.isLeafNode(next[0].data, ee)).map(e => <IOption>{ label: getLayeredLabel(e, next[0].data), value: String(e.id) });
-        this.changeDecRef.markForCheck()
+        this.cdr.markForCheck()
       }
-      let sub0 = this.fis.$eventPub.subscribe(_ => {
-        console.dir(_)
-        this.eventStore.push(_)
-      })
-      this.subs['eventPub'] = sub0;
       if (this.productBottomSheet.context !== 'new') {
         // this.attrSalesFormInfo.disabled = true;
         this.fis.restore(this.formId, this.aggregate);
@@ -163,37 +156,13 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       })
       this.subs[this.formId + '_selectBackendCatalog'] = sub;
       this.subs[this.formId + '_hasSku'] = sub2;
-      //dispatch stored events
-      if (sessionStorage.getItem('eventStore')) {
-        let events: any[] = JSON.parse(sessionStorage.getItem('eventStore'))
-        this.eventStore = events;
-        events.forEach(e => {
-          console.dir('dispatch stored event')
-          if (e.type === 'setvalue') {
-            let e2 = e as ISetValueEvent;
-            if (this.fis.formGroupCollection[e2.formId]) {
-              this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
-            } else {
-              this.delayedEventStore.push(e2);
-            }
-          } else if (e.type === 'addForm') {
-            let e2 = e as IAddDynamicFormEvent;
-            if (this.fis.formGroupCollection_formInfo[e2.formId]) {
-              this.fis.add(e2.formId);
-            } else {
-              this.delayedEventStore.push(e2);
-            }
-          }
-        })
-      }
+      this.resumeFromEventStore()
     })
-    // let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
-    // })
     let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {
       // load attribute first then initialize form
       this.updateFormInfoOptions(next.data);
       this.attrList = next.data;
-      this.changeDecRef.markForCheck() // this is required to initialize all forms
+      this.cdr.markForCheck() // this is required to initialize all forms
       return combineLatest([this.prodFormCreatedOb, this.genFormCreatedOb]).pipe(take(1))
     })).subscribe(() => {
       //sub for image update
@@ -390,6 +359,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   ngOnDestroy(): void {
     Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAll();
+    console.dir(this.eventStore)
     sessionStorage.setItem('eventStore', JSON.stringify(this.eventStore))
   }
   ngOnInit() {
@@ -414,13 +384,13 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
       }
       this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
-      this.changeDecRef.detectChanges();
+      this.cdr.detectChanges();
     })
   }
   private uploadFileCommon(files: FileList, formId: string, ctrlName: string) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
       this.fis.formGroupCollection[formId].get(ctrlName).setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
-      this.changeDecRef.detectChanges();
+      this.cdr.detectChanges();
     })
   }
   public loadAttributes(attr: ICatalog) {
@@ -476,7 +446,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   private updateValueForForm(attrs: string[], formId: string) {
     this.fis.restoreDynamicForm(formId, parseAttributePayload(attrs, this.attrList), attrs.length);
     this.fis.$refresh.next();
-    this.changeDecRef.markForCheck();
+    this.cdr.markForCheck();
   }
   private subChangeForForm(formId: string) {
     if (!this.subs[formId + '_valueChange']) {

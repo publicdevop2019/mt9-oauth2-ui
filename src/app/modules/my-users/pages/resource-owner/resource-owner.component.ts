@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
@@ -18,11 +18,12 @@ export class ResourceOwnerComponent extends AbstractAggregate<ResourceOwnerCompo
   }
   constructor(
     public resourceOwnerService: ResourceOwnerService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>
+    bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>,
+    cdr:ChangeDetectorRef
   ) {
-    super('resourceOwner', JSON.parse(JSON.stringify(FORM_CONFIG)), new UserValidator(), bottomSheetRef,data)
+    super('resourceOwner', JSON.parse(JSON.stringify(FORM_CONFIG)), new UserValidator(), bottomSheetRef,data,fis,cdr)
   }
   ngAfterViewInit(): void {
     if (this.aggregate) {

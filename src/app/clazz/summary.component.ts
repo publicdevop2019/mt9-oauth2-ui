@@ -5,7 +5,7 @@ import { MatBottomSheet, MatBottomSheetConfig } from '@angular/material/bottom-s
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { IEditEvent } from 'src/app/components/editable-field/editable-field.component';
 import { DeviceService } from 'src/app/services/device.service';
@@ -18,6 +18,10 @@ export interface IIdBasedEntity {
   id: number
 }
 export interface IEntityService<C extends IIdBasedEntity, D> {
+  readEventStreamById: (id: number) => Observable<any[]>;
+  saveEventStream: (id: number, events: any[], changeId: string) => void;
+  replaceEventStream: (id: number, events: any[], changeId: string) => void;
+  deleteEventStream: (id: number, changeId: string) => void;
   readById: (id: number) => Observable<D>;
   readByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
   deleteByQuery: (query: string, changeId: string) => void;
@@ -39,6 +43,7 @@ export interface ISumRep<T> {
 export interface IBottomSheet<S> {
   context: 'clone' | 'new' | 'edit';
   from: S;
+  events: any[];
 }
 @Directive()
 export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDestroy {
@@ -79,17 +84,19 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     config.autoFocus = true;
     config.panelClass = 'fix-height'
     if (hasValue(id)) {
-      this.entitySvc.readById(id).subscribe(next => {
+      combineLatest([this.entitySvc.readById(id), this.entitySvc.readEventStreamById(id)]).subscribe(combined => {
         if (clone) {
-          config.data = <IBottomSheet<S>>{ context: 'clone', from: next };
+          config.data = <IBottomSheet<S>>{ context: 'clone', from: combined[0], events: combined[1] || [] };
           this.bottomSheet.open(this.sheetComponent, config);
         } else {
-          config.data = <IBottomSheet<S>>{ context: 'edit', from: next };
+          config.data = <IBottomSheet<S>>{ context: 'edit', from: combined[0], events: combined[1] || [] };
           this.bottomSheet.open(this.sheetComponent, config);
         }
       })
+      this.entitySvc.readById(id).subscribe(next => {
+      })
     } else {
-      config.data = <IBottomSheet<S>>{ context: 'new', from: undefined };
+      config.data = <IBottomSheet<S>>{ context: 'new', from: undefined, events: [] };
       this.bottomSheet.open(this.sheetComponent, config);
     }
   }

@@ -1,8 +1,8 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { IAddDynamicFormEvent, IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
@@ -29,87 +29,34 @@ export class AttributeComponent extends AbstractAggregate<AttributeComponent, IB
   formInfoAttrValue: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
-  private eventStore: any[] = []
-  private delayedEventStore: any[] = []
-  private eventId: number = 0;
-  private getEventId() {
-    let var0 = this.eventId
-    this.eventId++;
-    return var0;
-  }
   constructor(
     public attributeSvc: AttributeService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    bottomSheetRef: MatBottomSheetRef<AttributeComponent>
+    bottomSheetRef: MatBottomSheetRef<AttributeComponent>,
+    cdr:ChangeDetectorRef
   ) {
-    super('attributes', JSON.parse(JSON.stringify(FORM_CONFIG)), new AttributeValidator(), bottomSheetRef, data);
+    super('attributes', JSON.parse(JSON.stringify(FORM_CONFIG)), new AttributeValidator(), bottomSheetRef, data,fis,cdr);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
     combineLatest([this.formCreatedOb]).pipe(take(1)).subscribe(() => {
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
         this.manualSelect = next === 'SELECT';
       });
-      //dispatch stored events
-      if (sessionStorage.getItem('eventStore')) {
-        let events: any[] = JSON.parse(sessionStorage.getItem('eventStore'))
-        this.eventStore = events;
-        events.forEach(e => {
-          console.dir('dispatch stored event')
-          if (e.type === 'setvalue') {
-            let e2 = e as ISetValueEvent;
-            if (this.fis.formGroupCollection[e2.formId]) {
-              this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
-            } else {
-              this.delayedEventStore.push(e2);
-            }
-          } else if (e.type === 'addForm') {
-            let e2 = e as IAddDynamicFormEvent;
-            if (this.fis.formGroupCollection_formInfo[e2.formId]) {
-              this.fis.add(e2.formId);
-            } else {
-              this.delayedEventStore.push(e2);
-            }
-          }
-        })
-      }
-      let sub=this.fis.$eventPub.subscribe(_ => {
-        console.dir(_)
-        this.eventStore.push(_)
-      })
-      this.subs['eventPub']=sub;
-      combineLatest([this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
-        this.delayedEventStore.forEach(e => {
-          console.dir('dispatch stored delay event')
-          if (e.type === 'setvalue') {
-            let e2 = e as ISetValueEvent;
-            if (this.fis.formGroupCollection[e2.formId]) {
-              this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
-            } else {
-              this.delayedEventStore.push(e2);
-            }
-          } else if (e.type === 'addForm') {
-            let e2 = e as IAddDynamicFormEvent;
-            this.fis.add(e2.formId);
-          }
-        })
-      })
-      if (this.aggregate) {
-        this.fis.restore(this.formId, this.aggregate);
-        combineLatest([this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
-          if (this.aggregate.selectValues && this.aggregate.selectValues.length !== 0) {
-            this.fis.restoreDynamicForm(this.formIdAttrValue, this.fis.parsePayloadArr(this.aggregate.selectValues, 'attrValue'), this.aggregate.selectValues.length)
-          }
-        })
-      }
+      // if (this.aggregate) {
+      //   this.fis.restore(this.formId, this.aggregate);
+      //   combineLatest([this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
+      //     if (this.aggregate.selectValues && this.aggregate.selectValues.length !== 0) {
+      //       this.fis.restoreDynamicForm(this.formIdAttrValue, this.fis.parsePayloadArr(this.aggregate.selectValues, 'attrValue'), this.aggregate.selectValues.length)
+      //     }
+      //   })
+      // }
     })
   }
 
   ngOnDestroy(): void {
     Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAll();
-    sessionStorage.setItem('eventStore', JSON.stringify(this.eventStore))
-    sessionStorage.setItem('eventId', this.eventId + '')
   }
   ngOnInit() {
   }

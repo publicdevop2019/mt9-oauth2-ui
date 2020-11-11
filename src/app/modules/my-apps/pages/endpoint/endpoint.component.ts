@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
@@ -12,20 +12,21 @@ import { EndpointService } from 'src/app/services/endpoint.service';
   templateUrl: './endpoint.component.html',
   styleUrls: ['./endpoint.component.css']
 })
-export class EndpointComponent extends AbstractAggregate<EndpointComponent,IEndpoint> implements OnInit, AfterViewInit, OnDestroy {
+export class EndpointComponent extends AbstractAggregate<EndpointComponent, IEndpoint> implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public endpointSvc: EndpointService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    bottomSheetRef: MatBottomSheetRef<EndpointComponent>
+    bottomSheetRef: MatBottomSheetRef<EndpointComponent>,
+    cdr: ChangeDetectorRef
   ) {
-    super('securityProfile',JSON.parse(JSON.stringify(FORM_CONFIG)),new EndpointValidator(),bottomSheetRef,data)
+    super('securityProfile', JSON.parse(JSON.stringify(FORM_CONFIG)), new EndpointValidator(), bottomSheetRef, data, fis, cdr)
   }
   ngOnDestroy(): void {
     this.fis.resetAll();
   }
   ngAfterViewInit(): void {
-    if (this.aggregate) {
+    if (this.aggregate && this.eventStore.length === 0) {
       this.fis.restore(this.formId, this.aggregate)
     }
     else {
@@ -38,7 +39,7 @@ export class EndpointComponent extends AbstractAggregate<EndpointComponent,IEndp
     let formGroup = endpointCmpt.fis.formGroupCollection[endpointCmpt.formId];
     return {
       id: formGroup.get('id').value,
-      description: formGroup.get('description').value?formGroup.get('description').value:null,
+      description: formGroup.get('description').value ? formGroup.get('description').value : null,
       resourceId: formGroup.get('resourceId').value,
       path: formGroup.get('path').value,
       method: formGroup.get('method').value,
@@ -47,11 +48,11 @@ export class EndpointComponent extends AbstractAggregate<EndpointComponent,IEndp
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootUpdateEndpointCommandValidator', this.fis, this, this.errorMapper))
-      this.endpointSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.endpointSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId, this.eventStore)
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootCreateEndpointCommandValidator', this.fis, this, this.errorMapper))
-      this.endpointSvc.create(this.convertToPayload(this), this.changeId)
+      this.endpointSvc.create(this.convertToPayload(this), this.changeId, this.eventStore)
   }
   errorMapper(original: ErrorMessage[], cmpt: EndpointComponent) {
     return original.map(e => {

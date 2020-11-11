@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angula
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
@@ -27,72 +27,26 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   attrList: IBizAttribute[];
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
-  private eventStore: any[] = []
-  private delayedEventStore: any[] = []
   constructor(
     public entitySvc: CatalogService,
-    private fis: FormInfoService,
     public attrSvc: AttributeService,
-    private changeDecRef: ChangeDetectorRef,
+    fis: FormInfoService,
+    cdr: ChangeDetectorRef,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
-    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data);
+    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data,fis,cdr);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
     let sub1 = combineLatest([this.formCreatedOb, this.attrSvc.readByQuery(0, 1000)]).pipe(take(1)).pipe(switchMap(next => {
       this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: e.id });//update formInfo first then initialize form, so add template can be correct
       this.attrList = next[1].data;
-      this.changeDecRef.markForCheck();//refresh view for create
+      this.cdr.markForCheck();//refresh view for create
       this.subForCatalogTypeChange(true);
-
-      //dispatch stored events
-      if (sessionStorage.getItem('eventStore')) {
-        let events: any[] = JSON.parse(sessionStorage.getItem('eventStore'))
-        this.eventStore = events;
-        events.forEach(e => {
-          console.dir('dispatch stored event')
-          if (e.type === 'setvalue') {
-            let e2 = e as ISetValueEvent;
-            if (this.fis.formGroupCollection[e2.formId]) {
-              this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
-            } else {
-              this.delayedEventStore.push(e2);
-            }
-          } else if (e.type === 'addForm') {
-            let e2 = e as IAddDynamicFormEvent;
-            if (this.fis.formGroupCollection_formInfo[e2.formId]) {
-              this.fis.add(e2.formId);
-            } else {
-              this.delayedEventStore.push(e2);
-            }
-          }
-        })
-      }
-      let sub = this.fis.$eventPub.subscribe(_ => {
-        console.dir(_)
-        this.eventStore.push(_)
-      })
-      this.subs['eventPub'] = sub;
-
       return this.attrFormCreatedOb
     })).subscribe(() => {
       this.subForAttrFormChange();
-      this.delayedEventStore.forEach(e => {
-        console.dir('dispatch stored delay event')
-        if (e.type === 'setvalue') {
-          let e2 = e as ISetValueEvent;
-          if (this.fis.formGroupCollection[e2.formId]) {
-            this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
-          } else {
-            this.delayedEventStore.push(e2);
-          }
-        } else if (e.type === 'addForm') {
-          let e2 = e as IAddDynamicFormEvent;
-          this.fis.add(e2.formId);
-        }
-      })
       if (this.aggregate) {
         this.fis.restore(this.formId, this.aggregate);
       }
@@ -100,7 +54,7 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
         this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, this.attrList), this.aggregate.attributes.length);
       }
       this.fis.$refresh.next();
-      this.changeDecRef.markForCheck();
+      this.cdr.markForCheck();
     })
     this.subs['combineLatest'] = sub1;
   }
@@ -115,12 +69,12 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
       }
       catalogOb.subscribe(next1 => {
         this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })
-        this.changeDecRef.markForCheck();
+        this.cdr.markForCheck();
       })
       if (!skipReset) {
         this.fis.formGroupCollection[this.formId].get('parentId').reset();
       }
-      this.changeDecRef.markForCheck();
+      this.cdr.markForCheck();
     });
     this.subs['catalogTypeChange'] = sub3;
   }
@@ -143,6 +97,7 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   ngOnDestroy(): void {
     Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAllExcept(['summaryCatalogCustomerView'])
+    console.dir(this.eventStore)
     sessionStorage.setItem('eventStore', JSON.stringify(this.eventStore))
   }
   ngOnInit() {

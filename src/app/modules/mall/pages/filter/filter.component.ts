@@ -38,14 +38,14 @@ export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilte
   catalogChunkSize: number = 100;
   constructor(
     public filterSvc: FilterService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<FilterComponent>,
     private categorySvc: CatalogService,
-    private cdr: ChangeDetectorRef,
+    cdr: ChangeDetectorRef,
     public attrSvc: AttributeService,
   ) {
-    super('filters',JSON.parse(JSON.stringify(FORM_CONFIG)),new FilterValidator(),bottomSheetRef,data);
+    super('filters',JSON.parse(JSON.stringify(FORM_CONFIG)),new FilterValidator(),bottomSheetRef,data,fis,cdr);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.catalogFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdCatalog));
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
