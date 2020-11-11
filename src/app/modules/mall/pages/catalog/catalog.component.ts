@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
@@ -27,6 +27,8 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   attrList: IBizAttribute[];
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
+  private eventStore: any[] = []
+  private delayedEventStore: any[] = []
   constructor(
     public entitySvc: CatalogService,
     private fis: FormInfoService,
@@ -35,7 +37,7 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
-    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef,data);
+    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
@@ -44,12 +46,56 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
       this.attrList = next[1].data;
       this.changeDecRef.markForCheck();//refresh view for create
       this.subForCatalogTypeChange(true);
-      if (this.aggregate) {
-        this.fis.restore(this.formId, this.aggregate);
+
+      //dispatch stored events
+      if (sessionStorage.getItem('eventStore')) {
+        let events: any[] = JSON.parse(sessionStorage.getItem('eventStore'))
+        this.eventStore = events;
+        events.forEach(e => {
+          console.dir('dispatch stored event')
+          if (e.type === 'setvalue') {
+            let e2 = e as ISetValueEvent;
+            if (this.fis.formGroupCollection[e2.formId]) {
+              this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
+            } else {
+              this.delayedEventStore.push(e2);
+            }
+          } else if (e.type === 'addForm') {
+            let e2 = e as IAddDynamicFormEvent;
+            if (this.fis.formGroupCollection_formInfo[e2.formId]) {
+              this.fis.add(e2.formId);
+            } else {
+              this.delayedEventStore.push(e2);
+            }
+          }
+        })
       }
+      let sub = this.fis.$eventPub.subscribe(_ => {
+        console.dir(_)
+        this.eventStore.push(_)
+      })
+      this.subs['eventPub'] = sub;
+
       return this.attrFormCreatedOb
     })).subscribe(() => {
       this.subForAttrFormChange();
+      this.delayedEventStore.forEach(e => {
+        console.dir('dispatch stored delay event')
+        if (e.type === 'setvalue') {
+          let e2 = e as ISetValueEvent;
+          if (this.fis.formGroupCollection[e2.formId]) {
+            this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
+          } else {
+            this.delayedEventStore.push(e2);
+          }
+        } else if (e.type === 'addForm') {
+          let e2 = e as IAddDynamicFormEvent;
+          this.fis.add(e2.formId);
+        }
+      })
+      if (this.aggregate) {
+        this.fis.restore(this.formId, this.aggregate);
+      }
       if (this.aggregate && this.aggregate.attributes) {
         this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, this.attrList), this.aggregate.attributes.length);
       }
@@ -97,6 +143,7 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   ngOnDestroy(): void {
     Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAllExcept(['summaryCatalogCustomerView'])
+    sessionStorage.setItem('eventStore', JSON.stringify(this.eventStore))
   }
   ngOnInit() {
   }

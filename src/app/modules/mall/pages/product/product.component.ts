@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
@@ -88,6 +88,8 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   private salesFormIdTempFormCreatedOb: Observable<string>;
   private imageAttrSaleChildFormCreatedOb: Observable<string>;
   public hasSku: boolean = false;
+  private eventStore: any[] = []
+  private delayedEventStore: any[] = []
   private keys = ['storageActual', 'storageOrder', 'price', 'sales']
   private keys2 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
   constructor(
@@ -109,7 +111,17 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     this.imgAttrSaleFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleFormId));
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
-    let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
+    combineLatest([this.categorySvc.readByQuery(0, 1000, 'type:BACKEND'),this.formCreatedOb]).pipe(take(1)).subscribe(next=>{
+      if (next[0].data) {
+        this.catalogs = next[0];
+        this.formInfo.inputs[1].options = next[0].data.filter(ee => this.isLeafNode(next[0].data, ee)).map(e => <IOption>{ label: getLayeredLabel(e, next[0].data), value: String(e.id) });
+        this.changeDecRef.markForCheck()
+      }
+      let sub0 = this.fis.$eventPub.subscribe(_ => {
+        console.dir(_)
+        this.eventStore.push(_)
+      })
+      this.subs['eventPub'] = sub0;
       if (this.productBottomSheet.context !== 'new') {
         // this.attrSalesFormInfo.disabled = true;
         this.fis.restore(this.formId, this.aggregate);
@@ -151,7 +163,32 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       })
       this.subs[this.formId + '_selectBackendCatalog'] = sub;
       this.subs[this.formId + '_hasSku'] = sub2;
+      //dispatch stored events
+      if (sessionStorage.getItem('eventStore')) {
+        let events: any[] = JSON.parse(sessionStorage.getItem('eventStore'))
+        this.eventStore = events;
+        events.forEach(e => {
+          console.dir('dispatch stored event')
+          if (e.type === 'setvalue') {
+            let e2 = e as ISetValueEvent;
+            if (this.fis.formGroupCollection[e2.formId]) {
+              this.fis.formGroupCollection[e2.formId].get(e2.key).setValue(e2.value)
+            } else {
+              this.delayedEventStore.push(e2);
+            }
+          } else if (e.type === 'addForm') {
+            let e2 = e as IAddDynamicFormEvent;
+            if (this.fis.formGroupCollection_formInfo[e2.formId]) {
+              this.fis.add(e2.formId);
+            } else {
+              this.delayedEventStore.push(e2);
+            }
+          }
+        })
+      }
     })
+    // let sub0 = this.formCreatedOb.pipe(take(1)).subscribe(() => {
+    // })
     let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {
       // load attribute first then initialize form
       this.updateFormInfoOptions(next.data);
@@ -263,7 +300,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       this.subs['imageUrlSmallFile_valueChange'] = sub3;
     })
     this.subs['getAttributeList_http'] = sub1;
-    this.subs[this.formId + '_formCreate'] = sub0;
+    // this.subs[this.formId + '_formCreate'] = sub0;
   }
   getTime(arg0: Date): string {
     let hour = arg0.getUTCHours() + '';
@@ -353,16 +390,10 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   ngOnDestroy(): void {
     Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAll();
+    sessionStorage.setItem('eventStore', JSON.stringify(this.eventStore))
   }
   ngOnInit() {
-    this.categorySvc.readByQuery(0, 1000, 'type:BACKEND')
-      .subscribe(next => {
-        if (next.data) {
-          this.catalogs = next;
-          this.formInfo.inputs[1].options = next.data.filter(ee => this.isLeafNode(next.data, ee)).map(e => <IOption>{ label: getLayeredLabel(e, next.data), value: String(e.id) });
-          this.changeDecRef.markForCheck()
-        }
-      });
+
   }
   private isLeafNode(catalogs: ICatalog[], catalog: ICatalog): boolean {
     return catalogs.filter(node => node.parentId === catalog.id).length == 0
