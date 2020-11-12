@@ -164,19 +164,19 @@ export class ProductValidator extends IAggregateValidator {
                 }
                 if (notNullOrUndefined(e.decreaseActualStorage)) {
                     NumberValidator.isInteger(e.decreaseActualStorage, results, index + '_decreaseActualStorage')
-                    NumberValidator.greaterThan(e.decreaseActualStorage, 0, results, index + '_decreaseActualStorage')
+                    NumberValidator.greaterThanOrEqualTo(e.decreaseActualStorage, 0, results, index + '_decreaseActualStorage')
                 }
                 if (notNullOrUndefined(e.decreaseOrderStorage)) {
                     NumberValidator.isInteger(e.decreaseOrderStorage, results, index + '_decreaseOrderStorage')
-                    NumberValidator.greaterThan(e.decreaseOrderStorage, 0, results, index + '_decreaseOrderStorage')
+                    NumberValidator.greaterThanOrEqualTo(e.decreaseOrderStorage, 0, results, index + '_decreaseOrderStorage')
                 }
                 if (notNullOrUndefined(e.increaseActualStorage)) {
                     NumberValidator.isInteger(e.increaseActualStorage, results, index + '_increaseActualStorage')
-                    NumberValidator.greaterThan(e.increaseActualStorage, 0, results, index + '_increaseActualStorage')
+                    NumberValidator.greaterThanOrEqualTo(e.increaseActualStorage, 0, results, index + '_increaseActualStorage')
                 }
                 if (notNullOrUndefined(e.increaseOrderStorage)) {
                     NumberValidator.isInteger(e.increaseOrderStorage, results, index + '_increaseOrderStorage')
-                    NumberValidator.greaterThan(e.increaseOrderStorage, 0, results, index + '_increaseOrderStorage')
+                    NumberValidator.greaterThanOrEqualTo(e.increaseOrderStorage, 0, results, index + '_increaseOrderStorage')
                 }
             })
 

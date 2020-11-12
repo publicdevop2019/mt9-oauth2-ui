@@ -116,25 +116,24 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         this.cdr.markForCheck()
       }
       if (this.productBottomSheet.context !== 'new' && this.eventStore.length === 0) {
-        // this.attrSalesFormInfo.disabled = true;
         this.fis.restore(this.formId, this.aggregate);
-        this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.aggregate.startAt ? new Date(this.aggregate.startAt) : '')
-        this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.aggregate.startAt ? this.getTime(new Date(this.aggregate.startAt)) : '')
-        this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(this.aggregate.endAt ? new Date(this.aggregate.endAt) : '')
-        this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.aggregate.endAt ? this.getTime(new Date(this.aggregate.endAt)) : '')
+        this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.aggregate.startAt ? new Date(this.aggregate.startAt) : '', { emitEvent: false })
+        this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.aggregate.startAt ? this.getTime(new Date(this.aggregate.startAt)) : '', { emitEvent: false })
+        this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(this.aggregate.endAt ? new Date(this.aggregate.endAt) : '', { emitEvent: false })
+        this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.aggregate.endAt ? this.getTime(new Date(this.aggregate.endAt)) : '', { emitEvent: false })
         this.formInfo.inputs.find(e => e.key === 'status').display = false;
         this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
         this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
       } else {
         let sub = this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
           if (next === 'AVAILABLE') {
-            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(new Date())
-            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('00:00:00')
+            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(new Date(), { emitEvent: false })
+            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('00:00:00', { emitEvent: false })
             this.formInfo.inputs.find(e => e.key === 'startAtDate').display = false;
             this.formInfo.inputs.find(e => e.key === 'startAtTime').display = false;
           } else {
-            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(null)
-            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('')
+            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(null, { emitEvent: false })
+            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('', { emitEvent: false })
             this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
             this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
           }
@@ -266,8 +265,12 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       })
       this.subChangeForForm(this.attrProdFormId);
       this.subChangeForForm(this.attrGeneralFormId);
-
-      let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmall').valueChanges.subscribe((next) => { this.uploadFile(next) })
+      let sub3 = this.fis.$uploadFile.subscribe(next => {
+        if (next.key === 'imageUrlSmall') {
+          this.uploadFile(next.files)
+        }
+      })
+      // let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmall').valueChanges.subscribe((next) => { this.uploadFile(next) })
       this.subs['imageUrlSmallFile_valueChange'] = sub3;
     })
     this.subs['getAttributeList_http'] = sub1;
@@ -379,9 +382,9 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   private uploadFile(files: FileList) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
       if (next.includes('http')) {
-        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next, { emitEvent: false })
+        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
       } else {
-        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
+        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next)
       }
       this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
       this.cdr.detectChanges();
@@ -401,7 +404,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       attr = this.catalogs.data.find(e => e.id === nextId);
       tags.push(...attr.attributes);
     }
-    this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(tags);
+    this.fis.formGroupCollection[this.formId].get('attributesKey').setValue(tags, { emitEvent: false });
   }
   private hasAttr(formId: string): boolean {
     let attrFormValue = this.fis.formGroupCollection[formId].value;
@@ -510,13 +513,13 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
           && this.requiredInput('hasSku', this.formId)
           && this.checkInputs()
         ) {
-          this.productSvc.create(this.convertToPayload(this), this.changeId,this.eventStore);
+          this.productSvc.create(this.convertToPayload(this), this.changeId, this.eventStore);
         }
       } else {
         if (this.requiredInput('status', this.formId)
           && this.requiredInput('hasSku', this.formId)
         ) {
-          this.productSvc.create(this.convertToPayload(this), this.changeId,this.eventStore);
+          this.productSvc.create(this.convertToPayload(this), this.changeId, this.eventStore);
         }
       }
     }
@@ -652,7 +655,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateProductCommandValidator', this.fis, this, this.errorMapper))
-      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
+      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore)
   }
   previewFlag: boolean = false;
   doPreview() {
@@ -763,8 +766,8 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         var1.decreaseOrderStorage = +formGroup.get('storage_OrderDecreaseBy').value
         var1.increaseActualStorage = +formGroup.get('storage_ActualIncreaseBy').value
         var1.decreaseActualStorage = +formGroup.get('storage_ActualDecreaseBy').value
-        var1.price = formGroup.get('price').value;
-        var1.sales = formGroup.get('sales').value;
+        var1.price = +formGroup.get('price').value;
+        var1.sales = +formGroup.get('sales').value;
         skusCalc.push(var1)
       }
     }
