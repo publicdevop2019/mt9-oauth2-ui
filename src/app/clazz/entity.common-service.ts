@@ -50,30 +50,20 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
             });
         })
     };
-    create(s: D, changeId: string, events?: any[]) {
+    create(s: D, changeId: string, events: any[]) {
         this.httpProxySvc.createEntity(this.entityRepo, this.role, s, changeId).subscribe(next => {
-            if (events) {
-                this.saveEventStream(+next, events, changeId).subscribe(var0 => {
-                    this.notify(!!var0)
-                    this.refreshSummary.next();
-                });
-            } else {
-                this.notify(!!next)
+            this.saveEventStream(+next, events, changeId).subscribe(var0 => {
+                this.notify(!!var0)
                 this.refreshSummary.next();
-            }
+            });
         });
     };
-    update(id: number, s: D, changeId: string, events?: any[]) {
+    update(id: number, s: D, changeId: string, events: any[]) {
         this.httpProxySvc.updateEntity(this.entityRepo, this.role, id, s, changeId).subscribe(next => {
-            if (events) {
-                this.replaceEventStream(id, events, changeId).subscribe(var0 => {
-                    this.notify(!!var0)
-                    this.refreshSummary.next();
-                });
-            } else {
-                this.notify(next)
+            this.replaceEventStream(id, events, changeId).subscribe(var0 => {
+                this.notify(!!var0)
                 this.refreshSummary.next();
-            }
+            });
         })
     };
     patch(id: number, event: IEditEvent, changeId: string, fieldName: string) {

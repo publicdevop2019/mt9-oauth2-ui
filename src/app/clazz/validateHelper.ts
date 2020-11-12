@@ -11,7 +11,7 @@ export class ValidatorHelper {
     console.dir('[DEV ONLY] validate target')
     console.dir(getPayload(cmpt))
     let errors = validator.validate(getPayload(cmpt), context);
-    if (errors.length > 0) {
+    if (errors && errors.length > 0) {
       let uniqueError: ErrorMessage[] = []
       errors.forEach(e => {
         if (uniqueError.some(ee => ee.key === e.key && ee.formId === e.formId)) {

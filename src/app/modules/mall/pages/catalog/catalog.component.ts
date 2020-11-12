@@ -35,7 +35,7 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
-    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data,fis,cdr);
+    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data,fis,cdr,true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
@@ -47,11 +47,12 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
       return this.attrFormCreatedOb
     })).subscribe(() => {
       this.subForAttrFormChange();
-      if (this.aggregate) {
+      this.resumeFromEventStore();
+      if (this.aggregate && this.eventStore.length === 0) {
         this.fis.restore(this.formId, this.aggregate);
-      }
-      if (this.aggregate && this.aggregate.attributes) {
-        this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, this.attrList), this.aggregate.attributes.length);
+        if (this.aggregate && this.aggregate.attributes) {
+          this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, this.attrList), this.aggregate.attributes.length);
+        }
       }
       this.fis.$refresh.next();
       this.cdr.markForCheck();
@@ -97,8 +98,6 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   ngOnDestroy(): void {
     Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
     this.fis.resetAllExcept(['summaryCatalogCustomerView'])
-    console.dir(this.eventStore)
-    sessionStorage.setItem('eventStore', JSON.stringify(this.eventStore))
   }
   ngOnInit() {
   }
@@ -114,11 +113,11 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateCatalogCommandValidator', this.fis, this, this.errorMapper))
-      this.entitySvc.create(this.convertToPayload(this), this.changeId)
+      this.entitySvc.create(this.convertToPayload(this), this.changeId,this.eventStore)
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateCatalogCommandValidator', this.fis, this, this.errorMapper))
-      this.entitySvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.entitySvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
   }
 
   errorMapper(original: ErrorMessage[], cmpt: CatalogComponent) {

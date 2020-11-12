@@ -43,14 +43,14 @@ export class AttributeComponent extends AbstractAggregate<AttributeComponent, IB
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
         this.manualSelect = next === 'SELECT';
       });
-      // if (this.aggregate) {
-      //   this.fis.restore(this.formId, this.aggregate);
-      //   combineLatest([this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
-      //     if (this.aggregate.selectValues && this.aggregate.selectValues.length !== 0) {
-      //       this.fis.restoreDynamicForm(this.formIdAttrValue, this.fis.parsePayloadArr(this.aggregate.selectValues, 'attrValue'), this.aggregate.selectValues.length)
-      //     }
-      //   })
-      // }
+      if (this.aggregate && this.eventStore.length === 0) {
+        this.fis.restore(this.formId, this.aggregate);
+        combineLatest([this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
+          if (this.aggregate.selectValues && this.aggregate.selectValues.length !== 0) {
+            this.fis.restoreDynamicForm(this.formIdAttrValue, this.fis.parsePayloadArr(this.aggregate.selectValues, 'attrValue'), this.aggregate.selectValues.length)
+          }
+        })
+      }
     })
   }
 
@@ -78,11 +78,11 @@ export class AttributeComponent extends AbstractAggregate<AttributeComponent, IB
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateAttributeCommandValidator', this.fis, this, this.errorMapper))
-      this.attributeSvc.create(this.convertToPayload(this), this.changeId)
+      this.attributeSvc.create(this.convertToPayload(this), this.changeId,this.eventStore)
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateAttributeCommandValidator', this.fis, this, this.errorMapper))
-      this.attributeSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.attributeSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
   }
 
   errorMapper(original: ErrorMessage[], cmpt: AttributeComponent) {

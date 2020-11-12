@@ -26,7 +26,7 @@ export class ResourceOwnerComponent extends AbstractAggregate<ResourceOwnerCompo
     super('resourceOwner', JSON.parse(JSON.stringify(FORM_CONFIG)), new UserValidator(), bottomSheetRef,data,fis,cdr)
   }
   ngAfterViewInit(): void {
-    if (this.aggregate) {
+    if (this.aggregate && this.eventStore.length === 0) {
       this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id)
       this.fis.formGroupCollection[this.formId].get('email').setValue(this.aggregate.email)
       this.fis.formGroupCollection[this.formId].get('authority').setValue(this.aggregate.grantedAuthorities)
@@ -54,7 +54,7 @@ export class ResourceOwnerComponent extends AbstractAggregate<ResourceOwnerCompo
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateUserCommandValidator', this.fis, this, this.errorMapper))
-      this.resourceOwnerService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.resourceOwnerService.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
   }
   errorMapper(original: ErrorMessage[], cmpt: ResourceOwnerComponent) {
     return original.map(e => {

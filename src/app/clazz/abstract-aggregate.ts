@@ -43,7 +43,6 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
             this.resumeFromEventStore();
         }
         let sub = fis.$eventPub.subscribe(_ => {
-            console.dir(_)
             this.eventStore.push(_)
         })
         this.subs['eventPub'] = sub;

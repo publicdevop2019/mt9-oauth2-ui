@@ -26,8 +26,8 @@ export interface IEntityService<C extends IIdBasedEntity, D> {
   readByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
   deleteByQuery: (query: string, changeId: string) => void;
   deleteById: (id: number, changeId: string) => void;
-  create: (s: D, changeId: string) => void;
-  update: (id: number, s: D, changeId: string) => void;
+  create: (s: D, changeId: string,events:any[]) => void;
+  update: (id: number, s: D, changeId: string,events:any[]) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchAtomicNum: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;

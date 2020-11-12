@@ -31,12 +31,12 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
     bottomSheetRef: MatBottomSheetRef<ClientComponent>,
     cdr: ChangeDetectorRef
   ) {
-    super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef,data,fis,cdr);
+    super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef, data, fis, cdr,true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
       this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
-      this.fis.formGroupCollection[this.formId].patchValue({ resourceId: [] })// keep to trigger checkbox change detect
+      this.fis.formGroupCollection[this.formId].patchValue({ resourceId: [] }, { emitEvent: false })// keep to trigger checkbox change detect
       this.cdr.markForCheck();
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         // prevent infinite loop
@@ -51,7 +51,8 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
         this.previousPayload = e;
         // update form config
       });
-      if (this.aggregate) {
+      this.resumeFromEventStore();
+      if (this.aggregate && this.eventStore.length === 0) {
         const grantType: string = this.aggregate.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
         this.fis.formGroupCollection[this.formId].patchValue({
           id: this.aggregate.id,
@@ -113,25 +114,13 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
       autoApprove: formGroup.get('grantType').value === grantTypeEnums.authorization_code ? !!formGroup.get('autoApprove').value : null
     }
   }
-
-  private findDelta(newPayload: any): string {
-    const changeKeys: string[] = [];
-    for (const p in newPayload) {
-      if (this.previousPayload[p] === newPayload[p] ||
-        JSON.stringify(this.previousPayload[p]) === JSON.stringify(newPayload[p])) {
-      } else {
-        changeKeys.push(p as string);
-      }
-    }
-    return changeKeys[0];
-  }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootUpdateClientCommandValidator', this.fis, this, this.errorMapper))
-      this.clientService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.clientService.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore)
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootCreateClientCommandValidator', this.fis, this, this.errorMapper))
-      this.clientService.create(this.convertToPayload(this), this.changeId)
+      this.clientService.create(this.convertToPayload(this), this.changeId, this.eventStore)
   }
   errorMapper(original: ErrorMessage[], cmpt: ClientComponent) {
     return original.map(e => {
@@ -166,5 +155,17 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
         }
       }
     })
+  }
+
+  private findDelta(newPayload: any): string {
+    const changeKeys: string[] = [];
+    for (const p in newPayload) {
+      if (this.previousPayload[p] === newPayload[p] ||
+        JSON.stringify(this.previousPayload[p]) === JSON.stringify(newPayload[p])) {
+      } else {
+        changeKeys.push(p as string);
+      }
+    }
+    return changeKeys[0];
   }
 }
