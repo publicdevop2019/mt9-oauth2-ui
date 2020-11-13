@@ -329,6 +329,14 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     formInfo.inputs.forEach(e => e.disabled = true);
     formInfo.disabled = true;
   }
+  private updateValueForForm(attrs: string[], formId: string) {
+    this.fis.restoreDynamicForm(formId, parseAttributePayload(attrs, this.attrList), attrs.length);
+    this.fis.$refresh.next();
+    this.cdr.markForCheck();
+  }
+  private _hasEmptyAttrSales(e: ISku): boolean {
+    return e.attributesSales.length === 0 || (e.attributesSales.length === 1 && e.attributesSales[0] === '')
+  }
   /**
    * @description update formInfo first then initialize form, so add template can be correct
    * @param attrs 
@@ -416,11 +424,6 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     if (attrFormValue)
       return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).filter(idKey => attrFormValue[idKey]).length > 0;
     return false;
-  }
-  private updateValueForForm(attrs: string[], formId: string) {
-    this.fis.restoreDynamicForm(formId, parseAttributePayload(attrs, this.attrList), attrs.length);
-    this.fis.$refresh.next();
-    this.cdr.markForCheck();
   }
   private _subChangeForForm(formId: string) {
     if (!this.subs[formId + '_valueChange']) {
@@ -771,8 +774,5 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       startAt: formGroup.get('startAtDate').value ? cmpt._parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
       attributeSaleImages: attrSaleImages,
     }
-  }
-  private _hasEmptyAttrSales(e: ISku): boolean {
-    return e.attributesSales.length === 0 || (e.attributesSales.length === 1 && e.attributesSales[0] === '')
   }
 }
