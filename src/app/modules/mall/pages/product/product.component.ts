@@ -49,19 +49,6 @@ interface IProductDetailPublic extends IProductSimplePublic {
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent extends AbstractAggregate<ProductComponent, IProductDetail> implements OnInit, OnDestroy {
-  subForFileUpload(formId: string) {
-    let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
-      Object.keys(next).forEach(key => {
-        if (typeof next[key] !== 'string') {
-          this.uploadFileCommon((next[key] as FileList), formId, key)
-        }
-      })
-    });
-    this.subs[formId + '_valueChanges'] = sub;
-  }
-  hasEmptyAttrSales(e: ISku): boolean {
-    return e.attributesSales.length === 0 || (e.attributesSales.length === 1 && e.attributesSales[0] === '')
-  }
   productBottomSheet: IBottomSheet<IProductDetail>;
   salesFormIdTempId = 'attrSalesFormChild';
   attrProdFormId = 'attributesProd';
@@ -118,9 +105,9 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       if (this.productBottomSheet.context !== 'new' && this.eventStore.length === 0) {
         this.fis.restore(this.formId, this.aggregate);
         this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.aggregate.startAt ? new Date(this.aggregate.startAt) : '', { emitEvent: false })
-        this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.aggregate.startAt ? this.getTime(new Date(this.aggregate.startAt)) : '', { emitEvent: false })
+        this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.aggregate.startAt ? this._getTime(new Date(this.aggregate.startAt)) : '', { emitEvent: false })
         this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(this.aggregate.endAt ? new Date(this.aggregate.endAt) : '', { emitEvent: false })
-        this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.aggregate.endAt ? this.getTime(new Date(this.aggregate.endAt)) : '', { emitEvent: false })
+        this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.aggregate.endAt ? this._getTime(new Date(this.aggregate.endAt)) : '', { emitEvent: false })
         this.formInfo.inputs.find(e => e.key === 'status').display = false;
         this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
         this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
@@ -159,36 +146,34 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     })
     let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {
       // load attribute first then initialize form
-      this.updateFormInfoOptions(next.data);
+      this._updateFormInfoOptions(next.data);
       this.attrList = next.data;
       this.cdr.markForCheck() // this is required to initialize all forms
       return combineLatest([this.prodFormCreatedOb, this.genFormCreatedOb]).pipe(take(1))
     })).subscribe(() => {
-      //sub for image update
-      this.subForFileUpload(this.imageFormId);
       if (this.productBottomSheet.context === 'new') {
         let sub = this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
-          this.subChangeForForm(this.salesFormIdTempId);
+          this._subChangeForForm(this.salesFormIdTempId);
         })
         this.subs[this.formId + '_salesFormIdTempFormCreatedOb'] = sub;
       } else {
         if (this.eventStore.length === 0) {
           if (this.aggregate.attributesProd) {
-            this.subChangeForForm(this.attrProdFormId);
+            this._subChangeForForm(this.attrProdFormId);
             this.updateValueForForm(this.aggregate.attributesProd, this.attrProdFormId);
           }
           if (this.aggregate.attributesGen) {
-            this.subChangeForForm(this.attrGeneralFormId);
+            this._subChangeForForm(this.attrGeneralFormId);
             this.updateValueForForm(this.aggregate.attributesGen, this.attrGeneralFormId);
           }
-          if (this.aggregate.skus.filter(e => this.hasEmptyAttrSales(e)).length === 0) {
+          if (this.aggregate.skus.filter(e => this._hasEmptyAttrSales(e)).length === 0) {
             // use sku form
             this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.aggregate.skus))
             this.fis.formGroupCollection[this.formId].get('hasSku').setValue('YES', { emitEvent: false });
             this.hasSku = true;
             this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = false);
             this.salesFormCreatedOb.pipe(take(1)).subscribe(() => {
-              this.updateAndSubSalesForm(this.aggregate.skus);
+              this._updateAndSubSalesForm(this.aggregate.skus);
             });
           } else {
             // use no sku form
@@ -196,8 +181,8 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
             this.hasSku = false;
             this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = true);
             this.fis.restore(this.formId, this.aggregate.skus[0]);
-            this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.formId]);
-            this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.formId]);
+            this._disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.formId]);
+            this._displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.formId]);
             this.fis.$refresh.next();
           }
           if (this.aggregate.imageUrlLarge && this.aggregate.imageUrlLarge.length !== 0) {
@@ -209,13 +194,13 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
               if (index === 0) {
                 //for child form
                 let childFormId = 'optionForm'
-                this.updateChildFormProductOption(option, childFormId);
+                this._updateChildFormProductOption(option, childFormId);
                 //for child form
               } else {
                 let childFormId = 'optionForm_' + (index - 1);
                 let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
                 childFormCreated.pipe(take(1)).subscribe(() => {
-                  this.updateChildFormProductOption(option, childFormId);
+                  this._updateChildFormProductOption(option, childFormId);
                 })
               }
             });
@@ -223,18 +208,16 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
           if (this.aggregate.attributeSaleImages && this.aggregate.attributeSaleImages.length !== 0) {
             this.imgAttrSaleFormCreatedOb.pipe(take(1)).subscribe(() => {
               let attrs = this.aggregate.attributeSaleImages.map(e => e.attributeSales);
-              this.subChangeForForm(this.imageAttrSaleFormId);
+              this._subChangeForForm(this.imageAttrSaleFormId);
               this.updateValueForForm(attrs, this.imageAttrSaleFormId);
               this.imageAttrSaleChildFormCreatedOb.pipe(take(1)).subscribe(() => {
                 this.aggregate.attributeSaleImages.forEach((e, index) => {
                   if (index === 0) {
                     this.fis.restoreDynamicForm(this.imageAttrSaleChildFormId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
-                    this.subForFileUpload(this.imageAttrSaleChildFormId);
                   } else {
                     let formId = this.imageAttrSaleChildFormId + '_' + (index - 1);
                     let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
                     childFormCreated.pipe(take(1)).subscribe(() => {
-                      this.subForFileUpload(formId);
                       this.fis.restoreDynamicForm(formId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
                       this.fis.$refresh.next();
                     });
@@ -246,33 +229,33 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         }
       }
       this.salesFormCreatedOb.pipe(take(1)).subscribe(() => {
-        this.subChangeForForm(this.imageAttrSaleFormId);
+        this._subChangeForForm(this.imageAttrSaleFormId);
         // when add new child form sub for value chage if no sub
         let sub2 = this.fis.formGroupCollection[this.attrSalesFormId].valueChanges.subscribe(next => {
           Object.keys(next).filter(e => e.includes(this.salesFormIdTempId)).forEach(childrenFormId => {
             if (!this.subs[childrenFormId + '_valueChange']) {
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childrenFormId));
               childFormCreated.pipe(take(1)).subscribe(() => {
-                this.subChangeForForm(childrenFormId);
+                this._subChangeForForm(childrenFormId);
               })
             }
           })
         });
         this.subs[this.attrSalesFormId + '_valueChange'] = sub2;
       })
-      this.subChangeForForm(this.attrProdFormId);
-      this.subChangeForForm(this.attrGeneralFormId);
+      this._subChangeForForm(this.attrProdFormId);
+      this._subChangeForForm(this.attrGeneralFormId);
       let sub3 = this.fis.$uploadFile.subscribe(next => {
-        if (next.key === 'imageUrlSmall') {
-          this.uploadFile(next.files)
+        this._uploadFile(next.files, next.formId, next.key);
+        if (next.formId === this.formId && next.key === 'imageUrlSmall') {
+          this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
         }
       })
-      // let sub3 = this.fis.formGroupCollection[this.formId].get('imageUrlSmall').valueChanges.subscribe((next) => { this.uploadFile(next) })
-      this.subs['imageUrlSmallFile_valueChange'] = sub3;
+      this.subs['fileupload'] = sub3;
     })
     this.subs['getAttributeList_http'] = sub1;
   }
-  getTime(arg0: Date): string {
+  private _getTime(arg0: Date): string {
     let hour = arg0.getUTCHours() + '';
     if (arg0.getUTCHours() < 10)
       hour = '0' + arg0.getUTCHours()
@@ -284,13 +267,13 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       sec = '0' + arg0.getUTCSeconds()
     return hour + ':' + minutes + ':' + sec
   }
-  private updateChildFormProductOption(option: IProductOptions, childFormId: string) {
+  private _updateChildFormProductOption(option: IProductOptions, childFormId: string) {
     let value = this.fis.parsePayloadArr(option.options.map(e => e.optionValue), 'optionValue');
     let value2 = this.fis.parsePayloadArr(option.options.map(e => e.priceVar), 'optionPriceChange');
     Object.assign(value, value2)
     this.fis.restoreDynamicForm(childFormId, value, option.options.length);
   }
-  private updateAndSubSalesForm(skus: ISku[]) {
+  private _updateAndSubSalesForm(skus: ISku[]) {
     let value = this.fis.parsePayloadArr(skus.map(e => e.storageOrder), 'storageOrder');
     let value2 = this.fis.parsePayloadArr(skus.map(e => e.storageActual), 'storageActual');
     let value3 = this.fis.parsePayloadArr(skus.map(e => e.price), 'price');
@@ -304,11 +287,11 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         //start of child form
         let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
         this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
-          this.subChangeForForm(this.salesFormIdTempId);
+          this._subChangeForForm(this.salesFormIdTempId);
           this.updateValueForForm(sku.attributesSales, this.salesFormIdTempId);
         })
         if (this.productBottomSheet.context !== 'clone') {
-          this.disabledAttrSalesChildForm(formInfo);
+          this._disabledAttrSalesChildForm(formInfo);
         }
         //end of child form
       } else {
@@ -318,10 +301,10 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
         childFormCreated.pipe(take(1)).subscribe(() => {
           let formInfo = this.fis.formGroupCollection_formInfo[formId];
-          this.subChangeForForm(formId);
+          this._subChangeForForm(formId);
           this.updateValueForForm(sku.attributesSales, formId);
           if (this.productBottomSheet.context !== 'clone') {
-            this.disabledAttrSalesChildForm(formInfo);
+            this._disabledAttrSalesChildForm(formInfo);
           }
           this.fis.$refresh.next();
         });
@@ -329,20 +312,20 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       }
     });
     if (this.productBottomSheet.context !== 'clone') {
-      this.displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-      this.disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+      this._displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+      this._disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
     }
     this.fis.$refresh.next();
   }
-  private displayStorageChangeInputs(arg0: IForm) {
+  private _displayStorageChangeInputs(arg0: IForm) {
     let var0 = ['storage_OrderIncreaseBy', 'storage_OrderDecreaseBy', 'storage_ActualIncreaseBy', 'storage_ActualDecreaseBy']
     arg0.inputs.filter(e => var0.filter(ee => e.key.includes(ee)).length > 0).forEach(e => e.display = true);
   }
-  private disabledAttrSalesForm(formInfo: IForm) {
+  private _disabledAttrSalesForm(formInfo: IForm) {
     let var0 = ['storageOrder', 'storageActual', 'sales']
     formInfo.inputs.filter(e => var0.filter(ee => e.key.includes(ee)).length > 0).forEach(e => e.disabled = true);
   }
-  private disabledAttrSalesChildForm(formInfo: IForm) {
+  private _disabledAttrSalesChildForm(formInfo: IForm) {
     formInfo.inputs.forEach(e => e.disabled = true);
     formInfo.disabled = true;
   }
@@ -350,7 +333,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
    * @description update formInfo first then initialize form, so add template can be correct
    * @param attrs 
    */
-  private updateFormInfoOptions(attrs: IBizAttribute[]) {
+  private _updateFormInfoOptions(attrs: IBizAttribute[]) {
     this.attrProdFormInfo.inputs[0].options = attrs.filter(e => e.type === 'PROD_ATTR').map(e => <IOption>{ label: getLabel(e), value: e.id });
     this.attrGeneralFormInfo.inputs[0].options = attrs.filter(e => e.type === 'GEN_ATTR').map(e => <IOption>{ label: getLabel(e), value: e.id });
     this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: getLabel(e), value: e.id });
@@ -366,7 +349,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   private isLeafNode(catalogs: ICatalog[], catalog: ICatalog): boolean {
     return catalogs.filter(node => node.parentId === catalog.id).length == 0
   }
-  parseDate(value: Date, time: string): number {
+  private _parseDate(value: Date, time: string): number {
     let split: string[] = time.split(':');
     let hoursInSec = (+split[0]) * 60 * 60
     let minuteInSec = (+split[1]) * 60
@@ -374,20 +357,13 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     return value.getTime() + totalSec * 1000
 
   }
-  private uploadFile(files: FileList) {
+  private _uploadFile(files: FileList, formId: string, ctrlName: string) {
     this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
       if (next.includes('http')) {
-        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(next)
+        this.fis.formGroupCollection[formId].get(ctrlName).setValue(next)
       } else {
-        this.fis.formGroupCollection[this.formId].get('imageUrlSmall').setValue(environment.serverUri + '/file-upload-svc/files/public/' + next)
+        this.fis.formGroupCollection[formId].get(ctrlName).setValue(environment.serverUri + '/file-upload-svc/files/public/' + next)
       }
-      this.validateHelper.validate(this.validator, this.convertToPayload, 'CREATE', this.fis, this, this.errorMapper)
-      this.cdr.detectChanges();
-    })
-  }
-  private uploadFileCommon(files: FileList, formId: string, ctrlName: string) {
-    this.httpProxy.uploadFile(files.item(0)).subscribe(next => {
-      this.fis.formGroupCollection[formId].get(ctrlName).setValue(environment.serverUri + '/file-upload-svc/files/public/' + next, { emitEvent: false })
       this.cdr.detectChanges();
     })
   }
@@ -446,7 +422,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     this.fis.$refresh.next();
     this.cdr.markForCheck();
   }
-  private subChangeForForm(formId: string) {
+  private _subChangeForForm(formId: string) {
     if (!this.subs[formId + '_valueChange']) {
       let sub = this.fis.formGroupCollection[formId].valueChanges.subscribe(next => {
         Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
@@ -464,17 +440,20 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       this.subs[formId + '_valueChange'] = sub;
     }
   }
-  checkInput(key: string, formId: string) {
+  private _checkInput(key: string, formId: string) {
     if (this.fis.formGroupCollection[formId]) {
       if (!hasValue(this.fis.formGroupCollection[formId].get(key).value)) {
         this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = "REQUIRED";
-        this.fis.formGroupCollection[formId].get(key).valueChanges.subscribe(next => {
-          if (!hasValue(next)) {
-            this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = "REQUIRED";
-          } else {
-            this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = undefined
-          }
-        })
+        if(!this.subs['checkInput_' + key]){
+          let sub = this.fis.formGroupCollection[formId].get(key).valueChanges.subscribe(next => {
+            if (!hasValue(next)) {
+              this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = "REQUIRED";
+            } else {
+              this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = undefined
+            }
+          })
+          this.subs['checkInput_' + key] = sub;
+        }
       } else {
         this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = undefined
       }
@@ -484,17 +463,17 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     return hasValue(this.fis.formGroupCollection[formId].get(key).value)
   }
   create() {
-    this.checkInput('status', this.formId)
-    this.checkInput('hasSku', this.formId)
+    this._checkInput('status', this.formId)
+    this._checkInput('hasSku', this.formId)
     if (this.hasSku) {
       Object.keys(this.fis.formGroupCollection_formInfo).filter(e => e.includes('attrSalesFormChild')).forEach(e => {
         this.fis.formGroupCollection_formInfo[e].inputs.forEach(ee => {
           if (ee.key.includes('attributeId')) {
-            this.checkInput(ee.key, e)
+            this._checkInput(ee.key, e)
           } else if (ee.key.includes('attributeValueSelect')) {
-            this.checkInput(ee.key, e)
+            this._checkInput(ee.key, e)
           } else if (ee.key.includes('attributeValueManual')) {
-            this.checkInput(ee.key, e)
+            this._checkInput(ee.key, e)
           } else {
 
           }
@@ -788,9 +767,12 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       imageUrlLarge: imagesUrl,
       selectedOptions: selectedOptions.filter(e => e.title !== ''),
       skus: skusCalc,
-      endAt: formGroup.get('endAtDate').value ? cmpt.parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
-      startAt: formGroup.get('startAtDate').value ? cmpt.parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
+      endAt: formGroup.get('endAtDate').value ? cmpt._parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
+      startAt: formGroup.get('startAtDate').value ? cmpt._parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
       attributeSaleImages: attrSaleImages,
     }
+  }
+  private _hasEmptyAttrSales(e: ISku): boolean {
+    return e.attributesSales.length === 0 || (e.attributesSales.length === 1 && e.attributesSales[0] === '')
   }
 }
