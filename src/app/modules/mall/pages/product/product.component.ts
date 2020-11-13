@@ -214,10 +214,9 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
               } else {
                 let childFormId = 'optionForm_' + (index - 1);
                 let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
-                let sub = childFormCreated.subscribe(() => {
+                childFormCreated.pipe(take(1)).subscribe(() => {
                   this.updateChildFormProductOption(option, childFormId);
                 })
-                this.subs[childFormId + '_formCreate'] = sub;
               }
             });
           }
@@ -234,12 +233,11 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
                   } else {
                     let formId = this.imageAttrSaleChildFormId + '_' + (index - 1);
                     let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
-                    let sub = childFormCreated.subscribe(() => {
+                    childFormCreated.pipe(take(1)).subscribe(() => {
                       this.subForFileUpload(formId);
                       this.fis.restoreDynamicForm(formId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
                       this.fis.$refresh.next();
                     });
-                    this.subs[formId + '_formCreate'] = sub;
                   }
                 })
               })
@@ -254,10 +252,9 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
           Object.keys(next).filter(e => e.includes(this.salesFormIdTempId)).forEach(childrenFormId => {
             if (!this.subs[childrenFormId + '_valueChange']) {
               let childFormCreated = this.fis.$ready.pipe(filter(e => e === childrenFormId));
-              let sub = childFormCreated.subscribe(() => {
+              childFormCreated.pipe(take(1)).subscribe(() => {
                 this.subChangeForForm(childrenFormId);
               })
-              this.subs[childrenFormId + '_formCreate'] = sub;
             }
           })
         });
@@ -274,7 +271,6 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
       this.subs['imageUrlSmallFile_valueChange'] = sub3;
     })
     this.subs['getAttributeList_http'] = sub1;
-    // this.subs[this.formId + '_formCreate'] = sub0;
   }
   getTime(arg0: Date): string {
     let hour = arg0.getUTCHours() + '';
@@ -320,7 +316,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
         let formId = this.salesFormIdTempId + '_' + (index - 1);
 
         let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
-        let sub = childFormCreated.subscribe(() => {
+        childFormCreated.pipe(take(1)).subscribe(() => {
           let formInfo = this.fis.formGroupCollection_formInfo[formId];
           this.subChangeForForm(formId);
           this.updateValueForForm(sku.attributesSales, formId);
@@ -329,7 +325,6 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
           }
           this.fis.$refresh.next();
         });
-        this.subs[formId + '_formCreate'] = sub;
         //end of child form
       }
     });
@@ -471,9 +466,9 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   }
   checkInput(key: string, formId: string) {
     if (this.fis.formGroupCollection[formId]) {
-      if (!hasValue(this.fis.getFormGroup(formId).get(key).value)) {
+      if (!hasValue(this.fis.formGroupCollection[formId].get(key).value)) {
         this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = "REQUIRED";
-        this.fis.getFormGroup(formId).get(key).valueChanges.subscribe(next => {
+        this.fis.formGroupCollection[formId].get(key).valueChanges.subscribe(next => {
           if (!hasValue(next)) {
             this.fis.formGroupCollection_formInfo[formId].inputs.find(e => e.key === key).errorMsg = "REQUIRED";
           } else {
@@ -486,7 +481,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
     }
   }
   requiredInput(key: string, formId: string) {
-    return hasValue(this.fis.getFormGroup(formId).get(key).value)
+    return hasValue(this.fis.formGroupCollection[formId].get(key).value)
   }
   create() {
     this.checkInput('status', this.formId)

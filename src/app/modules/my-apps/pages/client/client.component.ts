@@ -81,7 +81,7 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
     this.fis.resetAll();
   }
   convertToPayload(clientCmpt: ClientComponent): IClient {
-    let formGroup = clientCmpt.fis.getFormGroup(clientCmpt.formId);
+    let formGroup = clientCmpt.fis.formGroupCollection[clientCmpt.formId];
     let grants: grantTypeEnums[] = [];
     let authority: string[] = [];
     let scopes: scopeEnums[] = [];
