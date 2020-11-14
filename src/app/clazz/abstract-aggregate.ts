@@ -1,7 +1,7 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { IAddDynamicFormEvent, IForm, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
+import { IAddDynamicFormEvent, IRemoveDynamicFormEvent,IForm, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
 import { Subject, Subscription } from 'rxjs';
 import * as UUID from 'uuid/v1';
 import { EntityCommonService } from './entity.common-service';
@@ -21,6 +21,7 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
     fis: FormInfoService;
     cdr: ChangeDetectorRef;
     delayResume: boolean = false;
+    resumeComplete: Subject<boolean> = new Subject<boolean>();
     constructor(
         formId: string,
         formInfo: IForm,
@@ -43,6 +44,7 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
             this.resumeFromEventStore();
         }
         let sub = fis.$eventPub.subscribe(_ => {
+            console.dir(_)
             this.eventStore.push(_)
         })
         this.subs['eventPub'] = sub;
@@ -68,6 +70,7 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
                     console.dir('event complete ')
                     //replay complete
                     this.fis.eventEmit = true;
+                    this.resumeComplete.next(true)
                 }
             })
             this.eventStore.forEach(e => {
@@ -82,6 +85,13 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
                     let e2 = e as IAddDynamicFormEvent;
                     setTimeout(() => {
                         this.fis.add(e2.formId);//this will not emit add event
+                        this.cdr.markForCheck();
+                        eventCount.next();
+                    }, 0, eventCount)
+                } else if (e.type === 'deleteForm') {
+                    let e2 = e as IRemoveDynamicFormEvent;
+                    setTimeout(() => {
+                        this.fis.remove(e2.index,e2.formId);//this will not emit add event
                         this.cdr.markForCheck();
                         eventCount.next();
                     }, 0, eventCount)
