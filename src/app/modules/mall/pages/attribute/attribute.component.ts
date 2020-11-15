@@ -1,8 +1,8 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { IForm } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable } from 'rxjs';
+import { IAddDynamicFormEvent, IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
@@ -11,7 +11,13 @@ import { AttributeValidator } from 'src/app/clazz/validation/aggregate/attribute
 import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
 import { FORM_CONFIG, FORM_CONFIG_ATTR_VALUE } from 'src/app/form-configs/attribute.config';
 import { AttributeService } from 'src/app/services/attribute.service';
-
+interface ISetValueEvent {
+  type: 'setvalue'
+  id: number,
+  formId: string,
+  key: string,
+  value: string
+}
 @Component({
   selector: 'app-attribute',
   templateUrl: './attribute.component.html',
@@ -25,18 +31,19 @@ export class AttributeComponent extends AbstractAggregate<AttributeComponent, IB
   private attrFormCreatedOb: Observable<string>;
   constructor(
     public attributeSvc: AttributeService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    bottomSheetRef: MatBottomSheetRef<AttributeComponent>
+    bottomSheetRef: MatBottomSheetRef<AttributeComponent>,
+    cdr:ChangeDetectorRef
   ) {
-    super('attributes', JSON.parse(JSON.stringify(FORM_CONFIG)), new AttributeValidator(),bottomSheetRef,data);
+    super('attributes', JSON.parse(JSON.stringify(FORM_CONFIG)), new AttributeValidator(), bottomSheetRef, data,fis,cdr);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdAttrValue));
     combineLatest([this.formCreatedOb]).pipe(take(1)).subscribe(() => {
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
         this.manualSelect = next === 'SELECT';
       });
-      if (this.aggregate) {
+      if (this.aggregate && this.eventStore.length === 0) {
         this.fis.restore(this.formId, this.aggregate);
         combineLatest([this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
           if (this.aggregate.selectValues && this.aggregate.selectValues.length !== 0) {
@@ -71,11 +78,11 @@ export class AttributeComponent extends AbstractAggregate<AttributeComponent, IB
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateAttributeCommandValidator', this.fis, this, this.errorMapper))
-      this.attributeSvc.create(this.convertToPayload(this), this.changeId)
+      this.attributeSvc.create(this.convertToPayload(this), this.changeId,this.eventStore)
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateAttributeCommandValidator', this.fis, this, this.errorMapper))
-      this.attributeSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.attributeSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
   }
 
   errorMapper(original: ErrorMessage[], cmpt: AttributeComponent) {

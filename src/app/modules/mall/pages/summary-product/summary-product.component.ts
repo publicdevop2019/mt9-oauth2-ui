@@ -11,13 +11,15 @@ import { ProductComponent } from '../product/product.component';
 import { OperationConfirmDialogComponent } from 'src/app/components/operation-confirm-dialog/operation-confirm-dialog.component';
 import { IProductSimple, IProductDetail } from 'src/app/clazz/validation/aggregate/product/interfaze-product';
 import { ProductService } from 'src/app/services/product.service';
+import { ProductComponentExp } from '../product/product.component.exp';
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
 })
 export class SummaryProductComponent extends SummaryEntityComponent<IProductSimple, IProductDetail> implements OnDestroy {
   displayedColumns: string[] = ['id', 'coverImage', 'name', 'sales', 'status', 'endAt', 'edit', 'delete', 'clone'];
-  sheetComponent = ProductComponent;
+  // sheetComponent = ProductComponent;
+  sheetComponent = ProductComponentExp;
   constructor(
     public entitySvc: ProductService,
     public deviceSvc: DeviceService,

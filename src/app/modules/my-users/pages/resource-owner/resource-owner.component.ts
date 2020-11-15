@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
@@ -18,14 +18,15 @@ export class ResourceOwnerComponent extends AbstractAggregate<ResourceOwnerCompo
   }
   constructor(
     public resourceOwnerService: ResourceOwnerService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-    bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>
+    bottomSheetRef: MatBottomSheetRef<ResourceOwnerComponent>,
+    cdr:ChangeDetectorRef
   ) {
-    super('resourceOwner', JSON.parse(JSON.stringify(FORM_CONFIG)), new UserValidator(), bottomSheetRef,data)
+    super('resourceOwner', JSON.parse(JSON.stringify(FORM_CONFIG)), new UserValidator(), bottomSheetRef,data,fis,cdr)
   }
   ngAfterViewInit(): void {
-    if (this.aggregate) {
+    if (this.aggregate && this.eventStore.length === 0) {
       this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id)
       this.fis.formGroupCollection[this.formId].get('email').setValue(this.aggregate.email)
       this.fis.formGroupCollection[this.formId].get('authority').setValue(this.aggregate.grantedAuthorities)
@@ -53,7 +54,7 @@ export class ResourceOwnerComponent extends AbstractAggregate<ResourceOwnerCompo
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateUserCommandValidator', this.fis, this, this.errorMapper))
-      this.resourceOwnerService.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.resourceOwnerService.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
   }
   errorMapper(original: ErrorMessage[], cmpt: ResourceOwnerComponent) {
     return original.map(e => {

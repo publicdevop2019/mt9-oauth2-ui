@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable } from 'rxjs';
+import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
+import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
@@ -29,32 +29,33 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   private attrFormCreatedOb: Observable<string>;
   constructor(
     public entitySvc: CatalogService,
-    private fis: FormInfoService,
     public attrSvc: AttributeService,
-    private changeDecRef: ChangeDetectorRef,
+    fis: FormInfoService,
+    cdr: ChangeDetectorRef,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
-    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef,data);
+    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data,fis,cdr,true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
     let sub1 = combineLatest([this.formCreatedOb, this.attrSvc.readByQuery(0, 1000)]).pipe(take(1)).pipe(switchMap(next => {
       this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: e.id });//update formInfo first then initialize form, so add template can be correct
       this.attrList = next[1].data;
-      this.changeDecRef.markForCheck();//refresh view for create
+      this.cdr.markForCheck();//refresh view for create
       this.subForCatalogTypeChange(true);
-      if (this.aggregate) {
-        this.fis.restore(this.formId, this.aggregate);
-      }
       return this.attrFormCreatedOb
     })).subscribe(() => {
       this.subForAttrFormChange();
-      if (this.aggregate && this.aggregate.attributes) {
-        this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, this.attrList), this.aggregate.attributes.length);
+      this.resumeFromEventStore();
+      if (this.aggregate && this.eventStore.length === 0) {
+        this.fis.restore(this.formId, this.aggregate);
+        if (this.aggregate && this.aggregate.attributes) {
+          this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, this.attrList), this.aggregate.attributes.length);
+        }
       }
       this.fis.$refresh.next();
-      this.changeDecRef.markForCheck();
+      this.cdr.markForCheck();
     })
     this.subs['combineLatest'] = sub1;
   }
@@ -69,12 +70,12 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
       }
       catalogOb.subscribe(next1 => {
         this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })
-        this.changeDecRef.markForCheck();
+        this.cdr.markForCheck();
       })
       if (!skipReset) {
         this.fis.formGroupCollection[this.formId].get('parentId').reset();
       }
-      this.changeDecRef.markForCheck();
+      this.cdr.markForCheck();
     });
     this.subs['catalogTypeChange'] = sub3;
   }
@@ -112,11 +113,11 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateCatalogCommandValidator', this.fis, this, this.errorMapper))
-      this.entitySvc.create(this.convertToPayload(this), this.changeId)
+      this.entitySvc.create(this.convertToPayload(this), this.changeId,this.eventStore)
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateCatalogCommandValidator', this.fis, this, this.errorMapper))
-      this.entitySvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.entitySvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
   }
 
   errorMapper(original: ErrorMessage[], cmpt: CatalogComponent) {

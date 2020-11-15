@@ -36,6 +36,7 @@ export class HttpProxyService {
     private PROFILE_SVC_NAME = '/profile-svc';
     private FILE_UPLOAD_SVC_NAME = '/file-upload-svc';
     private BBS_SVC_NAME = '/bbs-svc';
+    private EVENT_SVC_NAME = '/event-svc';
     set currentUserAuthInfo(token: ITokenResponse) {
         document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
     };
@@ -49,6 +50,32 @@ export class HttpProxyService {
     }
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
+    }
+    saveEventStream(id: number, events: any[], changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
+        return this._httpClient.post(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id, events, { headers: headerConfig })
+    }
+    readEventStreamById(id: number): Observable<any[]> {
+        return this._httpClient.get<any[]>(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id)
+    }
+    deleteEventStream(id: number, changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
+        return new Observable<boolean>(e => {
+            this._httpClient.delete(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id, { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
+    }
+    replaceEventStream(id: number, events: any[], changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
+        return new Observable<boolean>(e => {
+            this._httpClient.put(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id, events, { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
     }
     deletePost(id: string): Observable<boolean> {
         return new Observable<boolean>(e => {
@@ -355,12 +382,12 @@ export class HttpProxyService {
         re.push(startAt)
         return re;
     }
-    createEntity(entityRepo: string, role: string, entity: any, changeId: string): Observable<boolean> {
+    createEntity(entityRepo: string, role: string, entity: any, changeId: string): Observable<string> {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
-        return new Observable<boolean>(e => {
-            this._httpClient.post(entityRepo + '/' + role, entity, { headers: headerConfig }).subscribe(next => {
-                e.next(true)
+        return new Observable<string>(e => {
+            this._httpClient.post(entityRepo + '/' + role, entity, { observe: 'response', headers: headerConfig }).subscribe(next => {
+                e.next(next.headers.get('location'));
             });
         });
     };

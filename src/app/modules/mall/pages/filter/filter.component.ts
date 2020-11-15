@@ -38,14 +38,14 @@ export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilte
   catalogChunkSize: number = 100;
   constructor(
     public filterSvc: FilterService,
-    private fis: FormInfoService,
+    fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<FilterComponent>,
     private categorySvc: CatalogService,
-    private cdr: ChangeDetectorRef,
+    cdr: ChangeDetectorRef,
     public attrSvc: AttributeService,
   ) {
-    super('filters',JSON.parse(JSON.stringify(FORM_CONFIG)),new FilterValidator(),bottomSheetRef,data);
+    super('filters',JSON.parse(JSON.stringify(FORM_CONFIG)),new FilterValidator(),bottomSheetRef,data,fis,cdr,true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.catalogFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdCatalog));
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
@@ -76,7 +76,8 @@ export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilte
       this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
       this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
       this.cdr.detectChanges()
-      if (this.aggregate) {
+      this.resumeFromEventStore();
+      if (this.aggregate && this.eventStore.length === 0) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id);
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.aggregate.description);
         if (this.aggregate.catalogs && this.aggregate.catalogs.length !== 0) {
@@ -202,11 +203,11 @@ export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilte
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateFilterCommandValidator', this.fis, this, this.errorMapper))
-      this.filterSvc.create(this.convertToPayload(this), this.changeId)
+      this.filterSvc.create(this.convertToPayload(this), this.changeId,this.eventStore)
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateFilterCommandValidator', this.fis, this, this.errorMapper))
-      this.filterSvc.update(this.fis.formGroupCollection[this.formId].get('id').value, this.convertToPayload(this), this.changeId)
+      this.filterSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
   }
   errorMapper(original: ErrorMessage[], cmpt: FilterComponent) {
     return original.map(e => {
