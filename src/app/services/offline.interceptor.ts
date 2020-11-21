@@ -69,7 +69,7 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('changes/root?query=entityType:BizClient')) {
           return of(new HttpResponse({ status: 200, body: mockBizClientOpt })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('event-svc/events/admin')) {
+        if (req.url.includes('object-svc/events/admin')) {
           return of(new HttpResponse({ status: 200, body: null })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('changes/root?query=entityType:BizUser')) {

@@ -36,7 +36,7 @@ export class HttpProxyService {
     private PROFILE_SVC_NAME = '/profile-svc';
     private FILE_UPLOAD_SVC_NAME = '/file-upload-svc';
     private BBS_SVC_NAME = '/bbs-svc';
-    private EVENT_SVC_NAME = '/event-svc';
+    private EVENT_SVC_NAME = '/object-svc';
     set currentUserAuthInfo(token: ITokenResponse) {
         document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
     };
