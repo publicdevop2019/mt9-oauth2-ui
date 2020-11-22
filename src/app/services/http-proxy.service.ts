@@ -54,7 +54,11 @@ export class HttpProxyService {
     saveEventStream(id: number, events: any[], changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
-        return this._httpClient.post(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id, events, { headers: headerConfig })
+        return new Observable<boolean>(e => {
+            this._httpClient.post(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id, events, { headers: headerConfig }).subscribe(next => {
+                e.next(true)
+            });
+        });
     }
     readEventStreamById(id: number): Observable<any[]> {
         return this._httpClient.get<any[]>(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id)
