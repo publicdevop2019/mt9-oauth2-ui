@@ -67,7 +67,6 @@ export const FORM_CONFIG: IForm = {
                 "row": "5",
                 "column": "0"
             },
-            required:true,
         },
     ],
 }
