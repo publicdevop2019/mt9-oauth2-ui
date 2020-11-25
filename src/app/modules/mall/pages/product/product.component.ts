@@ -642,7 +642,7 @@ export class ProductComponent extends AbstractAggregate<ProductComponent, IProdu
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateProductCommandValidator', this.fis, this, this.errorMapper))
-      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore)
+      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.version)
   }
   previewFlag: boolean = false;
   doPreview() {

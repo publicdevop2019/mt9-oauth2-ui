@@ -117,7 +117,7 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateCatalogCommandValidator', this.fis, this, this.errorMapper))
-      this.entitySvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore)
+      this.entitySvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore,this.version)
   }
 
   errorMapper(original: ErrorMessage[], cmpt: CatalogComponent) {

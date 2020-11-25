@@ -17,17 +17,22 @@ import { hasValue } from './validation/validator-common';
 export interface IIdBasedEntity {
   id: number
 }
+export interface IEventAdminRep {
+  id: number,
+  events: any[],
+  version: number,
+}
 export interface IEntityService<C extends IIdBasedEntity, D> {
-  readEventStreamById: (id: number) => Observable<any[]>;
+  readEventStreamById: (id: number) => Observable<IEventAdminRep>;
   saveEventStream: (id: number, events: any[], changeId: string) => void;
-  replaceEventStream: (id: number, events: any[], changeId: string) => void;
+  replaceEventStream: (id: number, events: any[], changeId: string,version:number) => void;
   deleteEventStream: (id: number, changeId: string) => void;
   readById: (id: number) => Observable<D>;
   readByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
   deleteByQuery: (query: string, changeId: string) => void;
   deleteById: (id: number, changeId: string) => void;
-  create: (s: D, changeId: string,events:any[]) => void;
-  update: (id: number, s: D, changeId: string,events:any[]) => void;
+  create: (s: D, changeId: string, events: any[]) => void;
+  update: (id: number, s: D, changeId: string, events: any[],version:number) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchAtomicNum: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;
@@ -43,7 +48,7 @@ export interface ISumRep<T> {
 export interface IBottomSheet<S> {
   context: 'clone' | 'new' | 'edit';
   from: S;
-  events: any[];
+  events: IEventAdminRep;
 }
 @Directive()
 export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDestroy {
@@ -93,10 +98,8 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
           this.bottomSheet.open(this.sheetComponent, config);
         }
       })
-      this.entitySvc.readById(id).subscribe(next => {
-      })
     } else {
-      config.data = <IBottomSheet<S>>{ context: 'new', from: undefined, events: [] };
+      config.data = <IBottomSheet<S>>{ context: 'new', from: undefined, events: {} };
       this.bottomSheet.open(this.sheetComponent, config);
     }
   }

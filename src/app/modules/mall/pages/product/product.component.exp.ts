@@ -512,7 +512,7 @@ export class ProductComponentExp extends AbstractAggregate<ProductComponentExp, 
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateProductCommandValidator', this.fis, this, this.errorMapper))
-      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore)
+      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore,this.version)
   }
   parseProductForm() {
     let beforeParse = this.convertToPayload(this);

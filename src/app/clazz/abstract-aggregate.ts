@@ -1,7 +1,7 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { IAddDynamicFormEvent, IRemoveDynamicFormEvent,IForm, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
+import { IAddDynamicFormEvent, IRemoveDynamicFormEvent, IForm, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
 import { Subject, Subscription } from 'rxjs';
 import * as UUID from 'uuid/v1';
 import { EntityCommonService } from './entity.common-service';
@@ -18,6 +18,7 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
     subs: { [key: string]: Subscription } = {};
     aggregate: T;
     eventStore: any[] = []
+    version: number;
     fis: FormInfoService;
     cdr: ChangeDetectorRef;
     delayResume: boolean = false;
@@ -37,7 +38,8 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
         this.validator = validator;
         this.bottomSheetRef = bottomSheetRef;
         this.aggregate = bottomSheetData.from;
-        this.eventStore = bottomSheetData.events;
+        this.eventStore = bottomSheetData.events?.events || [];
+        this.version = bottomSheetData.events?.version;
         this.fis = fis;
         this.cdr = cdr;
         if (!skipResume) {
@@ -59,7 +61,7 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
     }
     resumeFromEventStore() {
         //dispatch stored events
-        if (this.eventStore.length>0) {
+        if (this.eventStore.length > 0) {
             this.fis.eventEmit = false;
             let eventCount = new Subject<number>();
             let count = 0;
@@ -90,7 +92,7 @@ export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
                 } else if (e.type === 'deleteForm') {
                     let e2 = e as IRemoveDynamicFormEvent;
                     setTimeout(() => {
-                        this.fis.remove(e2.index,e2.formId);//this will not emit add event
+                        this.fis.remove(e2.index, e2.formId);//this will not emit add event
                         this.cdr.markForCheck();
                         eventCount.next();
                     }, 0, eventCount)

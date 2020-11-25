@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as UUID from 'uuid/v1';
-import { ISumRep } from '../clazz/summary.component';
+import { IEventAdminRep, ISumRep } from '../clazz/summary.component';
 import { getCookie } from '../clazz/utility';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from '../clazz/validation/aggregate/user/interfaze-user';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../clazz/validation/interfaze-common';
@@ -60,8 +60,8 @@ export class HttpProxyService {
             });
         });
     }
-    readEventStreamById(id: number): Observable<any[]> {
-        return this._httpClient.get<any[]>(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id)
+    readEventStreamById(id: number) {
+        return this._httpClient.get<IEventAdminRep>(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id)
     }
     deleteEventStream(id: number, changeId: string) {
         let headerConfig = new HttpHeaders();
@@ -72,11 +72,15 @@ export class HttpProxyService {
             });
         });
     }
-    replaceEventStream(id: number, events: any[], changeId: string) {
+    replaceEventStream(id: number, events: any[], changeId: string, version: number) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
+        let payload = {
+            events: events,
+            version: version
+        }
         return new Observable<boolean>(e => {
-            this._httpClient.put(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id, events, { headers: headerConfig }).subscribe(next => {
+            this._httpClient.put(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id, payload, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });

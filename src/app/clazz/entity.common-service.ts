@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs';
 import { IEditEvent } from '../components/editable-field/editable-field.component';
 import { HttpProxyService } from '../services/http-proxy.service';
 import { CustomHttpInterceptor } from '../services/http.interceptor';
-import { IEntityService, IIdBasedEntity } from "./summary.component";
+import { IEntityService, IEventAdminRep, IIdBasedEntity } from "./summary.component";
 import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';
 import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
@@ -18,13 +18,13 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
         this.httpProxySvc = httpProxySvc;
         this.interceptor = interceptor;
     }
-    replaceEventStream(id: number, events: any[], changeId: string) {
-        return this.httpProxySvc.replaceEventStream(id, events, changeId)
+    replaceEventStream(id: number, events: any[], changeId: string,version:number) {
+        return this.httpProxySvc.replaceEventStream(id, events, changeId,version)
     };
     deleteEventStream(id: number, changeId: string) {
         return this.httpProxySvc.deleteEventStream(id, changeId)
     };
-    readEventStreamById(id: number): Observable<any[]> {
+    readEventStreamById(id: number): Observable<IEventAdminRep> {
         return this.httpProxySvc.readEventStreamById(id)
     };
     saveEventStream(id: number, s: any[], changeId: string) {
@@ -58,9 +58,9 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
             });
         });
     };
-    update(id: number, s: D, changeId: string, events: any[]) {
+    update(id: number, s: D, changeId: string, events: any[],version:number) {
         this.httpProxySvc.updateEntity(this.entityRepo, this.role, id, s, changeId).subscribe(next => {
-            this.replaceEventStream(id, events, changeId).subscribe(var0 => {
+            this.replaceEventStream(id, events, changeId,version).subscribe(var0 => {
                 this.notify(!!var0)
                 this.refreshSummary.next();
             });

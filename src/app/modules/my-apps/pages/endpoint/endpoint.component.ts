@@ -48,7 +48,7 @@ export class EndpointComponent extends AbstractAggregate<EndpointComponent, IEnd
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootUpdateEndpointCommandValidator', this.fis, this, this.errorMapper))
-      this.endpointSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore)
+      this.endpointSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore,this.version)
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootCreateEndpointCommandValidator', this.fis, this, this.errorMapper))
