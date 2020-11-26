@@ -6,6 +6,7 @@ export interface IResourceOwner {
     subscription?: boolean;
     grantedAuthorities: string[];
     createdAt?:number;
+    version:number;
 }
 export interface IPendingResourceOwner {
     email: string;

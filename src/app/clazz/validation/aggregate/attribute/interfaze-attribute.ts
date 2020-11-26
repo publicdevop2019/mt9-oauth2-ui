@@ -4,5 +4,6 @@ export interface IBizAttribute {
     description?: string,
     selectValues?: string[],
     method: 'MANUAL' | 'SELECT',
-    type: 'PROD_ATTR' | 'SALES_ATTR' | 'KEY_ATTR' | 'GEN_ATTR'
+    type: 'PROD_ATTR' | 'SALES_ATTR' | 'KEY_ATTR' | 'GEN_ATTR',
+    version:number
   }

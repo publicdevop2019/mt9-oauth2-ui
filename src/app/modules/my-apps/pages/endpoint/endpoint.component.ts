@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
+import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IEndpoint } from 'src/app/clazz/validation/aggregate/endpoint/interfaze-endpoint';
 import { EndpointValidator } from 'src/app/clazz/validation/aggregate/endpoint/validator-endpoint';
 import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
@@ -12,7 +12,7 @@ import { EndpointService } from 'src/app/services/endpoint.service';
   templateUrl: './endpoint.component.html',
   styleUrls: ['./endpoint.component.css']
 })
-export class EndpointComponent extends AbstractAggregate<EndpointComponent, IEndpoint> implements OnInit, AfterViewInit, OnDestroy {
+export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public endpointSvc: EndpointService,
     fis: FormInfoService,
@@ -35,8 +35,8 @@ export class EndpointComponent extends AbstractAggregate<EndpointComponent, IEnd
   }
   ngOnInit() {
   }
-  convertToPayload(endpointCmpt: EndpointComponent): IEndpoint {
-    let formGroup = endpointCmpt.fis.formGroupCollection[endpointCmpt.formId];
+  convertToPayload(cmpt: EndpointComponent): IEndpoint {
+    let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
     return {
       id: formGroup.get('id').value,
       description: formGroup.get('description').value ? formGroup.get('description').value : null,
@@ -44,6 +44,7 @@ export class EndpointComponent extends AbstractAggregate<EndpointComponent, IEnd
       path: formGroup.get('path').value,
       method: formGroup.get('method').value,
       expression: formGroup.get('expression').value,
+      version:cmpt.aggregate&&cmpt.aggregate.version
     }
   }
   update() {

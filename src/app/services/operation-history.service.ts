@@ -10,7 +10,8 @@ export interface IChangeRecord {
   // request?: IPatchCommand[],
   requestBody?: {},
   operationType: 'POST' | 'PATCH_BATCH' | 'PATCH_BY_ID' | 'PUT' | 'RESTORE' | 'DELETE_BY_ID' | 'DELETE_BY_QUERY',
-  query?:string
+  query?:string;
+  version:number;
 }
 
 export interface IPatchCommand {

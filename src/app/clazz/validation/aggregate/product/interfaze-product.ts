@@ -9,6 +9,7 @@ export interface IProductSimple {
     totalSales: number;
     coverImage: string;
     attrSalesMap: { [key: string]: number }
+    version:number;
   }
   export interface IProductOptions {
     title: string;
@@ -37,6 +38,7 @@ export interface IProductSimple {
     storageActual: number;
     price: number;
     sales: number;
+    version:number;
   }
   export interface IProductDetail {
     id: number;
@@ -54,6 +56,7 @@ export interface IProductSimple {
     startAt?: number,
     lowestPrice?: number;
     totaleSales?: number;
+    version:number;
   }
   export interface IAttrImage {
     attributeSales: string,

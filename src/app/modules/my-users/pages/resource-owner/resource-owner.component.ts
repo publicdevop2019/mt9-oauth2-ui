@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
+import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IResourceOwner } from 'src/app/clazz/validation/aggregate/user/interfaze-user';
 import { UserValidator } from 'src/app/clazz/validation/aggregate/user/validator-user';
 import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
@@ -12,7 +12,7 @@ import { ResourceOwnerService } from 'src/app/services/resource-owner.service';
   templateUrl: './resource-owner.component.html',
   styleUrls: ['./resource-owner.component.css']
 })
-export class ResourceOwnerComponent extends AbstractAggregate<ResourceOwnerComponent, IResourceOwner> implements OnInit, AfterViewInit, OnDestroy {
+export class ResourceOwnerComponent extends Aggregate<ResourceOwnerComponent, IResourceOwner> implements OnInit, AfterViewInit, OnDestroy {
   create(): void {
     throw new Error('Method not implemented.');
   }
@@ -49,7 +49,8 @@ export class ResourceOwnerComponent extends AbstractAggregate<ResourceOwnerCompo
       id: formGroup.get('id').value,//value is ignored
       locked: formGroup.get('locked').value,
       subscription: formGroup.get('subNewOrder').value,
-      grantedAuthorities: authority
+      grantedAuthorities: authority,
+      version:cmpt.aggregate&&cmpt.aggregate.version
     }
   }
   update() {

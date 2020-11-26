@@ -8,7 +8,7 @@ import { EntityCommonService } from './entity.common-service';
 import { IBottomSheet, IIdBasedEntity } from './summary.component';
 import { ValidatorHelper } from './validateHelper';
 import { ErrorMessage, IAggregateValidator } from './validation/validator-common';
-export abstract class AbstractAggregate<C, T extends IIdBasedEntity>{
+export abstract class Aggregate<C, T extends IIdBasedEntity>{
     formId: string;
     formInfo: IForm;
     validator: IAggregateValidator;

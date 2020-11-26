@@ -5,6 +5,7 @@ export interface IEndpoint {
     method: string;
     expression: string;
     id: number;
+    version:number;
   }
   export const HTTP_METHODS= [
     { label: 'HTTP_GET', value: "GET" },

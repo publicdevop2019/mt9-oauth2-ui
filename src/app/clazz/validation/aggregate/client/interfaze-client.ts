@@ -24,4 +24,5 @@ export enum grantTypeEnums {
     resourceIndicator: boolean;
     registeredRedirectUri: string[];
     autoApprove?: boolean;
+    version:number;
   }

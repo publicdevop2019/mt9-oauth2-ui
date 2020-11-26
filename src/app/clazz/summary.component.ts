@@ -15,7 +15,8 @@ import { IEditBooleanEvent } from '../components/editable-boolean/editable-boole
 import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
 import { hasValue } from './validation/validator-common';
 export interface IIdBasedEntity {
-  id: number
+  id: number;
+  version:number
 }
 export interface IEventAdminRep {
   id: number,

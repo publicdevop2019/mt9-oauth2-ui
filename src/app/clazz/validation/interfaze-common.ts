@@ -32,6 +32,7 @@ export interface IOrder extends IAuditable {
   orderState: string;
   modifiedByUserAt: string;
   paid: boolean;
+  version:number;
 }
 export interface IAuditable {
   modifiedAt: string;

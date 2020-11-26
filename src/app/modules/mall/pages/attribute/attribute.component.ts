@@ -4,7 +4,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IAddDynamicFormEvent, IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
+import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 import { AttributeValidator } from 'src/app/clazz/validation/aggregate/attribute/validator-attribute';
@@ -23,7 +23,7 @@ interface ISetValueEvent {
   templateUrl: './attribute.component.html',
   styleUrls: ['./attribute.component.css']
 })
-export class AttributeComponent extends AbstractAggregate<AttributeComponent, IBizAttribute> implements OnInit, OnDestroy {
+export class AttributeComponent extends Aggregate<AttributeComponent, IBizAttribute> implements OnInit, OnDestroy {
   manualSelect = false;
   formIdAttrValue = 'attributesValue';
   formInfoAttrValue: IForm = JSON.parse(JSON.stringify(FORM_CONFIG_ATTR_VALUE));
@@ -74,6 +74,7 @@ export class AttributeComponent extends AbstractAggregate<AttributeComponent, IB
       method: formGroup.get('method').value,
       selectValues: values,
       type: formGroup.get('type').value,
+      version:cmpt.aggregate&&cmpt.aggregate.version
     }
   }
   create() {

@@ -4,7 +4,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
+import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
@@ -21,7 +21,7 @@ import { FilterService } from 'src/app/services/filter.service';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })
-export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilter>  implements OnInit {
+export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  implements OnInit {
   formIdCatalog = 'filtersCatalog';
   formIdFilter = 'filtersFilter';
   childFormId = 'filterForm';
@@ -170,7 +170,8 @@ export class FilterComponent extends AbstractAggregate<FilterComponent,IBizFilte
       id: formGroup.get('id').value,
       catalogs: catalogs,
       filters: filters,
-      description: hasValue(formGroup.get('description').value) ? formGroup.get('description').value : null
+      description: hasValue(formGroup.get('description').value) ? formGroup.get('description').value : null,
+      version:cmpt.aggregate&&cmpt.aggregate.version
     }
   }
   private subChangeForForm(formId: string) {

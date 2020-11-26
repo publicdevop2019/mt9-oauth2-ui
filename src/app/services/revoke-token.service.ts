@@ -7,7 +7,8 @@ export interface IRevokeToken {
   id: number;
   targetId:number;
   issuedAt:number;
-  type:'Client'|'User'
+  type:'Client'|'User';
+  version:number;
 }
 @Injectable({
   providedIn: 'root'

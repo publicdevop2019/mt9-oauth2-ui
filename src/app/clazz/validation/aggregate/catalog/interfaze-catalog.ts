@@ -4,4 +4,5 @@ export interface ICatalog {
     parentId?: number,
     attributes?: string[],
     catalogType?: 'BACKEND' | 'FRONTEND',
+    version:number
   }

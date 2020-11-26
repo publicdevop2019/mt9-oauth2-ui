@@ -4,7 +4,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
+import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
@@ -21,7 +21,7 @@ import { CatalogService } from 'src/app/services/catalog.service';
   templateUrl: './catalog.component.html',
   styleUrls: ['./catalog.component.css']
 })
-export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatalog> implements OnInit, OnDestroy {
+export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> implements OnInit, OnDestroy {
   attrFormId = 'attributes';
   attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
   attrList: IBizAttribute[];
@@ -109,6 +109,7 @@ export class CatalogComponent extends AbstractAggregate<CatalogComponent, ICatal
       parentId: formGroup.get('parentId').value,
       attributes: cmpt.hasAttr() ? cmpt.getAttributeAsPayload() : [],
       catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : '',
+      version:cmpt.aggregate&&cmpt.aggregate.version
     }
   }
   create() {

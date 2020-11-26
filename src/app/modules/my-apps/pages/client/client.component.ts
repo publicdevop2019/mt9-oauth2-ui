@@ -4,7 +4,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
+import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { grantTypeEnums, IClient, scopeEnums } from 'src/app/clazz/validation/aggregate/client/interfaze-client';
 import { ClientValidator } from 'src/app/clazz/validation/aggregate/client/validator-client';
@@ -17,7 +17,7 @@ import { ClientService } from 'src/app/services/client.service';
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
 })
-export class ClientComponent extends AbstractAggregate<ClientComponent, IClient> implements OnDestroy, OnInit {
+export class ClientComponent extends Aggregate<ClientComponent, IClient> implements OnDestroy, OnInit {
   hide = true;
   disabled = false;
   disabled2 = false;
@@ -31,7 +31,7 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
     bottomSheetRef: MatBottomSheetRef<ClientComponent>,
     cdr: ChangeDetectorRef
   ) {
-    super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef, data, fis, cdr,true);
+    super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef, data, fis, cdr, true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
@@ -80,8 +80,8 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
   ngOnDestroy(): void {
     this.fis.resetAll();
   }
-  convertToPayload(clientCmpt: ClientComponent): IClient {
-    let formGroup = clientCmpt.fis.formGroupCollection[clientCmpt.formId];
+  convertToPayload(cmpt: ClientComponent): IClient {
+    let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
     let grants: grantTypeEnums[] = [];
     let authority: string[] = [];
     let scopes: scopeEnums[] = [];
@@ -111,12 +111,13 @@ export class ClientComponent extends AbstractAggregate<ClientComponent, IClient>
       resourceIndicator: !!formGroup.get('resourceIndicator').value,
       resourceIds: formGroup.get('resourceId').value as string[],
       registeredRedirectUri: formGroup.get('registeredRedirectUri').value ? (formGroup.get('registeredRedirectUri').value as string).split(',') : null,
-      autoApprove: formGroup.get('grantType').value === grantTypeEnums.authorization_code ? !!formGroup.get('autoApprove').value : null
+      autoApprove: formGroup.get('grantType').value === grantTypeEnums.authorization_code ? !!formGroup.get('autoApprove').value : null,
+      version: cmpt.aggregate && cmpt.aggregate.version
     }
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootUpdateClientCommandValidator', this.fis, this, this.errorMapper))
-      this.clientService.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore,this.version)
+      this.clientService.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.version)
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootCreateClientCommandValidator', this.fis, this, this.errorMapper))

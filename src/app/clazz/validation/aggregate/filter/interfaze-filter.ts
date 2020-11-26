@@ -8,4 +8,5 @@ export interface IFilterItem {
     catalogs: string[],
     description?:string
     filters: IFilterItem[]
+    version:number;
   }

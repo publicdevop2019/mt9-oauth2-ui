@@ -4,7 +4,7 @@ import { FormInfoService } from 'mt-form-builder';
 import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
-import { AbstractAggregate } from 'src/app/clazz/abstract-aggregate';
+import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
@@ -52,7 +52,7 @@ interface IProductDetailPublic extends IProductSimplePublic {
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
-export class ProductComponentExp extends AbstractAggregate<ProductComponentExp, IProductDetail> implements OnInit, OnDestroy {
+export class ProductComponentExp extends Aggregate<ProductComponentExp, IProductDetail> implements OnInit, OnDestroy {
   productBottomSheet: IBottomSheet<IProductDetail>;
   salesFormIdTempId = 'attrSalesFormChild';
   attrProdFormId = 'attributesProd';
@@ -649,6 +649,7 @@ export class ProductComponentExp extends AbstractAggregate<ProductComponentExp, 
       endAt: formGroup.get('endAtDate').value ? cmpt._parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
       startAt: formGroup.get('startAtDate').value ? cmpt._parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
       attributeSaleImages: attrSaleImages,
+      version:cmpt.aggregate&&cmpt.aggregate.version
     }
   }
 }
