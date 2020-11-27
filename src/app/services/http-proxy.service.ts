@@ -178,7 +178,6 @@ export class HttpProxyService {
     autoApprove(clientId: string): Observable<boolean> {
         return new Observable<boolean>(e => {
             this._httpClient.get<IAutoApprove>(environment.serverUri + this.AUTH_SVC_NAME + '/clients/user?query=clientId:' + clientId).subscribe(next => {
-                console.dir(JSON.stringify(next))
                 if (next.data[0].autoApprove)
                     e.next(true)
                 e.next(false)

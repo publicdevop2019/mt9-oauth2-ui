@@ -46,6 +46,8 @@ export abstract class Aggregate<C, T extends IIdBasedEntity>{
             this.resumeFromEventStore();
         }
         let sub = fis.$eventPub.subscribe(_ => {
+            console.dir('[DEV ONLY] capture event')
+            console.dir(_)
             this.eventStore.push(_)
         })
         this.subs['eventPub'] = sub;
@@ -68,14 +70,13 @@ export abstract class Aggregate<C, T extends IIdBasedEntity>{
             eventCount.subscribe(_ => {
                 count++;
                 if (count === this.eventStore.length) {
-                    console.dir('event complete ')
-                    //replay complete
+                    console.dir('[DEV ONLY] event complete ')
                     this.fis.eventEmit = true;
                     this.resumeComplete.next(true)
                 }
             })
             this.eventStore.forEach(e => {
-                console.dir('dispatch stored event')
+                console.dir('[DEV ONLY] dispatch stored event')
                 if (e.type === 'setvalue') {
                     let e2 = e as ISetValueEvent;
                     setTimeout(() => {
