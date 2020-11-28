@@ -78,7 +78,7 @@ export class ClientComponent extends Aggregate<ClientComponent, IClient> impleme
   }
 
   ngOnDestroy(): void {
-    this.fis.resetAll();
+    this.cleanUp()
   }
   convertToPayload(cmpt: ClientComponent): IClient {
     let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];

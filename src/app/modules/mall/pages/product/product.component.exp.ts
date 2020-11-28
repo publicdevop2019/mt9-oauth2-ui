@@ -228,8 +228,7 @@ export class ProductComponentExp extends Aggregate<ProductComponentExp, IProduct
     this.imageAttrSaleFormInfo.inputs[0].options = attrs.filter(e => e.type === 'SALES_ATTR').map(e => <IOption>{ label: getLabel(e), value: e.id });
   }
   ngOnDestroy(): void {
-    Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
-    this.fis.resetAll();
+    this.cleanUp()
   }
   ngOnInit() {
 

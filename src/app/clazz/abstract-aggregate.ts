@@ -61,6 +61,10 @@ export abstract class Aggregate<C, T extends IIdBasedEntity>{
         this.bottomSheetRef.dismiss();
         event.preventDefault();
     }
+    cleanUp() {
+        Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
+        this.fis.resetAll();
+    }
     resumeFromEventStore() {
         //dispatch stored events
         if (this.eventStore.length > 0) {

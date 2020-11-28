@@ -129,8 +129,7 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
       this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateFilterCommandValidator', this.fis, this, this.errorMapper)
   }
   ngOnDestroy(): void {
-    Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
-    this.fis.resetAll();
+    this.cleanUp()
   }
   ngOnInit() {
   }

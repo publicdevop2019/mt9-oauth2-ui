@@ -23,7 +23,7 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
     super('securityProfile', JSON.parse(JSON.stringify(FORM_CONFIG)), new EndpointValidator(), bottomSheetRef, data, fis, cdr)
   }
   ngOnDestroy(): void {
-    this.fis.resetAll();
+    this.cleanUp()
   }
   ngAfterViewInit(): void {
     if (this.aggregate && this.eventStore.length === 0) {

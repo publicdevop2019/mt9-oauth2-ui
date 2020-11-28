@@ -55,8 +55,7 @@ export class AttributeComponent extends Aggregate<AttributeComponent, IBizAttrib
   }
 
   ngOnDestroy(): void {
-    Object.keys(this.subs).forEach(k => { this.subs[k].unsubscribe() })
-    this.fis.resetAll();
+    this.cleanUp()
   }
   ngOnInit() {
   }

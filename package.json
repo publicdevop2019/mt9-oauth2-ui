@@ -28,7 +28,7 @@
     "@angular/service-worker": "~10.2.0",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^4.0.0",
-    "mt-form-builder": "0.0.36",
+    "mt-form-builder": "0.0.37",
     "mt-wc-product": "0.0.17",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.0",

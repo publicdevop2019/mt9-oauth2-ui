@@ -35,7 +35,7 @@ export class ResourceOwnerComponent extends Aggregate<ResourceOwnerComponent, IR
     }
   }
   ngOnDestroy(): void {
-    this.fis.resetAll();
+    this.cleanUp()
   }
   ngOnInit() {
   }
