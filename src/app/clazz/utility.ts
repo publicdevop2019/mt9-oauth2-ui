@@ -6,8 +6,9 @@ export function getCookie(name: string): string {
     let parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
 }
-export function logout(){
+export function logout() {
     sessionStorage.clear();
+    document.cookie = "jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/"
     window.location.assign('/login')
 }
 export function getLabel(e: IBizAttribute): string {
