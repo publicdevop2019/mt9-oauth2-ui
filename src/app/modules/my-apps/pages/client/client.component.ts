@@ -5,12 +5,12 @@ import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
-import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { grantTypeEnums, IClient, scopeEnums } from 'src/app/clazz/validation/aggregate/client/interfaze-client';
 import { ClientValidator } from 'src/app/clazz/validation/aggregate/client/validator-client';
 import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
+import * as UUID from 'uuid/v1';
 
 @Component({
   selector: 'app-client',
@@ -36,7 +36,7 @@ export class ClientComponent extends Aggregate<ClientComponent, IClient> impleme
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
       this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
-      this.fis.formGroupCollection[this.formId].patchValue({ resourceId: [] }, { emitEvent: false })// keep to trigger checkbox change detect
+      this.formInfo.inputs.find(e => e.key === 'resourceId').id = UUID()
       this.cdr.markForCheck();
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         // prevent infinite loop
