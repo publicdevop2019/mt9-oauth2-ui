@@ -1,16 +1,14 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { filter } from 'rxjs/operators';
 import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
+import { IProductDetail, IProductSimple } from 'src/app/clazz/validation/aggregate/product/interfaze-product';
+import { OperationConfirmDialogComponent } from 'src/app/components/operation-confirm-dialog/operation-confirm-dialog.component';
 import { DeviceService } from 'src/app/services/device.service';
+import { ProductService } from 'src/app/services/product.service';
 import { isNullOrUndefined } from 'util';
 import * as UUID from 'uuid/v1';
-import { ProductComponent } from '../product/product.component';
-import { OperationConfirmDialogComponent } from 'src/app/components/operation-confirm-dialog/operation-confirm-dialog.component';
-import { IProductSimple, IProductDetail } from 'src/app/clazz/validation/aggregate/product/interfaze-product';
-import { ProductService } from 'src/app/services/product.service';
 import { ProductComponentExp } from '../product/product.component.exp';
 @Component({
   selector: 'app-summary-product',
