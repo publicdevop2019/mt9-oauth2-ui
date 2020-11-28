@@ -16,7 +16,7 @@ import { IEditInputListEvent } from '../components/editable-input-multi/editable
 import { hasValue } from './validation/validator-common';
 export interface IIdBasedEntity {
   id: number;
-  version:number
+  version: number
 }
 export interface IEventAdminRep {
   id: number,
@@ -26,14 +26,14 @@ export interface IEventAdminRep {
 export interface IEntityService<C extends IIdBasedEntity, D> {
   readEventStreamById: (id: number) => Observable<IEventAdminRep>;
   saveEventStream: (id: number, events: any[], changeId: string) => void;
-  replaceEventStream: (id: number, events: any[], changeId: string,version:number) => void;
+  replaceEventStream: (id: number, events: any[], changeId: string, version: number) => void;
   deleteEventStream: (id: number, changeId: string) => void;
   readById: (id: number) => Observable<D>;
   readByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
   deleteByQuery: (query: string, changeId: string) => void;
   deleteById: (id: number, changeId: string) => void;
   create: (s: D, changeId: string, events: any[]) => void;
-  update: (id: number, s: D, changeId: string, events: any[],version:number) => void;
+  update: (id: number, s: D, changeId: string, events: any[], version: number) => void;
   patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchAtomicNum: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
   patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;
@@ -41,6 +41,7 @@ export interface IEntityService<C extends IIdBasedEntity, D> {
   patchBoolean: (id: number, event: IEditBooleanEvent, changeId: string, fieldName: string) => void;
   refreshSummary: Observable<any>;
   currentPageIndex: number;
+  supportEvent: boolean;
 }
 export interface ISumRep<T> {
   data: T[],
@@ -90,15 +91,27 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     config.autoFocus = true;
     config.panelClass = 'fix-height'
     if (hasValue(id)) {
-      combineLatest([this.entitySvc.readById(id), this.entitySvc.readEventStreamById(id)]).subscribe(combined => {
-        if (clone) {
-          config.data = <IBottomSheet<S>>{ context: 'clone', from: combined[0], events: combined[1] || [] };
-          this.bottomSheet.open(this.sheetComponent, config);
-        } else {
-          config.data = <IBottomSheet<S>>{ context: 'edit', from: combined[0], events: combined[1] || [] };
-          this.bottomSheet.open(this.sheetComponent, config);
-        }
-      })
+      if (this.entitySvc.supportEvent) {
+        combineLatest([this.entitySvc.readById(id), this.entitySvc.readEventStreamById(id)]).subscribe(combined => {
+          if (clone) {
+            config.data = <IBottomSheet<S>>{ context: 'clone', from: combined[0], events: combined[1] };
+            this.bottomSheet.open(this.sheetComponent, config);
+          } else {
+            config.data = <IBottomSheet<S>>{ context: 'edit', from: combined[0], events: combined[1] };
+            this.bottomSheet.open(this.sheetComponent, config);
+          }
+        })
+      } else {
+        this.entitySvc.readById(id).subscribe(next => {
+          if (clone) {
+            config.data = <IBottomSheet<S>>{ context: 'clone', from: next };
+            this.bottomSheet.open(this.sheetComponent, config);
+          } else {
+            config.data = <IBottomSheet<S>>{ context: 'edit', from: next };
+            this.bottomSheet.open(this.sheetComponent, config);
+          }
+        })
+      }
     } else {
       config.data = <IBottomSheet<S>>{ context: 'new', from: undefined, events: {} };
       this.bottomSheet.open(this.sheetComponent, config);

@@ -7,7 +7,7 @@ import { filter, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { grantTypeEnums, IClient, scopeEnums } from 'src/app/clazz/validation/aggregate/client/interfaze-client';
 import { ClientValidator } from 'src/app/clazz/validation/aggregate/client/validator-client';
-import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
+import { ErrorMessage, hasValue } from 'src/app/clazz/validation/validator-common';
 import { FORM_CONFIG } from 'src/app/form-configs/client.config';
 import { ClientService } from 'src/app/services/client.service';
 import * as UUID from 'uuid/v1';
@@ -36,7 +36,7 @@ export class ClientComponent extends Aggregate<ClientComponent, IClient> impleme
     combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
       this.resources = next[1].data;
       this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
-      this.formInfo.inputs.find(e => e.key === 'resourceId').id = UUID()
+      this.formInfo.inputs.find(e => e.key === 'resourceId').id = UUID()//ngFor chagne detect fix
       this.cdr.markForCheck();
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         // prevent infinite loop
@@ -106,10 +106,9 @@ export class ClientComponent extends Aggregate<ClientComponent, IClient> impleme
       scopeEnums: scopes,
       grantedAuthorities: authority,
       accessTokenValiditySeconds: +formGroup.get('accessTokenValiditySeconds').value,
-      refreshTokenValiditySeconds: formGroup.get('refreshTokenValiditySeconds').value !== undefined && formGroup.get('refreshTokenValiditySeconds').value !== null && formGroup.get('refreshTokenValiditySeconds').value as number > 0
-        ? +formGroup.get('refreshTokenValiditySeconds').value : null,
+      refreshTokenValiditySeconds: formGroup.get('refreshToken').value ? (hasValue(formGroup.get('refreshTokenValiditySeconds').value) ? +formGroup.get('refreshTokenValiditySeconds').value : null) : null,
       resourceIndicator: !!formGroup.get('resourceIndicator').value,
-      resourceIds: formGroup.get('resourceId').value as string[],
+      resourceIds: formGroup.get('resourceId').value ? formGroup.get('resourceId').value as string[] : [],
       registeredRedirectUri: formGroup.get('registeredRedirectUri').value ? (formGroup.get('registeredRedirectUri').value as string).split(',') : null,
       autoApprove: formGroup.get('grantType').value === grantTypeEnums.authorization_code ? !!formGroup.get('autoApprove').value : null,
       version: cmpt.aggregate && cmpt.aggregate.version

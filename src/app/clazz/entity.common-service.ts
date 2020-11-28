@@ -13,13 +13,14 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
     currentPageIndex: number = 0;
     entityRepo: string;
     role: string;
+    supportEvent: boolean = false;
     interceptor: CustomHttpInterceptor
     constructor(httpProxySvc: HttpProxyService, interceptor: CustomHttpInterceptor) {
         this.httpProxySvc = httpProxySvc;
         this.interceptor = interceptor;
     }
-    replaceEventStream(id: number, events: any[], changeId: string,version:number) {
-        return this.httpProxySvc.replaceEventStream(id, events, changeId,version)
+    replaceEventStream(id: number, events: any[], changeId: string, version: number) {
+        return this.httpProxySvc.replaceEventStream(id, events, changeId, version)
     };
     deleteEventStream(id: number, changeId: string) {
         return this.httpProxySvc.deleteEventStream(id, changeId)
@@ -44,23 +45,33 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
     };
     deleteById(id: number, changeId: string) {
         this.httpProxySvc.deleteEntityById(this.entityRepo, this.role, id, changeId).subscribe(next => {
-            this.deleteEventStream(id, changeId).subscribe(var0 => {
-                this.notify(!!var0)
+            if(this.supportEvent){
+                this.deleteEventStream(id, changeId).subscribe(var0 => {
+                    this.notify(!!var0)
+                    this.refreshSummary.next();
+                });
+            }else{
+                this.notify(!!next)
                 this.refreshSummary.next();
-            });
+            }
         })
     };
     create(s: D, changeId: string, events: any[]) {
         this.httpProxySvc.createEntity(this.entityRepo, this.role, s, changeId).subscribe(next => {
-            this.saveEventStream(+next, events, changeId).subscribe(var0 => {
-                this.notify(!!var0)
+            if(this.supportEvent){
+                this.saveEventStream(+next, events, changeId).subscribe(var0 => {
+                    this.notify(!!var0)
+                    this.refreshSummary.next();
+                });
+            }else{
+                this.notify(!!next)
                 this.refreshSummary.next();
-            });
+            }
         });
     };
-    update(id: number, s: D, changeId: string, events: any[],version:number) {
+    update(id: number, s: D, changeId: string, events: any[], version: number) {
         this.httpProxySvc.updateEntity(this.entityRepo, this.role, id, s, changeId).subscribe(next => {
-            this.replaceEventStream(id, events, changeId,version).subscribe(var0 => {
+            this.replaceEventStream(id, events, changeId, version).subscribe(var0 => {
                 this.notify(!!var0)
                 this.refreshSummary.next();
             });

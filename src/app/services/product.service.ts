@@ -12,6 +12,7 @@ export class ProductService extends EntityCommonService<IProductSimple, IProduct
   private ENTITY_NAME = '/products';
   entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;
   role: string = 'admin';
+  supportEvent = true;
   constructor(private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
     super(httpProxy, interceptor);
   }
