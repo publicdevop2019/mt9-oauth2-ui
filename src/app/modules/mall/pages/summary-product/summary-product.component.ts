@@ -9,7 +9,7 @@ import { DeviceService } from 'src/app/services/device.service';
 import { ProductService } from 'src/app/services/product.service';
 import { isNullOrUndefined } from 'util';
 import * as UUID from 'uuid/v1';
-import { ProductComponentExp } from '../product/product.component.exp';
+import { ProductComponent } from '../product/product.component';
 @Component({
   selector: 'app-summary-product',
   templateUrl: './summary-product.component.html',
@@ -17,14 +17,14 @@ import { ProductComponentExp } from '../product/product.component.exp';
 export class SummaryProductComponent extends SummaryEntityComponent<IProductSimple, IProductDetail> implements OnDestroy {
   displayedColumns: string[] = ['id', 'coverImage', 'name', 'sales', 'status', 'endAt', 'edit', 'delete', 'clone'];
   // sheetComponent = ProductComponent;
-  sheetComponent = ProductComponentExp;
+  sheetComponent = ProductComponent;
   constructor(
     public entitySvc: ProductService,
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
     public dialog: MatDialog,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 5);
+    super(entitySvc, deviceSvc, bottomSheet, 7);
   }
   toggleProductStatus(row: IProductSimple) {
     const dialogRef = this.dialog.open(OperationConfirmDialogComponent);

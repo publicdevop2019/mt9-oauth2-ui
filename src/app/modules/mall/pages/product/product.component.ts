@@ -52,7 +52,7 @@ interface IProductDetailPublic extends IProductSimplePublic {
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
-export class ProductComponentExp extends Aggregate<ProductComponentExp, IProductDetail> implements OnInit, OnDestroy {
+export class ProductComponent extends Aggregate<ProductComponent, IProductDetail> implements OnInit, OnDestroy {
   productBottomSheet: IBottomSheet<IProductDetail>;
   salesFormIdTempId = 'attrSalesFormChild';
   attrProdFormId = 'attributesProd';
@@ -87,7 +87,7 @@ export class ProductComponentExp extends Aggregate<ProductComponentExp, IProduct
     private categorySvc: CatalogService,
     public attrSvc: AttributeService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, // keep as any is needed
-    bottomSheetRef: MatBottomSheetRef<ProductComponentExp>,
+    bottomSheetRef: MatBottomSheetRef<ProductComponent>,
     cdr: ChangeDetectorRef
   ) {
     super('product', JSON.parse(JSON.stringify(FORM_CONFIG)), new ProductValidator('product'), bottomSheetRef, data, fis, cdr, true);
@@ -391,13 +391,13 @@ export class ProductComponentExp extends Aggregate<ProductComponentExp, IProduct
     })
     return output;
   }
-  errorMapper(original: ErrorMessage[], cmpt: ProductComponentExp) {
+  errorMapper(original: ErrorMessage[], cmpt: ProductComponent) {
     let next = cmpt.pareseOptionFormError(original, cmpt);
     let next2 = cmpt.pareseSkuFormError(next, cmpt);
     let next3 = cmpt.parseProductFormError(next2, cmpt);
     return next3
   }
-  public pareseOptionFormError(original: ErrorMessage[], cmpt: ProductComponentExp) {
+  public pareseOptionFormError(original: ErrorMessage[], cmpt: ProductComponent) {
     if (original.some(e => e.formId === cmpt.optionFormId)) {
       return original.map(e => {
         if (e.formId === cmpt.optionFormId) {
@@ -420,7 +420,7 @@ export class ProductComponentExp extends Aggregate<ProductComponentExp, IProduct
       return original
     }
   }
-  public parseProductFormError(original: ErrorMessage[], cmpt: ProductComponentExp) {
+  public parseProductFormError(original: ErrorMessage[], cmpt: ProductComponent) {
 
     if (original.some(e => e.key === 'attributesKey')) {
       let next = original.map(e => {
@@ -438,7 +438,7 @@ export class ProductComponentExp extends Aggregate<ProductComponentExp, IProduct
       return original;
     }
   }
-  public pareseSkuFormError(original: ErrorMessage[], cmpt: ProductComponentExp) {
+  public pareseSkuFormError(original: ErrorMessage[], cmpt: ProductComponent) {
     if (!cmpt.hasSku) {
       let next = original.map(e => {
         if (['0_sales', '0_price', '0_storageActual', '0_storageOrder', '0_decreaseActualStorage', '0_decreaseOrderStorage', '0_increaseActualStorage', '0_increaseOrderStorage'].includes(e.key)) {
@@ -549,7 +549,7 @@ export class ProductComponentExp extends Aggregate<ProductComponentExp, IProduct
     }
     return afterParse;
   }
-  convertToPayload(cmpt: ProductComponentExp): IProductDetail {
+  convertToPayload(cmpt: ProductComponent): IProductDetail {
     let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
     let valueSnapshot = cmpt.fis.formGroupCollection[cmpt.imageFormId].value;
     let imagesUrl = Object.keys(valueSnapshot).map(e => valueSnapshot[e] as string).filter(e => e !== '');

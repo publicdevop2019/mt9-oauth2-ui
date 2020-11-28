@@ -67,7 +67,7 @@ import { AttributeComponent } from './modules/mall/pages/attribute/attribute.com
 import { CatalogComponent } from './modules/mall/pages/catalog/catalog.component';
 import { FilterComponent } from './modules/mall/pages/filter/filter.component';
 import { OrderComponent } from './modules/mall/pages/order/order.component';
-import { ProductComponentExp } from './modules/mall/pages/product/product.component.exp';
+import { ProductComponent } from './modules/mall/pages/product/product.component';
 import { SummaryAttributeComponent } from './modules/mall/pages/summary-attribute/summary-attribute.component';
 import { SummaryCatalogComponent } from './modules/mall/pages/summary-catalog/summary-catalog.component';
 import { SummaryFilterComponent } from './modules/mall/pages/summary-filter/summary-filter.component';
@@ -116,7 +116,7 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
     SummaryProductComponent,
     SummaryCatalogComponent,
     CatalogComponent,
-    ProductComponentExp,
+    ProductComponent,
     SummaryOrderComponent,
     OrderComponent,
     SummaryPostComponent,
@@ -193,7 +193,7 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
       }
     }),
   ],
-  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponentExp, ClientComponent, EndpointComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent, ObjectDetailComponent],
+  entryComponents: [MsgBoxComponent, CatalogComponent, AttributeComponent, ProductComponent, ClientComponent, EndpointComponent, ResourceOwnerComponent, OperationConfirmDialogComponent, FilterComponent, ObjectDetailComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
