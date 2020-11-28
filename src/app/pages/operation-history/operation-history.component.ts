@@ -31,7 +31,7 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
     private overlay: Overlay,
     private overlaySvc: OverlayService,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 3, true);
+    super(entitySvc, deviceSvc, bottomSheet, 2, true);
     let ob = this.route.queryParamMap.pipe(switchMap(queryMaps => {
       this.entitySvc.currentPageIndex = 0;//reset var
       this.queryString = undefined;

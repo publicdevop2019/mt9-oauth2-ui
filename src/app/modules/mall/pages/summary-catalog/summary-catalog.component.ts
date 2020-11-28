@@ -31,7 +31,7 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
     private route: ActivatedRoute,
     private fis: FormInfoService,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 4, true);
+    super(entitySvc, deviceSvc, bottomSheet, 5, true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.formCreatedOb.subscribe(() => {
       let sub = this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {

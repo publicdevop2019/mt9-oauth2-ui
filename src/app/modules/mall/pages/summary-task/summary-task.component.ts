@@ -18,6 +18,6 @@ export class SummaryTaskComponent extends SummaryEntityComponent<IBizTask, IBizT
     public bottomSheet: MatBottomSheet,
     public dialog: MatDialog,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 5);
+    super(entitySvc, deviceSvc, bottomSheet, 3);
   }
 }
