@@ -38,6 +38,8 @@ import { mockProductsSearch } from 'src/app/mocks/mock-products-search';
 import { mockAttrsSearch } from 'src/app/mocks/mock-attributes-search';
 import { mockResourceSearch } from 'src/app/mocks/mock-users-search';
 import { mockBizOrderOpt } from 'src/app/mocks/mock-biz-order-opt';
+import { mockClientEvent } from '../mocks/mock-client-events';
+import { mockProductEvents } from '../mocks/mock-product-events';
 /**
  * use refresh token if call failed
  */
@@ -70,7 +72,13 @@ export class OfflineInterceptor implements HttpInterceptor {
           return of(new HttpResponse({ status: 200, body: mockBizClientOpt })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('object-svc/events/admin')) {
-          return of(new HttpResponse({ status: 200, body: null })).pipe(delay(this.DEFAULT_DELAY))
+          let var0 = req.url.split('/');
+          let id = var0[var0.length - 1]
+          if (+id > 100) {
+            return of(new HttpResponse({ status: 200, body: mockProductEvents })).pipe(delay(this.DEFAULT_DELAY))
+          } else {
+            return of(new HttpResponse({ status: 200, body: mockClientEvent })).pipe(delay(this.DEFAULT_DELAY))
+          }
         }
         if (req.url.includes('changes/root?query=entityType:BizUser')) {
           return of(new HttpResponse({ status: 200, body: mockBizUserOpt })).pipe(delay(this.DEFAULT_DELAY))
