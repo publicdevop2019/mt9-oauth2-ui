@@ -9,9 +9,9 @@ export interface IChangeRecord {
   entityType: number,
   // request?: IPatchCommand[],
   requestBody?: {},
-  operationType: 'POST' | 'PATCH_BATCH' | 'PATCH_BY_ID' | 'PUT' | 'RESTORE' | 'DELETE_BY_ID' | 'DELETE_BY_QUERY',
-  query?:string;
-  version:number;
+  operationType: 'POST' | 'PATCH_BATCH' | 'PATCH_BY_ID' | 'PUT' | 'RESTORE_LAST_VERSION' | 'DELETE_BY_QUERY' | 'EMPTY_OPT' | 'RESTORE_DELETE' | 'CANCEL_CREATE',
+  query?: string;
+  version: number;
 }
 
 export interface IPatchCommand {
