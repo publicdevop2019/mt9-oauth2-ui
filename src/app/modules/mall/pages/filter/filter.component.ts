@@ -5,6 +5,7 @@ import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
+import { CATALOG_TYPE } from 'src/app/clazz/constants';
 import { IBottomSheet } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
@@ -21,7 +22,7 @@ import { FilterService } from 'src/app/services/filter.service';
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.css']
 })
-export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  implements OnInit {
+export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> implements OnInit {
   formIdCatalog = 'filtersCatalog';
   formIdFilter = 'filtersFilter';
   childFormId = 'filterForm';
@@ -34,8 +35,6 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
   private childFormOb: Observable<string>;
   attrList: IBizAttribute[];
   catalogList: ICatalog[];
-  catalogIndex: number = 0;
-  catalogChunkSize: number = 10;
   constructor(
     public filterSvc: FilterService,
     fis: FormInfoService,
@@ -45,35 +44,18 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
     cdr: ChangeDetectorRef,
     public attrSvc: AttributeService,
   ) {
-    super('filters',JSON.parse(JSON.stringify(FORM_CONFIG)),new FilterValidator(),bottomSheetRef,data,fis,cdr,true);
+    super('filters', JSON.parse(JSON.stringify(FORM_CONFIG)), new FilterValidator(), bottomSheetRef, data, fis, cdr, true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.catalogFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdCatalog));
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
-    this.fis.$loadNextPage.subscribe(e => {
-      if (e.formId === this.formIdCatalog && e.ctrlKey.includes('catalogId')) {
-        this.catalogIndex++;
-        this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND',undefined,undefined,{loading:false}).subscribe(next => {
-          if (next.data.length === 0) {
-            this.fis.completeLoading = [...this.fis.completeLoading, e];
-          } else {
-            this.catalogList = [...this.catalogList, ...next.data];
-            this.formInfoCatalog.inputs.filter(el => el.key.includes(e.ctrlKey.replace(new RegExp("_.*$"), ''))).forEach(a => {
-              a.options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
-            })
-            this.fis.formGroupCollection_template[this.formIdCatalog].inputs[0].options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
-            this.fis.$refresh.next();
-            this.fis.$loadNextPageComplete.next(e);
-          }
-        })
-      }
-    })
+    fis.queryProvider[this.formIdCatalog + '_' + 'catalogId'] = categorySvc;
     //@todo use paginated select component
-    combineLatest([this.attrSvc.readByQuery(0, 1000), this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe((next) => {
+    combineLatest([this.attrSvc.readByQuery(0, 1000), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
-      this.catalogList = next[1].data;
+      // this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });
-      this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLayeredLabel(e, next[1].data), value: String(e.id) });
+      // this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLayeredLabel(e, next[1].data), value: String(e.id) });
       this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
       this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
       this.cdr.detectChanges()
@@ -82,7 +64,7 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id);
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.aggregate.description);
         if (this.aggregate.catalogs && this.aggregate.catalogs.length !== 0) {
-          this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND,id:' + this.aggregate.catalogs.join('.')).subscribe(next => {
+          this.categorySvc.readByQuery(0, this.aggregate.catalogs.join('.').length, `${CATALOG_TYPE.FRONTEND},id:` + this.aggregate.catalogs.join('.')).subscribe(next => {
             this.catalogList = [...next.data, ...this.catalogList];
             this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.aggregate.catalogs, 'catalogId'), this.aggregate.catalogs.length);
             this.formInfoCatalog.inputs.forEach(a => {
@@ -171,7 +153,7 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
       catalogs: catalogs,
       filters: filters,
       description: hasValue(formGroup.get('description').value) ? formGroup.get('description').value : null,
-      version:cmpt.aggregate&&cmpt.aggregate.version
+      version: cmpt.aggregate && cmpt.aggregate.version
     }
   }
   private subChangeForForm(formId: string) {
@@ -204,11 +186,11 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateFilterCommandValidator', this.fis, this, this.errorMapper))
-      this.filterSvc.create(this.convertToPayload(this), this.changeId,this.eventStore)
+      this.filterSvc.create(this.convertToPayload(this), this.changeId, this.eventStore)
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateFilterCommandValidator', this.fis, this, this.errorMapper))
-      this.filterSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore,this.version)
+      this.filterSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.version)
   }
   errorMapper(original: ErrorMessage[], cmpt: FilterComponent) {
     return original.map(e => {

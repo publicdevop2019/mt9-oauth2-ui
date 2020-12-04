@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IQueryProvider } from 'mt-form-builder/lib/classes/template.interface';
 import { environment } from 'src/environments/environment';
 import { CATALOG_TYPE } from '../clazz/constants';
 import { EntityCommonService } from '../clazz/entity.common-service';
@@ -14,7 +15,7 @@ export interface ICatalogCustomerTreeNode {
 @Injectable({
   providedIn: 'root'
 })
-export class CatalogService extends EntityCommonService<ICatalog, ICatalog>{
+export class CatalogService extends EntityCommonService<ICatalog, ICatalog> implements IQueryProvider{
   private PRODUCT_SVC_NAME = '/product-svc';
   private ENTITY_NAME = '/catalogs';
   entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;
