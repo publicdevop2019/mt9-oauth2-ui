@@ -1,8 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { PageEvent } from '@angular/material/paginator';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { switchMap } from 'rxjs/operators';
 import { CONST_HTTP_METHOD } from 'src/app/clazz/constants';
-import { SummaryEntityComponent } from 'src/app/clazz/summary.component';
+import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { IEndpoint } from 'src/app/clazz/validation/aggregate/endpoint/interfaze-endpoint';
 import { ClientService } from 'src/app/services/client.service';
 import { DeviceService } from 'src/app/services/device.service';
@@ -24,15 +26,30 @@ export class SummaryEndpointComponent extends SummaryEntityComponent<IEndpoint, 
     public bottomSheet: MatBottomSheet,
     public clientSvc: ClientService,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet,3);
-    this.clientSvc.readByQuery(0, 1000)
-    .subscribe(next => {
-      if (next.data) {
-        this.allClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
-      }
-    });
+    super(entitySvc, deviceSvc, bottomSheet,3,true);
+    let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); this.loadBizClient(next) });
+    let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
+      this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
+    )).subscribe(next => { this.updateSummaryData(next); this.loadBizClient(next) })
+    this.subs.add(sub)
+    this.subs.add(sub0)
+  }
+  loadBizClient(input: ISumRep<IEndpoint>) {
+    let ids = input.data.map(e => e.resourceId);
+    let var0 = new Set(ids);
+    let var1 = new Array(...var0);
+    this.clientSvc.readByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
+      this.allClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
+    })
   }
   getOption(value:string,options:IOption[]){
     return options.find(e=>e.value==value)
+  }
+  pageHandler(e: PageEvent) {
+    this.entitySvc.currentPageIndex = e.pageIndex;
+    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
+      this.updateSummaryData(next)
+      this.loadBizClient(next)
+    });
   }
 }

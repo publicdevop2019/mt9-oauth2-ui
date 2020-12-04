@@ -401,8 +401,12 @@ export class HttpProxyService {
     readEntityById<S>(entityRepo: string, role: string, id: number): Observable<S> {
         return this._httpClient.get<S>(entityRepo + '/' + role + '/' + id);
     };
-    readEntityByQuery<T>(entityRepo: string, role: string, num: number, size: number, query?: string, by?: string, order?: string) {
-        return this._httpClient.get<ISumRep<T>>(entityRepo + '/' + role + this.getQueryParam([this.addPrefix(query), this.getPageParam(num, size, by, order)]))
+    readEntityByQuery<T>(entityRepo: string, role: string, num: number, size: number, query?: string, by?: string, order?: string, headers?: {}) {
+        let headerConfig = new HttpHeaders();
+        headers && Object.keys(headers).forEach(e => {
+            headerConfig = headerConfig.set(e, headers[e]+'')
+        })
+        return this._httpClient.get<ISumRep<T>>(entityRepo + '/' + role + this.getQueryParam([this.addPrefix(query), this.getPageParam(num, size, by, order)]),{ headers: headerConfig })
     }
     addPrefix(query: string): string {
         let var0: string = query;

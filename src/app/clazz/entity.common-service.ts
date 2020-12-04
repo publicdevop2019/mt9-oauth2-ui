@@ -34,8 +34,8 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
     readById(id: number) {
         return this.httpProxySvc.readEntityById<D>(this.entityRepo, this.role, id)
     };
-    readByQuery(num: number, size: number, query?: string, by?: string, order?: string) {
-        return this.httpProxySvc.readEntityByQuery<C>(this.entityRepo, this.role, num, size, query, by, order)
+    readByQuery(num: number, size: number, query?: string, by?: string, order?: string,headers?:{}) {
+        return this.httpProxySvc.readEntityByQuery<C>(this.entityRepo, this.role, num, size, query, by, order,headers)
     };
     deleteByQuery(query: string, changeId: string) {
         this.httpProxySvc.deleteEntityByQuery(this.entityRepo, this.role, query, changeId).subscribe(next => {

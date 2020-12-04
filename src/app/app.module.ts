@@ -98,6 +98,7 @@ import { LoadingInterceptor } from './services/loading.interceptor';
 import { OfflineInterceptor } from './services/offline.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
 import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
+import { EditablePageSelectComponent } from './components/editable-page-select/editable-page-select.component';
 
 @NgModule({
   declarations: [
@@ -147,7 +148,8 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
     SummaryRevokeTokenComponent,
     SummarySkuComponent,
     SummaryTaskComponent,
-    ObjectDetailComponent
+    ObjectDetailComponent,
+    EditablePageSelectComponent
   ],
   imports: [
     BrowserAnimationsModule,
