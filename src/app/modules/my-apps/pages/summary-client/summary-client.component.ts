@@ -22,7 +22,7 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
     public deviceSvc: DeviceService,
     public bottomSheet: MatBottomSheet,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 8);
+    super(entitySvc, deviceSvc, bottomSheet, 3);
   }
   updateSummaryData(next: ISumRep<IClient>) {
     super.updateSummaryData(next);

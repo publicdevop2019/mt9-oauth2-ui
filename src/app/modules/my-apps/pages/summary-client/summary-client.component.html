@@ -83,17 +83,21 @@
             <ng-container matColumnDef="grantedAuthorities">
                 <th mat-header-cell *matHeaderCellDef> {{'GRANTED_AUTHORITIES'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    <app-editable-select-multi [inputOptions]="getAuthorityList(row.grantedAuthorities)" [list]="roleList"
-                        (newValue)="doPatchList(row.id,$event,'grantedAuthorities')"></app-editable-select-multi>
+                    <app-editable-select-multi [inputOptions]="getAuthorityList(row.grantedAuthorities)"
+                        [list]="roleList" (newValue)="doPatchList(row.id,$event,'grantedAuthorities')">
+                    </app-editable-select-multi>
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="resourceIds">
                 <th mat-header-cell *matHeaderCellDef> {{'RESOURCEIDS'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
-                    <app-editable-select-multi [inputOptions]="getResourceList(row.resourceIds)"
-                        [list]="resourceClientList" (newValue)="doPatchList(row.id,$event,'resourceIds')">
-                    </app-editable-select-multi>
+                    <app-editable-page-select-multi [inputOptions]="getResourceList(row.resourceIds)"
+                        [list]="resourceClientList" [entitySvc]="entitySvc"
+                        (newValue)="doPatchList(row.id,$event,'resourceIds')"
+                        [query]="'resourceIndicator:1'"
+                        >
+                    </app-editable-page-select-multi>
                 </td>
             </ng-container>
 

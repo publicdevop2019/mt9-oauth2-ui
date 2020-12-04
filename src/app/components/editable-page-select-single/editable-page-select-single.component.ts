@@ -3,7 +3,7 @@ import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { EntityCommonService } from 'src/app/clazz/entity.common-service';
 import { IIdBasedEntity } from 'src/app/clazz/summary.component';
 import { IEditEvent } from '../editable-field/editable-field.component';
-interface IIdName extends IIdBasedEntity {
+export interface IIdName extends IIdBasedEntity {
   name: string
 }
 @Component({
@@ -12,6 +12,13 @@ interface IIdName extends IIdBasedEntity {
   styleUrls: ['./editable-page-select-single.component.css']
 })
 export class EditablePageSelectSingleComponent implements OnInit {
+  @Input() query: string = undefined;
+  @ViewChild('ghostRef') set ghostRef(ghostRef: ElementRef) {
+    if (ghostRef) { // initially setter gets called with undefined
+      this.ref = ghostRef;
+      this.observer.observe(this.ref.nativeElement);
+    }
+  }
   private _visibilityConfig = {
     threshold: 0
   };
@@ -20,12 +27,12 @@ export class EditablePageSelectSingleComponent implements OnInit {
   private pageNumber = 0;
   private pageSize = 5;
   allLoaded = false;
-  @ViewChild('ghostRef') set ghostRef(ghostRef: ElementRef) {
-    if (ghostRef) { // initially setter gets called with undefined
-      this.ref = ghostRef;
-      this.observer.observe(this.ref.nativeElement);
-    }
-  }
+  @Input() inputValue: IOption = undefined;
+  @Input() list: IOption[] = [];
+  @Input() entitySvc: EntityCommonService<IIdName, IIdName>;
+  @Output() newValue: EventEmitter<IEditEvent> = new EventEmitter();
+  displayEdit = 'hidden';
+  lockEditIcon = false;
   private observer = new IntersectionObserver((entries, self) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -49,12 +56,6 @@ export class EditablePageSelectSingleComponent implements OnInit {
       }
     });
   }, this._visibilityConfig);
-  @Input() inputValue: IOption = undefined;
-  @Input() list: IOption[] = [];
-  @Input() entitySvc: EntityCommonService<IIdName, IIdName>;
-  @Output() newValue: EventEmitter<IEditEvent> = new EventEmitter();
-  displayEdit = 'hidden';
-  lockEditIcon = false;
   constructor() { }
 
   ngOnInit(): void {

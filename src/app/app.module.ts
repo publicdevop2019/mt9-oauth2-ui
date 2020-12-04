@@ -99,6 +99,7 @@ import { OfflineInterceptor } from './services/offline.interceptor';
 import { ResourceOwnerService } from './services/resource-owner.service';
 import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
 import { EditablePageSelectSingleComponent } from './components/editable-page-select-single/editable-page-select-single.component';
+import { EditablePageSelectMultiComponent } from './components/editable-page-select-multi/editable-page-select-multi.component';
 
 @NgModule({
   declarations: [
@@ -149,7 +150,8 @@ import { EditablePageSelectSingleComponent } from './components/editable-page-se
     SummarySkuComponent,
     SummaryTaskComponent,
     ObjectDetailComponent,
-    EditablePageSelectSingleComponent
+    EditablePageSelectSingleComponent,
+    EditablePageSelectMultiComponent
   ],
   imports: [
     BrowserAnimationsModule,

@@ -39,9 +39,9 @@
             <ng-container matColumnDef="catalogs">
                 <th mat-header-cell *matHeaderCellDef> {{'CATALOGS'|translate}}</th>
                 <td mat-cell *matCellDef="let row">
-                    <app-editable-select-multi *ngIf="mappedCatalog" [inputOptions]="getCatalogList(row.catalogs)"
-                        [list]="fullCatalog" (newValue)="doPatchList(row.id,$event,'catalogs')">
-                    </app-editable-select-multi>
+                    <app-editable-page-select-multi [inputOptions]="getCatalogList(row.catalogs)" [list]="catalogList"
+                        [entitySvc]="catalogSvc" (newValue)="doPatchList(row.id,$event,'catalogs')">
+                    </app-editable-page-select-multi>
                 </td>
             </ng-container>
 

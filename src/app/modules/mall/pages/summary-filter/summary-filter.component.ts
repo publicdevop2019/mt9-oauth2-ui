@@ -1,9 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { switchMap } from 'rxjs/operators';
 import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';
-import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
 import { IBizFilter } from 'src/app/clazz/validation/aggregate/filter/interfaze-filter';
 import { CatalogService } from 'src/app/services/catalog.service';
 import { DeviceService } from 'src/app/services/device.service';
@@ -17,39 +15,27 @@ import { FilterComponent } from '../filter/filter.component';
 export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, IBizFilter> implements OnDestroy {
   displayedColumns: string[] = ['id', 'description', 'catalogs', 'edit', 'delete'];
   sheetComponent = FilterComponent;
-  public mappedCatalog: ICatalog[]
-  public fullCatalog: IOption[]
+  public catalogList: IOption[] = []
   constructor(
     public entitySvc: FilterService,
     public deviceSvc: DeviceService,
     protected bottomSheet: MatBottomSheet,
-    private catalogSvc: CatalogService,
+    public catalogSvc: CatalogService,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet, 0, true);
-    let sub = this.entitySvc.refreshSummary.pipe(switchMap(() => this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()))).subscribe(next => { this.updateSummaryDataExt(next) })
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => {
-      this.updateSummaryDataExt(next);
-    })
-    this.catalogSvc.readByQuery(0, 1000, 'type:FRONTEND').subscribe(next => {//@todo use paginated select component
-      this.fullCatalog = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) })
-    })
-    this.subs.add(sub)
+    super(entitySvc, deviceSvc, bottomSheet, 0);
   }
-  public parseCatalogId(id: number) {
-    return this.mappedCatalog.find(e => e.id === id).name
+
+  updateSummaryData(next: ISumRep<IBizFilter>) {
+    super.updateSummaryData(next)
+    let var0 = new Set(next.data.flatMap(e => e.catalogs));
+    let var1 = new Array(...var0);
+    if (var1.length > 0) {
+      this.catalogSvc.readByQuery(0, var1.length, 'type:FRONTEND,id:' + var1.join('.')).subscribe(next => {
+        this.catalogList = next.data.map(e => <IOption>{ label: e.name, value: e.id })
+      })
+    }
   }
   getCatalogList(inputs: string[]): IOption[] {
-    return inputs.map(e => <IOption>{ label: this.parseCatalogId(+e), value: e })
-  }
-  private updateSummaryDataExt(inputs: ISumRep<IBizFilter>) {
-    super.updateSummaryData(inputs);
-    let var0: string[] = []
-    inputs.data.forEach(e => {
-      var0.push(...e.catalogs)
-    })
-    if (var0.length > 0)
-      this.catalogSvc.readByQuery(0, var0.length, 'type:FRONTEND,id:' + var0.join('.')).subscribe(next => {
-        this.mappedCatalog = next.data
-      })
+    return this.catalogList.filter(e => inputs.includes(e.value + ""))
   }
 }
