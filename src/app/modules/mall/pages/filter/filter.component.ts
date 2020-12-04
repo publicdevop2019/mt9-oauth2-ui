@@ -35,7 +35,7 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
   attrList: IBizAttribute[];
   catalogList: ICatalog[];
   catalogIndex: number = 0;
-  catalogChunkSize: number = 100;
+  catalogChunkSize: number = 10;
   constructor(
     public filterSvc: FilterService,
     fis: FormInfoService,
@@ -53,7 +53,7 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
     this.fis.$loadNextPage.subscribe(e => {
       if (e.formId === this.formIdCatalog && e.ctrlKey.includes('catalogId')) {
         this.catalogIndex++;
-        this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND').subscribe(next => {
+        this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND',undefined,undefined,{loading:false}).subscribe(next => {
           if (next.data.length === 0) {
             this.fis.completeLoading = [...this.fis.completeLoading, e];
           } else {

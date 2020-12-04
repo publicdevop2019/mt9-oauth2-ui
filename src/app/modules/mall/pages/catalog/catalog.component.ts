@@ -5,6 +5,7 @@ import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-bu
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
+import { CATALOG_TYPE } from 'src/app/clazz/constants';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
@@ -64,9 +65,9 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
       let catalogOb: Observable<ISumRep<ICatalog>>;
       if (next === 'FRONTEND') {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, 'type:FRONTEND');
+        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.FRONTEND);
       } else {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, 'type:BACKEND')
+        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.BACKEND)
       }
       catalogOb.subscribe(next1 => {
         this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })

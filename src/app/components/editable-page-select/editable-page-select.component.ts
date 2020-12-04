@@ -1,8 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { EntityCommonService } from 'src/app/clazz/entity.common-service';
+import { IIdBasedEntity } from 'src/app/clazz/summary.component';
 import { ClientService } from 'src/app/services/client.service';
 import { IEditEvent } from '../editable-field/editable-field.component';
-
+interface IIdName extends IIdBasedEntity {
+  name: string
+}
 @Component({
   selector: 'app-editable-page-select',
   templateUrl: './editable-page-select.component.html',
@@ -48,10 +52,11 @@ export class EditablePageSelectComponent implements OnInit {
   }, this._visibilityConfig);
   @Input() inputValue: IOption = undefined;
   @Input() list: IOption[] = [];
+  @Input() entitySvc: EntityCommonService<IIdName, IIdName>;
   @Output() newValue: EventEmitter<IEditEvent> = new EventEmitter();
   displayEdit = 'hidden';
   lockEditIcon = false;
-  constructor(public entitySvc: ClientService) { }
+  constructor() { }
 
   ngOnInit(): void {
   }

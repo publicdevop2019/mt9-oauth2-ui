@@ -40,6 +40,7 @@ import { mockResourceSearch } from 'src/app/mocks/mock-users-search';
 import { mockBizOrderOpt } from 'src/app/mocks/mock-biz-order-opt';
 import { mockClientEvent } from '../mocks/mock-client-events';
 import { mockProductEvents } from '../mocks/mock-product-events';
+import { CATALOG_TYPE } from '../clazz/constants';
 /**
  * use refresh token if call failed
  */
@@ -135,10 +136,10 @@ export class OfflineInterceptor implements HttpInterceptor {
         if (req.url.includes('products/admin')) {
           return of(new HttpResponse({ status: 200, body: mockProducts })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/catalogs/admin?query=type:FRONTEND')) {
+        if (req.url.includes(`/catalogs/admin?query=${CATALOG_TYPE.FRONTEND}`)) {
           return of(new HttpResponse({ status: 200, body: mockCatalogCustomer })).pipe(delay(this.DEFAULT_DELAY))
         }
-        if (req.url.includes('/catalogs/admin?query=type:BACKEND')) {
+        if (req.url.includes(`/catalogs/admin?query=${CATALOG_TYPE.BACKEND}`)) {
           return of(new HttpResponse({ status: 200, body: mockCatalogAdmin })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('/catalogs/admin/')) {

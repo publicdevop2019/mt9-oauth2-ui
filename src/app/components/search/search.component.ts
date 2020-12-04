@@ -168,7 +168,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     if (this.fields.includes('catalogFront') || this.fields.includes('parentId_front') || this.fields.includes('catalogs')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'type:FRONTEND')
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000)
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataFront = catalogs.data;
@@ -176,7 +176,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     }
     if (this.fields.includes('catalogBack') || this.fields.includes('parentId_back')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, 'type:BACKEND')
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000)
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataBack = catalogs.data;

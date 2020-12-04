@@ -32,3 +32,7 @@ export const CONST_ATTR_TYPE: IOption[] = [
     { label: 'PROD_ATTR', value: "PROD_ATTR" },
     { label: 'GEN_ATTR', value: "GEN_ATTR" },
 ]
+export const CATALOG_TYPE = {
+    BACKEND: 'type:BACKEND',
+    FRONTEND: 'type:FRONTEND'
+}
