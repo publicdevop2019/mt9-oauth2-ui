@@ -24,7 +24,7 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
     public bottomSheet: MatBottomSheet,
   ) {
     super(entitySvc, deviceSvc, bottomSheet, 3);
-    this.entitySvc.readByQuery(0, 1000, 'resourceIndicator:1')
+    this.entitySvc.readByQuery(0, 1000, 'resourceIndicator:1')//@todo use paginated select component
       .subscribe(next => {
         if (next.data) {
           this.resourceClients = next.data;

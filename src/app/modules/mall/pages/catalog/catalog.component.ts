@@ -40,7 +40,7 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
 
-    let sub1 = combineLatest([this.formCreatedOb, this.attrSvc.readByQuery(0, 1000)]).pipe(take(1)).pipe(switchMap(next => {
+    let sub1 = combineLatest([this.formCreatedOb, this.attrSvc.readByQuery(0, 1000)]).pipe(take(1)).pipe(switchMap(next => {//@todo use paginated select component
       this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: e.id });//update formInfo first then initialize form, so add template can be correct
       this.attrList = next[1].data;
       this.cdr.markForCheck();//refresh view for create
@@ -65,9 +65,9 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
       let catalogOb: Observable<ISumRep<ICatalog>>;
       if (next === 'FRONTEND') {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.FRONTEND);
+        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.FRONTEND);//@todo use paginated select component
       } else {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.BACKEND)
+        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.BACKEND)//@todo use paginated select component
       }
       catalogOb.subscribe(next1 => {
         this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })

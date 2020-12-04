@@ -30,7 +30,7 @@ export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, I
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => {
       this.updateSummaryDataExt(next);
     })
-    this.catalogSvc.readByQuery(0, 1000, 'type:FRONTEND').subscribe(next => {
+    this.catalogSvc.readByQuery(0, 1000, 'type:FRONTEND').subscribe(next => {//@todo use paginated select component
       this.fullCatalog = next.data.map(e => <IOption>{ label: e.name, value: String(e.id) })
     })
     this.subs.add(sub)

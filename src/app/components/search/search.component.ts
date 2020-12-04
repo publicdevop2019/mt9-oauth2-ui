@@ -168,7 +168,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     if (this.fields.includes('catalogFront') || this.fields.includes('parentId_front') || this.fields.includes('catalogs')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000)
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000)//@todo use paginated select component
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataFront = catalogs.data;
@@ -176,28 +176,28 @@ export class SearchComponent implements OnDestroy, OnInit {
     }
     if (this.fields.includes('catalogBack') || this.fields.includes('parentId_back')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000)
+      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000)//@todo use paginated select component
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataBack = catalogs.data;
         });
     }
     if (this.fields.includes('attributes')) {
-      this.attrSvc.readByQuery(0, 1000)
+      this.attrSvc.readByQuery(0, 1000)//@todo use paginated select component
         .subscribe(next => {
           if (next.data)
             this.bizAttr = next.data;
         });
     }
     if (this.fields.includes('resourceIds')) {
-      this.clientSvc.readByQuery(0, 1000, 'resourceIndicator:1')
+      this.clientSvc.readByQuery(0, 1000, 'resourceIndicator:1')//@todo use paginated select component
         .subscribe(next => {
           if (next.data)
             this.resourceClients = next.data;
         });
     }
     if (this.fields.includes('resourceId')) {
-      this.clientSvc.readByQuery(0, 1000)
+      this.clientSvc.readByQuery(0, 1000)//@todo use paginated select component
         .subscribe(next => {
           if (next.data)
             this.allClients = next.data;

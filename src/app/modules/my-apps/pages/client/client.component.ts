@@ -33,7 +33,7 @@ export class ClientComponent extends Aggregate<ClientComponent, IClient> impleme
   ) {
     super('client', JSON.parse(JSON.stringify(FORM_CONFIG)), new ClientValidator(), bottomSheetRef, data, fis, cdr, true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
-    combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {
+    combineLatest([this.formCreatedOb, this.clientService.readByQuery(0, 1000, 'resourceIndicator:1')]).pipe(take(1)).subscribe(next => {//@todo add checkbox paginated
       this.resources = next[1].data;
       this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[1].data.map(e => <IOption>{ label: e.name, value: String(e.id) });
       this.formInfo.inputs.find(e => e.key === 'resourceId').id = UUID()//ngFor chagne detect fix

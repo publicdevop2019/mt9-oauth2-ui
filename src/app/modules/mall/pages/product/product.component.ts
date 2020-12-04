@@ -97,6 +97,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
     this.salesFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrSalesFormId));
     this.genFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrGeneralFormId));
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
+    //@todo use paginated select component
     combineLatest([this.categorySvc.readByQuery(0, 1000, 'type:BACKEND'), this.formCreatedOb]).pipe(take(1)).subscribe(next => {
       if (next[0].data) {
         this.catalogs = next[0];
@@ -134,7 +135,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
       })
       this.subs[this.formId + '_hasSku'] = sub2;
     })
-    let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {
+    let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {//@todo use paginated select component
       // load attribute first then initialize form
       this._updateFormInfoOptions(next.data);
       this.attrList = next.data;

@@ -68,6 +68,7 @@ export class FilterComponent extends Aggregate<FilterComponent,IBizFilter>  impl
         })
       }
     })
+    //@todo use paginated select component
     combineLatest([this.attrSvc.readByQuery(0, 1000), this.categorySvc.readByQuery(this.catalogIndex, this.catalogChunkSize, 'type:FRONTEND'), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
       this.catalogList = next[1].data;
