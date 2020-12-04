@@ -1,8 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { PageEvent } from '@angular/material/paginator';
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
-import { switchMap } from 'rxjs/operators';
 import { CONST_HTTP_METHOD } from 'src/app/clazz/constants';
 import { ISumRep, SummaryEntityComponent } from 'src/app/clazz/summary.component';
 import { IEndpoint } from 'src/app/clazz/validation/aggregate/endpoint/interfaze-endpoint';
@@ -18,7 +16,7 @@ import { EndpointComponent } from '../endpoint/endpoint.component';
 export class SummaryEndpointComponent extends SummaryEntityComponent<IEndpoint, IEndpoint> implements OnDestroy {
   displayedColumns: string[] = ['id', 'description', 'resourceId', 'path', 'expression', 'method', 'edit', 'delete'];
   sheetComponent = EndpointComponent;
-  httpMethodList=CONST_HTTP_METHOD;
+  httpMethodList = CONST_HTTP_METHOD;
   public allClientList: IOption[];
   constructor(
     public entitySvc: EndpointService,
@@ -26,30 +24,18 @@ export class SummaryEndpointComponent extends SummaryEntityComponent<IEndpoint, 
     public bottomSheet: MatBottomSheet,
     public clientSvc: ClientService,
   ) {
-    super(entitySvc, deviceSvc, bottomSheet,3,true);
-    let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); this.loadBizClient(next) });
-    let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
-      this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
-    )).subscribe(next => { this.updateSummaryData(next); this.loadBizClient(next) })
-    this.subs.add(sub)
-    this.subs.add(sub0)
+    super(entitySvc, deviceSvc, bottomSheet, 3);
   }
-  loadBizClient(input: ISumRep<IEndpoint>) {
-    let ids = input.data.map(e => e.resourceId);
+  updateSummaryData(next: ISumRep<IEndpoint>) {
+    super.updateSummaryData(next);
+    let ids = next.data.map(e => e.resourceId);
     let var0 = new Set(ids);
     let var1 = new Array(...var0);
     this.clientSvc.readByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
       this.allClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
     })
   }
-  getOption(value:string,options:IOption[]){
-    return options.find(e=>e.value==value)
-  }
-  pageHandler(e: PageEvent) {
-    this.entitySvc.currentPageIndex = e.pageIndex;
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
-      this.updateSummaryData(next)
-      this.loadBizClient(next)
-    });
+  getOption(value: string, options: IOption[]) {
+    return options.find(e => e.value == value)
   }
 }

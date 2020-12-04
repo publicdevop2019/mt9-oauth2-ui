@@ -2,17 +2,16 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { IOption } from 'mt-form-builder/lib/classes/template.interface';
 import { EntityCommonService } from 'src/app/clazz/entity.common-service';
 import { IIdBasedEntity } from 'src/app/clazz/summary.component';
-import { ClientService } from 'src/app/services/client.service';
 import { IEditEvent } from '../editable-field/editable-field.component';
 interface IIdName extends IIdBasedEntity {
   name: string
 }
 @Component({
-  selector: 'app-editable-page-select',
-  templateUrl: './editable-page-select.component.html',
-  styleUrls: ['./editable-page-select.component.css']
+  selector: 'app-editable-page-select-single',
+  templateUrl: './editable-page-select-single.component.html',
+  styleUrls: ['./editable-page-select-single.component.css']
 })
-export class EditablePageSelectComponent implements OnInit {
+export class EditablePageSelectSingleComponent implements OnInit {
   private _visibilityConfig = {
     threshold: 0
   };

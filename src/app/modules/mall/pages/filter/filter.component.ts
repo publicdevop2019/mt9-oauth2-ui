@@ -34,7 +34,6 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
   private filterFormCreatedOb: Observable<string>;
   private childFormOb: Observable<string>;
   attrList: IBizAttribute[];
-  catalogList: ICatalog[];
   constructor(
     public filterSvc: FilterService,
     fis: FormInfoService,
@@ -53,9 +52,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
     //@todo use paginated select component
     combineLatest([this.attrSvc.readByQuery(0, 1000), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;
-      // this.catalogList = next[1].data;
       this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });
-      // this.formInfoCatalog.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLayeredLabel(e, next[1].data), value: String(e.id) });
       this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
       this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
       this.cdr.detectChanges()
@@ -63,12 +60,14 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
       if (this.aggregate && this.eventStore.length === 0) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id);
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.aggregate.description);
+
         if (this.aggregate.catalogs && this.aggregate.catalogs.length !== 0) {
           this.categorySvc.readByQuery(0, this.aggregate.catalogs.join('.').length, `${CATALOG_TYPE.FRONTEND},id:` + this.aggregate.catalogs.join('.')).subscribe(next => {
-            this.catalogList = [...next.data, ...this.catalogList];
+
+            // this.catalogList = [...next.data, ...this.catalogList];
             this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.aggregate.catalogs, 'catalogId'), this.aggregate.catalogs.length);
             this.formInfoCatalog.inputs.forEach(a => {
-              a.options = [...this.catalogList.map(ee => <IOption>{ label: getLayeredLabel(ee, this.catalogList), value: String(ee.id) })];
+              a.options = [...next.data.map(ee => <IOption>{ label: ee.name, value: String(ee.id) })];
             })
           })
 
