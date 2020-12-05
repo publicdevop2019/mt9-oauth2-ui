@@ -71,7 +71,7 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
     super.ngOnDestroy();
   }
   doSearch(queryString: string) {
-    this.queryString = "," + queryString;
+    this.queryString = queryString ? ("," + queryString) : this.queryString;
     this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryDataExt(next)
     })

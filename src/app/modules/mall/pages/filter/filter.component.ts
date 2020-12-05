@@ -48,7 +48,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
     this.catalogFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdCatalog));
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
-    fis.queryProvider[this.formIdCatalog + '_' + 'catalogId'] = categorySvc;
+    this.fis.queryProvider[this.formIdCatalog + '_' + 'catalogId'] = categorySvc;
     //@todo use paginated select component
     combineLatest([this.attrSvc.readByQuery(0, 1000), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe((next) => {
       this.attrList = next[0].data;

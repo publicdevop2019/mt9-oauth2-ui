@@ -1,19 +1,18 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-builder/lib/classes/template.interface';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { IForm, IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { CATALOG_TYPE } from 'src/app/clazz/constants';
-import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
-import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
+import { ISumRep } from 'src/app/clazz/summary.component';
+import { getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
 import { CatalogValidator } from 'src/app/clazz/validation/aggregate/catalog/validator-catalog';
-import { ErrorMessage } from 'src/app/clazz/validation/validator-common';
-import { ATTR_PROD_FORM_CONFIG } from 'src/app/form-configs/attribute-product-dynamic.config';
-import { FORM_CONFIG } from 'src/app/form-configs/catalog.config';
+import { ErrorMessage, hasValue } from 'src/app/clazz/validation/validator-common';
+import { CATALOG_ATTR_FORM_CONFIG, FORM_CONFIG } from 'src/app/form-configs/catalog.config';
 import { AttributeService } from 'src/app/services/attribute.service';
 import { CatalogService } from 'src/app/services/catalog.service';
 
@@ -24,8 +23,7 @@ import { CatalogService } from 'src/app/services/catalog.service';
 })
 export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> implements OnInit, OnDestroy {
   attrFormId = 'attributes';
-  attrFormInfo: IForm = JSON.parse(JSON.stringify(ATTR_PROD_FORM_CONFIG));
-  attrList: IBizAttribute[];
+  attrFormInfo: IForm = JSON.parse(JSON.stringify(CATALOG_ATTR_FORM_CONFIG));
   private formCreatedOb: Observable<string>;
   private attrFormCreatedOb: Observable<string>;
   constructor(
@@ -36,23 +34,34 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<CatalogComponent>
   ) {
-    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data,fis,cdr,true);
+    super('category', JSON.parse(JSON.stringify(FORM_CONFIG)), new CatalogValidator(), bottomSheetRef, data, fis, cdr, true);
     this.formCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formId));
     this.attrFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrFormId));
-
-    let sub1 = combineLatest([this.formCreatedOb, this.attrSvc.readByQuery(0, 1000)]).pipe(take(1)).pipe(switchMap(next => {//@todo use paginated select component
-      this.attrFormInfo.inputs[0].options = next[1].data.map(e => <IOption>{ label: getLabel(e), value: e.id });//update formInfo first then initialize form, so add template can be correct
-      this.attrList = next[1].data;
-      this.cdr.markForCheck();//refresh view for create
+    this.fis.queryProvider[this.attrFormId + '_' + 'attributeId'] = attrSvc;
+    this.fis.queryProvider[this.formId + '_' + 'parentId'] = entitySvc;
+    let sub1 = combineLatest([this.formCreatedOb, this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
       this.subForCatalogTypeChange(true);
-      return this.attrFormCreatedOb
-    })).subscribe(() => {
-      this.subForAttrFormChange();
       this.resumeFromEventStore();
+      this.subForAttrFormChange();
       if (this.aggregate && this.eventStore.length === 0) {
-        this.fis.restore(this.formId, this.aggregate);
         if (this.aggregate && this.aggregate.attributes) {
-          this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, this.attrList), this.aggregate.attributes.length);
+          if (hasValue(this.aggregate.parentId)) {
+            combineLatest([this.entitySvc.readByQuery(0, 1, ',id:' + this.aggregate.parentId), this.attrSvc.readByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
+              .subscribe(next => {
+                this.formInfo.inputs.find(e => e.key === 'parentId').options = next[0].data.map(e => <IOption>{ label: e.name, value: e.id })
+                this.resumeForm(next[1]);
+              })
+          } else {
+            if (this.aggregate.attributes.length > 0) {
+              combineLatest([this.attrSvc.readByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
+              .subscribe(next => {
+                this.resumeForm(next[0]);
+              })
+            } else {
+              //@todo remove this block after data integrity is fixed
+              this.fis.restore(this.formId, this.aggregate, true);
+            }
+          }
         }
       }
       this.fis.$refresh.next();
@@ -60,19 +69,25 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
     })
     this.subs['combineLatest'] = sub1;
   }
+  private resumeForm(next: ISumRep<IBizAttribute>) {
+    this.fis.restore(this.formId, this.aggregate, true);
+    let var0 = next.data.map(e => <IOption>{ label: e.name, value: e.id });
+    this.attrFormInfo.inputs.forEach(e => {
+      e.options = var0;
+      e.optionOriginal = next.data;
+    });
+    this.fis.formGroupCollection_template[this.attrFormId] = JSON.parse(JSON.stringify(this.attrFormInfo));
+    this.fis.restoreDynamicForm(this.attrFormId, parseAttributePayload(this.aggregate.attributes, next.data), this.aggregate.attributes.length);
+  }
+
   private subForCatalogTypeChange(skipReset: boolean) {
     let sub3 = this.fis.formGroupCollection[this.formId].get('catalogType').valueChanges.subscribe(next => {
       this.formInfo.inputs.find(e => e.key === 'parentId').display = true;
-      let catalogOb: Observable<ISumRep<ICatalog>>;
       if (next === 'FRONTEND') {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.FRONTEND);//@todo use paginated select component
+        this.entitySvc.queryPrefix = CATALOG_TYPE.FRONTEND;
       } else {
-        catalogOb = this.entitySvc.readByQuery(0, 1000, CATALOG_TYPE.BACKEND)//@todo use paginated select component
+        this.entitySvc.queryPrefix = CATALOG_TYPE.BACKEND;
       }
-      catalogOb.subscribe(next1 => {
-        this.formInfo.inputs.find(e => e.key === 'parentId').options = next1.data.map(e => { return <IOption>{ label: getLayeredLabel(e, next1.data), value: e.id } })
-        this.cdr.markForCheck();
-      })
       if (!skipReset) {
         this.fis.formGroupCollection[this.formId].get('parentId').reset();
       }
@@ -83,7 +98,7 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
   private subForAttrFormChange() {
     let sub2 = this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
       Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-        let selected = this.attrList.find(e => e.id === next[idKey]);
+        let selected = (this.attrFormInfo.inputs.find(e => e.key === idKey).optionOriginal).find(e => e.id === next[idKey]) as IBizAttribute
         if (selected) {
           let append = idKey.replace('attributeId', '');
           this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
@@ -110,16 +125,16 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
       parentId: formGroup.get('parentId').value,
       attributes: cmpt.hasAttr() ? cmpt.getAttributeAsPayload() : [],
       catalogType: formGroup.get('catalogType').value ? formGroup.get('catalogType').value : '',
-      version:cmpt.aggregate&&cmpt.aggregate.version
+      version: cmpt.aggregate && cmpt.aggregate.version
     }
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateCatalogCommandValidator', this.fis, this, this.errorMapper))
-      this.entitySvc.create(this.convertToPayload(this), this.changeId,this.eventStore)
+      this.entitySvc.create(this.convertToPayload(this), this.changeId, this.eventStore)
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateCatalogCommandValidator', this.fis, this, this.errorMapper))
-      this.entitySvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore,this.version)
+      this.entitySvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.version)
   }
 
   errorMapper(original: ErrorMessage[], cmpt: CatalogComponent) {
@@ -145,7 +160,7 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
   private getAttributeAsPayload(): string[] {
     let attrFormValue = this.fis.formGroupCollection[this.attrFormId].value;
     return Object.keys(attrFormValue).filter(e => e.includes('attributeId')).map(idKey => {
-      let selected = this.attrList.find(e => e.id === attrFormValue[idKey]);
+      let selected = this.attrFormInfo.inputs.find(e => e.key === idKey).optionOriginal.find(e => e.id === attrFormValue[idKey]) as IBizAttribute
       let append = idKey.replace('attributeId', '');
       let attrValue: string;
       if (selected) {
