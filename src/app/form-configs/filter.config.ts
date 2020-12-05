@@ -45,7 +45,7 @@ export const FORM_FILTER_ITEM_CONFIG: IForm = {
     "repeatable": true,
     "inputs": [
         {
-            "type": "select",
+            "type": "paginated-select",
             "display": true,
             "label": "SELECT_AN_ATTRIBUTE",
             "key": "attributeId",

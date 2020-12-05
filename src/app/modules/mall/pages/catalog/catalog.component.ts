@@ -52,15 +52,10 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
                 this.resumeForm(next[1]);
               })
           } else {
-            if (this.aggregate.attributes.length > 0) {
-              combineLatest([this.attrSvc.readByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
-              .subscribe(next => {
-                this.resumeForm(next[0]);
-              })
-            } else {
-              //@todo remove this block after data integrity is fixed
-              this.fis.restore(this.formId, this.aggregate, true);
-            }
+            combineLatest([this.attrSvc.readByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
+            .subscribe(next => {
+              this.resumeForm(next[0]);
+            })
           }
         }
       }

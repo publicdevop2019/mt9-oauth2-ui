@@ -5,6 +5,7 @@ import { IAddDynamicFormEvent, IForm, IOption, ISetValueEvent } from 'mt-form-bu
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
+import { CATALOG_TYPE } from 'src/app/clazz/constants';
 import { IBottomSheet, ISumRep } from 'src/app/clazz/summary.component';
 import { getLabel, getLayeredLabel, parseAttributePayload } from 'src/app/clazz/utility';
 import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
@@ -97,8 +98,8 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
     this.salesFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrSalesFormId));
     this.genFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrGeneralFormId));
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
-    //@todo use paginated select component
-    combineLatest([this.categorySvc.readByQuery(0, 1000, 'type:BACKEND'), this.formCreatedOb]).pipe(take(1)).subscribe(next => {
+    //@todo how to load tree structure
+    combineLatest([this.categorySvc.readByQuery(0, 1000, CATALOG_TYPE.BACKEND), this.formCreatedOb]).pipe(take(1)).subscribe(next => {
       if (next[0].data) {
         this.catalogs = next[0];
         this.formInfo.inputs[1].options = next[0].data.filter(ee => this.isLeafNode(next[0].data, ee)).map(e => <IOption>{ label: getLayeredLabel(e, next[0].data), value: String(e.id) });

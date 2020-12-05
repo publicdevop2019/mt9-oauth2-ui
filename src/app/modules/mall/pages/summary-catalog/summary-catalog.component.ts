@@ -43,7 +43,7 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
       let sub = this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         this.viewType = e.view;
         if (this.viewType === 'TREE_VIEW') {
-          this.entitySvc.readByQuery(0, 1000).subscribe(next => {//@todo use paginated select component
+          this.entitySvc.readByQuery(0, 1000).subscribe(next => {//@todo how to load tree structure
             this.updateSummaryData(next)
           });
         } else {

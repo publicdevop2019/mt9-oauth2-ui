@@ -6,9 +6,6 @@ import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { CATALOG_TYPE } from 'src/app/clazz/constants';
-import { IBottomSheet } from 'src/app/clazz/summary.component';
-import { getLabel, getLayeredLabel } from 'src/app/clazz/utility';
-import { IBizAttribute } from 'src/app/clazz/validation/aggregate/attribute/interfaze-attribute';
 import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
 import { IBizFilter, IFilterItem } from 'src/app/clazz/validation/aggregate/filter/interfaze-filter';
 import { FilterValidator } from 'src/app/clazz/validation/aggregate/filter/validator-filter';
@@ -33,7 +30,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
   private catalogFormCreatedOb: Observable<string>;
   private filterFormCreatedOb: Observable<string>;
   private childFormOb: Observable<string>;
-  attrList: IBizAttribute[];
+  // attrList: IBizAttribute[];
   constructor(
     public filterSvc: FilterService,
     fis: FormInfoService,
@@ -49,55 +46,55 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
     this.filterFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.formIdFilter));
     this.childFormOb = this.fis.$ready.pipe(filter(e => e === this.childFormId));
     this.fis.queryProvider[this.formIdCatalog + '_' + 'catalogId'] = categorySvc;
-    //@todo use paginated select component
-    combineLatest([this.attrSvc.readByQuery(0, 1000), this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe((next) => {
-      this.attrList = next[0].data;
-      this.formInfoFilter.inputs[0].options = next[0].data.map(e => <IOption>{ label: getLabel(e), value: e.id });
-      this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter))
-      this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog))
-      this.cdr.detectChanges()
+    this.fis.queryProvider[this.formIdFilter + '_' + 'attributeId'] = attrSvc;
+    combineLatest([this.formCreatedOb, this.catalogFormCreatedOb, this.filterFormCreatedOb, this.childFormOb]).pipe(take(1)).subscribe(_ => {
       this.resumeFromEventStore();
       if (this.aggregate && this.eventStore.length === 0) {
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id);
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.aggregate.description);
-
         if (this.aggregate.catalogs && this.aggregate.catalogs.length !== 0) {
           this.categorySvc.readByQuery(0, this.aggregate.catalogs.join('.').length, `${CATALOG_TYPE.FRONTEND},id:` + this.aggregate.catalogs.join('.')).subscribe(next => {
-
-            // this.catalogList = [...next.data, ...this.catalogList];
-            this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.aggregate.catalogs, 'catalogId'), this.aggregate.catalogs.length);
             this.formInfoCatalog.inputs.forEach(a => {
               a.options = [...next.data.map(ee => <IOption>{ label: ee.name, value: String(ee.id) })];
             })
+            this.fis.formGroupCollection_template[this.formIdCatalog] = JSON.parse(JSON.stringify(this.formInfoCatalog));
+            this.fis.restoreDynamicForm(this.formIdCatalog, this.fis.parsePayloadArr(this.aggregate.catalogs, 'catalogId'), this.aggregate.catalogs.length);
           })
-
         }
         if (this.aggregate.filters && this.aggregate.filters.length !== 0) {
-          this.fis.restoreDynamicForm(this.formIdFilter, this.fis.parsePayloadArr(this.aggregate.filters.map(e => e.id), 'attributeId'), this.aggregate.filters.length);
+          this.attrSvc.readByQuery(0, this.aggregate.filters.length, 'id:' + this.aggregate.filters.map(e => e.id).join('.')).subscribe(next => {
+            this.formInfoFilter.inputs.forEach(a => {
+              a.options = next.data.map(ee => <IOption>{ label: ee.name, value: ee.id });
+              a.optionOriginal = next.data;
+            })
+            this.fis.formGroupCollection_template[this.formIdFilter] = JSON.parse(JSON.stringify(this.formInfoFilter));
 
-          this.aggregate.filters.forEach((e, index) => {
-            if (index === 0) {
-              //for child form
-              this.updateChildFormFilter(e, this.childFormId);
-              //for child form
-              this.subForCtrlChange('attributeId')
-            } else {
-              let childFormId = this.childFormId + '_' + (index - 1);
-              let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
-              let sub = childFormCreated.subscribe(() => {
-                this.updateChildFormFilter(e, childFormId);
-                this.subForCtrlChange('attributeId_' + (index - 1))
-              })
-              this.subs[childFormId + '_formCreate'] = sub;
-            }
-          });
+            this.fis.restoreDynamicForm(this.formIdFilter, this.fis.parsePayloadArr(this.aggregate.filters.map(e => e.id), 'attributeId'), this.aggregate.filters.length);
+
+            this.aggregate.filters.forEach((e, index) => {
+              if (index === 0) {
+                //for child form
+                this.updateChildFormFilter(e, this.childFormId);
+                //for child form
+                this.subForCtrlChange('attributeId')
+              } else {
+                let childFormId = this.childFormId + '_' + (index - 1);
+                let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
+                let sub = childFormCreated.subscribe(() => {
+                  this.updateChildFormFilter(e, childFormId);
+                  this.subForCtrlChange('attributeId_' + (index - 1))
+                })
+                this.subs[childFormId + '_formCreate'] = sub;
+              }
+            });
+            this.subChangeForForm(this.formIdFilter);
+          })
         }
 
       } else {
         this.subForCtrlChange('attributeId')
+        this.subChangeForForm(this.formIdFilter);
       }
-      this.subChangeForForm(this.formIdFilter);
-
     })
   }
   private updateChildFormFilter(option: IFilterItem, childFormId: string) {
@@ -105,10 +102,12 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
     this.fis.formGroupCollection_formInfo[childFormId].inputs = this.fis.formGroupCollection_formInfo[childFormId].inputs.filter(e => !e.key.includes('value_'))
     this.fis.formGroupCollection[childFormId].get('value').reset();
     this.fis.restoreDynamicForm(childFormId, this.fis.parsePayloadArr(option.values, 'value'), option.values.length);
-    if (this.aggregate)
+    if (this.aggregate){
       this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateFilterCommandValidator', this.fis, this, this.errorMapper)
-    else
+    }
+    else{
       this.validateHelper.validate(this.validator, this.convertToPayload, 'adminCreateFilterCommandValidator', this.fis, this, this.errorMapper)
+    }
   }
   ngOnDestroy(): void {
     this.cleanUp()
@@ -134,7 +133,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
       let var1 = <IFilterItem>{};
       var1.id = +cmpt.fis.formGroupCollection[cmpt.formIdFilter].get(ctrlName).value;
       if (var1.id > 0) {
-        var1.name = cmpt.attrList.find(e => e.id === var1.id).name
+        var1.name = cmpt.formInfoFilter.inputs.find(e => e.key === ctrlName).optionOriginal.find(e => e.id === var1.id).name
       } else {
         var1.name = ''
       }
@@ -169,7 +168,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
   }
   subForCtrlChange(idKey: string) {
     let sub = this.fis.formGroupCollection[this.formIdFilter].get(idKey).valueChanges.subscribe(next => {
-      let selected = this.attrList.find(e => e.id === next);
+      let selected = this.formInfoFilter.inputs.find(e => e.key === idKey).optionOriginal.find(e => e.id === next);
       if (selected) {
         let append = idKey.replace('attributeId', '');
         let var1 = <IFilterItem>{
