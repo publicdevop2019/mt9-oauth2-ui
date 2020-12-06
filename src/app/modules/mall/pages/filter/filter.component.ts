@@ -187,7 +187,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateFilterCommandValidator', this.fis, this, this.errorMapper))
-      this.filterSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.version)
+      this.filterSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.eventVersion)
   }
   errorMapper(original: ErrorMessage[], cmpt: FilterComponent) {
     return original.map(e => {

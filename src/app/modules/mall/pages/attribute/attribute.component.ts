@@ -82,7 +82,7 @@ export class AttributeComponent extends Aggregate<AttributeComponent, IBizAttrib
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateAttributeCommandValidator', this.fis, this, this.errorMapper))
-      this.attributeSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore,this.version)
+      this.attributeSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore,this.eventVersion)
   }
 
   errorMapper(original: ErrorMessage[], cmpt: AttributeComponent) {

@@ -18,7 +18,7 @@ export abstract class Aggregate<C, T extends IIdBasedEntity>{
     subs: { [key: string]: Subscription } = {};
     aggregate: T;
     eventStore: any[] = []
-    version: number;
+    eventVersion: number;
     fis: FormInfoService;
     cdr: ChangeDetectorRef;
     delayResume: boolean = false;
@@ -39,7 +39,7 @@ export abstract class Aggregate<C, T extends IIdBasedEntity>{
         this.bottomSheetRef = bottomSheetRef;
         this.aggregate = bottomSheetData.from;
         this.eventStore = bottomSheetData.events?.events || [];
-        this.version = bottomSheetData.events?.version;
+        this.eventVersion = bottomSheetData.events?.version;
         this.fis = fis;
         this.cdr = cdr;
         if (!skipResume) {

@@ -55,7 +55,7 @@ export class ResourceOwnerComponent extends Aggregate<ResourceOwnerComponent, IR
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateUserCommandValidator', this.fis, this, this.errorMapper))
-      this.resourceOwnerService.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore,this.version)
+      this.resourceOwnerService.update(this.aggregate.id, this.convertToPayload(this), this.changeId,this.eventStore,this.eventVersion)
   }
   errorMapper(original: ErrorMessage[], cmpt: ResourceOwnerComponent) {
     return original.map(e => {

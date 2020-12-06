@@ -116,7 +116,7 @@ export class ClientComponent extends Aggregate<ClientComponent, IClient> impleme
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootUpdateClientCommandValidator', this.fis, this, this.errorMapper))
-      this.clientService.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.version)
+      this.clientService.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.eventVersion)
   }
   create() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'rootCreateClientCommandValidator', this.fis, this, this.errorMapper))

@@ -513,7 +513,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateProductCommandValidator', this.fis, this, this.errorMapper))
-      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore,this.version)
+      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore,this.eventVersion)
   }
   parseProductForm() {
     let beforeParse = this.convertToPayload(this);
