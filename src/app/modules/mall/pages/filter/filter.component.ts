@@ -30,7 +30,6 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
   private catalogFormCreatedOb: Observable<string>;
   private filterFormCreatedOb: Observable<string>;
   private childFormOb: Observable<string>;
-  // attrList: IBizAttribute[];
   constructor(
     public filterSvc: FilterService,
     fis: FormInfoService,

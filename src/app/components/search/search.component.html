@@ -33,26 +33,7 @@
         </app-catalog-tree>
     </ng-container>
     <div *ngIf="searchType.value==='attributes'" style="display: flex;flex-direction: row;">
-        <mat-form-field>
-            <mat-label>{{'SELECT_AN_ATTRIBUTE'|translate}}</mat-label>
-            <mat-select [formControl]="searchByAttr">
-                <ng-container *ngFor="let e of bizAttr">
-                    <mat-option [value]="e">{{e.name}}</mat-option>
-                </ng-container>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field *ngIf="(searchByAttr.value)&& searchByAttr.value.method=='SELECT'">
-            <mat-label>{{'SELECT_AN_ATTRIBUTE_VALUE'|translate}}</mat-label>
-            <mat-select [formControl]="searchByAttrSelect">
-                <ng-container *ngFor="let e of searchByAttr.value.selectValues">
-                    <mat-option [value]="e">{{e}}</mat-option>
-                </ng-container>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field *ngIf="(searchByAttr.value)&& searchByAttr.value.method=='MANUAL'">
-            <mat-label>{{'ENTER_AN_ATTRIBUTE_VALUE'|translate}}</mat-label>
-            <input matInput type="text" [formControl]="searchByAttrManual">
-        </mat-form-field>
+        <lib-factory [formId]="formId" [formInfo]="formInfo"></lib-factory>
         <button mat-raised-button color="primary" style="height: 36px; margin-left: 24px;"
             (click)="appendAttr()">{{'ADD'|translate}}</button>
     </div>

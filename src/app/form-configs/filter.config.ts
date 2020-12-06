@@ -1,4 +1,5 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
+import { CATALOG_TYPE } from '../clazz/constants';
 export const FORM_CONFIG: IForm = {
     "repeatable": false,
     "inputs": [
@@ -33,6 +34,7 @@ export const FORM_CATALOG_CONFIG: IForm = {
             "label": "ENTER_LINKED_CATALOG_IDS",
             "key": "catalogId",
             required:true,
+            queryPrefix:CATALOG_TYPE.FRONTEND,
             "position": {
                 "row": "0",
                 "column": "0"
