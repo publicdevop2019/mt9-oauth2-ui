@@ -177,11 +177,15 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
             this.formInfo.inputs.find(e => e.key === 'status').display = false;
             this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
             this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
-            if(this.aggregate.startAt){
-              this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(new Date(this.aggregate.startAt), { emitEvent: false })
+            if (this.aggregate.startAt) {
+              let var0 = new Date(this.aggregate.startAt)
+              this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(var0, { emitEvent: false })
+              this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.getTimeLable(var0.getHours()) + ":" + this.getTimeLable(var0.getMinutes()) + ":" + this.getTimeLable(var0.getSeconds()), { emitEvent: false })
             }
-            if(this.aggregate.endAt){
-              this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(new Date(this.aggregate.endAt), { emitEvent: false })
+            if (this.aggregate.endAt) {
+              let var0 = new Date(this.aggregate.endAt)
+              this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(var0, { emitEvent: false })
+              this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.getTimeLable(var0.getHours()) + ":" + this.getTimeLable(var0.getMinutes()) + ":" + this.getTimeLable(var0.getSeconds()), { emitEvent: false })
             }
             Object.keys(this.fis.formGroupCollection).filter(e => e.includes(this.salesFormIdTempId)).forEach(e => {
               this.fis.formGroupCollection_formInfo[e].inputs.forEach(e => e.disabled = true);
@@ -204,6 +208,11 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
       this.resumeFromEventStore();
     })
     this.subs['getAttributeList_http'] = sub1;
+  }
+  private getTimeLable(input: number) {
+    if ((input + '').length === 1)
+      return '0' + input;
+    return input + ''
   }
   doPreview() {
     this.previewFlag = !this.previewFlag;
@@ -513,7 +522,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
   }
   update() {
     if (this.validateHelper.validate(this.validator, this.convertToPayload, 'adminUpdateProductCommandValidator', this.fis, this, this.errorMapper))
-      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore,this.eventVersion)
+      this.productSvc.update(this.aggregate.id, this.convertToPayload(this), this.changeId, this.eventStore, this.eventVersion)
   }
   parseProductForm() {
     let beforeParse = this.convertToPayload(this);
@@ -650,7 +659,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
       endAt: formGroup.get('endAtDate').value ? cmpt._parseDate(formGroup.get('endAtDate').value, formGroup.get('endAtTime').value) : undefined,
       startAt: formGroup.get('startAtDate').value ? cmpt._parseDate(formGroup.get('startAtDate').value, formGroup.get('startAtTime').value) : undefined,
       attributeSaleImages: attrSaleImages,
-      version:cmpt.aggregate&&cmpt.aggregate.version
+      version: cmpt.aggregate && cmpt.aggregate.version
     }
   }
 }

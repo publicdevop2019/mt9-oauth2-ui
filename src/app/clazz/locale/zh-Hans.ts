@@ -382,5 +382,6 @@ export const zhHans = {
     "STRING_IS_ATTR_KEY_PAIR": "含有非法字符",
     "STRING_IS_DESCRIPTION": "含有非法字符",
     "STRING_NOT_EMPTY_STRING": "不能为空",
+    "RESOURCE_INDICATOR_REQUIRES_ROLE": "请选择正确的权限",
     "": "",
 }
