@@ -16,13 +16,13 @@ export class ProductService extends EntityCommonService<IProductSimple, IProduct
   constructor(private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
     super(httpProxy, interceptor);
   }
-  updateProdStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
+  updateProdStatus(id: string, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
     this.httpProxy.updateProductStatus(id, status, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()
     })
   }
-  batchUpdateProdStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
+  batchUpdateProdStatus(ids: string[], status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
     this.httpProxy.batchUpdateProductStatus(ids, status, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()

@@ -4,7 +4,7 @@ import { EntityCommonService } from '../clazz/entity.common-service';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IRevokeToken {
-  id: number;
+  id: string;
   targetId:number;
   issuedAt:number;
   type:'Client'|'User';

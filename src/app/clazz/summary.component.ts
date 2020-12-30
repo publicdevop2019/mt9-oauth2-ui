@@ -15,7 +15,7 @@ import { IEditBooleanEvent } from '../components/editable-boolean/editable-boole
 import { IEditInputListEvent } from '../components/editable-input-multi/editable-input-multi.component';
 import { hasValue } from './validation/validator-common';
 export interface IIdBasedEntity {
-  id: number;
+  id: string;
   version: number
 }
 export interface IEventAdminRep {
@@ -24,21 +24,21 @@ export interface IEventAdminRep {
   version: number,
 }
 export interface IEntityService<C extends IIdBasedEntity, D> {
-  readEventStreamById: (id: number) => Observable<IEventAdminRep>;
-  saveEventStream: (id: number, events: any[], changeId: string) => void;
-  replaceEventStream: (id: number, events: any[], changeId: string, version: number) => void;
-  deleteEventStream: (id: number, changeId: string) => void;
-  readById: (id: number) => Observable<D>;
+  readEventStreamById: (id: string) => Observable<IEventAdminRep>;
+  saveEventStream: (id: string, events: any[], changeId: string) => void;
+  replaceEventStream: (id: string, events: any[], changeId: string, version: number) => void;
+  deleteEventStream: (id: string, changeId: string) => void;
+  readById: (id: string) => Observable<D>;
   readByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
   deleteByQuery: (query: string, changeId: string) => void;
-  deleteById: (id: number, changeId: string) => void;
+  deleteById: (id: string, changeId: string) => void;
   create: (s: D, changeId: string, events: any[]) => void;
-  update: (id: number, s: D, changeId: string, events: any[], version: number) => void;
-  patch: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
-  patchAtomicNum: (id: number, event: IEditEvent, changeId: string, fieldName: string) => void;
-  patchList: (id: number, event: IEditListEvent, changeId: string, fieldName: string) => void;
-  patchMultiInput: (id: number, event: IEditInputListEvent, changeId: string, fieldName: string) => void;
-  patchBoolean: (id: number, event: IEditBooleanEvent, changeId: string, fieldName: string) => void;
+  update: (id: string, s: D, changeId: string, events: any[], version: number) => void;
+  patch: (id: string, event: IEditEvent, changeId: string, fieldName: string) => void;
+  patchAtomicNum: (id: string, event: IEditEvent, changeId: string, fieldName: string) => void;
+  patchList: (id: string, event: IEditListEvent, changeId: string, fieldName: string) => void;
+  patchMultiInput: (id: string, event: IEditInputListEvent, changeId: string, fieldName: string) => void;
+  patchBoolean: (id: string, event: IEditBooleanEvent, changeId: string, fieldName: string) => void;
   refreshSummary: Observable<any>;
   currentPageIndex: number;
   supportEvent: boolean;
@@ -86,7 +86,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
-  openBottomSheet(id?: number, clone?: boolean): void {
+  openBottomSheet(id?: string, clone?: boolean): void {
     let config = new MatBottomSheetConfig();
     config.autoFocus = true;
     config.panelClass = 'fix-height'
@@ -175,25 +175,25 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
     let ids = this.selection.selected.map(e => e.id)
     this.entitySvc.deleteByQuery(this.getIdQuery(ids), UUID())
   }
-  doPatch(id: number, event: IEditEvent, fieldName: string) {
+  doPatch(id: string, event: IEditEvent, fieldName: string) {
     this.entitySvc.patch(id, event, UUID(), fieldName)
   }
-  doMultiInputPatch(id: number, event: IEditInputListEvent, fieldName: string) {
+  doMultiInputPatch(id: string, event: IEditInputListEvent, fieldName: string) {
     this.entitySvc.patchMultiInput(id, event, UUID(), fieldName)
   }
-  doPatchBoolean(id: number, event: IEditBooleanEvent, fieldName: string) {
+  doPatchBoolean(id: string, event: IEditBooleanEvent, fieldName: string) {
     this.entitySvc.patchBoolean(id, event, UUID(), fieldName)
   }
-  doPatchAtomicNum(id: number, event: IEditEvent, fieldName: string) {
+  doPatchAtomicNum(id: string, event: IEditEvent, fieldName: string) {
     this.entitySvc.patchAtomicNum(id, event, UUID(), fieldName)
   }
-  doPatchList(id: number, event: IEditListEvent, fieldName: string) {
+  doPatchList(id: string, event: IEditListEvent, fieldName: string) {
     this.entitySvc.patchList(id, event, UUID(), fieldName)
   }
-  doClone(id: number) {
+  doClone(id: string) {
     this.openBottomSheet(id, true)
   }
-  doDeleteById(id: number) {
+  doDeleteById(id: string) {
     this.entitySvc.deleteById(id, UUID())
   }
   doDeleteByQuery(query: string) {
@@ -205,7 +205,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
       this.updateSummaryData(next);
     })
   }
-  private getIdQuery(ids: number[]): string {
+  private getIdQuery(ids: string[]): string {
     return 'id:' + ids.join(".")
   }
 }

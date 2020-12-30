@@ -121,7 +121,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
       });
       this.subs[this.formId + '_status'] = sub4;
       let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
-        this._loadAttributes(this.catalogs.data.find(e => e.id === +next))
+        this._loadAttributes(this.catalogs.data.find(e => e.id === next))
       })
       this.subs[this.formId + '_selectBackendCatalog'] = sub;
       let sub2 = this.fis.formGroupCollection[this.formId].get('hasSku').valueChanges.subscribe(next => {

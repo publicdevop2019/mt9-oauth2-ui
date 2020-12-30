@@ -31,7 +31,7 @@ export class SummaryEndpointComponent extends SummaryEntityComponent<IEndpoint, 
     let ids = next.data.map(e => e.resourceId);
     let var0 = new Set(ids);
     let var1 = new Array(...var0);
-    this.clientSvc.readByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
+    this.clientSvc.readByQuery(0, var1.length, "clientId:" + var1.join('.')).subscribe(next => {
       this.allClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
     })
   }

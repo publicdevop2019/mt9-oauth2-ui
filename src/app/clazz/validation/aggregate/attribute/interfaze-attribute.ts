@@ -1,5 +1,5 @@
 export interface IBizAttribute {
-    id: number,
+    id: string,
     name: string,
     description?: string,
     selectValues?: string[],

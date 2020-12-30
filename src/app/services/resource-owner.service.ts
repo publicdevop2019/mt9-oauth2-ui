@@ -17,7 +17,7 @@ export class ResourceOwnerService extends EntityCommonService<IResourceOwner, IR
   constructor(private router: Router, private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
     super(httpProxy, interceptor);
   }
-  revokeResourceOwnerToken(id: number): void {
+  revokeResourceOwnerToken(id: string): void {
     this.httpProxy.revokeResourceOwnerToken(id).subscribe(result => {
       result ? this.interceptor.openSnackbar('OPERATION_SUCCESS_TOKEN') : this.interceptor.openSnackbar('OPERATION_FAILED');
     })
@@ -30,7 +30,7 @@ export class ResourceOwnerService extends EntityCommonService<IResourceOwner, IR
       logout()
     });
   }
-  batchUpdateUserStatus(ids: number[], status: 'LOCK' | 'UNLOCK', changeId: string) {
+  batchUpdateUserStatus(ids: string[], status: 'LOCK' | 'UNLOCK', changeId: string) {
     this.httpProxy.batchUpdateUserStatus(this.entityRepo, this.role, ids, status, changeId).subscribe(result => {
       this.notify(result)
       this.refreshSummary.next()

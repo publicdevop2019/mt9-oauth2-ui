@@ -26,11 +26,13 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
   }
   updateSummaryData(next: ISumRep<IClient>) {
     super.updateSummaryData(next);
-    let var0 = new Set(next.data.flatMap(e => e.resourceIds));
+    let var0 = new Set(next.data.flatMap(e => e.resourceIds).filter(ee => ee));
     let var1 = new Array(...var0);
-    this.entitySvc.readByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
-      this.resourceClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
-    })
+    if (var1.length > 0) {
+      this.entitySvc.readByQuery(0, var1.length, "clientId:" + var1.join('.')).subscribe(next => {
+        this.resourceClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
+      })
+    }
   }
   revokeClientToken(clientId: number) {
     this.entitySvc.revokeClientToken(clientId);
@@ -41,7 +43,7 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
   getAuthorityList(inputs: string[]) {
     return inputs.map(e => <IOption>{ label: e, value: e })
   }
-  getResourceList(inputs: string[]) {
-    return this.resourceClientList.filter(e => inputs.includes(e.value + ''))
+  getResourceList(inputs?: string[]) {
+    return this.resourceClientList.filter(e => inputs?.includes(e.value + ''))
   }
 }

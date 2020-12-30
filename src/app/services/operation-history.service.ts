@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IChangeRecord {
-  id: number,
+  id: string,
   changeId: string,
   entityType: number,
   // request?: IPatchCommand[],

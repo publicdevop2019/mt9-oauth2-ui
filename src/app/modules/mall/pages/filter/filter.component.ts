@@ -130,8 +130,8 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
     let filters: IFilterItem[] = [];
     Object.keys(cmpt.fis.formGroupCollection[cmpt.formIdFilter].controls).filter(e => e.indexOf('attributeId') > -1).forEach((ctrlName) => {
       let var1 = <IFilterItem>{};
-      var1.id = +cmpt.fis.formGroupCollection[cmpt.formIdFilter].get(ctrlName).value;
-      if (var1.id > 0) {
+      var1.id = cmpt.fis.formGroupCollection[cmpt.formIdFilter].get(ctrlName).value;
+      if (var1.id !=='') {
         var1.name = cmpt.formInfoFilter.inputs.find(e => e.key === ctrlName).optionOriginal.find(e => e.id === var1.id).name
       } else {
         var1.name = ''

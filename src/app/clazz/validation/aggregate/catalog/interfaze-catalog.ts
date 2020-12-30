@@ -1,7 +1,7 @@
-import { IIdName } from 'mt-form-builder/lib/classes/template.interface';
+import { IIdName } from "src/app/components/editable-page-select-single/editable-page-select-single.component";
 
 export interface ICatalog extends IIdName{
-    parentId?: number,
+    parentId?: string,
     attributes?: string[],
     catalogType?: 'BACKEND' | 'FRONTEND',
     version:number

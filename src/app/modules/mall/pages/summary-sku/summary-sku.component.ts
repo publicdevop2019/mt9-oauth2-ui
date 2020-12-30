@@ -61,7 +61,7 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
           let parsed = attr.split(',').map(ee => {
             if(ee){
               let attrId = ee.split(':')[0];
-              return next2.data.find(eee => eee.id === +attrId).name + ":" + ee.split(':')[1];
+              return next2.data.find(eee => eee.id === attrId).name + ":" + ee.split(':')[1];
             }
           }).join(',')
           parsedRefAttr[+e] = parsed;
@@ -72,11 +72,11 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
     })
   }
   private parseRef(id: string): IProductSimple {
-    return this.productRef && (this.productRef.data.filter(e => e.id === +id)[0] ? this.productRef.data.filter(e => e.id === +id)[0] : undefined)
+    return this.productRef && (this.productRef.data.filter(e => e.id === id)[0] ? this.productRef.data.filter(e => e.id === id)[0] : undefined)
   }
-  private parseSalesAttr(refId: string, id: number) {
-    if (this.productRef && this.productRef.data.filter(e => e.id === +refId)[0]) {
-      let map = this.productRef.data.filter(e => e.id === +refId)[0].attrSalesMap
+  private parseSalesAttr(refId: string, id: string) {
+    if (this.productRef && this.productRef.data.filter(e => e.id === refId)[0]) {
+      let map = this.productRef.data.filter(e => e.id === refId)[0].attrSalesMap
       let output: string = '';
       Object.keys(map).forEach(key => {
         if (map[key] === id) {

@@ -24,7 +24,7 @@ interface IClientUserRep {
   clientId: string;
 }
 export interface IOrder extends IAuditable {
-  id: number;
+  id: string;
   productList: ICartItem[];
   address: IAddress;
   paymentType: string;

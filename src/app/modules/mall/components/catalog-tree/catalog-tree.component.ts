@@ -66,10 +66,10 @@ export class CatalogTreeComponent implements OnInit, OnChanges {
     }
     return treeNodes;
   }
-  emitBranchNodeClick(id: number) {
+  emitBranchNodeClick(id: string) {
     this.nonLeafNodeClicked.emit(this.catalogs.find(e => e.id === id))
   }
-  emitLeafNodeClick(id: number) {
+  emitLeafNodeClick(id: string) {
     this.leafNodeClicked.emit(this.catalogs.find(e => e.id === id))
   }
 }

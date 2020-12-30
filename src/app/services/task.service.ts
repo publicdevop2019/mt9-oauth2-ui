@@ -4,7 +4,7 @@ import { EntityCommonService } from '../clazz/entity.common-service';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface IBizTask {
-    id: number,
+    id: string,
     taskName: string,
     taskStatus: 'COMPLETED' | 'STARTED' | 'ROLLBACK',
     transactionId: string,

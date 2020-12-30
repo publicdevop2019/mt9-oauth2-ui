@@ -4,7 +4,7 @@ export interface IEndpoint {
     path: string;
     method: string;
     expression: string;
-    id: number;
+    id: string;
     version:number;
   }
   export const HTTP_METHODS= [

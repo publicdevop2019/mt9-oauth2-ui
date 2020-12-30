@@ -1,4 +1,4 @@
-import { descriptionValidator, ErrorMessage, IAggregateValidator, NumberValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
+import { descriptionValidator, ErrorMessage, IAggregateValidator, StringValidator, TPlatform, TValidator } from '../../validator-common';
 import { HTTP_METHODS, IEndpoint } from './interfaze-endpoint';
 
 
@@ -10,13 +10,11 @@ export class EndpointValidator extends IAggregateValidator {
         if (platform) {
             this.platform = platform;
         }
-        this.rootCreateEndpointCommandValidator.set('resourceId', this.resourceIdValidator);
         this.rootCreateEndpointCommandValidator.set('description', descriptionValidator);
         this.rootCreateEndpointCommandValidator.set('path', this.pathValidator);
         this.rootCreateEndpointCommandValidator.set('method', this.methodValidator);
         this.rootCreateEndpointCommandValidator.set('expression', this.expressionValidator);
 
-        this.rootUpdateEndpointCommandValidator.set('resourceId', this.resourceIdValidator);
         this.rootUpdateEndpointCommandValidator.set('description', descriptionValidator);
         this.rootUpdateEndpointCommandValidator.set('path', this.pathValidator);
         this.rootUpdateEndpointCommandValidator.set('method', this.methodValidator);
@@ -27,13 +25,6 @@ export class EndpointValidator extends IAggregateValidator {
             return this.validationWPlatform(payload, this.rootCreateEndpointCommandValidator)
         if (context === 'rootUpdateEndpointCommandValidator')
             return this.validationWPlatform(payload, this.rootUpdateEndpointCommandValidator)
-    }
-    resourceIdValidator = (key: string, payload: IEndpoint) => {
-        let results: ErrorMessage[] = [];
-        NumberValidator.isNumber(+payload[key], results, key);
-        NumberValidator.isInteger(+payload[key], results, key);
-        NumberValidator.greaterThan(+payload[key], 0, results, key);
-        return results
     }
     pathValidator = (key: string, payload: IEndpoint) => {
         let results: ErrorMessage[] = [];

@@ -1,10 +1,10 @@
 export interface IFilterItem {
-    id: number,
+    id: string,
     name: string,
     values: string[]
   }
   export interface IBizFilter {
-    id: number,
+    id: string,
     catalogs: string[],
     description?:string
     filters: IFilterItem[]
