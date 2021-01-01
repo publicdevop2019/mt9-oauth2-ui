@@ -8,7 +8,7 @@ import { CustomHttpInterceptor } from './http.interceptor';
   providedIn: 'root'
 })
 export class EndpointService extends EntityCommonService<IEndpoint, IEndpoint>{
-  private ENTITY_NAME = '/proxy/endpoints';
+  private ENTITY_NAME = '/auth-svc/endpoints';
   entityRepo: string = environment.serverUri + this.ENTITY_NAME;
   role: string = 'root';
   constructor(httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {

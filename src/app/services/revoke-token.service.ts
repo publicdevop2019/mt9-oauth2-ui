@@ -14,7 +14,7 @@ export interface IRevokeToken {
   providedIn: 'root'
 })
 export class RevokeTokenService extends EntityCommonService<IRevokeToken, IRevokeToken>{
-  private AUTH_SVC_NAME = '/proxy';
+  private AUTH_SVC_NAME = '/auth-svc';
   private ENTITY_NAME = '/revoke-tokens';
   entityRepo: string = environment.serverUri + this.AUTH_SVC_NAME + this.ENTITY_NAME;
   role: string = 'root';
