@@ -19,19 +19,19 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
         this.httpProxySvc = httpProxySvc;
         this.interceptor = interceptor;
     }
-    replaceEventStream(id: number, events: any[], changeId: string, version: number) {
+    replaceEventStream(id: string, events: any[], changeId: string, version: number) {
         return this.httpProxySvc.replaceEventStream(id, events, changeId, version)
     };
-    deleteEventStream(id: number, changeId: string) {
+    deleteEventStream(id: string, changeId: string) {
         return this.httpProxySvc.deleteEventStream(id, changeId)
     };
-    readEventStreamById(id: number): Observable<IEventAdminRep> {
+    readEventStreamById(id: string): Observable<IEventAdminRep> {
         return this.httpProxySvc.readEventStreamById(id)
     };
-    saveEventStream(id: number, s: any[], changeId: string) {
+    saveEventStream(id: string, s: any[], changeId: string) {
         return this.httpProxySvc.saveEventStream(id, s, changeId)
     };
-    readById(id: number) {
+    readById(id: string) {
         return this.httpProxySvc.readEntityById<D>(this.entityRepo, this.role, id)
     };
     readByQuery(num: number, size: number, query?: string, by?: string, order?: string,headers?:{}) {
@@ -43,7 +43,7 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
             this.refreshSummary.next();
         })
     };
-    deleteById(id: number, changeId: string) {
+    deleteById(id: string, changeId: string) {
         this.httpProxySvc.deleteEntityById(this.entityRepo, this.role, id, changeId).subscribe(next => {
             if (this.supportEvent) {
                 this.deleteEventStream(id, changeId).subscribe(var0 => {
@@ -59,7 +59,7 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
     create(s: D, changeId: string, events: any[]) {
         this.httpProxySvc.createEntity(this.entityRepo, this.role, s, changeId).subscribe(next => {
             if (this.supportEvent) {
-                this.saveEventStream(+next, events, changeId).subscribe(var0 => {
+                this.saveEventStream(next, events, changeId).subscribe(var0 => {
                     this.notify(!!var0)
                     this.refreshSummary.next();
                 });
@@ -69,7 +69,7 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
             }
         });
     };
-    update(id: number, s: D, changeId: string, events: any[], version: number) {
+    update(id: string, s: D, changeId: string, events: any[], version: number) {
         if (this.supportEvent) {
             this.httpProxySvc.updateEntity(this.entityRepo, this.role, id, s, changeId).subscribe(next => {
                 this.replaceEventStream(id, events, changeId, version).subscribe(var0 => {
@@ -84,33 +84,33 @@ export class EntityCommonService<C extends IIdBasedEntity, D> implements IEntity
             })
         }
     };
-    patch(id: number, event: IEditEvent, changeId: string, fieldName: string) {
+    patch(id: string, event: IEditEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
             this.refreshSummary.next();
         })
     };
-    patchAtomicNum(id: number, event: IEditEvent, changeId: string, fieldName: string) {
+    patchAtomicNum(id: string, event: IEditEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityAtomicById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
             this.refreshSummary.next();
         })
     };
-    patchList(id: number, event: IEditListEvent, changeId: string, fieldName: string) {
+    patchList(id: string, event: IEditListEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityListById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
             this.refreshSummary.next();
         })
 
     };
-    patchMultiInput(id: number, event: IEditInputListEvent, changeId: string, fieldName: string) {
+    patchMultiInput(id: string, event: IEditInputListEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityInputListById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
             this.refreshSummary.next();
         })
 
     };
-    patchBoolean(id: number, event: IEditBooleanEvent, changeId: string, fieldName: string) {
+    patchBoolean(id: string, event: IEditBooleanEvent, changeId: string, fieldName: string) {
         this.httpProxySvc.patchEntityBooleanById(this.entityRepo, this.role, id, fieldName, event, changeId).subscribe(next => {
             this.notify(next)
             this.refreshSummary.next();

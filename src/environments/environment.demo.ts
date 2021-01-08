@@ -5,8 +5,8 @@ export const environment = {
     validation: 'on' as 'on' | 'off',
     serverUri: 'http://localhost:8111',
     tokenUrl: 'http://localhost:8111/auth-svc/oauth/token',
-    loginClientId: '838330249904133',
-    registerClientId: '838330249904135',
+    loginClientId: '0C8AZZ16LZB4',
+    registerClientId: '0C8B00098WLD',
     clientSecret: '',
   };
   

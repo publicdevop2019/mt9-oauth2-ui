@@ -1,5 +1,5 @@
 export interface IResourceOwner {
-    id: number,
+    id: string,
     email?: string;
     password?: string;
     locked: boolean;

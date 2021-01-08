@@ -1,6 +1,6 @@
 
 export interface IProductSimple {
-    id: number;
+    id: string;
     name: string;
     endAt: number;
     startAt: number;
@@ -8,7 +8,7 @@ export interface IProductSimple {
     priceList: number[];
     totalSales: number;
     coverImage: string;
-    attrSalesMap: { [key: string]: number }
+    attrSalesMap: { [key: string]: string }
     version:number;
   }
   export interface IProductOptions {
@@ -31,7 +31,7 @@ export interface IProductSimple {
     decreaseActualStorage?: number;
   }
   export interface ISkuNew {
-    id: number
+    id: string
     referenceId: string,
     description: string,
     storageOrder: number;
@@ -41,7 +41,7 @@ export interface IProductSimple {
     version:number;
   }
   export interface IProductDetail {
-    id: number;
+    id: string;
     name: string;
     imageUrlSmall: string;
     description: string;

@@ -51,7 +51,7 @@ export class HttpProxyService {
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
     }
-    saveEventStream(id: number, events: any[], changeId: string) {
+    saveEventStream(id: string, events: any[], changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
@@ -60,10 +60,10 @@ export class HttpProxyService {
             });
         });
     }
-    readEventStreamById(id: number) {
+    readEventStreamById(id: string) {
         return this._httpClient.get<IEventAdminRep>(environment.serverUri + this.EVENT_SVC_NAME + '/events/admin/' + id)
     }
-    deleteEventStream(id: number, changeId: string) {
+    deleteEventStream(id: string, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
@@ -72,7 +72,7 @@ export class HttpProxyService {
             });
         });
     }
-    replaceEventStream(id: number, events: any[], changeId: string, version: number) {
+    replaceEventStream(id: string, events: any[], changeId: string, version: number) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         let payload = {
@@ -131,7 +131,7 @@ export class HttpProxyService {
             });
         })
     };
-    updateProductStatus(id: number, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
+    updateProductStatus(id: string, status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId)
@@ -141,7 +141,7 @@ export class HttpProxyService {
             });
         });
     }
-    batchUpdateProductStatus(ids: number[], status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
+    batchUpdateProductStatus(ids: string[], status: 'AVAILABLE' | 'UNAVAILABLE', changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
@@ -150,7 +150,7 @@ export class HttpProxyService {
             });
         });
     }
-    batchUpdateUserStatus(entityRepo: string, role: string, ids: number[], status: 'LOCK' | 'UNLOCK', changeId: string) {
+    batchUpdateUserStatus(entityRepo: string, role: string, ids: string[], status: 'LOCK' | 'UNLOCK', changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
@@ -184,11 +184,11 @@ export class HttpProxyService {
             });
         });
     };
-    revokeResourceOwnerToken(id: number): Observable<boolean> {
+    revokeResourceOwnerToken(id: string): Observable<boolean> {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": id, "type": "USER" }, { headers: headerConfig }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/auth-svc/revoke-tokens/root', { "id": id, "type": "USER" }, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -197,7 +197,7 @@ export class HttpProxyService {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', UUID())
         return new Observable<boolean>(e => {
-            this._httpClient.post<any>(environment.serverUri + '/proxy/revoke-tokens/root', { "id": clientId, "type": "CLIENT" }, { headers: headerConfig }).subscribe(next => {
+            this._httpClient.post<any>(environment.serverUri + '/auth-svc/revoke-tokens/root', { "id": clientId, "type": "CLIENT" }, { headers: headerConfig }).subscribe(next => {
                 e.next(true)
             });
         });
@@ -291,7 +291,7 @@ export class HttpProxyService {
             return "?" + params.join('&')
         return ""
     }
-    private getTimeValuePatch(status: 'AVAILABLE' | 'UNAVAILABLE', ids?: number[]): IPatch[] {
+    private getTimeValuePatch(status: 'AVAILABLE' | 'UNAVAILABLE', ids?: string[]): IPatch[] {
         let re: IPatch[] = [];
         if (ids && ids.length > 0) {
             ids.forEach(id => {
@@ -316,7 +316,7 @@ export class HttpProxyService {
         }
         return re;
     }
-    private getUserStatusPatch(status: 'LOCK' | 'UNLOCK', ids: number[]): IPatch[] {
+    private getUserStatusPatch(status: 'LOCK' | 'UNLOCK', ids: string[]): IPatch[] {
         let re: IPatch[] = [];
         ids.forEach(id => {
             let var0: IPatch;
@@ -341,7 +341,7 @@ export class HttpProxyService {
         re.push(startAt)
         return re;
     }
-    private getPatchPayloadAtomicNum(id: number, fieldName: string, fieldValue: IEditEvent): IPatchCommand[] {
+    private getPatchPayloadAtomicNum(id: string, fieldName: string, fieldValue: IEditEvent): IPatchCommand[] {
         let re: IPatchCommand[] = [];
         let type = undefined;
 
@@ -398,7 +398,7 @@ export class HttpProxyService {
             });
         });
     };
-    readEntityById<S>(entityRepo: string, role: string, id: number): Observable<S> {
+    readEntityById<S>(entityRepo: string, role: string, id: string): Observable<S> {
         return this._httpClient.get<S>(entityRepo + '/' + role + '/' + id);
     };
     readEntityByQuery<T>(entityRepo: string, role: string, num: number, size: number, query?: string, by?: string, order?: string, headers?: {}) {
@@ -417,7 +417,7 @@ export class HttpProxyService {
         }
         return var0
     }
-    updateEntity(entityRepo: string, role: string, id: number, entity: any, changeId: string): Observable<boolean> {
+    updateEntity(entityRepo: string, role: string, id: string, entity: any, changeId: string): Observable<boolean> {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
@@ -426,7 +426,7 @@ export class HttpProxyService {
             });
         });
     };
-    deleteEntityById(entityRepo: string, role: string, id: number, changeId: string): Observable<boolean> {
+    deleteEntityById(entityRepo: string, role: string, id: string, changeId: string): Observable<boolean> {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('changeId', changeId)
         return new Observable<boolean>(e => {
@@ -444,7 +444,7 @@ export class HttpProxyService {
             });
         });
     };
-    patchEntityById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditEvent, changeId: string) {
+    patchEntityById(entityRepo: string, role: string, id: string, fieldName: string, editEvent: IEditEvent, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId);
@@ -454,7 +454,7 @@ export class HttpProxyService {
             });
         });
     }
-    patchEntityAtomicById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditEvent, changeId: string) {
+    patchEntityAtomicById(entityRepo: string, role: string, id: string, fieldName: string, editEvent: IEditEvent, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId);
@@ -464,7 +464,7 @@ export class HttpProxyService {
             });
         });
     }
-    patchEntityListById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditListEvent, changeId: string) {
+    patchEntityListById(entityRepo: string, role: string, id: string, fieldName: string, editEvent: IEditListEvent, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId);
@@ -474,7 +474,7 @@ export class HttpProxyService {
             });
         });
     }
-    patchEntityInputListById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditInputListEvent, changeId: string) {
+    patchEntityInputListById(entityRepo: string, role: string, id: string, fieldName: string, editEvent: IEditInputListEvent, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId);
@@ -484,7 +484,7 @@ export class HttpProxyService {
             });
         });
     }
-    patchEntityBooleanById(entityRepo: string, role: string, id: number, fieldName: string, editEvent: IEditBooleanEvent, changeId: string) {
+    patchEntityBooleanById(entityRepo: string, role: string, id: string, fieldName: string, editEvent: IEditBooleanEvent, changeId: string) {
         let headerConfig = new HttpHeaders();
         headerConfig = headerConfig.set('Content-Type', 'application/json-patch+json')
         headerConfig = headerConfig.set('changeId', changeId);

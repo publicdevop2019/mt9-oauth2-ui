@@ -27,7 +27,7 @@ export class SummaryResourceOwnerComponent extends SummaryEntityComponent<IResou
   ) {
     super(entitySvc, deviceSvc, bottomSheet, 2);
   }
-  revokeResourceOwnerToken(id: number) {
+  revokeResourceOwnerToken(id: string) {
     this.entitySvc.revokeResourceOwnerToken(id);
   }
   getAuthorityList(inputs: string[]) {

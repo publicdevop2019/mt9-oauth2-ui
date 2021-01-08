@@ -11,7 +11,7 @@ export enum grantTypeEnums {
   }
   export interface IClient {
     name: string;
-    id: number;
+    id: string;
     clientSecret?: string;
     description?: string;
     grantTypeEnums: grantTypeEnums[];

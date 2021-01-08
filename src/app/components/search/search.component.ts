@@ -240,7 +240,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   parseAttrId(attributes: string[]) {
     if (attributes && attributes.length > 0) {
       let ids = attributes.map(e => e.split(":")[0]);
-      return this.attrSvc.readByQuery(0, ids.length, 'id:' + ids.join('.'),undefined,undefined,{loading:false}).pipe(map(next => attributes.map(e => next.data.find(ee => ee.id === +e.split(":")[0]).name + ":" + e.split(":")[1])))
+      return this.attrSvc.readByQuery(0, ids.length, 'id:' + ids.join('.'),undefined,undefined,{loading:false}).pipe(map(next => attributes.map(e => next.data.find(ee => ee.id === e.split(":")[0]).name + ":" + e.split(":")[1])))
     } else {
       return of([])
     }

@@ -7,7 +7,7 @@ import { ICatalog } from '../clazz/validation/aggregate/catalog/interfaze-catalo
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './http.interceptor';
 export interface ICatalogCustomerTreeNode {
-  id: number,
+  id: string,
   name: string,
   children?: ICatalogCustomerTreeNode[],
   tags?: string[],
