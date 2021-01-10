@@ -7,6 +7,7 @@ import { catchError, switchMap, mergeMap, retry, filter, take, finalize } from '
 import { HttpProxyService } from './http-proxy.service';
 import { ITokenResponse } from '../clazz/validation/interfaze-common';
 import { TranslateService } from '@ngx-translate/core';
+import { getCookie } from '../clazz/utility';
 /**
  * use refresh token if call failed
  */
@@ -24,7 +25,11 @@ export class CustomHttpInterceptor implements HttpInterceptor {
          * skip Bearer header for public urls
          */
       } else {
-        req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}` } });
+        if (req.method === 'GET' || req.method === 'HEAD') {
+          req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}` } });
+        } else {
+          req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}`, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') }, withCredentials: true });
+        }
       }
     return next.handle(req).pipe(catchError((error: HttpErrorResponse) => {
       if (error && error.status === 401) {
