@@ -38,10 +38,14 @@ export class HttpProxyService {
     private BBS_SVC_NAME = '/bbs-svc';
     private EVENT_SVC_NAME = '/object-svc';
     set currentUserAuthInfo(token: ITokenResponse) {
-        document.cookie = token === undefined ? 'jwt=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/' : 'jwt=' + JSON.stringify(token) + ';path=/';
+        if (token === undefined || token === null) {
+            localStorage.setItem('jwt', undefined);
+        } else {
+            localStorage.setItem('jwt', JSON.stringify(token));
+        }
     };
     get currentUserAuthInfo(): ITokenResponse | undefined {
-        const jwtTokenStr: string = getCookie('jwt');
+        const jwtTokenStr: string = localStorage.getItem('jwt');
         if (jwtTokenStr !== 'undefined' && jwtTokenStr !== undefined) {
             return <ITokenResponse>JSON.parse(jwtTokenStr)
         } else {
@@ -404,9 +408,9 @@ export class HttpProxyService {
     readEntityByQuery<T>(entityRepo: string, role: string, num: number, size: number, query?: string, by?: string, order?: string, headers?: {}) {
         let headerConfig = new HttpHeaders();
         headers && Object.keys(headers).forEach(e => {
-            headerConfig = headerConfig.set(e, headers[e]+'')
+            headerConfig = headerConfig.set(e, headers[e] + '')
         })
-        return this._httpClient.get<ISumRep<T>>(entityRepo + '/' + role + this.getQueryParam([this.addPrefix(query), this.getPageParam(num, size, by, order)]),{ headers: headerConfig })
+        return this._httpClient.get<ISumRep<T>>(entityRepo + '/' + role + this.getQueryParam([this.addPrefix(query), this.getPageParam(num, size, by, order)]), { headers: headerConfig })
     }
     addPrefix(query: string): string {
         let var0: string = query;
