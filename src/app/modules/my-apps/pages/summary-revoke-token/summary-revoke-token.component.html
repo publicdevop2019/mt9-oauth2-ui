@@ -1,6 +1,6 @@
 <h2 class="flex-row-space-between" style="margin-bottom: 0px;">{{'MALL_CENTER' |translate}} /
     {{'REVOKE_TOKEN_DASHBOARD' |translate}} </h2>
-<app-search (search)="doSearch($event)" [fields]="['id']">
+<app-search (search)="doSearch($event)" [fields]="['targetId']">
 </app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"

@@ -46,6 +46,7 @@ export class SearchComponent implements OnDestroy, OnInit {
 
   public searchHelper: IOption[] = [
     { label: 'ID', value: "id" },
+    { label: 'TARGET_ID', value: "targetId" },
     { label: 'REFERENCE_ID', value: "referenceId" },
     { label: 'PARENT_ID_FRONT', value: "parentId_front" },
     { label: 'PARENT_ID_BACK', value: "parentId_back" },
