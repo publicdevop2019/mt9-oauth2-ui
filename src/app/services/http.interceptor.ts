@@ -7,13 +7,14 @@ import { catchError, switchMap, mergeMap, retry, filter, take, finalize } from '
 import { HttpProxyService } from './http-proxy.service';
 import { ITokenResponse } from '../clazz/validation/interfaze-common';
 import { TranslateService } from '@ngx-translate/core';
-import { getCookie } from '../clazz/utility';
+import { getCookie, logout } from '../clazz/utility';
 /**
  * use refresh token if call failed
  */
 @Injectable()
 export class CustomHttpInterceptor implements HttpInterceptor {
   private _errorStatus: number[] = [500, 503, 502, 504];
+  private last403Url: string;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   constructor(private router: Router, private _httpProxy: HttpProxyService, private _snackBar: MatSnackBar, private translate: TranslateService) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
@@ -28,7 +29,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         if (req.method === 'GET' || req.method === 'HEAD') {
           req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}` } });
         } else {
-          req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}`, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') }, withCredentials: true });
+          req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}`, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '' }, withCredentials: true });
         }
       }
     return next.handle(req).pipe(catchError((error: HttpErrorResponse) => {
@@ -40,8 +41,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         }
         if (req.url.indexOf('oauth/token') > -1 && req.method === 'POST' && req.body && (req.body as FormData).get('grant_type') === 'refresh_token') {
           this.openSnackbar('SESSION_EXPIRED');
-          this.router.navigate(['/login'], { queryParams: this.router.routerState.snapshot.root.queryParams })
-          document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+          logout()
           return throwError(error);
         }
         if (this._httpProxy.refreshInprogress) {
@@ -73,8 +73,15 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         this.openSnackbar('METHOD_NOT_SUPPORTED');
         return throwError(error);
       } else if (error.status === 403) {
-        this.openSnackbar('ACCESS_IS_NOT_ALLOWED');
-        return throwError(error);
+        if (req.urlWithParams === this.last403Url) {
+          this.last403Url = undefined;
+          this.openSnackbar('ACCESS_IS_NOT_ALLOWED');
+          return throwError(error);
+        } else {
+          req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}`, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '' }, withCredentials: true });
+          this.last403Url = req.urlWithParams;
+          return next.handle(req);
+        }
       } else if (error.status === 400) {
         this.openSnackbar('INVALID_REQUEST');
         return throwError(error);
