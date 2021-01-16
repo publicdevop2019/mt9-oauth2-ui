@@ -73,7 +73,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
         return throwError(error);
       } else if (error.status === 403) {
         //for csrf request, retry 
-        req = req.clone({ setHeaders: { Authorization: `Bearer ${this._httpProxy.currentUserAuthInfo.access_token}`, 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '' }, withCredentials: true });
+        req = req.clone({ setHeaders: { 'X-XSRF-TOKEN': getCookie('XSRF-TOKEN') || '' }, withCredentials: true });
         return next.handle(req).pipe(catchError((error: HttpErrorResponse) => {
           this.openSnackbar('ACCESS_IS_NOT_ALLOWED');
           return throwError(error);
