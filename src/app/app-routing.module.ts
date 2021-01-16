@@ -25,6 +25,7 @@ import { AuthService } from './services/auth.service';
 import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sku.component';
 import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
 import { SummaryEndpointComponent } from './modules/my-apps/pages/summary-endpoint/summary-endpoint.component';
+import { CacheControlComponent } from './pages/cache-control/cache-control.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -53,6 +54,7 @@ const routes: Routes = [
       { path: 'settings', component: SettingComponent},
       { path: 'operation-history', component: OperationHistoryComponent},
       { path: 'revoke-token', component: SummaryRevokeTokenComponent},
+      { path: 'cache-mngr', component: CacheControlComponent},
       { path: 'skus', component: SummarySkuComponent},
       { path: '**', component: SummaryEndpointComponent }
     ]

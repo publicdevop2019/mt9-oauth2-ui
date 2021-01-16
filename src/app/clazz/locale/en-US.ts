@@ -377,5 +377,8 @@ export const enUS = {
     "STRING_IS_DESCRIPTION": "White list check failed",
     "STRING_NOT_EMPTY_STRING": "Required",
     "RESOURCE_INDICATOR_REQUIRES_ROLE": "Require correct roles",
+    "CACHE_DASHBOARD": "Cache Control",
+    "RELOAD_PROXY_CACHE": "Reload proxy cache",
+    "CACHE_RELOAD_MSG_SENT": "Request sent, it may take some time to process your request",
     "": "",
 }

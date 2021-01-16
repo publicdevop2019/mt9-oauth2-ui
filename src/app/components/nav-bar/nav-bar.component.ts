@@ -45,6 +45,13 @@ export class NavBarComponent implements OnInit {
       params: {
       },
     },
+    {
+      link: 'cache-mngr',
+      display: 'CACHE_DASHBOARD',
+      icon: 'cached',
+      params: {
+      },
+    },
   ];
   menuUser: INavElement[] = [
     {

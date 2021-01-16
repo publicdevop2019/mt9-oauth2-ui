@@ -6,7 +6,6 @@ import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as UUID from 'uuid/v1';
 import { IEventAdminRep, ISumRep } from '../clazz/summary.component';
-import { getCookie } from '../clazz/utility';
 import { IForgetPasswordRequest, IPendingResourceOwner, IResourceOwnerUpdatePwd } from '../clazz/validation/aggregate/user/interfaze-user';
 import { IAuthorizeCode, IAuthorizeParty, IAutoApprove, IOrder, ITokenResponse } from '../clazz/validation/interfaze-common';
 import { hasValue } from '../clazz/validation/validator-common';
@@ -54,6 +53,11 @@ export class HttpProxyService {
     }
     // OAuth2 pwd flow
     constructor(private _httpClient: HttpClient) {
+    }
+    sendReloadRequest(changeId: string) {
+        let headerConfig = new HttpHeaders();
+        headerConfig = headerConfig.set('changeId', changeId)
+        return this._httpClient.post(environment.serverUri + this.AUTH_SVC_NAME + '/endpoints/root/event/reload', null, { headers: headerConfig });
     }
     saveEventStream(id: string, events: any[], changeId: string) {
         let headerConfig = new HttpHeaders();

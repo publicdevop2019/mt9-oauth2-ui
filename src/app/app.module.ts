@@ -100,6 +100,7 @@ import { ResourceOwnerService } from './services/resource-owner.service';
 import { SameRequestHttpInterceptor } from './services/same-request.interceptor';
 import { EditablePageSelectSingleComponent } from './components/editable-page-select-single/editable-page-select-single.component';
 import { EditablePageSelectMultiComponent } from './components/editable-page-select-multi/editable-page-select-multi.component';
+import { CacheControlComponent } from './pages/cache-control/cache-control.component';
 
 @NgModule({
   declarations: [
@@ -151,7 +152,8 @@ import { EditablePageSelectMultiComponent } from './components/editable-page-sel
     SummaryTaskComponent,
     ObjectDetailComponent,
     EditablePageSelectSingleComponent,
-    EditablePageSelectMultiComponent
+    EditablePageSelectMultiComponent,
+    CacheControlComponent
   ],
   imports: [
     BrowserAnimationsModule,
