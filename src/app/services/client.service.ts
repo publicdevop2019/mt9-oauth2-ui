@@ -12,7 +12,7 @@ export class ClientService extends EntityCommonService<IClient, IClient>{
   private ENTITY_NAME = '/clients';
   entityRepo: string = environment.serverUri + this.AUTH_SVC_NAME + this.ENTITY_NAME;
   role: string = 'root';
-  supportEvent = true;
+  supportEvent = false;
   constructor(private httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
     super(httpProxy, interceptor);
   }

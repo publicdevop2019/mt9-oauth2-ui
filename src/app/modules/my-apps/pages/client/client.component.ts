@@ -51,8 +51,7 @@ export class ClientComponent extends Aggregate<ClientComponent, IClient> impleme
         this.previousPayload = e;
         // update form config
       });
-      this.resumeFromEventStore();
-      if (this.aggregate && this.eventStore.length === 0) {
+      if (this.aggregate) {
         const grantType: string = this.aggregate.grantTypeEnums.filter(e => e !== grantTypeEnums.refresh_token)[0];
         this.fis.formGroupCollection[this.formId].patchValue({
           id: this.aggregate.id,
