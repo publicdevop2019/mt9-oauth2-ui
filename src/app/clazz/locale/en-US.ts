@@ -380,5 +380,5 @@ export const enUS = {
     "CACHE_DASHBOARD": "Cache Control",
     "RELOAD_PROXY_CACHE": "Reload proxy cache",
     "CACHE_RELOAD_MSG_SENT": "Request sent, it may take some time to process your request",
-    "": "",
+    "MESSAGE_DASHBOARD": "Message Center",
 }

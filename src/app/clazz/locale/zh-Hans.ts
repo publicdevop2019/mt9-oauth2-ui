@@ -386,5 +386,6 @@ export const zhHans = {
     "CACHE_DASHBOARD": "缓存管理",
     "RELOAD_PROXY_CACHE": "重载代理缓存",
     "CACHE_RELOAD_MSG_SENT": "请求已发送，系统正在处理您的请求",
+    "MESSAGE_DASHBOARD": "消息中心",
     "": "",
 }

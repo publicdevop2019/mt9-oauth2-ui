@@ -101,6 +101,7 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
 import { EditablePageSelectSingleComponent } from './components/editable-page-select-single/editable-page-select-single.component';
 import { EditablePageSelectMultiComponent } from './components/editable-page-select-multi/editable-page-select-multi.component';
 import { CacheControlComponent } from './pages/cache-control/cache-control.component';
+import { MessageCenterComponent } from './modules/my-apps/pages/message-center/message-center.component';
 
 @NgModule({
   declarations: [
@@ -153,7 +154,8 @@ import { CacheControlComponent } from './pages/cache-control/cache-control.compo
     ObjectDetailComponent,
     EditablePageSelectSingleComponent,
     EditablePageSelectMultiComponent,
-    CacheControlComponent
+    CacheControlComponent,
+    MessageCenterComponent
   ],
   imports: [
     BrowserAnimationsModule,

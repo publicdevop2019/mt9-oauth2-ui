@@ -52,6 +52,13 @@ export class NavBarComponent implements OnInit {
       params: {
       },
     },
+    {
+      link: 'message-center',
+      display: 'MESSAGE_DASHBOARD',
+      icon: 'message',
+      params: {
+      },
+    },
   ];
   menuUser: INavElement[] = [
     {

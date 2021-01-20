@@ -26,6 +26,7 @@ import { SummarySkuComponent } from './modules/mall/pages/summary-sku/summary-sk
 import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-task.component';
 import { SummaryEndpointComponent } from './modules/my-apps/pages/summary-endpoint/summary-endpoint.component';
 import { CacheControlComponent } from './pages/cache-control/cache-control.component';
+import { MessageCenterComponent } from './modules/my-apps/pages/message-center/message-center.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -53,6 +54,7 @@ const routes: Routes = [
       { path: 'notInterested', component: SummaryNotInterestedComponent },
       { path: 'settings', component: SettingComponent},
       { path: 'operation-history', component: OperationHistoryComponent},
+      { path: 'message-center', component: MessageCenterComponent},
       { path: 'revoke-token', component: SummaryRevokeTokenComponent},
       { path: 'cache-mngr', component: CacheControlComponent},
       { path: 'skus', component: SummarySkuComponent},
