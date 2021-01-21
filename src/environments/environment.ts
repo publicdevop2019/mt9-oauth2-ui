@@ -7,7 +7,6 @@ export const environment = {
   mode: 'online' as 'online' | 'offline',
   validation: 'on' as 'on' | 'off', //make payload validation always return true, note this will not disable all validations, only validator-helper is bypassed
   serverUri: 'http://localhost:8111',
-  tokenUrl: 'http://localhost:8111/auth-svc/oauth/token',
   // serverUri: 'http://localhost:8083/v1',
   // tokenUrl: 'http://localhost:8111/oauth/token',
   // serverUri: 'http://ec2-18-191-132-78.us-east-2.compute.amazonaws.com',
