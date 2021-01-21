@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { logout } from 'src/app/clazz/utility';
 import { DeviceService } from 'src/app/services/device.service';
+import { MessageService } from 'src/app/services/message.service';
 export interface INavElement {
   link: string;
   icon?: string;
@@ -21,6 +22,7 @@ export const NAV_LIST: { [index: string]: string } = {
   styleUrls: ['./nav-bar.component.css']
 })
 export class NavBarComponent implements OnInit {
+  msgDetails: boolean = false;
   menuOpen: boolean = false;
   mobileQuery: MediaQueryList;
   menuAuth: INavElement[] = [
@@ -290,7 +292,7 @@ export class NavBarComponent implements OnInit {
   ]
   private _mobileQueryListener: () => void;
   @ViewChild("snav", { static: true }) snav: MatSidenav;
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, public translate: TranslateService,public deviceSvc:DeviceService) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, public route: ActivatedRoute, public router: Router, public translate: TranslateService,public deviceSvc:DeviceService,public msgSvc:MessageService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -309,6 +311,7 @@ export class NavBarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.msgSvc.connect();
   }
   doLogout(){
     logout()
