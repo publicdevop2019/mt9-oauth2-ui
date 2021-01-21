@@ -41,6 +41,7 @@ import { mockBizOrderOpt } from 'src/app/mocks/mock-biz-order-opt';
 import { mockClientEvent } from '../mocks/mock-client-events';
 import { mockProductEvents } from '../mocks/mock-product-events';
 import { CATALOG_TYPE } from '../clazz/constants';
+import { mockMessage } from '../mocks/mock-message';
 /**
  * use refresh token if call failed
  */
@@ -153,6 +154,9 @@ export class OfflineInterceptor implements HttpInterceptor {
         }
         if (req.url.includes('/endpoints/root')) {
           return of(new HttpResponse({ status: 200, body: mockSP })).pipe(delay(this.DEFAULT_DELAY))
+        }
+        if (req.url.includes('/systemNotifications/root')) {
+          return of(new HttpResponse({ status: 200, body: mockMessage })).pipe(delay(this.DEFAULT_DELAY))
         }
         if (req.url.includes('clients/root/')) {
           return of(new HttpResponse({ status: 200, body: mockClient1 })).pipe(delay(this.DEFAULT_DELAY))

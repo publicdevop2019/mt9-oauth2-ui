@@ -382,4 +382,6 @@ export const enUS = {
     "CACHE_RELOAD_MSG_SENT": "Request sent, it may take some time to process your request",
     "MESSAGE_DASHBOARD": "Message Center",
     "NO_MSG": "No message",
+    "MESSAGE": "Message",
+    "DATE": "Date",
 }

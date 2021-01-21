@@ -388,5 +388,7 @@ export const zhHans = {
     "CACHE_RELOAD_MSG_SENT": "请求已发送，系统正在处理您的请求",
     "MESSAGE_DASHBOARD": "消息中心",
     "NO_MSG": "无新消息",
+    "MESSAGE": "消息",
+    "DATE": "日期",
     "": "",
 }
