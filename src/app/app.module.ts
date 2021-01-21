@@ -24,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
@@ -101,6 +102,7 @@ import { SameRequestHttpInterceptor } from './services/same-request.interceptor'
 import { EditablePageSelectSingleComponent } from './components/editable-page-select-single/editable-page-select-single.component';
 import { EditablePageSelectMultiComponent } from './components/editable-page-select-multi/editable-page-select-multi.component';
 import { CacheControlComponent } from './pages/cache-control/cache-control.component';
+import { MessageCenterComponent } from './modules/my-apps/pages/message-center/message-center.component';
 
 @NgModule({
   declarations: [
@@ -153,7 +155,8 @@ import { CacheControlComponent } from './pages/cache-control/cache-control.compo
     ObjectDetailComponent,
     EditablePageSelectSingleComponent,
     EditablePageSelectMultiComponent,
-    CacheControlComponent
+    CacheControlComponent,
+    MessageCenterComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -191,6 +194,7 @@ import { CacheControlComponent } from './pages/cache-control/cache-control.compo
     MatAutocompleteModule,
     MtFormBuilderModule,
     OverlayModule,
+    MatBadgeModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     TranslateModule.forRoot({
       loader: {
