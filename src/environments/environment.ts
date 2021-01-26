@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  mode: 'offline' as 'online' | 'offline',
+  mode: 'online' as 'online' | 'offline',
   validation: 'on' as 'on' | 'off', //make payload validation always return true, note this will not disable all validations, only validator-helper is bypassed
   serverUri: 'http://localhost:8111',
   // serverUri: 'http://localhost:8083/v1',
