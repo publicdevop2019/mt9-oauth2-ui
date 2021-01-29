@@ -103,6 +103,7 @@ import { EditablePageSelectSingleComponent } from './components/editable-page-se
 import { EditablePageSelectMultiComponent } from './components/editable-page-select-multi/editable-page-select-multi.component';
 import { CacheControlComponent } from './pages/cache-control/cache-control.component';
 import { MessageCenterComponent } from './modules/my-apps/pages/message-center/message-center.component';
+import { RequestIdHttpInterceptor } from './services/interceptors/request-id.interceptor';
 
 @NgModule({
   declarations: [
@@ -223,6 +224,11 @@ import { MessageCenterComponent } from './modules/my-apps/pages/message-center/m
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoadingInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: RequestIdHttpInterceptor,
       multi: true
     },
     {
