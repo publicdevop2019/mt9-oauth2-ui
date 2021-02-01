@@ -13,12 +13,10 @@ export class EndpointValidator extends IAggregateValidator {
         this.rootCreateEndpointCommandValidator.set('description', descriptionValidator);
         this.rootCreateEndpointCommandValidator.set('path', this.pathValidator);
         this.rootCreateEndpointCommandValidator.set('method', this.methodValidator);
-        this.rootCreateEndpointCommandValidator.set('expression', this.expressionValidator);
 
         this.rootUpdateEndpointCommandValidator.set('description', descriptionValidator);
         this.rootUpdateEndpointCommandValidator.set('path', this.pathValidator);
         this.rootUpdateEndpointCommandValidator.set('method', this.methodValidator);
-        this.rootUpdateEndpointCommandValidator.set('expression', this.expressionValidator);
     }
     public validate(payload: IEndpoint, context: string): ErrorMessage[] {
         if (context === 'rootCreateEndpointCommandValidator')

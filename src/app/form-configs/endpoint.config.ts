@@ -1,5 +1,7 @@
 import { IForm } from 'mt-form-builder/lib/classes/template.interface';
 import { HTTP_METHODS } from '../clazz/validation/aggregate/endpoint/interfaze-endpoint';
+import { USER_ROLE_ENUM } from '../clazz/validation/aggregate/user/interfaze-user';
+import { CLIENT_ROLE_LIST, SCOPE_LIST } from '../clazz/validation/constant';
 
 export const FORM_CONFIG: IForm = {
     "repeatable": false,
@@ -23,7 +25,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "1",
                 "column": "0"
             },
-            required:true,
+            required: true,
         },
         {
             "type": "text",
@@ -44,7 +46,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "3",
                 "column": "0"
             },
-            required:true,
+            required: true,
         },
         {
             "type": "select",
@@ -55,18 +57,68 @@ export const FORM_CONFIG: IForm = {
                 "row": "4",
                 "column": "0"
             },
-            "options":HTTP_METHODS,
-            required:true,
+            "options": HTTP_METHODS,
+            required: true,
         },
         {
-            "type": "text",
+            "type": "checkbox",
             "display": true,
-            "label": "ENTER_SECURITY_EXPRESSION",
-            "key": "expression",
+            "label": "",
+            "key": "secured",
             "position": {
                 "row": "5",
                 "column": "0"
             },
+            "options": [
+                { label: 'PROTECTED_ENDPOINT', value: "true" },
+            ],
+        },
+        {
+            "type": "radio",
+            "display": false,
+            "label": "PLEASE_LIMIT_ACCESS",
+            "key": "limitAccess",
+            "position": {
+                "row": "6",
+                "column": "0"
+            },
+            "options": [
+                { label: 'EP_USER_ONLY', value: "userOnly" },
+                { label: 'EP_CLIENT_ONLY', value: "clientOnly" },
+            ],
+        },
+        {
+            "type": "checkbox",
+            "display": false,
+            "label": "EP_CLIENT_ROLES",
+            "key": "clientRoles",
+            "position": {
+                "row": "7",
+                "column": "0"
+            },
+            "options": CLIENT_ROLE_LIST,
+        },
+        {
+            "type": "checkbox",
+            "display": false,
+            "label": "EP_CLIENT_SCOPES",
+            "key": "clientScopes",
+            "position": {
+                "row": "8",
+                "column": "0"
+            },
+            "options": SCOPE_LIST,
+        },
+        {
+            "type": "checkbox",
+            "display": false,
+            "label": "EP_USER_ROLES",
+            "key": "userRoles",
+            "position": {
+                "row": "9",
+                "column": "0"
+            },
+            "options": [...USER_ROLE_ENUM, { label: "USER_ROLE_ROOT", value: "ROLE_ROOT" }],
         },
     ],
 }

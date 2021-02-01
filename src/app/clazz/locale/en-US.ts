@@ -384,4 +384,12 @@ export const enUS = {
     "NO_MSG": "No message",
     "MESSAGE": "Message",
     "DATE": "Date",
+    "PROTECTED_ENDPOINT": "Is protected?",
+    "PLEASE_LIMIT_ACCESS": "Please select limit access (Optional)",
+    "EP_USER_ONLY": "User only",
+    "EP_CLIENT_ONLY": "Client only",
+    "EP_CLIENT_ROLES": "Please select client roles",
+    "EP_CLIENT_SCOPES": "Please select client scopes",
+    "EP_USER_ROLES": "Please select user role",
+    "USER_ROLE_ROOT": "Root user",
 }

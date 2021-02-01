@@ -390,5 +390,13 @@ export const zhHans = {
     "NO_MSG": "无新消息",
     "MESSAGE": "消息",
     "DATE": "日期",
+    "PROTECTED_ENDPOINT": "需要验证？",
+    "PLEASE_LIMIT_ACCESS": "限制权限类别(可选)",
+    "EP_USER_ONLY": "仅用户",
+    "EP_CLIENT_ONLY": "仅客户端",
+    "EP_CLIENT_ROLES": "选择客户端角色",
+    "EP_CLIENT_SCOPES": "选择客户端范围",
+    "EP_USER_ROLES": "选择用户角色",
+    "USER_ROLE_ROOT": "超级管理员",
     "": "",
 }
