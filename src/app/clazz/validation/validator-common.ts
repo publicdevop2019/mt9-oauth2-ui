@@ -39,7 +39,6 @@ export class StringValidator {
     static STRING_WHITE_LIST_DESC = new RegExp(/^[a-zA-Z0-9 \(\)\+\u4E00-\u9FFF]*$/)
     static STRING_WHITE_LIST_ATTR = new RegExp(/^[a-zA-Z0-9\:\u4E00-\u9FFF]*$/)
     static STRING_WHITE_LIST_ATTR_VALUE = new RegExp(/^[a-zA-Z0-9-\+\x\(\)\/\:\u4E00-\u9FFF]*$/)
-    static STRING_EP_EXPRESSION_LIST = new RegExp(/^[a-zA-Z0-9 \(\)\'\#\.\_]*$/)
     static STRING_URL_PATH_LIST = new RegExp(/^[a-zA-Z-\/\*]*$/)
     public static greaterThanOrEqualTo(var0: string, arg1: number, results: ErrorMessage[], key: string): boolean {
         if (!StringValidator.isString(var0, results, key) || var0.length < arg1) {
@@ -52,14 +51,6 @@ export class StringValidator {
     public static whiteListValueOnly(var0: string, results: ErrorMessage[], key: string): boolean {
         if (!StringValidator.isString(var0, results, key) || !StringValidator.STRING_WHITE_LIST.test(var0)) {
             results.push({ type: "whiteListValueOnly", message: 'STRING_WHITE_LIST_VALUE_ONLY', key: key })
-            return false
-        } else {
-            return true
-        }
-    }
-    public static isEpExpression(var0: string, results: ErrorMessage[], key: string): boolean {
-        if (!StringValidator.isString(var0, results, key) || !StringValidator.STRING_EP_EXPRESSION_LIST.test(var0)) {
-            results.push({ type: "hasEpExpressionValue", message: 'STRING_HAS_EP_EXPRESSION_VALUE', key: key })
             return false
         } else {
             return true

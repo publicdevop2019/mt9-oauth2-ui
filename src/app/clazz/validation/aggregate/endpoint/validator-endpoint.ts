@@ -36,10 +36,4 @@ export class EndpointValidator extends IAggregateValidator {
         StringValidator.belongsTo(payload[key], HTTP_METHODS.map(e => e.value), results, key);
         return results
     }
-    expressionValidator = (key: string, payload: IEndpoint) => {
-        let results: ErrorMessage[] = [];
-        StringValidator.isEpExpression(payload[key], results, key);
-        StringValidator.lessThanOrEqualTo(payload[key], 200, results, key);
-        return results
-    }
 }
