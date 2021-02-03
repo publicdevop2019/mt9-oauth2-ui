@@ -45,12 +45,12 @@ export class UserValidator extends IAggregateValidator {
     }
     passwordValidator = (key: string, payload: IResourceOwnerUpdatePwd) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValidWhiteListValue(payload[key], results, key)
+        StringValidator.notEmpty(payload[key], results, key)
         return results
     }
     currentPwdValidator = (key: string, payload: IResourceOwnerUpdatePwd) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValidWhiteListValue(payload[key], results, key)
+        StringValidator.notEmpty(payload[key], results, key)
         return results
     }
     emailValidator = (key: string, payload: IPendingResourceOwner) => {
