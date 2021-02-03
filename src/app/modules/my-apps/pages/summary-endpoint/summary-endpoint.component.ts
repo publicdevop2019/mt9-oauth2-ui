@@ -14,7 +14,7 @@ import { EndpointComponent } from '../endpoint/endpoint.component';
   styleUrls: ['./summary-endpoint.component.css']
 })
 export class SummaryEndpointComponent extends SummaryEntityComponent<IEndpoint, IEndpoint> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'description', 'resourceId', 'path', 'expression', 'method', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'description', 'resourceId', 'path',  'method', 'edit', 'delete'];
   sheetComponent = EndpointComponent;
   httpMethodList = CONST_HTTP_METHOD;
   public allClientList: IOption[];

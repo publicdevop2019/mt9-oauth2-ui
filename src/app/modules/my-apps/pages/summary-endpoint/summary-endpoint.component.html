@@ -54,14 +54,6 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="expression">
-                <th mat-header-cell *matHeaderCellDef> {{'EXPRESSION'|translate}} </th>
-                <td mat-cell *matCellDef="let row">
-                    <app-editable-field [inputValue]="row.expression" (newValue)="doPatch(row.id,$event,'expression')">
-                    </app-editable-field>
-                </td>
-            </ng-container>
-
             <ng-container matColumnDef="path">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> URL </th>
                 <td mat-cell *matCellDef="let row">

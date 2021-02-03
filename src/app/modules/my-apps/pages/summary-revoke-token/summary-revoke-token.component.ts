@@ -11,7 +11,7 @@ import { IRevokeToken, RevokeTokenService } from 'src/app/services/revoke-token.
   styleUrls: ['./summary-revoke-token.component.css']
 })
 export class SummaryRevokeTokenComponent extends SummaryEntityComponent<IRevokeToken, IRevokeToken> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'targetId', 'issuedAt', 'type'];
+  displayedColumns: string[] = ['targetId', 'issuedAt', 'type'];
   attrTypeList=CONST_ATTR_TYPE;
   constructor(
     public entitySvc: RevokeTokenService,
