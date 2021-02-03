@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCommonService } from '../clazz/entity.common-service';
 import { environment } from 'src/environments/environment';
 import { HttpProxyService } from './http-proxy.service';
-import { CustomHttpInterceptor } from './http.interceptor';
+import { CustomHttpInterceptor } from './interceptors/http.interceptor';
 export interface IChangeRecord {
   id: string,
   changeId: string,

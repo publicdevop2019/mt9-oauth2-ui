@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
 import { IEndpoint } from '../clazz/validation/aggregate/endpoint/interfaze-endpoint';
 import { HttpProxyService } from './http-proxy.service';
-import { CustomHttpInterceptor } from './http.interceptor';
+import { CustomHttpInterceptor } from './interceptors/http.interceptor';
 @Injectable({
   providedIn: 'root'
 })

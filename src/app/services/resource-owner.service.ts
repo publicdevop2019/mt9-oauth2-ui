@@ -5,7 +5,7 @@ import { EntityCommonService } from '../clazz/entity.common-service';
 import { logout } from '../clazz/utility';
 import { IResourceOwner, IResourceOwnerUpdatePwd } from '../clazz/validation/aggregate/user/interfaze-user';
 import { HttpProxyService } from './http-proxy.service';
-import { CustomHttpInterceptor } from './http.interceptor';
+import { CustomHttpInterceptor } from './interceptors/http.interceptor';
 @Injectable({
   providedIn: 'root'
 })

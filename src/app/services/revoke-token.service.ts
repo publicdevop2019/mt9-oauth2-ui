@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { EntityCommonService } from '../clazz/entity.common-service';
 import { HttpProxyService } from './http-proxy.service';
-import { CustomHttpInterceptor } from './http.interceptor';
+import { CustomHttpInterceptor } from './interceptors/http.interceptor';
 export interface IRevokeToken {
   id: string;
   targetId:number;

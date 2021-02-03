@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCommonService } from '../clazz/entity.common-service';
 import { HttpProxyService } from './http-proxy.service';
-import { CustomHttpInterceptor } from './http.interceptor';
+import { CustomHttpInterceptor } from './interceptors/http.interceptor';
 import { environment } from 'src/environments/environment';
 import { IClient } from '../clazz/validation/aggregate/client/interfaze-client';
 @Injectable({

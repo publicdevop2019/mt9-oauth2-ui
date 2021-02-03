@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CustomHttpInterceptor } from 'src/app/services/http.interceptor';
+import { CustomHttpInterceptor } from 'src/app/services/interceptors/http.interceptor';
 
 @Component({
   selector: 'app-copy-field',

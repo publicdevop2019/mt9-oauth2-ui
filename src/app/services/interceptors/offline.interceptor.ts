@@ -13,7 +13,7 @@ import { mockProductDetails } from 'src/app/mocks/mock-product';
 import { mockProducts } from 'src/app/mocks/mock-products';
 import { mockSP1 } from 'src/app/mocks/mock-endpoint';
 import { environment } from 'src/environments/environment';
-import { IAuthorizeCode } from '../clazz/validation/interfaze-common';
+import { IAuthorizeCode } from '../../clazz/validation/interfaze-common';
 import { mockCatalog } from 'src/app/mocks/mock-catalog';
 import { mockAttr } from 'src/app/mocks/mock-attribute';
 import { mockClient1 } from 'src/app/mocks/mock-client';
@@ -38,10 +38,10 @@ import { mockProductsSearch } from 'src/app/mocks/mock-products-search';
 import { mockAttrsSearch } from 'src/app/mocks/mock-attributes-search';
 import { mockResourceSearch } from 'src/app/mocks/mock-users-search';
 import { mockBizOrderOpt } from 'src/app/mocks/mock-biz-order-opt';
-import { mockClientEvent } from '../mocks/mock-client-events';
-import { mockProductEvents } from '../mocks/mock-product-events';
-import { CATALOG_TYPE } from '../clazz/constants';
-import { mockMessage } from '../mocks/mock-message';
+import { mockClientEvent } from '../../mocks/mock-client-events';
+import { mockProductEvents } from '../../mocks/mock-product-events';
+import { CATALOG_TYPE } from '../../clazz/constants';
+import { mockMessage } from '../../mocks/mock-message';
 /**
  * use refresh token if call failed
  */

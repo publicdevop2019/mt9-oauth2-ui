@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { IEditEvent } from '../components/editable-field/editable-field.component';
 import { HttpProxyService } from '../services/http-proxy.service';
-import { CustomHttpInterceptor } from '../services/http.interceptor';
+import { CustomHttpInterceptor } from '../services/interceptors/http.interceptor';
 import { IEntityService, IEventAdminRep, IIdBasedEntity } from "./summary.component";
 import { IEditListEvent } from '../components/editable-select-multi/editable-select-multi.component';
 import { IEditBooleanEvent } from '../components/editable-boolean/editable-boolean.component';

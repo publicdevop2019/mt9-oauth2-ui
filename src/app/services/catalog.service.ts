@@ -5,7 +5,7 @@ import { CATALOG_TYPE } from '../clazz/constants';
 import { EntityCommonService } from '../clazz/entity.common-service';
 import { ICatalog } from '../clazz/validation/aggregate/catalog/interfaze-catalog';
 import { HttpProxyService } from './http-proxy.service';
-import { CustomHttpInterceptor } from './http.interceptor';
+import { CustomHttpInterceptor } from './interceptors/http.interceptor';
 export interface ICatalogCustomerTreeNode {
   id: string,
   name: string,

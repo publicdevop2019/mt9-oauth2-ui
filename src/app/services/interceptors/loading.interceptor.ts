@@ -1,7 +1,7 @@
 import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { finalize } from 'rxjs/operators';
-import { HttpProxyService } from './http-proxy.service';
+import { HttpProxyService } from '../http-proxy.service';
 
 @Injectable()
 export class LoadingInterceptor implements HttpInterceptor {

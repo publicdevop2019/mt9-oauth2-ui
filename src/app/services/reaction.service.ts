@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpProxyService } from './http-proxy.service';
 import { MatDialog } from '@angular/material/dialog';
-import { CustomHttpInterceptor } from './http.interceptor';
+import { CustomHttpInterceptor } from './interceptors/http.interceptor';
 export interface IUserReactionResult {
   results: IUserReaction[];
   total:number;

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
-import { OperationConfirmDialogComponent } from '../components/operation-confirm-dialog/operation-confirm-dialog.component';
+import { OperationConfirmDialogComponent } from '../../components/operation-confirm-dialog/operation-confirm-dialog.component';
 @Injectable()
 export class DeleteConfirmHttpInterceptor implements HttpInterceptor {
     constructor(public dialog: MatDialog) { }
