@@ -52,10 +52,10 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
         this.fis.formGroupCollection[this.formId].get("limitAccess").setValue('clientOnly');
       }
       this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['userRoles'].includes(e.key)).forEach(ee => {
-        ee.display = this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'userOnly'
+        ee.display = (this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'userOnly' || !this.fis.formGroupCollection[this.formId].get("limitAccess").value)
       });
       this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['clientRoles'].includes(e.key)).forEach(ee => {
-        ee.display = this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'clientOnly'
+        ee.display = (this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'clientOnly' || !this.fis.formGroupCollection[this.formId].get("limitAccess").value)
       });
       this.fis.formGroupCollection[this.formId].get("clientRoles").setValue(this.aggregate.clientRoles);
       this.fis.formGroupCollection[this.formId].get("clientScopes").setValue(this.aggregate.clientScopes);
@@ -69,18 +69,19 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
   }
   convertToPayload(cmpt: EndpointComponent): IEndpoint {
     let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
+    const secured = !!formGroup.get('secured').value;
     return {
       id: formGroup.get('id').value,
       description: formGroup.get('description').value ? formGroup.get('description').value : null,
       resourceId: formGroup.get('resourceId').value,
       path: formGroup.get('path').value,
       method: formGroup.get('method').value,
-      secured: formGroup.get('secured').value,
-      userOnly: formGroup.get('limitAccess').value === 'userOnly',
-      clientOnly: formGroup.get('limitAccess').value === 'clientOnly',
-      clientRoles: formGroup.get('clientRoles').value,
-      clientScopes: formGroup.get('clientScopes').value,
-      userRoles: formGroup.get('userRoles').value,
+      secured: secured,
+      userOnly: secured ? formGroup.get('limitAccess').value === 'userOnly' : false,
+      clientOnly: secured ? formGroup.get('limitAccess').value === 'clientOnly' : false,
+      clientRoles: secured ? (formGroup.get('clientRoles').value || []) : [],
+      clientScopes: secured ? (formGroup.get('clientScopes').value || []) : [],
+      userRoles: secured ? (formGroup.get('userRoles').value || []) : [],
       version: cmpt.aggregate && cmpt.aggregate.version
     }
   }

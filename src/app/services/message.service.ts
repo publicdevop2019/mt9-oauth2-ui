@@ -12,9 +12,9 @@ export interface IDetail extends IIdBasedEntity {
     providedIn: 'root'
 })
 export class MessageService extends EntityCommonService<IDetail, IDetail>{
-    private AUTH_SVC_NAME = '/messenger-svc';
+    private SVC_NAME = '/messenger-svc';
     private ENTITY_NAME = '/systemNotifications';
-    entityRepo: string = environment.serverUri + this.AUTH_SVC_NAME + this.ENTITY_NAME;
+    entityRepo: string = environment.serverUri + this.SVC_NAME + this.ENTITY_NAME;
     role: string = 'root';
     constructor(httpProxy: HttpProxyService, interceptor: CustomHttpInterceptor) {
         super(httpProxy, interceptor);
@@ -31,7 +31,7 @@ export class MessageService extends EntityCommonService<IDetail, IDetail>{
             const jwtBody = this.httpProxySvc.currentUserAuthInfo.access_token.split('.')[1];
             const raw = atob(jwtBody);
             if ((JSON.parse(raw).authorities as string[]).filter(e => e === "ROLE_ROOT").length > 0) {
-                const socket = new WebSocket(`ws://localhost:8085/web-socket`);
+                const socket = new WebSocket(`ws://localhost:8111/messenger-svc/web-socket`);
                 socket.addEventListener('message', (event) => {
                     this.saveMessage(event.data as string);
                 });
