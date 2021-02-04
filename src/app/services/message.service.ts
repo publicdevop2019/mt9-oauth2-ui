@@ -26,13 +26,14 @@ export class MessageService extends EntityCommonService<IDetail, IDetail>{
         }
         this.latestMessage.push(message);
     }
+    private socket: WebSocket;
     connect() {
         if (environment.mode !== 'offline') {
             const jwtBody = this.httpProxySvc.currentUserAuthInfo.access_token.split('.')[1];
             const raw = atob(jwtBody);
             if ((JSON.parse(raw).authorities as string[]).filter(e => e === "ROLE_ROOT").length > 0) {
-                const socket = new WebSocket(`ws://localhost:8111/messenger-svc/web-socket`);
-                socket.addEventListener('message', (event) => {
+                this.socket = new WebSocket(`ws://localhost:8111/messenger-svc/web-socket?jwt=${btoa(this.httpProxySvc.currentUserAuthInfo.access_token)}`);
+                this.socket.addEventListener('message', (event) => {
                     this.saveMessage(event.data as string);
                 });
             }
