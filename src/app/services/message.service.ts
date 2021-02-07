@@ -4,6 +4,7 @@ import { EntityCommonService } from '../clazz/entity.common-service';
 import { IIdBasedEntity } from '../clazz/summary.component';
 import { HttpProxyService } from './http-proxy.service';
 import { CustomHttpInterceptor } from './interceptors/http.interceptor';
+import * as UUID from 'uuid/v1';
 export interface IDetail extends IIdBasedEntity {
     date: number
     message: string
@@ -32,9 +33,11 @@ export class MessageService extends EntityCommonService<IDetail, IDetail>{
             const jwtBody = this.httpProxySvc.currentUserAuthInfo.access_token.split('.')[1];
             const raw = atob(jwtBody);
             if ((JSON.parse(raw).authorities as string[]).filter(e => e === "ROLE_ROOT").length > 0) {
-                this.socket = new WebSocket(`ws://localhost:8111/messenger-svc/web-socket?jwt=${btoa(this.httpProxySvc.currentUserAuthInfo.access_token)}`);
-                this.socket.addEventListener('message', (event) => {
-                    this.saveMessage(event.data as string);
+                this.httpProxySvc.createEntity(environment.serverUri+'/auth-svc/tickets', this.role, null, UUID()).subscribe(next => {
+                    this.socket = new WebSocket(`ws://localhost:8111/messenger-svc/web-socket?jwt=${btoa(next)}`);
+                    this.socket.addEventListener('message', (event) => {
+                        this.saveMessage(event.data as string);
+                    });
                 });
             }
         }
