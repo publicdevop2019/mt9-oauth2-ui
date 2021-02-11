@@ -32,8 +32,7 @@ export class CatalogValidator extends IAggregateValidator {
     parentIdValidator = (key: string, payload: ICatalog) => {
         let results: ErrorMessage[] = [];
         if (payload[key]) {
-            NumberValidator.isNumber(payload[key], results, key)
-            NumberValidator.isInteger(payload[key], results, key)
+            StringValidator.notEmpty(payload[key], results, key)
         }
         return results
     }
