@@ -3,6 +3,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { ICatalogCustomerTreeNode } from 'src/app/services/catalog.service';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material/tree';
 import { ICatalog } from 'src/app/clazz/validation/aggregate/catalog/interfaze-catalog';
+import { hasValue } from 'src/app/clazz/validation/validator-common';
 export interface CatalogCustomerFlatNode {
   expandable: boolean;
   name: string;
@@ -33,8 +34,11 @@ export class CatalogTreeComponent implements OnInit, OnChanges {
   treeDataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.catalogs)
+    if (this.catalogs){
       this.treeDataSource.data = this.convertToTree(this.catalogs);
+      console.dir(this.treeDataSource.data)
+      console.dir(this.catalogs)
+    }
   }
 
   ngOnInit() {
@@ -46,7 +50,7 @@ export class CatalogTreeComponent implements OnInit, OnChanges {
     }).length >= 1
   }
   private convertToTree(catalogs: ICatalog[]): ICatalogCustomerTreeNode[] {
-    let rootNodes = catalogs.filter(e => e.parentId === null || e.parentId === undefined);
+    let rootNodes = catalogs.filter(e => !hasValue(e.parentId));
     let treeNodes = rootNodes.map(e => <ICatalogCustomerTreeNode>{
       id: e.id,
       name: e.name,
