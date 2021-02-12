@@ -36,8 +36,6 @@ export class CatalogTreeComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.catalogs){
       this.treeDataSource.data = this.convertToTree(this.catalogs);
-      console.dir(this.treeDataSource.data)
-      console.dir(this.catalogs)
     }
   }
 
