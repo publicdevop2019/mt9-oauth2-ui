@@ -1,5 +1,6 @@
 import { IBizAttribute } from './validation/aggregate/attribute/interfaze-attribute';
 import { ICatalog } from './validation/aggregate/catalog/interfaze-catalog';
+import { hasValue } from './validation/validator-common';
 
 export function getCookie(name: string): string {
     let value = "; " + document.cookie;
@@ -26,7 +27,7 @@ export function getLabel(e: IBizAttribute): string {
 export function getLayeredLabel(attr: ICatalog, es: ICatalog[]): string {
     let tags: string[] = [];
     tags.push(attr.name);
-    while (attr.parentId !== null && attr.parentId !== undefined) {
+    while (hasValue(attr.parentId)) {
         let nextId = attr.parentId;
         attr = es.find(e => e.id === nextId);
         tags.push(attr.name);

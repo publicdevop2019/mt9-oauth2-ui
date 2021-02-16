@@ -268,7 +268,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
   public _loadAttributes(attr: ICatalog) {
     let tags: string[] = [];
     tags.push(...attr.attributes);
-    while (attr.parentId !== null && attr.parentId !== undefined) {
+    while (hasValue(attr.parentId)) {
       let nextId = attr.parentId;
       attr = this.catalogs.data.find(e => e.id === nextId);
       tags.push(...attr.attributes);
