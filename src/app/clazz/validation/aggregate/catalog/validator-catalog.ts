@@ -10,7 +10,7 @@ export class CatalogValidator extends IAggregateValidator {
         this.adminCreateCatalogCommandValidator.set('parentId', this.parentIdValidator);
         this.adminCreateCatalogCommandValidator.set('attributes', this.attributesValidator);
         this.adminCreateCatalogCommandValidator.set('catalogType', this.catalogTypeValidator);
-        
+
         this.adminUpdateCatalogCommandValidator.set('name', this.nameValidator);
         this.adminUpdateCatalogCommandValidator.set('parentId', this.parentIdValidator);
         this.adminUpdateCatalogCommandValidator.set('attributes', this.attributesValidator);
@@ -26,7 +26,7 @@ export class CatalogValidator extends IAggregateValidator {
         let results: ErrorMessage[] = [];
         StringValidator.hasValidWhiteListValue(payload[key], results, key)
         StringValidator.lessThanOrEqualTo(payload[key], 50, results, key);
-        StringValidator.greaterThanOrEqualTo(payload[key], 1, results, key);
+        StringValidator.notBlank(payload[key], results, key);
         return results
     }
     parentIdValidator = (key: string, payload: ICatalog) => {

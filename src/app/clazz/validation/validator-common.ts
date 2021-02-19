@@ -136,6 +136,14 @@ export class StringValidator {
             return true;
         }
     }
+    public static notBlank(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
+        if (!StringValidator.isString(var0, results, key) || var0.trim() === '') {
+            results.push({ type: "notBlankString", message: 'STRING_NOT_BLAND_STRING', key: key })
+            return false;
+        } else {
+            return true;
+        }
+    }
     public static hasValidWhiteListValue(var0: string | undefined | null, results: ErrorMessage[], key: string): boolean {
         if (!StringValidator.isString(var0, results, key) || var0 === '' || !StringValidator.whiteListValueOnly(var0, results, key)) {
             results.push({ type: "hasStringValue", message: 'STRING_HAS_VALUE', key: key })
