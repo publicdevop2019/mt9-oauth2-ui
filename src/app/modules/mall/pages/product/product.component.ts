@@ -77,6 +77,8 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
   private salesFormCreatedOb: Observable<string>;
   private genFormCreatedOb: Observable<string>;
   private salesFormIdTempFormCreatedOb: Observable<string>;
+  private imgAttrSaleFormCreatedOb: Observable<string>;
+  private imageAttrSaleChildFormCreatedOb: Observable<string>;
   public hasSku: boolean = false;
   public previewFlag: boolean = false;
   private keys = ['storageActual', 'storageOrder', 'price', 'sales']
@@ -97,7 +99,9 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
     this.prodFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrProdFormId));
     this.salesFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrSalesFormId));
     this.genFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.attrGeneralFormId));
+    this.imgAttrSaleFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleFormId));
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
+    this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     //@todo how to load tree structure
     combineLatest([this.categorySvc.readByQuery(0, 1000, CATALOG_TYPE.BACKEND), this.formCreatedOb]).pipe(take(1)).subscribe(next => {
       if (next[0].data) {
@@ -105,21 +109,35 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
         this.formInfo.inputs[1].options = next[0].data.filter(ee => this.isLeafNode(next[0].data, ee)).map(e => <IOption>{ label: getLayeredLabel(e, next[0].data), value: String(e.id) });
         this.cdr.markForCheck()
       }
-
-      let sub4 = this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
-        if (next === 'AVAILABLE') {
-          this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(new Date(), { emitEvent: false })
-          this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('00:00:00', { emitEvent: false })
-          this.formInfo.inputs.find(e => e.key === 'startAtDate').display = false;
-          this.formInfo.inputs.find(e => e.key === 'startAtTime').display = false;
-        } else {
-          this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(null, { emitEvent: false })
-          this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('', { emitEvent: false })
-          this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
-          this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
+      if (this.productBottomSheet.context !== 'new') {
+        if (this.eventStore.length === 0) {
+          /** @note start of can be removed if product created manually*/
+          this.fis.restore(this.formId, this.aggregate);
+          this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(this.aggregate.startAt ? new Date(this.aggregate.startAt) : '', { emitEvent: false })
+          this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.aggregate.startAt ? this._getTime(new Date(this.aggregate.startAt)) : '', { emitEvent: false })
+          this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(this.aggregate.endAt ? new Date(this.aggregate.endAt) : '', { emitEvent: false })
+          this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.aggregate.endAt ? this._getTime(new Date(this.aggregate.endAt)) : '', { emitEvent: false })
+          /** @note end of can be removed if product created manually*/
         }
-      });
-      this.subs[this.formId + '_status'] = sub4;
+        this.formInfo.inputs.find(e => e.key === 'status').display = false;
+        this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
+        this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
+      } else {
+        let sub4 = this.fis.formGroupCollection[this.formId].get('status').valueChanges.subscribe(next => {
+          if (next === 'AVAILABLE') {
+            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(new Date(), { emitEvent: false })
+            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('00:00:00', { emitEvent: false })
+            this.formInfo.inputs.find(e => e.key === 'startAtDate').display = false;
+            this.formInfo.inputs.find(e => e.key === 'startAtTime').display = false;
+          } else {
+            this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(null, { emitEvent: false })
+            this.fis.formGroupCollection[this.formId].get('startAtTime').setValue('', { emitEvent: false })
+            this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
+            this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
+          }
+        });
+        this.subs[this.formId + '_status'] = sub4;
+      }
       let sub = this.fis.formGroupCollection[this.formId].get('selectBackendCatalog').valueChanges.subscribe(next => {
         this._loadAttributes(this.catalogs.data.find(e => e.id === next))
       })
@@ -143,10 +161,89 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
       this.cdr.markForCheck() // this is required to initialize all forms
       return combineLatest([this.prodFormCreatedOb, this.genFormCreatedOb]).pipe(take(1))
     })).subscribe(() => {
-      let sub = this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
-        this._subChangeForForm(this.salesFormIdTempId);
-      })
-      this.subs[this.formId + '_salesFormIdTempFormCreatedOb'] = sub;
+      if (this.productBottomSheet.context === 'new') {
+        let sub = this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
+          this._subChangeForForm(this.salesFormIdTempId);
+        })
+        this.subs[this.formId + '_salesFormIdTempFormCreatedOb'] = sub;
+      } else {
+        /** @note start of can be removed if product created manually*/
+        if (this.aggregate.skus.filter(e => this._hasEmptyAttrSales(e)).length === 0) {
+          // use sku form
+          this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.aggregate.skus))
+          this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = false);
+          if (this.eventStore.length === 0) {
+            this.fis.formGroupCollection[this.formId].get('hasSku').setValue('YES', { emitEvent: false });
+            this.hasSku = true;
+            this.salesFormCreatedOb.pipe(take(1)).subscribe(() => {
+              this._updateAndSubSalesForm(this.aggregate.skus);
+            });
+          }
+        } else {
+          // use no sku form
+          this.formInfo.inputs.filter(e => this.keys.includes(e.key)).forEach(e => e.display = true);
+          if (this.eventStore.length === 0) {
+            this.fis.formGroupCollection[this.formId].get('hasSku').setValue('NO', { emitEvent: false });
+            this.hasSku = false;
+            this.fis.restore(this.formId, this.aggregate.skus[0]);
+          }
+          this._disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.formId]);
+          this._displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.formId]);
+          this.fis.$refresh.next();
+        }
+        if (this.eventStore.length === 0) {
+          if (this.aggregate.attributesProd) {
+            this._subChangeForForm(this.attrProdFormId);
+            this.updateValueForForm(this.aggregate.attributesProd, this.attrProdFormId);
+          }
+          if (this.aggregate.attributesGen) {
+            this._subChangeForForm(this.attrGeneralFormId);
+            this.updateValueForForm(this.aggregate.attributesGen, this.attrGeneralFormId);
+          }
+          if (this.aggregate.imageUrlLarge && this.aggregate.imageUrlLarge.length !== 0) {
+            this.fis.restoreDynamicForm(this.imageFormId, this.fis.parsePayloadArr(this.aggregate.imageUrlLarge, 'imageUrl'), this.aggregate.imageUrlLarge.length)
+          }
+          if (this.aggregate.selectedOptions && this.aggregate.selectedOptions.length !== 0) {
+            this.fis.restoreDynamicForm(this.optionFormId, this.fis.parsePayloadArr(this.aggregate.selectedOptions.map(e => e.title), 'productOption'), this.aggregate.selectedOptions.length);
+            this.aggregate.selectedOptions.forEach((option, index) => {
+              if (index === 0) {
+                //for child form
+                let childFormId = 'optionForm'
+                this._updateChildFormProductOption(option, childFormId);
+                //for child form
+              } else {
+                let childFormId = 'optionForm_' + (index - 1);
+                let childFormCreated = this.fis.$ready.pipe(filter(e => e === childFormId));
+                childFormCreated.pipe(take(1)).subscribe(() => {
+                  this._updateChildFormProductOption(option, childFormId);
+                })
+              }
+            });
+          }
+          if (this.aggregate.attributeSaleImages && this.aggregate.attributeSaleImages.length !== 0) {
+            this.imgAttrSaleFormCreatedOb.pipe(take(1)).subscribe(() => {
+              let attrs = this.aggregate.attributeSaleImages.map(e => e.attributeSales);
+              this._subChangeForForm(this.imageAttrSaleFormId);
+              this.updateValueForForm(attrs, this.imageAttrSaleFormId);
+              this.imageAttrSaleChildFormCreatedOb.pipe(take(1)).subscribe(() => {
+                this.aggregate.attributeSaleImages.forEach((e, index) => {
+                  if (index === 0) {
+                    this.fis.restoreDynamicForm(this.imageAttrSaleChildFormId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
+                  } else {
+                    let formId = this.imageAttrSaleChildFormId + '_' + (index - 1);
+                    let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
+                    childFormCreated.pipe(take(1)).subscribe(() => {
+                      this.fis.restoreDynamicForm(formId, this.fis.parsePayloadArr(e.imageUrls, 'imageUrl'), e.imageUrls.length)
+                      this.fis.$refresh.next();
+                    });
+                  }
+                })
+              })
+            })
+          }
+        }
+        /** @note end of can be removed if product created manually*/
+      }
       this.salesFormCreatedOb.pipe(take(1)).subscribe(() => {
         this._subChangeForForm(this.imageAttrSaleFormId);
         // when add new child form sub for value chage if no sub
@@ -171,48 +268,85 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
       this.subs['fileupload'] = sub3;
       this._subChangeForForm(this.attrProdFormId);
       this._subChangeForForm(this.attrGeneralFormId);
-      this.resumeComplete.subscribe(next => {
-        if (next) {
-          if (this.productBottomSheet.context !== 'new') {
-            this.formInfo.inputs.find(e => e.key === 'status').display = false;
-            this.formInfo.inputs.find(e => e.key === 'startAtDate').display = true;
-            this.formInfo.inputs.find(e => e.key === 'startAtTime').display = true;
-            if (this.aggregate.startAt) {
-              let var0 = new Date(this.aggregate.startAt)
-              this.fis.formGroupCollection[this.formId].get('startAtDate').setValue(var0, { emitEvent: false })
-              this.fis.formGroupCollection[this.formId].get('startAtTime').setValue(this.getTimeLable(var0.getHours()) + ":" + this.getTimeLable(var0.getMinutes()) + ":" + this.getTimeLable(var0.getSeconds()), { emitEvent: false })
-            }
-            if (this.aggregate.endAt) {
-              let var0 = new Date(this.aggregate.endAt)
-              this.fis.formGroupCollection[this.formId].get('endAtDate').setValue(var0, { emitEvent: false })
-              this.fis.formGroupCollection[this.formId].get('endAtTime').setValue(this.getTimeLable(var0.getHours()) + ":" + this.getTimeLable(var0.getMinutes()) + ":" + this.getTimeLable(var0.getSeconds()), { emitEvent: false })
-            }
-            Object.keys(this.fis.formGroupCollection).filter(e => e.includes(this.salesFormIdTempId)).forEach(e => {
-              this.fis.formGroupCollection_formInfo[e].inputs.forEach(e => e.disabled = true);
-              this.fis.formGroupCollection_formInfo[e].disabled = true;
-            })
-            if (this.aggregate.skus.filter(e => this._hasEmptyAttrSales(e)).length === 0) {
-              // use sku form
-              this.udpateSkusOriginalCopy = JSON.parse(JSON.stringify(this.aggregate.skus))
-              this._disabledStorageSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-              this._displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
-            } else {
-              // use no sku form
-              this._disabledStorageSalesForm(this.fis.formGroupCollection_formInfo[this.formId]);
-              this._displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.formId]);
-            }
-            this.fis.$refresh.next();
-          }
-        }
-      })
       this.resumeFromEventStore();
+      this.fis.$refresh.next();
     })
     this.subs['getAttributeList_http'] = sub1;
   }
-  private getTimeLable(input: number) {
-    if ((input + '').length === 1)
-      return '0' + input;
-    return input + ''
+  private _getTime(arg0: Date): string {
+    let hour = arg0.getUTCHours() + '';
+    if (arg0.getUTCHours() < 10)
+      hour = '0' + arg0.getUTCHours()
+    let minutes = arg0.getUTCMinutes() + '';
+    if (arg0.getUTCMinutes() < 10)
+      minutes = '0' + arg0.getUTCMinutes()
+    let sec = arg0.getUTCSeconds() + '';
+    if (arg0.getUTCSeconds() < 10)
+      sec = '0' + arg0.getUTCSeconds()
+    return hour + ':' + minutes + ':' + sec
+  }
+  private _updateChildFormProductOption(option: IProductOptions, childFormId: string) {
+    let value = this.fis.parsePayloadArr(option.options.map(e => e.optionValue), 'optionValue');
+    let value2 = this.fis.parsePayloadArr(option.options.map(e => e.priceVar), 'optionPriceChange');
+    Object.assign(value, value2)
+    this.fis.restoreDynamicForm(childFormId, value, option.options.length);
+  }
+  private _updateAndSubSalesForm(skus: ISku[]) {
+    let value = this.fis.parsePayloadArr(skus.map(e => e.storageOrder), 'storageOrder');
+    let value2 = this.fis.parsePayloadArr(skus.map(e => e.storageActual), 'storageActual');
+    let value3 = this.fis.parsePayloadArr(skus.map(e => e.price), 'price');
+    let value4 = this.fis.parsePayloadArr(skus.map(e => e.sales), 'sales');
+    Object.assign(value, value2)
+    Object.assign(value, value3)
+    Object.assign(value, value4)
+    this.fis.restoreDynamicForm(this.attrSalesFormId, value, skus.length);
+    skus.forEach((sku, index) => {
+      if (index === 0) {
+        //start of child form
+        let formInfo = this.attrSalesFormInfo.inputs.find(e => e.form !== null && e.form !== undefined).form;
+        this.salesFormIdTempFormCreatedOb.pipe(take(1)).subscribe(() => {
+          this._subChangeForForm(this.salesFormIdTempId);
+          this.updateValueForForm(sku.attributesSales, this.salesFormIdTempId);
+        })
+        if (this.productBottomSheet.context !== 'clone') {
+          this._disabledAttrSalesChildForm(formInfo);
+        }
+        //end of child form
+      } else {
+        //start of child form
+        let formId = this.salesFormIdTempId + '_' + (index - 1);
+
+        let childFormCreated = this.fis.$ready.pipe(filter(e => e === formId));
+        childFormCreated.pipe(take(1)).subscribe(() => {
+          let formInfo = this.fis.formGroupCollection_formInfo[formId];
+          this._subChangeForForm(formId);
+          this.updateValueForForm(sku.attributesSales, formId);
+          if (this.productBottomSheet.context !== 'clone') {
+            this._disabledAttrSalesChildForm(formInfo);
+          }
+          this.fis.$refresh.next();
+        });
+        //end of child form
+      }
+    });
+    if (this.productBottomSheet.context !== 'clone') {
+      this._displayStorageChangeInputs(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+      this._disabledAttrSalesForm(this.fis.formGroupCollection_formInfo[this.attrSalesFormId]);
+    }
+    this.fis.$refresh.next();
+  }
+  private _disabledAttrSalesForm(formInfo: IForm) {
+    let var0 = ['storageOrder', 'storageActual', 'sales']
+    formInfo.inputs.filter(e => var0.filter(ee => e.key.includes(ee)).length > 0).forEach(e => e.disabled = true);
+  }
+  private _disabledAttrSalesChildForm(formInfo: IForm) {
+    formInfo.inputs.forEach(e => e.disabled = true);
+    formInfo.disabled = true;
+  }
+  private updateValueForForm(attrs: string[], formId: string) {
+    this.fis.restoreDynamicForm(formId, parseAttributePayload(attrs, this.attrList), attrs.length);
+    this.fis.$refresh.next();
+    this.cdr.markForCheck();
   }
   doPreview() {
     this.previewFlag = !this.previewFlag;
