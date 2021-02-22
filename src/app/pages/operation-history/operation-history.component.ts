@@ -38,11 +38,11 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
       if (queryMaps.get('type') === 'auth') {
         this.entitySvc.PRODUCT_SVC_NAME = '/auth-svc';
         if (queryMaps.get('entity') === 'client') {
-          this.queryPrefix = 'entityType:BizClient'
+          this.queryPrefix = 'entityType:Client'
           this.label = 'OPERATION_DASHBOARD_CLIENT'
         }
         if (queryMaps.get('entity') === 'user') {
-          this.queryPrefix = 'entityType:BizUser'
+          this.queryPrefix = 'entityType:User'
           this.label = 'OPERATION_DASHBOARD_USER'
         }
       } else if (queryMaps.get('type') === 'proxy') {
