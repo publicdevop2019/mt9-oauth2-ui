@@ -207,11 +207,19 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
       } else if (e.key.includes('_filterItemValueList')) {
         let idx = +e.key.split('_')[0];
         let idx2 = +e.key.split('_')[1];
-        let formId = idx === 0 ? cmpt.childFormId : (cmpt.childFormId + '_' + (idx - 1))
-        return {
-          ...e,
-          key: cmpt.fis.formGroupCollection_formInfo[formId].inputs.filter(e => e.key.includes('value')).find((e, index) => index === idx2).key,
-          formId: formId
+        let formId = idx === 0 ? cmpt.childFormId : (cmpt.childFormId + '_' + (idx - 1));
+        let input = cmpt.fis.formGroupCollection_formInfo[formId].inputs.filter(input => input.key.includes('value')).find((e, index) => index === idx2);
+        if(input){
+          return {
+            ...e,
+            key: input.key,
+            formId: formId
+          }
+        }else{
+          return {
+            ...e,
+            formId: cmpt.formId
+          }
         }
       } else {
         return {
