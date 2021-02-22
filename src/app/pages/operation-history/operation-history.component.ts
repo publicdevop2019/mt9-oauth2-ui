@@ -19,7 +19,7 @@ import { OverlayService } from 'src/app/services/overlay.service';
   styleUrls: ['./operation-history.component.css']
 })
 export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRecord, IChangeRecord> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'changeId', 'entityType', 'optName', 'query', 'requestBody', 'revoke'];
+  displayedColumns: string[] = ['id', 'changeId', 'entityType', 'optName', 'query', 'requestBody'];
   // sheetComponent = ClientComponent;
   label: string;
   queryPrefix: string;
@@ -95,9 +95,6 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
     let sub0 = this.entitySvc.refreshSummary.pipe(switchMap(() => ob)).subscribe(next => { this.updateSummaryData(next) });
     this.subs.add(sub)
     this.subs.add(sub0)
-  }
-  supportRollback(row: IChangeRecord) {
-    return ['POST', 'PATCH_BATCH', 'PATCH_BY_ID', 'PUT', 'DELETE_BY_QUERY', 'EMPTY_OPT', 'RESTORE_DELETE', 'CANCEL_CREATE'].includes(row.operationType);
   }
   doSearch(queryString: string) {
     this.queryString = this.queryPrefix + (queryString ? queryString : '');
