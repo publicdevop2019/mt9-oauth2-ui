@@ -19,7 +19,7 @@ import { OverlayService } from 'src/app/services/overlay.service';
   styleUrls: ['./operation-history.component.css']
 })
 export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRecord, IChangeRecord> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'changeId', 'entityType', 'optName', 'query', 'requestBody'];
+  displayedColumns: string[] = ['changeId', 'entityType', 'optName', 'query', 'requestBody'];
   // sheetComponent = ClientComponent;
   label: string;
   queryPrefix: string;
