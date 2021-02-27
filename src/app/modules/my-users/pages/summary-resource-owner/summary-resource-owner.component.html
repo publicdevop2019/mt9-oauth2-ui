@@ -42,7 +42,7 @@
                 <td mat-cell *matCellDef="let row"> <app-copy-field [inputValue]="row.email"></app-copy-field> </td>
             </ng-container>
             <ng-container matColumnDef="grantedAuthorities">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'GRANTED_AUTHORITIES'|translate}} </th>
+                <th mat-header-cell *matHeaderCellDef> {{'GRANTED_AUTHORITIES'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
                     <app-editable-select-multi [inputOptions]="getAuthorityList(row.grantedAuthorities)"
                         [list]="roleList" (newValue)="doPatchList(row.id,$event,'grantedAuthorities')">
