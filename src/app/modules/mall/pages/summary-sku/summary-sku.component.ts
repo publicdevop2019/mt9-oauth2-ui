@@ -39,39 +39,41 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
     let parsedRef: { [key: number]: IProductSimple } = {};
     let parsedRefAttr: { [key: number]: string } = {};
     let ids = input.data.map(e => e.referenceId);
-    let var0 = new Set(ids);
-    let var1 = new Array(...var0);
-    this.productSvc.readByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
-      this.productRef = next;
-      this.dataSource.data.forEach(e => {
-        parsedRef[e.id] = this.parseRef(e.referenceId)
-        parsedRefAttr[e.id] = this.parseSalesAttr(e.referenceId, e.id)
-      });
-      let reqAttrIds: string[] = []
-      Object.values(parsedRefAttr).forEach(e => {
-        e.split(',').forEach(ee => {
-          reqAttrIds.push(ee.split(':')[0]);
-        })
-      })
-      let var2 = new Set(reqAttrIds);
-      let var3 = new Array(...var2);
-      if (var3.filter(e => e).length > 0) {
-        this.attrSvc.readByQuery(0, var3.length, "id:" + var3.filter(e => e).join('.')).subscribe(next2 => {
-          Object.keys(parsedRefAttr).forEach(e => {
-            let attr = parsedRefAttr[+e];
-            let parsed = attr.split(',').map(ee => {
-              if (ee) {
-                let attrId = ee.split(':')[0];
-                return next2.data.find(eee => eee.id === attrId).name + ":" + ee.split(':')[1];
-              }
-            }).join(',')
-            parsedRefAttr[+e] = parsed;
+    if (ids.length > 0) {
+      let var0 = new Set(ids);
+      let var1 = new Array(...var0);
+      this.productSvc.readByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
+        this.productRef = next;
+        this.dataSource.data.forEach(e => {
+          parsedRef[e.id] = this.parseRef(e.referenceId)
+          parsedRefAttr[e.id] = this.parseSalesAttr(e.referenceId, e.id)
+        });
+        let reqAttrIds: string[] = []
+        Object.values(parsedRefAttr).forEach(e => {
+          e.split(',').forEach(ee => {
+            reqAttrIds.push(ee.split(':')[0]);
           })
         })
-      }
-      this.parsedRef = parsedRef;
-      this.parsedRefAttr = parsedRefAttr;
-    })
+        let var2 = new Set(reqAttrIds);
+        let var3 = new Array(...var2);
+        if (var3.filter(e => e).length > 0) {
+          this.attrSvc.readByQuery(0, var3.length, "id:" + var3.filter(e => e).join('.')).subscribe(next2 => {
+            Object.keys(parsedRefAttr).forEach(e => {
+              let attr = parsedRefAttr[+e];
+              let parsed = attr.split(',').map(ee => {
+                if (ee) {
+                  let attrId = ee.split(':')[0];
+                  return next2.data.find(eee => eee.id === attrId).name + ":" + ee.split(':')[1];
+                }
+              }).join(',')
+              parsedRefAttr[+e] = parsed;
+            })
+          })
+        }
+        this.parsedRef = parsedRef;
+        this.parsedRefAttr = parsedRefAttr;
+      })
+    }
   }
   private parseRef(id: string): IProductSimple {
     return this.productRef && (this.productRef.data.filter(e => e.id === id)[0] ? this.productRef.data.filter(e => e.id === id)[0] : undefined)
