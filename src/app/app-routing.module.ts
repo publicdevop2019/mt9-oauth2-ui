@@ -27,6 +27,7 @@ import { SummaryTaskComponent } from './modules/mall/pages/summary-task/summary-
 import { SummaryEndpointComponent } from './modules/my-apps/pages/summary-endpoint/summary-endpoint.component';
 import { CacheControlComponent } from './pages/cache-control/cache-control.component';
 import { MessageCenterComponent } from './modules/my-apps/pages/message-center/message-center.component';
+import { MessageCenterMallComponent } from './modules/mall/pages/message-center-mall/message-center-mall.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -55,6 +56,7 @@ const routes: Routes = [
       { path: 'settings', component: SettingComponent},
       { path: 'operation-history', component: OperationHistoryComponent},
       { path: 'message-center', component: MessageCenterComponent},
+      { path: 'mall-message-center', component: MessageCenterMallComponent},
       { path: 'revoke-token', component: SummaryRevokeTokenComponent},
       { path: 'cache-mngr', component: CacheControlComponent},
       { path: 'skus', component: SummarySkuComponent},

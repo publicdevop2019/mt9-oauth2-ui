@@ -398,5 +398,11 @@ export const zhHans = {
     "EP_CLIENT_SCOPES": "选择客户端范围",
     "EP_USER_ROLES": "选择用户角色",
     "USER_ROLE_ROOT": "超级管理员",
+    "MALL_MSG_DASHBOARD": "消息中心",
+    "ACTUAL_STORAGE": "实际库存",
+    "ORDER_STORAGE": "订单库存",
+    "SKU_FAILURE": "库存扣减失败",
+    "DETAILS": "详情",
+    "NOTIFIACTION_TYPE": "类别",
     "": "",
 }

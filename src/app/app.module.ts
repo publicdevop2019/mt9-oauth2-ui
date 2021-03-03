@@ -104,6 +104,7 @@ import { EditablePageSelectMultiComponent } from './components/editable-page-sel
 import { CacheControlComponent } from './pages/cache-control/cache-control.component';
 import { MessageCenterComponent } from './modules/my-apps/pages/message-center/message-center.component';
 import { RequestIdHttpInterceptor } from './services/interceptors/request-id.interceptor';
+import { MessageCenterMallComponent } from './modules/mall/pages/message-center-mall/message-center-mall.component';
 
 @NgModule({
   declarations: [
@@ -157,7 +158,8 @@ import { RequestIdHttpInterceptor } from './services/interceptors/request-id.int
     EditablePageSelectSingleComponent,
     EditablePageSelectMultiComponent,
     CacheControlComponent,
-    MessageCenterComponent
+    MessageCenterComponent,
+    MessageCenterMallComponent
   ],
   imports: [
     BrowserAnimationsModule,

@@ -392,4 +392,10 @@ export const enUS = {
     "EP_CLIENT_SCOPES": "Please select client scopes",
     "EP_USER_ROLES": "Please select user role",
     "USER_ROLE_ROOT": "Root user",
+    "MALL_MSG_DASHBOARD": "Message Center",
+    "ACTUAL_STORAGE": "Actual Storage",
+    "ORDER_STORAGE": "Order Storage",
+    "SKU_FAILURE": "SKU failed to change",
+    "DETAILS": "Details",
+    "NOTIFIACTION_TYPE": "Type",
 }
