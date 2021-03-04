@@ -318,7 +318,8 @@ export class NavBarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.msgSvc.connect();
+    this.msgSvc.connectSystemMonitor();
+    this.msgSvc.connectMallMonitor();
   }
   doLogout(){
     logout()
