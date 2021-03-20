@@ -22,7 +22,7 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
   viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
-  displayedColumns: string[] = ['id', 'name', 'parentId', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'name', 'parentId', 'edit', 'delete','review'];
   sheetComponent = CatalogComponent;
   private formCreatedOb: Observable<string>;
   constructor(

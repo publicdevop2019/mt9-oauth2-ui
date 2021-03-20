@@ -11,6 +11,7 @@ export interface ICatalogCustomerTreeNode {
   name: string,
   children?: ICatalogCustomerTreeNode[],
   tags?: string[],
+  reviewRequired:boolean
 }
 @Injectable({
   providedIn: 'root'

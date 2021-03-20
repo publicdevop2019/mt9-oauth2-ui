@@ -15,7 +15,7 @@ import { ProductComponent } from '../product/product.component';
   templateUrl: './summary-product.component.html',
 })
 export class SummaryProductComponent extends SummaryEntityComponent<IProductSimple, IProductDetail> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'coverImage', 'name', 'sales', 'status', 'endAt', 'edit', 'delete', 'clone'];
+  displayedColumns: string[] = ['id', 'coverImage', 'name', 'sales', 'status', 'endAt', 'edit', 'delete', 'clone','review'];
   sheetComponent = ProductComponent;
   constructor(
     public entitySvc: ProductService,

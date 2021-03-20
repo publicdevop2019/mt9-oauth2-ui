@@ -9,4 +9,5 @@ export interface IFilterItem {
     description?:string
     filters: IFilterItem[]
     version:number;
+    reviewRequired?:boolean
   }

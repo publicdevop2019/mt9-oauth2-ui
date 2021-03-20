@@ -43,8 +43,8 @@ export class AttributeComponent extends Aggregate<AttributeComponent, IBizAttrib
       this.fis.formGroupCollection[this.formId].get('method').valueChanges.subscribe(next => {
         this.manualSelect = next === 'SELECT';
       });
-      if (this.aggregate && this.eventStore.length === 0) {
-        this.fis.restore(this.formId, this.aggregate);
+      if (this.aggregate) {
+        this.fis.restore(this.formId, this.aggregate, true);
         combineLatest([this.attrFormCreatedOb]).pipe(take(1)).subscribe(() => {
           if (this.aggregate.selectValues && this.aggregate.selectValues.length !== 0) {
             this.fis.restoreDynamicForm(this.formIdAttrValue, this.fis.parsePayloadArr(this.aggregate.selectValues, 'attrValue'), this.aggregate.selectValues.length)

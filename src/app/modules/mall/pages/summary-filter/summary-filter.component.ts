@@ -13,7 +13,7 @@ import { FilterComponent } from '../filter/filter.component';
   templateUrl: './summary-filter.component.html',
 })
 export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, IBizFilter> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'description', 'catalogs', 'edit', 'delete'];
+  displayedColumns: string[] = ['id', 'description', 'catalogs', 'edit', 'delete','review'];
   sheetComponent = FilterComponent;
   public catalogList: IOption[] = []
   constructor(

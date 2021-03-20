@@ -9,6 +9,7 @@ export interface IProductSimple {
     totalSales: number;
     coverImage: string;
     attrSalesMap: { [key: string]: string }
+    reviewRequired:boolean
     version:number;
   }
   export interface IProductOptions {

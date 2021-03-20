@@ -404,5 +404,6 @@ export const zhHans = {
     "SKU_FAILURE": "库存扣减失败",
     "DETAILS": "详情",
     "NOTIFIACTION_TYPE": "类别",
+    "REVIEW_REQUIRED": "审计",
     "": "",
 }

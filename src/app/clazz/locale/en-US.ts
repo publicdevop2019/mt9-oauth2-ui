@@ -398,4 +398,5 @@ export const enUS = {
     "SKU_FAILURE": "SKU failed to change",
     "DETAILS": "Details",
     "NOTIFIACTION_TYPE": "Type",
+    "REVIEW_REQUIRED": "Review Required",
 }
