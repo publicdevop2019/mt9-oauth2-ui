@@ -93,7 +93,7 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
   private subForAttrFormChange() {
     let sub2 = this.fis.formGroupCollection[this.attrFormId].valueChanges.subscribe(next => {
       Object.keys(next).filter(e => e.includes('attributeId')).forEach(idKey => {
-        let selected = (this.attrFormInfo.inputs.find(e => e.key === idKey).optionOriginal).find(e => e.id === next[idKey]) as IBizAttribute
+        let selected = (this.attrFormInfo.inputs.find(e => e.key === idKey).optionOriginal)?.find(e => e.id === next[idKey]) as IBizAttribute
         if (selected) {
           let append = idKey.replace('attributeId', '');
           this.attrFormInfo.inputs.find(ee => ee.key === 'attributeValueSelect' + append).display = selected.method === 'SELECT';
