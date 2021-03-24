@@ -29,7 +29,7 @@ export class SummaryClientComponent extends SummaryEntityComponent<IClient, ICli
     let var0 = new Set(next.data.flatMap(e => e.resourceIds).filter(ee => ee));
     let var1 = new Array(...var0);
     if (var1.length > 0) {
-      this.entitySvc.readByQuery(0, var1.length, "clientId:" + var1.join('.')).subscribe(next => {
+      this.entitySvc.readEntityByQuery(0, var1.length, "clientId:" + var1.join('.')).subscribe(next => {
         this.resourceClientList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
       })
     }

@@ -43,11 +43,11 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
       let sub = this.fis.formGroupCollection[this.formId].valueChanges.subscribe(e => {
         this.viewType = e.view;
         if (this.viewType === 'TREE_VIEW') {
-          this.entitySvc.readByQuery(0, 1000).subscribe(next => {//@todo how to load tree structure
+          this.entitySvc.readEntityByQuery(0, 1000).subscribe(next => {//@todo how to load tree structure
             this.updateSummaryData(next)
           });
         } else {
-          this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => {
+          this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => {
             this.updateSummaryDataExt(next)
           });
         }
@@ -62,7 +62,7 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
     this.updateSummaryData(inputs);
     let parentId: string[] = inputs.data.map(e => e.parentId).filter(e => e);
     if (parentId.length > 0)
-      this.entitySvc.readByQuery(0, parentId.length, ',id:' + parentId.join('.')).subscribe(next => {
+      this.entitySvc.readEntityByQuery(0, parentId.length, ',id:' + parentId.join('.')).subscribe(next => {
         this.catalogList = next.data.map(e => <IOption>{ label: e.name, value: e.id });
       });
   }
@@ -72,13 +72,13 @@ export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, IC
   }
   doSearch(queryString: string) {
     this.queryString = queryString ? ("," + queryString) : this.queryString;
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
+    this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryDataExt(next)
     })
   }
   pageHandler(e: PageEvent) {
     this.entitySvc.currentPageIndex = e.pageIndex;
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(products => {
+    this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(products => {
       this.updateSummaryDataExt(products)
     });
   }

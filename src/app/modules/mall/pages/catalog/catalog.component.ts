@@ -46,13 +46,13 @@ export class CatalogComponent extends Aggregate<CatalogComponent, ICatalog> impl
       if (this.aggregate && this.eventStore.length === 0) {
         if (this.aggregate && this.aggregate.attributes) {
           if (hasValue(this.aggregate.parentId)) {
-            combineLatest([this.entitySvc.readByQuery(0, 1, ',id:' + this.aggregate.parentId), this.attrSvc.readByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
+            combineLatest([this.entitySvc.readEntityByQuery(0, 1, ',id:' + this.aggregate.parentId), this.attrSvc.readEntityByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
               .subscribe(next => {
                 this.formInfo.inputs.find(e => e.key === 'parentId').options = next[0].data.map(e => <IOption>{ label: e.name, value: e.id })
                 this.resumeForm(next[1]);
               })
           } else {
-            combineLatest([this.attrSvc.readByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
+            combineLatest([this.attrSvc.readEntityByQuery(0, this.aggregate.attributes.length, 'id:' + this.aggregate.attributes.map(e => e.split(':')[0]).join('.'))]).pipe(take(1))
             .subscribe(next => {
               this.resumeForm(next[0]);
             })

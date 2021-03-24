@@ -41,6 +41,14 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
           ee.display = next === 'userOnly'
         })
       })
+      this.fis.formGroupCollection[this.formId].get('isWebsocket').valueChanges.subscribe(next => {
+        this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['method'].includes(e.key)).forEach(ee => {
+          ee.display = next === 'no'
+        })
+        this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['method'].includes(e.key)).forEach(ee => {
+          ee.display = next === 'yes'
+        })
+      })
     })
   }
   ngOnDestroy(): void {
@@ -48,7 +56,7 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
   }
   ngAfterViewInit(): void {
     if (this.aggregate) {
-      combineLatest([this.clientSvc.readByQuery(0, 1, 'id:' + this.aggregate.resourceId)]).pipe(take(1))
+      combineLatest([this.clientSvc.readEntityByQuery(0, 1, 'id:' + this.aggregate.resourceId)]).pipe(take(1))
         .subscribe(next => {
           this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[0].data.map(e => <IOption>{ label: e.name, value: e.id })
 

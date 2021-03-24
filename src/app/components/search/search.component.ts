@@ -176,7 +176,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     if (this.fields.includes('catalogFront') || this.fields.includes('parentId_front') || this.fields.includes('catalogs')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, CATALOG_TYPE.FRONTEND)//@todo use paginated select component
+      this.catalogSvc.readEntityByQuery(this.catalogSvc.currentPageIndex, 1000, CATALOG_TYPE.FRONTEND)//@todo use paginated select component
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataFront = catalogs.data;
@@ -184,21 +184,21 @@ export class SearchComponent implements OnDestroy, OnInit {
     }
     if (this.fields.includes('catalogBack') || this.fields.includes('parentId_back')) {
 
-      this.catalogSvc.readByQuery(this.catalogSvc.currentPageIndex, 1000, CATALOG_TYPE.BACKEND)//@todo use paginated select component
+      this.catalogSvc.readEntityByQuery(this.catalogSvc.currentPageIndex, 1000, CATALOG_TYPE.BACKEND)//@todo use paginated select component
         .subscribe(catalogs => {
           if (catalogs.data)
             this.catalogsDataBack = catalogs.data;
         });
     }
     if (this.fields.includes('resourceIds')) {
-      this.clientSvc.readByQuery(0, 1000, 'resourceIndicator:1')//@todo use paginated select component
+      this.clientSvc.readEntityByQuery(0, 1000, 'resourceIndicator:1')//@todo use paginated select component
         .subscribe(next => {
           if (next.data)
             this.resourceClients = next.data;
         });
     }
     if (this.fields.includes('clientId')) {
-      this.clientSvc.readByQuery(0, 1000)//@todo use paginated select component
+      this.clientSvc.readEntityByQuery(0, 1000)//@todo use paginated select component
         .subscribe(next => {
           if (next.data)
             this.allClients = next.data;
@@ -241,7 +241,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   parseAttrId(attributes: string[]) {
     if (attributes && attributes.length > 0) {
       let ids = attributes.map(e => e.split(":")[0]);
-      return this.attrSvc.readByQuery(0, ids.length, 'id:' + ids.join('.'),undefined,undefined,{loading:false}).pipe(map(next => attributes.map(e => next.data.find(ee => ee.id === e.split(":")[0]).name + ":" + e.split(":")[1])))
+      return this.attrSvc.readEntityByQuery(0, ids.length, 'id:' + ids.join('.'),undefined,undefined,{loading:false}).pipe(map(next => attributes.map(e => next.data.find(ee => ee.id === e.split(":")[0]).name + ":" + e.split(":")[1])))
     } else {
       return of([])
     }

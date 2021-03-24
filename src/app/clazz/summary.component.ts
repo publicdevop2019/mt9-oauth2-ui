@@ -29,7 +29,7 @@ export interface IEntityService<C extends IIdBasedEntity, D> {
   replaceEventStream: (id: string, events: any[], changeId: string, version: number) => void;
   deleteEventStream: (id: string, changeId: string) => void;
   readById: (id: string) => Observable<D>;
-  readByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
+  readEntityByQuery: (num: number, size: number, query?: string, by?: string, order?: string) => Observable<ISumRep<C>>;
   deleteByQuery: (query: string, changeId: string) => void;
   deleteById: (id: string, changeId: string) => void;
   create: (s: D, changeId: string, events: any[]) => void;
@@ -75,9 +75,9 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   ) {
     this.pageSizeOffset = _pageSizeOffset;
     if (!skipInitialLoad) {
-      let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); });
+      let sub0 = this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); });
       let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
-        this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
+        this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
       )).subscribe(next => { this.updateSummaryData(next); })
       this.subs.add(sub)
       this.subs.add(sub0)
@@ -119,7 +119,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   }
   pageHandler(e: PageEvent) {
     this.entitySvc.currentPageIndex = e.pageIndex;
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
+    this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next);
     });
   }
@@ -139,7 +139,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   updateTable(sort: Sort) {
     this.sortBy = sort.active;
     this.sortOrder = sort.direction;
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
+    this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next)
     });
   }
@@ -201,7 +201,7 @@ export class SummaryEntityComponent<T extends IIdBasedEntity, S> implements OnDe
   }
   doSearch(queryString: string) {
     this.queryString = queryString;
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
+    this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next);
     })
   }

@@ -399,4 +399,5 @@ export const enUS = {
     "DETAILS": "Details",
     "NOTIFIACTION_TYPE": "Type",
     "REVIEW_REQUIRED": "Review Required",
+    "IS_WEBSOCKET": "Is Websocket?",
 }

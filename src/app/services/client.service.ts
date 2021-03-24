@@ -24,6 +24,6 @@ export class ClientService extends EntityCommonService<IClient, IClient> impleme
     })
   }
   readByQuery(num: number, size: number, query?: string, by?: string, order?: string, header?: {}): Observable<ISumRep<IClient>> {
-    return this.httpProxySvc.readEntityByQuery<IClient>(this.entityRepo, this.role, num, size, query, by, order, header)
+    return this.httpProxySvc.readEntityByQuery<IClient>(this.entityRepo, this.role, num, size, ["grantedAuthorities:ROLE_BACKEND", query].join(','), by, order, header)
   };
 }

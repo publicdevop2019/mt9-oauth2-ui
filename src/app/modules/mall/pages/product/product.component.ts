@@ -103,7 +103,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
     this.salesFormIdTempFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.salesFormIdTempId));
     this.imageAttrSaleChildFormCreatedOb = this.fis.$ready.pipe(filter(e => e === this.imageAttrSaleChildFormId));
     //@todo how to load tree structure
-    combineLatest([this.categorySvc.readByQuery(0, 1000, CATALOG_TYPE.BACKEND), this.formCreatedOb]).pipe(take(1)).subscribe(next => {
+    combineLatest([this.categorySvc.readEntityByQuery(0, 1000, CATALOG_TYPE.BACKEND), this.formCreatedOb]).pipe(take(1)).subscribe(next => {
       if (next[0].data) {
         this.catalogs = next[0];
         this.formInfo.inputs[1].options = next[0].data.filter(ee => this.isLeafNode(next[0].data, ee)).map(e => <IOption>{ label: getLayeredLabel(e, next[0].data), value: String(e.id) });
@@ -154,7 +154,7 @@ export class ProductComponent extends Aggregate<ProductComponent, IProductDetail
       })
       this.subs[this.formId + '_hasSku'] = sub2;
     })
-    let sub1 = this.attrSvc.readByQuery(0, 1000).pipe(switchMap((next) => {//@todo use paginated select component
+    let sub1 = this.attrSvc.readEntityByQuery(0, 1000).pipe(switchMap((next) => {//@todo use paginated select component
       // load attribute first then initialize form
       this._updateFormInfoOptions(next.data);
       this.attrList = next.data;

@@ -73,7 +73,7 @@ export class OrderComponent implements OnDestroy {
       Object.assign(value0, value5)
       this.fis.restoreDynamicForm(this.formIdProduct, value0, var0.length)
     });
-    combineLatest(this.taskSvc.readByQuery(0, 10, "referenceId:" + this.orderBottomSheet.from.id), this.formCreatedOb4).pipe(take(1)).subscribe(next => {
+    combineLatest(this.taskSvc.readEntityByQuery(0, 10, "referenceId:" + this.orderBottomSheet.from.id), this.formCreatedOb4).pipe(take(1)).subscribe(next => {
       let var0 = next[0].data;
       let value0 = this.fis.parsePayloadArr(var0.map(e => e.createdAt), 'createdAt');
       let value1 = this.fis.parsePayloadArr(var0.map(e => e.createdBy), 'createdBy');

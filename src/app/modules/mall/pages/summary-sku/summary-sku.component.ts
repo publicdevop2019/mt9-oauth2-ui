@@ -26,9 +26,9 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
     public dialog: MatDialog,
   ) {
     super(entitySvc, deviceSvc, bottomSheet, 7, true);
-    let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); this.loadProduct(next) });
+    let sub0 = this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); this.loadProduct(next) });
     let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
-      this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
+      this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
     )).subscribe(next => { this.updateSummaryData(next); this.loadProduct(next) })
     this.subs.add(sub)
     this.subs.add(sub0)
@@ -42,7 +42,7 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
     if (ids.length > 0) {
       let var0 = new Set(ids);
       let var1 = new Array(...var0);
-      this.productSvc.readByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
+      this.productSvc.readEntityByQuery(0, var1.length, "id:" + var1.join('.')).subscribe(next => {
         this.productRef = next;
         this.dataSource.data.forEach(e => {
           parsedRef[e.id] = this.parseRef(e.referenceId)
@@ -57,7 +57,7 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
         let var2 = new Set(reqAttrIds);
         let var3 = new Array(...var2);
         if (var3.filter(e => e).length > 0) {
-          this.attrSvc.readByQuery(0, var3.length, "id:" + var3.filter(e => e).join('.')).subscribe(next2 => {
+          this.attrSvc.readEntityByQuery(0, var3.length, "id:" + var3.filter(e => e).join('.')).subscribe(next2 => {
             Object.keys(parsedRefAttr).forEach(e => {
               let attr = parsedRefAttr[+e];
               let parsed = attr.split(',').map(ee => {
@@ -95,7 +95,7 @@ export class SummarySkuComponent extends SummaryEntityComponent<ISkuNew, ISkuNew
   }
   pageHandler(e: PageEvent) {
     this.entitySvc.currentPageIndex = e.pageIndex;
-    this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
+    this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString, this.sortBy, this.sortOrder).subscribe(next => {
       this.updateSummaryData(next);
       this.loadProduct(next);
     });

@@ -26,9 +26,9 @@ export class SummaryOrderComponent extends SummaryEntityComponent<IOrder, IOrder
     public dialog: MatDialog,
   ) {
     super(entitySvc, deviceSvc, bottomSheet, 2, true);
-    let sub0 = this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); this.loadUser(next) });
+    let sub0 = this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize()).subscribe(next => { this.updateSummaryData(next); this.loadUser(next) });
     let sub = this.entitySvc.refreshSummary.pipe(switchMap(() =>
-      this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
+      this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryString)
     )).subscribe(next => { this.updateSummaryData(next); this.loadUser(next) })
     this.subs.add(sub)
     this.subs.add(sub0)
@@ -41,7 +41,7 @@ export class SummaryOrderComponent extends SummaryEntityComponent<IOrder, IOrder
       let query = "id:" + unique.join('.');
       let parsedUserId: { [key: number]: IResourceOwner } = {}
   
-      this.roSvc.readByQuery(0, unique.length, query).subscribe(next => {
+      this.roSvc.readEntityByQuery(0, unique.length, query).subscribe(next => {
         next.data.forEach(e => {
           parsedUserId[e.id] = e
         })

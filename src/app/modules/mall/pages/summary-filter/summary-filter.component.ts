@@ -30,7 +30,7 @@ export class SummaryFilterComponent extends SummaryEntityComponent<IBizFilter, I
     let var0 = new Set(next.data.flatMap(e => e.catalogs));
     let var1 = new Array(...var0);
     if (var1.length > 0) {
-      this.catalogSvc.readByQuery(0, var1.length, 'type:FRONTEND,id:' + var1.join('.')).subscribe(next => {
+      this.catalogSvc.readEntityByQuery(0, var1.length, 'type:FRONTEND,id:' + var1.join('.')).subscribe(next => {
         this.catalogList = next.data.map(e => <IOption>{ label: e.name, value: e.id })
       })
     }

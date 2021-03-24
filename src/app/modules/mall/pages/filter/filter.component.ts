@@ -52,7 +52,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
         this.fis.formGroupCollection[this.formId].get('id').setValue(this.aggregate.id);
         this.fis.formGroupCollection[this.formId].get('description').setValue(this.aggregate.description);
         if (this.aggregate.catalogs && this.aggregate.catalogs.length !== 0) {
-          this.categorySvc.readByQuery(0, this.aggregate.catalogs.join('.').length, `${CATALOG_TYPE.FRONTEND},id:` + this.aggregate.catalogs.join('.')).subscribe(next => {
+          this.categorySvc.readEntityByQuery(0, this.aggregate.catalogs.join('.').length, `${CATALOG_TYPE.FRONTEND},id:` + this.aggregate.catalogs.join('.')).subscribe(next => {
             this.formInfoCatalog.inputs.forEach(a => {
               a.options = [...next.data.map(ee => <IOption>{ label: ee.name, value: String(ee.id) })];
             })
@@ -61,7 +61,7 @@ export class FilterComponent extends Aggregate<FilterComponent, IBizFilter> impl
           })
         }
         if (this.aggregate.filters && this.aggregate.filters.length !== 0) {
-          this.attrSvc.readByQuery(0, this.aggregate.filters.length, 'id:' + this.aggregate.filters.map(e => e.id).join('.')).subscribe(next => {
+          this.attrSvc.readEntityByQuery(0, this.aggregate.filters.length, 'id:' + this.aggregate.filters.map(e => e.id).join('.')).subscribe(next => {
             this.formInfoFilter.inputs.forEach(a => {
               a.options = next.data.map(ee => <IOption>{ label: ee.name, value: ee.id });
               a.optionOriginal = next.data;

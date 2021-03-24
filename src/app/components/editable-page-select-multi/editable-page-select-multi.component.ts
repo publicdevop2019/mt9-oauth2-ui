@@ -28,7 +28,7 @@ export class EditablePageSelectMultiComponent implements OnInit {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         this.loading = true;
-        this.entitySvc.readByQuery(this.pageNumber, this.pageSize, this.query, undefined, undefined, { 'loading': false }).subscribe(next => {
+        this.entitySvc.readEntityByQuery(this.pageNumber, this.pageSize, this.query, undefined, undefined, { 'loading': false }).subscribe(next => {
           this.loading = false;
           if (next.data.length === 0) {
             this.allLoaded = true;

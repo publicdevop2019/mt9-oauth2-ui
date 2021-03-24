@@ -87,7 +87,7 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
 
       }
       this.entitySvc.entityRepo = environment.serverUri + this.entitySvc.PRODUCT_SVC_NAME + this.entitySvc.ENTITY_NAME;
-      return this.entitySvc.readByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryPrefix);
+      return this.entitySvc.readEntityByQuery(this.entitySvc.currentPageIndex, this.getPageSize(), this.queryPrefix);
     }));
     let sub = ob.subscribe(next => {
       this.updateSummaryData(next);

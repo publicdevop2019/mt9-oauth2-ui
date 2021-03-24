@@ -50,12 +50,26 @@ export const FORM_CONFIG: IForm = {
             required: true,
         },
         {
-            "type": "select",
+            "type": "radio",
             "display": true,
+            "label": "IS_WEBSOCKET",
+            "key": "isWebsocket",
+            "position": {
+                "row": "4",
+                "column": "0"
+            },
+            "options": [
+                { label: 'NO', value: "yes" },
+                { label: 'YES', value: "no" },
+            ],
+        },
+        {
+            "type": "select",
+            "display": false,
             "label": "SELECT_METHOD",
             "key": "method",
             "position": {
-                "row": "4",
+                "row": "5",
                 "column": "0"
             },
             "options": HTTP_METHODS,
@@ -67,7 +81,7 @@ export const FORM_CONFIG: IForm = {
             "label": "",
             "key": "secured",
             "position": {
-                "row": "5",
+                "row": "6",
                 "column": "0"
             },
             "options": [
@@ -80,7 +94,7 @@ export const FORM_CONFIG: IForm = {
             "label": "PLEASE_LIMIT_ACCESS",
             "key": "limitAccess",
             "position": {
-                "row": "6",
+                "row": "7",
                 "column": "0"
             },
             "options": [
@@ -94,7 +108,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_CLIENT_ROLES",
             "key": "clientRoles",
             "position": {
-                "row": "7",
+                "row": "8",
                 "column": "0"
             },
             "options": CLIENT_ROLE_LIST,
@@ -105,7 +119,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_CLIENT_SCOPES",
             "key": "clientScopes",
             "position": {
-                "row": "8",
+                "row": "9",
                 "column": "0"
             },
             "options": SCOPE_LIST,
@@ -116,7 +130,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_USER_ROLES",
             "key": "userRoles",
             "position": {
-                "row": "9",
+                "row": "10",
                 "column": "0"
             },
             "options": [...USER_ROLE_ENUM, { label: "USER_ROLE_ROOT", value: "ROLE_ROOT" }],
