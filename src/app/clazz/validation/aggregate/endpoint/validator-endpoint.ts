@@ -32,8 +32,11 @@ export class EndpointValidator extends IAggregateValidator {
     }
     methodValidator = (key: string, payload: IEndpoint) => {
         let results: ErrorMessage[] = [];
-        StringValidator.hasValidWhiteListValue(payload[key], results, key);
-        StringValidator.belongsTo(payload[key], HTTP_METHODS.map(e => e.value), results, key);
+        if (!payload.websocket) {
+            StringValidator.hasValidWhiteListValue(payload[key], results, key);
+            StringValidator.belongsTo(payload[key], HTTP_METHODS.map(e => e.value), results, key);
+            return results
+        }
         return results
     }
 }

@@ -2,8 +2,9 @@ export interface IEndpoint {
   resourceId: string;
   description?: string;
   path: string;
-  method: string;
+  method?: string;
   id: string;
+  websocket: boolean;
   clientRoles?: Set<string>;
   userRoles?: Set<string>;
   clientScopes?: Set<string>;

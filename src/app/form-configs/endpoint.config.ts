@@ -59,8 +59,8 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
-                { label: 'NO', value: "yes" },
-                { label: 'YES', value: "no" },
+                { label: 'NO', value: "no" },
+                { label: 'YES', value: "yes" },
             ],
         },
         {
