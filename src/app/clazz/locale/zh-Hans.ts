@@ -37,7 +37,7 @@ export const zhHans = {
     "PLEASE_SELECT_RESOUCE_ID(S)": "请选择资源ID(S)",
     "ACCESS_TOKEN_VALIDITY_SECONDS": "请求令牌有效时间",
     "REFRESH_TOKEN_VALIDITY_SECONDS": "刷新令牌有效时间",
-    "ENTER_RESOURCE_ID": "输入资源ID",
+    "ENTER_RESOURCE_ID": "选择应用",
     "ENTER_ENDPOINT": "输入目标接口",
     "SELECT_METHOD": "选择HTTP方式",
     "ENTER_SECURITY_EXPRESSION": "输入安全表达式",

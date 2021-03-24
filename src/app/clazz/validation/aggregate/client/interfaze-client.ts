@@ -1,3 +1,5 @@
+import { IIdName } from "mt-form-builder/lib/classes/template.interface";
+
 export enum grantTypeEnums {
     refresh_token = 'REFRESH_TOKEN',
     password = 'PASSWORD',
@@ -9,7 +11,7 @@ export enum grantTypeEnums {
     write = 'WRITE',
     trust = 'TRUST'
   }
-  export interface IClient {
+  export interface IClient extends IIdName{
     name: string;
     id: string;
     clientSecret?: string;

@@ -1,13 +1,15 @@
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { FormInfoService } from 'mt-form-builder';
-import { Observable } from 'rxjs';
+import { IOption } from 'mt-form-builder/lib/classes/template.interface';
+import { combineLatest, Observable } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { Aggregate } from 'src/app/clazz/abstract-aggregate';
 import { IEndpoint } from 'src/app/clazz/validation/aggregate/endpoint/interfaze-endpoint';
 import { EndpointValidator } from 'src/app/clazz/validation/aggregate/endpoint/validator-endpoint';
 import { ErrorMessage, hasValue } from 'src/app/clazz/validation/validator-common';
 import { FORM_CONFIG } from 'src/app/form-configs/endpoint.config';
+import { ClientService } from 'src/app/services/client.service';
 import { EndpointService } from 'src/app/services/endpoint.service';
 @Component({
   selector: 'app-endpoint',
@@ -17,12 +19,14 @@ import { EndpointService } from 'src/app/services/endpoint.service';
 export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public endpointSvc: EndpointService,
+    public clientSvc: ClientService,
     fis: FormInfoService,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     bottomSheetRef: MatBottomSheetRef<EndpointComponent>,
     cdr: ChangeDetectorRef
   ) {
     super('securityProfile', JSON.parse(JSON.stringify(FORM_CONFIG)), new EndpointValidator(), bottomSheetRef, data, fis, cdr)
+    this.fis.queryProvider[this.formId + '_' + 'resourceId'] = clientSvc;
     this.fis.$ready.pipe(filter(e => e === this.formId)).pipe(take(1)).subscribe(_ => {
       this.fis.formGroupCollection[this.formId].get('secured').valueChanges.subscribe(next => {
         this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['limitAccess', 'clientRoles', 'clientScopes', 'userRoles'].includes(e.key)).forEach(ee => {
@@ -43,25 +47,28 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
     this.cleanUp()
   }
   ngAfterViewInit(): void {
-    if (this.aggregate && this.eventStore.length === 0) {
-      this.fis.restore(this.formId, this.aggregate);
-      this.fis.formGroupCollection[this.formId].get("secured").setValue(this.aggregate.secured);
-      if (this.aggregate.userOnly)
-        this.fis.formGroupCollection[this.formId].get("limitAccess").setValue('userOnly');
-      if (this.aggregate.clientOnly) {
-        this.fis.formGroupCollection[this.formId].get("limitAccess").setValue('clientOnly');
-      }
-      this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['userRoles'].includes(e.key)).forEach(ee => {
-        ee.display = (this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'userOnly' || !this.fis.formGroupCollection[this.formId].get("limitAccess").value)
-      });
-      this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['clientRoles'].includes(e.key)).forEach(ee => {
-        ee.display = (this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'clientOnly' || !this.fis.formGroupCollection[this.formId].get("limitAccess").value)
-      });
-      this.fis.formGroupCollection[this.formId].get("clientRoles").setValue(this.aggregate.clientRoles);
-      this.fis.formGroupCollection[this.formId].get("clientScopes").setValue(this.aggregate.clientScopes);
-      this.fis.formGroupCollection[this.formId].get("userRoles").setValue(this.aggregate.userRoles);
-    }
-    else {
+    if (this.aggregate) {
+      combineLatest([this.clientSvc.readByQuery(0, 1, 'id:' + this.aggregate.resourceId)]).pipe(take(1))
+        .subscribe(next => {
+          this.formInfo.inputs.find(e => e.key === 'resourceId').options = next[0].data.map(e => <IOption>{ label: e.name, value: e.id })
+
+          this.fis.restore(this.formId, this.aggregate);
+          this.fis.formGroupCollection[this.formId].get("secured").setValue(this.aggregate.secured);
+          if (this.aggregate.userOnly)
+            this.fis.formGroupCollection[this.formId].get("limitAccess").setValue('userOnly');
+          if (this.aggregate.clientOnly) {
+            this.fis.formGroupCollection[this.formId].get("limitAccess").setValue('clientOnly');
+          }
+          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['userRoles'].includes(e.key)).forEach(ee => {
+            ee.display = (this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'userOnly' || !this.fis.formGroupCollection[this.formId].get("limitAccess").value)
+          });
+          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['clientRoles'].includes(e.key)).forEach(ee => {
+            ee.display = (this.fis.formGroupCollection[this.formId].get("limitAccess").value === 'clientOnly' || !this.fis.formGroupCollection[this.formId].get("limitAccess").value)
+          });
+          this.fis.formGroupCollection[this.formId].get("clientRoles").setValue(this.aggregate.clientRoles);
+          this.fis.formGroupCollection[this.formId].get("clientScopes").setValue(this.aggregate.clientScopes);
+          this.fis.formGroupCollection[this.formId].get("userRoles").setValue(this.aggregate.userRoles);
+        })
 
     }
   }

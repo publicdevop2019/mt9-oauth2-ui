@@ -37,7 +37,7 @@ export const enUS = {
     "PLEASE_SELECT_RESOUCE_ID(S)": "Please select resouce id(s)",
     "ACCESS_TOKEN_VALIDITY_SECONDS": "Access Token validity seconds",
     "REFRESH_TOKEN_VALIDITY_SECONDS": "Refresh Token validity seconds",
-    "ENTER_RESOURCE_ID": "Enter resource id",
+    "ENTER_RESOURCE_ID": "Select resource id",
     "ENTER_ENDPOINT": "Enter endpoint",
     "SELECT_METHOD": "Select method",
     "ENTER_SECURITY_EXPRESSION": "Enter security expression",

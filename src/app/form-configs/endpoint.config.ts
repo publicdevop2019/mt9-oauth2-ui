@@ -17,7 +17,7 @@ export const FORM_CONFIG: IForm = {
             }
         },
         {
-            "type": "text",
+            "type": "paginated-select",
             "display": true,
             "label": "ENTER_RESOURCE_ID",
             "key": "resourceId",
@@ -25,6 +25,7 @@ export const FORM_CONFIG: IForm = {
                 "row": "1",
                 "column": "0"
             },
+            options:[],
             required: true,
         },
         {
