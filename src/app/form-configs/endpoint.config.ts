@@ -98,6 +98,7 @@ export const FORM_CONFIG: IForm = {
                 "column": "0"
             },
             "options": [
+                { label: 'NONE', value: "" },
                 { label: 'EP_USER_ONLY', value: "userOnly" },
                 { label: 'EP_CLIENT_ONLY', value: "clientOnly" },
             ],

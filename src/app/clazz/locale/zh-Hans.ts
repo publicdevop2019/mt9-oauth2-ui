@@ -391,7 +391,7 @@ export const zhHans = {
     "MESSAGE": "消息",
     "DATE": "日期",
     "PROTECTED_ENDPOINT": "需要验证？",
-    "PLEASE_LIMIT_ACCESS": "限制权限类别(可选)",
+    "PLEASE_LIMIT_ACCESS": "限制权限类别",
     "EP_USER_ONLY": "仅用户",
     "EP_CLIENT_ONLY": "仅客户端",
     "EP_CLIENT_ROLES": "选择客户端角色",
@@ -406,5 +406,6 @@ export const zhHans = {
     "NOTIFIACTION_TYPE": "类别",
     "REVIEW_REQUIRED": "审查",
     "IS_WEBSOCKET": "是否为Websocket?",
+    "NONE": "无",
     "": "",
 }

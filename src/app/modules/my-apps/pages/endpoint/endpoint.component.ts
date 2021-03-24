@@ -30,20 +30,30 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
     this.fis.$ready.pipe(filter(e => e === this.formId)).pipe(take(1)).subscribe(_ => {
       this.fis.formGroupCollection[this.formId].valueChanges.subscribe(() => {
 
-        this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['limitAccess', 'clientRoles', 'clientScopes', 'userRoles'].includes(e.key)).forEach(ee => {
+        this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['limitAccess', 'clientScopes'].includes(e.key)).forEach(ee => {
           ee.display = !!this.fis.formGroupCollection[this.formId].get('secured').value
         })
         this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['clientRoles'].includes(e.key)).forEach(ee => {
-          if (this.fis.formGroupCollection[this.formId].get('limitAccess').value === 'clientOnly' && !!this.fis.formGroupCollection[this.formId].get('secured').value)
-            ee.display = true
-          if (this.fis.formGroupCollection[this.formId].get('limitAccess').value === 'userOnly' && !!this.fis.formGroupCollection[this.formId].get('secured').value)
-            ee.display = false
+          if (!!this.fis.formGroupCollection[this.formId].get('secured').value) {
+            if ((!this.fis.formGroupCollection[this.formId].get('limitAccess').value || this.fis.formGroupCollection[this.formId].get('limitAccess').value === 'clientOnly')) {
+              ee.display = true
+            } else {
+              ee.display = false
+            }
+          } else {
+            ee.display = false;
+          }
         })
         this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['userRoles'].includes(e.key)).forEach(ee => {
-          if (this.fis.formGroupCollection[this.formId].get('limitAccess').value === 'userOnly' && !!this.fis.formGroupCollection[this.formId].get('secured').value)
-            ee.display = true
-          if (this.fis.formGroupCollection[this.formId].get('limitAccess').value === 'clientOnly' && !!this.fis.formGroupCollection[this.formId].get('secured').value)
-            ee.display = false
+          if (!!this.fis.formGroupCollection[this.formId].get('secured').value) {
+            if ((!this.fis.formGroupCollection[this.formId].get('limitAccess').value || this.fis.formGroupCollection[this.formId].get('limitAccess').value === 'userOnly')) {
+              ee.display = true
+            } else {
+              ee.display = false
+            }
+          } else {
+            ee.display = false;
+          }
         })
         this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['method'].includes(e.key)).forEach(ee => {
           ee.display = this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'yes'
@@ -61,13 +71,8 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
             ee.display = false;
           })
           this.fis.formGroupCollection[this.formId].get('limitAccess').setValue('userOnly', { emitEvent: false })
-        } else {
+        } else if(this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'no'){
           this.fis.formGroupCollection[this.formId].get('limitAccess').enable({ emitEvent: false })
-          this.fis.formGroupCollection[this.formId].get('limitAccess').setValue('', { emitEvent: false })
-          if (!!this.fis.formGroupCollection[this.formId].get('secured').value)
-            this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['userRoles', 'clientRoles'].includes(e.key)).forEach(ee => {
-              ee.display = true
-            })
         }
       })
     })

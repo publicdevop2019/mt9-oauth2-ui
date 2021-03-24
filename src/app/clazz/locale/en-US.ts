@@ -385,7 +385,7 @@ export const enUS = {
     "MESSAGE": "Message",
     "DATE": "Date",
     "PROTECTED_ENDPOINT": "Is protected?",
-    "PLEASE_LIMIT_ACCESS": "Please select limit access (Optional)",
+    "PLEASE_LIMIT_ACCESS": "Please select limit access",
     "EP_USER_ONLY": "User only",
     "EP_CLIENT_ONLY": "Client only",
     "EP_CLIENT_ROLES": "Please select client roles",
@@ -400,4 +400,5 @@ export const enUS = {
     "NOTIFIACTION_TYPE": "Type",
     "REVIEW_REQUIRED": "Review Required",
     "IS_WEBSOCKET": "Is Websocket?",
+    "NONE": "None",
 }
