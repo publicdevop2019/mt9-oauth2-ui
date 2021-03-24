@@ -33,7 +33,8 @@ export class MessageService extends EntityCommonService<IDetail, IDetail>{
             const jwtBody = this.httpProxySvc.currentUserAuthInfo.access_token.split('.')[1];
             const raw = atob(jwtBody);
             if ((JSON.parse(raw).authorities as string[]).filter(e => e === "ROLE_ROOT").length > 0) {
-                this.httpProxySvc.createEntity(environment.serverUri+'/auth-svc/tickets', 'admin', null, UUID()).subscribe(next => {
+                //0C8AZTODP4H5 messenger client id
+                this.httpProxySvc.createEntity(environment.serverUri + '/auth-svc/tickets', 'admin/0C8AZTODP4H5', null, UUID()).subscribe(next => {
                     this.socket = new WebSocket(`ws://localhost:8111/messenger-svc/system-monitor?jwt=${btoa(next)}`);
                     this.socket.addEventListener('message', (event) => {
                         this.saveMessage(event.data as string);
@@ -47,7 +48,7 @@ export class MessageService extends EntityCommonService<IDetail, IDetail>{
             const jwtBody = this.httpProxySvc.currentUserAuthInfo.access_token.split('.')[1];
             const raw = atob(jwtBody);
             if ((JSON.parse(raw).authorities as string[]).filter(e => e === "ROLE_ADMIN").length > 0) {
-                this.httpProxySvc.createEntity(environment.serverUri+'/auth-svc/tickets', 'admin', null, UUID()).subscribe(next => {
+                this.httpProxySvc.createEntity(environment.serverUri + '/auth-svc/tickets', 'admin/0C8AZTODP4H5', null, UUID()).subscribe(next => {
                     this.socket = new WebSocket(`ws://localhost:8111/messenger-svc/mall-monitor?jwt=${btoa(next)}`);
                     this.socket.addEventListener('message', (event) => {
                         this.saveMessage(event.data as string);
