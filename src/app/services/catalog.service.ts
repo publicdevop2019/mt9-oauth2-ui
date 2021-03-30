@@ -11,12 +11,12 @@ export interface ICatalogCustomerTreeNode {
   name: string,
   children?: ICatalogCustomerTreeNode[],
   tags?: string[],
-  reviewRequired:boolean
+  reviewRequired: boolean
 }
 @Injectable({
   providedIn: 'root'
 })
-export class CatalogService extends EntityCommonService<ICatalog, ICatalog> implements IQueryProvider{
+export class CatalogService extends EntityCommonService<ICatalog, ICatalog> implements IQueryProvider {
   private PRODUCT_SVC_NAME = '/product-svc';
   private ENTITY_NAME = '/catalogs';
   entityRepo: string = environment.serverUri + this.PRODUCT_SVC_NAME + this.ENTITY_NAME;
@@ -26,10 +26,15 @@ export class CatalogService extends EntityCommonService<ICatalog, ICatalog> impl
     super(httpProxy, interceptor);
   }
   readByQuery(num: number, size: number, query?: string, by?: string, order?: string, headers?: {}) {
+    return this.readEntityByQuery(num, size, query, by, order, headers);
+  };
+
+  readEntityByQuery(num: number, size: number, query?: string, by?: string, order?: string, headers?: {}) {
     if (query && (query.includes(CATALOG_TYPE.BACKEND) || query.includes(CATALOG_TYPE.FRONTEND))) {
       return this.httpProxySvc.readEntityByQuery<ICatalog>(this.entityRepo, this.role, num, size, query, by, order, headers)
     } else {
       return this.httpProxySvc.readEntityByQuery<ICatalog>(this.entityRepo, this.role, num, size, query ? (this.queryPrefix + query) : this.queryPrefix, by, order, headers)
     }
   };
+
 }
