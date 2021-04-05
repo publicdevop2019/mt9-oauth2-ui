@@ -11,6 +11,10 @@ export class ObjectDetailComponent implements OnInit {
   ngOnInit(): void {
   }
   printJson() {
-    return JSON.stringify(this.overlaySvc.data, null, 4)
+    let obj = JSON.parse(this.overlaySvc.data);
+    if (obj.eventBody) {
+      obj.eventBody = JSON.parse(obj.eventBody)
+    }
+    return JSON.stringify(obj, null, 4)
   }
 }

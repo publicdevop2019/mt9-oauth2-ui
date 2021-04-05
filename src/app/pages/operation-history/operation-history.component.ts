@@ -38,50 +38,50 @@ export class OperationHistoryComponent extends SummaryEntityComponent<IChangeRec
       if (queryMaps.get('type') === 'auth') {
         this.entitySvc.PRODUCT_SVC_NAME = '/auth-svc';
         if (queryMaps.get('entity') === 'client') {
-          this.queryPrefix = 'entityType:Client'
+          this.queryPrefix = 'entityType:Client,'
           this.label = 'OPERATION_DASHBOARD_CLIENT'
         }
         if (queryMaps.get('entity') === 'user') {
-          this.queryPrefix = 'entityType:User'
+          this.queryPrefix = 'entityType:User,'
           this.label = 'OPERATION_DASHBOARD_USER'
         }
       } else if (queryMaps.get('type') === 'proxy') {
         this.entitySvc.PRODUCT_SVC_NAME = '/proxy';
         if (queryMaps.get('entity') === 'token') {
           this.label = 'OPERATION_DASHBOARD_TOKEN'
-          this.queryPrefix = 'entityType:RevokeToken'
+          this.queryPrefix = 'entityType:RevokeToken,'
         }
         if (queryMaps.get('entity') === 'endpoint') {
           this.label = 'OPERATION_DASHBOARD_EP'
-          this.queryPrefix = 'entityType:BizEndpoint'
+          this.queryPrefix = 'entityType:BizEndpoint,'
         }
       } else if (queryMaps.get('type') === 'product') {
         this.entitySvc.PRODUCT_SVC_NAME = '/product-svc';
         if (queryMaps.get('entity') === 'sku') {
           this.label = 'OPERATION_DASHBOARD_SKU'
-          this.queryPrefix = 'entityType:BizSku'
+          this.queryPrefix = 'entityType:Sku,'
         }
         if (queryMaps.get('entity') === 'product') {
           this.label = 'OPERATION_DASHBOARD_PRODUCT'
-          this.queryPrefix = 'entityType:Product'
+          this.queryPrefix = 'entityType:Product,'
         }
         if (queryMaps.get('entity') === 'catalog') {
           this.label = 'OPERATION_DASHBOARD_CATALOG'
-          this.queryPrefix = 'entityType:BizCatalog'
+          this.queryPrefix = 'entityType:BizCatalog,'
         }
         if (queryMaps.get('entity') === 'attribute') {
           this.label = 'OPERATION_DASHBOARD_ATTR'
-          this.queryPrefix = 'entityType:BizAttribute'
+          this.queryPrefix = 'entityType:BizAttribute,'
         }
         if (queryMaps.get('entity') === 'filter') {
           this.label = 'OPERATION_DASHBOARD_FILTER'
-          this.queryPrefix = 'entityType:BizFilter'
+          this.queryPrefix = 'entityType:BizFilter,'
         }
       } else if (queryMaps.get('type') === 'profile') {
         this.entitySvc.PRODUCT_SVC_NAME = '/profile-svc';
         if (queryMaps.get('entity') === 'order') {
           this.label = 'OPERATION_DASHBOARD_ORDER'
-          this.queryPrefix = 'entityType:BizOrder'
+          this.queryPrefix = 'entityType:BizOrder,'
         }
       } else {
 
