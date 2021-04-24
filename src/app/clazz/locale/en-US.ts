@@ -400,5 +400,6 @@ export const enUS = {
     "NOTIFIACTION_TYPE": "Type",
     "REVIEW_REQUIRED": "Review Required",
     "IS_WEBSOCKET": "Is Websocket?",
+    "PARENT_CLIENT": "Parent client",
     "NONE": "None",
 }

@@ -1,6 +1,6 @@
 <h2 class="flex-row-space-between">{{'AUTH_CENTER' |translate}} / {{'SECURITY_PROFILE_DASHBOARD' |translate}}<button
         mat-fab color="primary" (click)="openBottomSheet()">{{'ADD'|translate}}</button></h2>
-<app-search (search)="doSearch($event)" [fields]="['id','clientId','method']">
+<app-search (search)="doSearch($event)" [fields]="['id','resourceId','method']">
 </app-search>
 <div style="display: flex;flex-direction: row;align-items: center;height: 56px;">
     <mat-slide-toggle #batchUpdate class="example-margin" [color]="'accent'" [checked]="'false'"
@@ -29,7 +29,7 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="id" sticky>
+            <ng-container matColumnDef="id">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'ID'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
                     <app-copy-field [inputValue]="row.id"></app-copy-field>
@@ -37,7 +37,7 @@
             </ng-container>
 
             <ng-container matColumnDef="resourceId">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'RESOURCE_ID'|translate}} </th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'PARENT_CLIENT'|translate}} </th>
                 <td mat-cell *matCellDef="let row">
                     <app-editable-page-select-single *ngIf="allClientList"
                         [inputValue]="getOption(row.resourceId,allClientList)" [list]="allClientList" [entitySvc]="clientSvc"

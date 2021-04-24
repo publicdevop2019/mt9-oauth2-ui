@@ -12,7 +12,7 @@ import { ClientComponent } from '../client/client.component';
   templateUrl: './summary-client.component.html',
 })
 export class SummaryClientComponent extends SummaryEntityComponent<IClient, IClient> implements OnDestroy {
-  displayedColumns: string[] = ['id', 'name', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
+  displayedColumns: string[] = ['name','id', 'description', 'resourceIndicator', 'grantTypeEnums', 'accessTokenValiditySeconds', 'grantedAuthorities', 'resourceIds', 'edit', 'token', 'delete'];
   sheetComponent = ClientComponent;
   public grantTypeList: IOption[] = CONST_GRANT_TYPE;
   public roleList: IOption[] = CONST_ROLES;

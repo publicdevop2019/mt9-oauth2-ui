@@ -407,5 +407,6 @@ export const zhHans = {
     "REVIEW_REQUIRED": "审查",
     "IS_WEBSOCKET": "是否为Websocket?",
     "NONE": "无",
+    "PARENT_CLIENT": "所属服务",
     "": "",
 }

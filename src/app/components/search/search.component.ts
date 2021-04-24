@@ -47,6 +47,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   public searchHelper: IOption[] = [
     { label: 'ID', value: "id" },
     { label: 'ID', value: "changeId" },
+    { label: 'PARENT_CLIENT', value: "resourceId" },
     { label: 'TARGET_ID', value: "targetId" },
     { label: 'REFERENCE_ID', value: "referenceId" },
     { label: 'PARENT_ID_FRONT', value: "parentId_front" },
@@ -55,7 +56,6 @@ export class SearchComponent implements OnDestroy, OnInit {
     { label: 'CATALOGS', value: "catalogs" },
     { label: 'EMAIL', value: "email" },
     { label: 'RESOURCE_INDICATOR', value: "resourceIndicator" },
-    { label: 'RESOURCE_ID', value: "resourceId" },
     { label: 'LOWEST_PRICE', value: "lowestPrice" },
     { label: 'GRANTTYPE_ENUMS', value: "grantTypeEnums" },
     { label: 'ACCESS_TOKEN_VALIDITY_SECONDS', value: "accessTokenValiditySeconds" },
@@ -114,7 +114,7 @@ export class SearchComponent implements OnDestroy, OnInit {
     let sub2 = this.searchQuery.valueChanges.pipe(filter(e => e !== null && e !== undefined && e !== '' && JSON.stringify(e) !== JSON.stringify([]))).pipe(debounce(() => interval(1000)))
       .subscribe(next => {
         let delimiter = '$'
-        if (['id', 'name', 'resourceId', 'method', 'parentId_front', 'parentId_back', 'type', 'email', 'referenceId','changeId'].includes(this.searchType.value))
+        if (['id', 'name', 'resourceId', 'method', 'parentId_front', 'parentId_back', 'type', 'email', 'referenceId', 'changeId'].includes(this.searchType.value))
           delimiter = '.'
         let prefix = this.searchType.value;
         if (['catalogFront', 'catalogBack', 'attributes'].includes(this.searchType.value)) {
@@ -152,7 +152,7 @@ export class SearchComponent implements OnDestroy, OnInit {
       else if (['parentId_back', 'catalogBack'].includes(next)) {
         this.autoCompleteList = this.catalogsDataBack.map(e => <IOption>{ label: e.name, value: e.id });
       }
-      else if (next === 'resourceIds') {
+      else if (['resourceId', 'resourceIds'].includes(next)) {
         this.autoCompleteList = this.resourceClients.map(e => <IOption>{ label: e.name, value: e.id });
       }
       else if (next === 'clientId') {
@@ -191,7 +191,7 @@ export class SearchComponent implements OnDestroy, OnInit {
             this.catalogsDataBack = catalogs.data;
         });
     }
-    if (this.fields.includes('resourceIds')) {
+    if (this.fields.includes('resourceIds') || this.fields.includes('resourceId')) {
       this.clientSvc.readEntityByQuery(0, 1000, 'resourceIndicator:1')//@todo use paginated select component
         .subscribe(next => {
           if (next.data)
@@ -242,7 +242,7 @@ export class SearchComponent implements OnDestroy, OnInit {
   parseAttrId(attributes: string[]) {
     if (attributes && attributes.length > 0) {
       let ids = attributes.map(e => e.split(":")[0]);
-      return this.attrSvc.readEntityByQuery(0, ids.length, 'id:' + ids.join('.'),undefined,undefined,{loading:false}).pipe(map(next => attributes.map(e => next.data.find(ee => ee.id === e.split(":")[0]).name + ":" + e.split(":")[1])))
+      return this.attrSvc.readEntityByQuery(0, ids.length, 'id:' + ids.join('.'), undefined, undefined, { loading: false }).pipe(map(next => attributes.map(e => next.data.find(ee => ee.id === e.split(":")[0]).name + ":" + e.split(":")[1])))
     } else {
       return of([])
     }
