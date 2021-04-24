@@ -46,7 +46,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
           }
           if (req.url.indexOf('oauth/token') > -1 && req.method === 'POST' && req.body && (req.body as FormData).get('grant_type') === 'refresh_token') {
             this.openSnackbar('SESSION_EXPIRED');
-            logout()
+            logout(this.router);
             return throwError(error);
           }
           if (this._httpProxy.refreshInprogress) {
