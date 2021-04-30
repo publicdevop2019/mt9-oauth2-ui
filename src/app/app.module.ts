@@ -105,6 +105,9 @@ import { CacheControlComponent } from './pages/cache-control/cache-control.compo
 import { MessageCenterComponent } from './modules/my-apps/pages/message-center/message-center.component';
 import { RequestIdHttpInterceptor } from './services/interceptors/request-id.interceptor';
 import { MessageCenterMallComponent } from './modules/mall/pages/message-center-mall/message-center-mall.component';
+import { DynamicCatalogTreeComponent } from './modules/mall/components/dynamic-catalog-tree/dynamic-catalog-tree.component';
+import { DynamicCatalogNodeComponent } from './modules/mall/components/dynamic-catalog-tree/dynamic-catalog-node/dynamic-catalog-node.component';
+import { TreeNodeDirective } from './modules/mall/directive/tree-node.directive';
 
 @NgModule({
   declarations: [
@@ -159,7 +162,10 @@ import { MessageCenterMallComponent } from './modules/mall/pages/message-center-
     EditablePageSelectMultiComponent,
     CacheControlComponent,
     MessageCenterComponent,
-    MessageCenterMallComponent
+    MessageCenterMallComponent,
+    DynamicCatalogTreeComponent,
+    DynamicCatalogNodeComponent,
+    TreeNodeDirective
   ],
   imports: [
     BrowserAnimationsModule,

@@ -402,4 +402,5 @@ export const enUS = {
     "IS_WEBSOCKET": "Is Websocket?",
     "PARENT_CLIENT": "Parent client",
     "NONE": "None",
+    "DYNAMIC_TREE_VIEW": "Dynamic tree view",
 }

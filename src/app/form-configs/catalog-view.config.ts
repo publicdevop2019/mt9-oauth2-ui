@@ -14,6 +14,7 @@ export const FORM_CONFIG: IForm = {
             "options": [
                 { label: 'TREE_VIEW', value: "TREE_VIEW" },
                 { label: 'LIST_VIEW', value: "LIST_VIEW" },
+                { label: 'DYNAMIC_TREE_VIEW', value: "DYNAMIC_TREE_VIEW" },
             ],
         },
     ],

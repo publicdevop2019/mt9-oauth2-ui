@@ -98,3 +98,6 @@
     <app-catalog-tree [catalogs]="dataSource.data" (leafNodeClicked)="openBottomSheet($event.id)"
         (nonLeafNodeClicked)="openBottomSheet($event.id)"></app-catalog-tree>
 </div>
+<div *ngIf="viewType==='DYNAMIC_TREE_VIEW'">
+    <app-dynamic-catalog-tree></app-dynamic-catalog-tree>
+</div>

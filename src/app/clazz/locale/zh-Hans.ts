@@ -408,5 +408,6 @@ export const zhHans = {
     "IS_WEBSOCKET": "是否为Websocket?",
     "NONE": "无",
     "PARENT_CLIENT": "所属服务",
+    "DYNAMIC_TREE_VIEW": "动态树状图",
     "": "",
 }

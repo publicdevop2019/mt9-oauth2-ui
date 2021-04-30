@@ -21,8 +21,8 @@ import { CatalogComponent } from '../catalog/catalog.component';
 export class SummaryCatalogComponent extends SummaryEntityComponent<ICatalog, ICatalog> implements OnDestroy {
   formId = 'summaryCatalogCustomerView';
   formInfo: IForm = JSON.parse(JSON.stringify(FORM_CONFIG));
-  viewType: "TREE_VIEW" | "LIST_VIEW" = "LIST_VIEW";
-  displayedColumns: string[] = ['id', 'name', 'parentId', 'edit', 'delete','review'];
+  viewType: "TREE_VIEW" | "LIST_VIEW" | "DYNAMIC_TREE_VIEW" = "LIST_VIEW";
+  displayedColumns: string[] = ['id', 'name', 'parentId', 'edit', 'delete', 'review'];
   sheetComponent = CatalogComponent;
   private formCreatedOb: Observable<string>;
   constructor(
