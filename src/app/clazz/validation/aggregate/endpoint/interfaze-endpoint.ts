@@ -9,6 +9,7 @@ export interface IEndpoint {
   userRoles?: Set<string>;
   clientScopes?: Set<string>;
   secured: boolean;
+  csrfEnabled: boolean;
   userOnly?: boolean;
   clientOnly?: boolean;
   version: number;

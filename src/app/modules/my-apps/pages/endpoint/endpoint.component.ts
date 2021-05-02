@@ -63,6 +63,9 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
         })
         //if auth is required then is client only
         if (this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'yes') {
+          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['csrf'].includes(e.key)).forEach(e => {
+            e.display = false;
+          })
           this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['limitAccess'].includes(e.key)).forEach(ee => {
             this.fis.formGroupCollection[this.formId].get('limitAccess').disable({ emitEvent: false })
             // this.fis.$refresh.next();
@@ -71,8 +74,11 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
             ee.display = false;
           })
           this.fis.formGroupCollection[this.formId].get('limitAccess').setValue('userOnly', { emitEvent: false })
-        } else if(this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'no'){
+        } else if (this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'no') {
           this.fis.formGroupCollection[this.formId].get('limitAccess').enable({ emitEvent: false })
+          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['csrf'].includes(e.key)).forEach(e => {
+            e.display = true;
+          })
         }
       })
     })
@@ -88,6 +94,7 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
 
           this.fis.restore(this.formId, this.aggregate);
           this.fis.formGroupCollection[this.formId].get("secured").setValue(this.aggregate.secured);
+          this.fis.formGroupCollection[this.formId].get("csrf").setValue(this.aggregate.csrfEnabled);
           this.fis.formGroupCollection[this.formId].get("isWebsocket").setValue(this.aggregate.websocket ? 'yes' : 'no');
           if (this.aggregate.userOnly)
             this.fis.formGroupCollection[this.formId].get("limitAccess").setValue('userOnly');
@@ -125,6 +132,7 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
       clientScopes: secured ? (formGroup.get('clientScopes').value || []) : [],
       userRoles: secured ? (formGroup.get('userRoles').value || []) : [],
       websocket: formGroup.get('isWebsocket').value === 'yes',
+      csrfEnabled: !!formGroup.get('csrf').value,
       version: cmpt.aggregate && cmpt.aggregate.version
     }
   }

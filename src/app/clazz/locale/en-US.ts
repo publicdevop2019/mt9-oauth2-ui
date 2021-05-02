@@ -403,4 +403,5 @@ export const enUS = {
     "PARENT_CLIENT": "Parent client",
     "NONE": "None",
     "DYNAMIC_TREE_VIEW": "Dynamic tree view",
+    "CSRF_ENABLED": "Enable CSRF protection",
 }

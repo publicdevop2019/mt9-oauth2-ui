@@ -89,12 +89,25 @@ export const FORM_CONFIG: IForm = {
             ],
         },
         {
+            "type": "checkbox",
+            "display": true,
+            "label": "",
+            "key": "csrf",
+            "position": {
+                "row": "7",
+                "column": "0"
+            },
+            "options": [
+                { label: 'CSRF_ENABLED', value: "true" },
+            ],
+        },
+        {
             "type": "radio",
             "display": false,
             "label": "PLEASE_LIMIT_ACCESS",
             "key": "limitAccess",
             "position": {
-                "row": "7",
+                "row": "8",
                 "column": "0"
             },
             "options": [
@@ -109,7 +122,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_CLIENT_ROLES",
             "key": "clientRoles",
             "position": {
-                "row": "8",
+                "row": "9",
                 "column": "0"
             },
             "options": CLIENT_ROLE_LIST,
@@ -120,7 +133,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_CLIENT_SCOPES",
             "key": "clientScopes",
             "position": {
-                "row": "9",
+                "row": "10",
                 "column": "0"
             },
             "options": SCOPE_LIST,
@@ -131,7 +144,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_USER_ROLES",
             "key": "userRoles",
             "position": {
-                "row": "10",
+                "row": "11",
                 "column": "0"
             },
             "options": [...USER_ROLE_ENUM, { label: "USER_ROLE_ROOT", value: "ROLE_ROOT" }],
