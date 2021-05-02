@@ -108,6 +108,7 @@ import { MessageCenterMallComponent } from './modules/mall/pages/message-center-
 import { DynamicCatalogTreeComponent } from './modules/mall/components/dynamic-catalog-tree/dynamic-catalog-tree.component';
 import { DynamicCatalogNodeComponent } from './modules/mall/components/dynamic-catalog-tree/dynamic-catalog-node/dynamic-catalog-node.component';
 import { TreeNodeDirective } from './modules/mall/directive/tree-node.directive';
+import { CsrfInterceptor } from './services/interceptors/csrf.interceptor';
 
 @NgModule({
   declarations: [
@@ -237,6 +238,11 @@ import { TreeNodeDirective } from './modules/mall/directive/tree-node.directive'
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RequestIdHttpInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CsrfInterceptor,
       multi: true
     },
     {
