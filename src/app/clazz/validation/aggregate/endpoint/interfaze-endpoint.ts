@@ -12,7 +12,15 @@ export interface IEndpoint {
   csrfEnabled: boolean;
   userOnly?: boolean;
   clientOnly?: boolean;
+  corsConfig?: ICorsConfig;
   version: number;
+}
+export interface ICorsConfig {
+  origin:string[];
+  credentials:boolean;
+  allowedHeaders:string[];
+  exposedHeaders:string[];
+  maxAge:number;
 }
 export const HTTP_METHODS = [
   { label: 'HTTP_GET', value: "GET" },

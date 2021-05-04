@@ -404,4 +404,10 @@ export const enUS = {
     "NONE": "None",
     "DYNAMIC_TREE_VIEW": "Dynamic tree view",
     "CSRF_ENABLED": "Enable CSRF protection",
+    "CORS_ENABLED": "Enable CORS support",
+    "MAX_AGE": "Max Age",
+    "EXPOSED_HEADERS": "Exposed Headers",
+    "ALLOWED_HEADERS": "Allowed Headers",
+    "ALLOWED_ORIGIN": "Allowed Origin",
+    "ALLOW_CREDENTIAL": "Credential",
 }

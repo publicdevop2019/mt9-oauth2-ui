@@ -55,6 +55,10 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
             ee.display = false;
           }
         })
+        this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['allowedOrigin', 'allowedHeaders', 'exposedHeaders', 'maxAge', 'credentials'].includes(e.key)).forEach(ee => {
+          ee.display = !!this.fis.formGroupCollection[this.formId].get('cors').value;
+        })
+
         this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['method'].includes(e.key)).forEach(ee => {
           ee.display = this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'yes'
         })
@@ -63,12 +67,11 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
         })
         //if auth is required then is client only
         if (this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'yes') {
-          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['csrf'].includes(e.key)).forEach(e => {
+          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['csrf', 'cors'].includes(e.key)).forEach(e => {
             e.display = false;
           })
           this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['limitAccess'].includes(e.key)).forEach(ee => {
             this.fis.formGroupCollection[this.formId].get('limitAccess').disable({ emitEvent: false })
-            // this.fis.$refresh.next();
           })
           this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['clientRoles'].includes(e.key)).forEach(ee => {
             ee.display = false;
@@ -76,7 +79,7 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
           this.fis.formGroupCollection[this.formId].get('limitAccess').setValue('userOnly', { emitEvent: false })
         } else if (this.fis.formGroupCollection[this.formId].get('isWebsocket').value === 'no') {
           this.fis.formGroupCollection[this.formId].get('limitAccess').enable({ emitEvent: false })
-          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['csrf'].includes(e.key)).forEach(e => {
+          this.fis.formGroupCollection_formInfo[this.formId].inputs.filter(e => ['csrf', 'cors'].includes(e.key)).forEach(e => {
             e.display = true;
           })
         }
@@ -110,6 +113,15 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
           this.fis.formGroupCollection[this.formId].get("clientRoles").setValue(this.aggregate.clientRoles);
           this.fis.formGroupCollection[this.formId].get("clientScopes").setValue(this.aggregate.clientScopes);
           this.fis.formGroupCollection[this.formId].get("userRoles").setValue(this.aggregate.userRoles);
+          if (this.aggregate.corsConfig) {
+            this.fis.formGroupCollection[this.formId].get("cors").setValue(true);
+            this.fis.formGroupCollection[this.formId].get("allowedOrigin").setValue(this.aggregate.corsConfig.origin.join(','));
+            this.fis.formGroupCollection[this.formId].get("allowedOrigin").setValue(this.aggregate.corsConfig.origin.join(','));
+            this.fis.formGroupCollection[this.formId].get("allowedHeaders").setValue(this.aggregate.corsConfig.allowedHeaders.join(','));
+            this.fis.formGroupCollection[this.formId].get("exposedHeaders").setValue(this.aggregate.corsConfig.exposedHeaders.join(','));
+            this.fis.formGroupCollection[this.formId].get("maxAge").setValue(this.aggregate.corsConfig.maxAge);
+            this.fis.formGroupCollection[this.formId].get("credentials").setValue(this.aggregate.corsConfig.credentials);
+          }
         })
 
     }
@@ -119,6 +131,8 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
   convertToPayload(cmpt: EndpointComponent): IEndpoint {
     let formGroup = cmpt.fis.formGroupCollection[cmpt.formId];
     const secured = !!formGroup.get('secured').value;
+    console.dir('formGroup.get("cors")')
+    console.dir(formGroup.get("cors"))
     return {
       id: formGroup.get('id').value,
       description: formGroup.get('description').value ? formGroup.get('description').value : null,
@@ -133,6 +147,15 @@ export class EndpointComponent extends Aggregate<EndpointComponent, IEndpoint> i
       userRoles: secured ? (formGroup.get('userRoles').value || []) : [],
       websocket: formGroup.get('isWebsocket').value === 'yes',
       csrfEnabled: !!formGroup.get('csrf').value,
+
+      corsConfig: formGroup.get("cors").value ? {
+        origin: (formGroup.get('allowedOrigin').value as string).split(','),
+        allowedHeaders: (formGroup.get('allowedHeaders').value as string).split(','),
+        exposedHeaders: (formGroup.get('exposedHeaders').value as string).split(','),
+        credentials: !!formGroup.get('credentials').value,
+        maxAge: formGroup.get('maxAge').value,
+
+      } : undefined,
       version: cmpt.aggregate && cmpt.aggregate.version
     }
   }

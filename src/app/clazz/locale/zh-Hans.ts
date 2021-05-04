@@ -410,5 +410,11 @@ export const zhHans = {
     "PARENT_CLIENT": "所属服务",
     "DYNAMIC_TREE_VIEW": "动态树状图",
     "CSRF_ENABLED": "启用CSRF保护",
+    "CORS_ENABLED": "启用CORS支持",
+    "MAX_AGE": "Max Age",
+    "EXPOSED_HEADERS": "Exposed Headers",
+    "ALLOWED_HEADERS": "Allowed Headers",
+    "ALLOWED_ORIGIN": "Allowed Origin",
+    "ALLOW_CREDENTIAL": "Credential",
     "": "",
 }

@@ -102,12 +102,78 @@ export const FORM_CONFIG: IForm = {
             ],
         },
         {
+            "type": "checkbox",
+            "display": true,
+            "label": "",
+            "key": "cors",
+            "position": {
+                "row": "8",
+                "column": "0"
+            },
+            "options": [
+                { label: 'CORS_ENABLED', value: "true" },
+            ],
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ALLOWED_ORIGIN",
+            "key": "allowedOrigin",
+            "position": {
+                "row": "9",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "ALLOWED_HEADERS",
+            "key": "allowedHeaders",
+            "position": {
+                "row": "10",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "EXPOSED_HEADERS",
+            "key": "exposedHeaders",
+            "position": {
+                "row": "11",
+                "column": "0"
+            },
+        },
+        {
+            "type": "text",
+            "display": false,
+            "label": "MAX_AGE",
+            "key": "maxAge",
+            "position": {
+                "row": "12",
+                "column": "0"
+            },
+        },
+        {
+            "type": "checkbox",
+            "display": false,
+            "label": "",
+            "key": "credentials",
+            "position": {
+                "row": "13",
+                "column": "0"
+            },
+            "options": [
+                { label: 'ALLOW_CREDENTIAL', value: "true" },
+            ],
+        },
+        {
             "type": "radio",
             "display": false,
             "label": "PLEASE_LIMIT_ACCESS",
             "key": "limitAccess",
             "position": {
-                "row": "8",
+                "row": "14",
                 "column": "0"
             },
             "options": [
@@ -122,7 +188,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_CLIENT_ROLES",
             "key": "clientRoles",
             "position": {
-                "row": "9",
+                "row": "15",
                 "column": "0"
             },
             "options": CLIENT_ROLE_LIST,
@@ -133,7 +199,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_CLIENT_SCOPES",
             "key": "clientScopes",
             "position": {
-                "row": "10",
+                "row": "16",
                 "column": "0"
             },
             "options": SCOPE_LIST,
@@ -144,7 +210,7 @@ export const FORM_CONFIG: IForm = {
             "label": "EP_USER_ROLES",
             "key": "userRoles",
             "position": {
-                "row": "11",
+                "row": "17",
                 "column": "0"
             },
             "options": [...USER_ROLE_ENUM, { label: "USER_ROLE_ROOT", value: "ROLE_ROOT" }],
